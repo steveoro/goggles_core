@@ -2,10 +2,6 @@
 require 'date'
 require 'rubygems'
 require 'fileutils'
-require 'mechanize'
-
-require 'framework/version'
-require 'framework/application_constants'
 
 
 =begin

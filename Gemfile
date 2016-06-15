@@ -17,3 +17,7 @@ gem "amistad", git: "https://github.com/fasar-sw/amistad.git"  # [Steve] Customi
 
 # To use debugger
 # gem 'debugger'
+
+group :test do
+  gem "zeus", require: false
+end

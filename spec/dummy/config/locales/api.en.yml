@@ -1,0 +1,18 @@
+# Sample localization file for English. Add more files in this directory for other locales.
+# See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
+
+en:
+  api:
+    log_in_successful: "Log-in successful"
+    sign_up_successful: "Sign-up successful"
+    log_out_successful: "Log-out successful"
+    search_successful: "Match found"
+    errors:
+      request_must_be_json: "Request must be JSON"
+      request_must_contain_user_and_password: "Request must contain user and password"
+      invalid_user: "Invalid user"
+      invalid_password: "Invalid password"
+      invalid_token: "Invalid token"
+      unable_to_sign_up: "Unable to sign-up (creation error)"
+      email_already_taken: "This user is already existing"
+      mailcode_not_found: "Mailcode not found"

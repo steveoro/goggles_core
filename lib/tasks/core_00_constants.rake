@@ -30,11 +30,15 @@ LOG_DIR = File.join( Rails.root, 'log' ) unless defined? LOG_DIR
 
 # External base directory used for support files, backups and dumps for all the framework
 EXTERNAL_BASE_DIR =  File.join( File.absolute_path( File.join(Dir.pwd, '..') ), 'goggles.docs' ) unless defined? EXTERNAL_BASE_DIR
-# DB Dumps have the same name as current environment and are considered as "current". Moreover, a DB dump can quickly be restored using the dedicated rake task.
-DB_DUMP_DIR       = File.join( EXTERNAL_BASE_DIR, 'db_dump' ) unless defined? DB_DUMP_DIR
+
+# DB Dumps have the same name as current environment and are considered as "current".
+# Moreover, a DB dump can quickly be restored using the dedicated rake task.
+DB_DUMP_DIR       = File.join( Rails.root, 'db', 'dump' ) unless defined? DB_DUMP_DIR
+
 # DB Backups use a timestamp and are archived in a common directory.
 DB_BACKUP_DIR     = File.join( EXTERNAL_BASE_DIR, 'backup.db' ) unless defined? DB_BACKUP_DIR
 LOG_BACKUP_DIR    = File.join( EXTERNAL_BASE_DIR, 'backup.log' ) unless defined? LOG_BACKUP_DIR
+
 # Maximum number of DB backups kept
 MAX_BACKUP_KEPT   = 30 unless defined? MAX_BACKUP_KEPT
 
@@ -52,6 +56,9 @@ PROGRESS_BAR_STEPS  = 10 unless defined? PROGRESS_BAR_STEPS
 #-- ---------------------------------------------------------------------------
 #++
 
+# Display current versioning each time Rake gets executed:
+puts "\r\n- Rake scripts vers.  : #{SCRIPT_VERSION}"
+
 
 desc "Check and creates missing directories needed by the structure assumed by some of the maintenance tasks."
 task(:check_needed_dirs) do                         # Check the needed folders & create if missing:
@@ -61,7 +68,7 @@ task(:check_needed_dirs) do                         # Check the needed folders &
   end
   puts "\r\n"
 end
-#-- -------------------------------------------------------------------------
+#-- ---------------------------------------------------------------------------
 #++
 
 
@@ -80,4 +87,15 @@ def rotate_backups( backup_folder, max_backups )
     puts "Removed #{unwanted_backups.length} backups, #{all_backups.length - unwanted_backups.length} backups available."
 end
 #-- -------------------------------------------------------------------------
+#++
+
+
+# Returns the full path of a directory with respect to current Application root dir, terminated
+# with a trailing slash.
+# Current working directory will also be set to Dir.pwd (application root dir) anyways.
+#
+def get_full_path( sub_path )
+  File.join( Dir.pwd, sub_path )
+end
+#-- ---------------------------------------------------------------------------
 #++

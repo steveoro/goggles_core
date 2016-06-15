@@ -35,6 +35,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency "acts_as_votable", "~> 0.9.0"
   s.add_dependency "acts-as-taggable-on", "~> 3.4"
+  s.add_dependency "fuzzy-string-match_pure"        # [Steve, 20131106] Used for Team/Swimmer names comparison & existence checking
 
   s.add_dependency "draper", "~> 1.3"               # [Steve] For Decorator pattern support
 # Draper usage: "rails generate decorator Article" for existing models,
@@ -43,6 +44,7 @@ Gem::Specification.new do |s|
 #   Indirect        => ArticleDecorator.decorate( OtherCompatibleModel.first )
 #   Collection      => ArticleDecorator.decorate_collection( Article.all )
 
+  s.add_development_dependency "test-unit", "~> 3.0"
   s.add_development_dependency "guard"
   s.add_development_dependency "guard-rspec"
   s.add_development_dependency "guard-shell"
