@@ -292,7 +292,10 @@ end
 shared_examples_for "(missing required values)" do |attribute_name_array|
   attribute_name_array.each do |attribute_name|
     it "not a valid instance without ##{attribute_name}" do
-      expect( FactoryGirl.build( subject.class, attribute_name.to_sym => nil ) ).not_to be_valid
+      expect( FactoryGirl.build(
+        subject.class.name.underscore.to_sym,
+        attribute_name.to_sym => nil )
+      ).not_to be_valid
     end
   end
 end

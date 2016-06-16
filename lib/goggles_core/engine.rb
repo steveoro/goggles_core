@@ -5,6 +5,8 @@ require 'haml'
 require 'acts-as-taggable-on'
 require 'acts_as_votable'
 
+require 'extensions/roman_numeral'
+
 
 module GogglesCore
   class Engine < ::Rails::Engine

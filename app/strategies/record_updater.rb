@@ -159,8 +159,8 @@ class RecordUpdater
             hundreds:                     mir.hundreds,
             swimmer_id:                   mir.swimmer_id,
             team_id:                      mir.team_id,
-            season_id:                    mir.season.id,
-            federation_type_id:           mir.federation_type.id,
+            season_id:                    mir.season_id,
+            federation_type_id:           mir.federation_type_id,
             meeting_individual_result_id: mir.id,
             is_team_record:               must_be_a_team_record
           }

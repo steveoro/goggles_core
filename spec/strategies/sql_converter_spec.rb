@@ -4,13 +4,15 @@ require 'spec_helper'
 require 'sql_converter'
 
 
+class DummySqlConverterIncludee
+  include SqlConverter
+end
+
+
 describe SqlConverter, type: :strategy do
 
   subject do
-    class Dummy
-      include SqlConverter
-    end
-    Dummy.new
+    DummySqlConverterIncludee.new
   end
 
   let(:record)   { create( :training ) }
