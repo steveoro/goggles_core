@@ -102,23 +102,25 @@ describe RecordX4dDAO, type: :model do
         end
       end
 
-      describe "#get_record_swimmer," do
-        it "responds to #get_record_swimmer" do
-          expect( subject ).to respond_to( :get_record_swimmer )
-        end
-        it "returns an HTML link" do
-          expect( subject.get_record_swimmer ).to include( mir.swimmer.get_full_name )
-        end
-      end
+# FIXME [Steve] NO DECORATOR CALLS in CORE 5.0
+#      describe "#get_record_swimmer," do
+#        it "responds to #get_record_swimmer" do
+#          expect( subject ).to respond_to( :get_record_swimmer )
+#        end
+#        it "returns an HTML link" do
+#          expect( subject.get_record_swimmer ).to include( mir.swimmer.get_full_name )
+#        end
+#      end
 
-      describe "#get_record_meeting," do
-        it "responds to #get_record_swimmer" do
-          expect( subject ).to respond_to( :get_record_meeting )
-        end
-        it "returns an HTML link" do
-          expect( subject.get_record_meeting ).to include( mir.meeting.get_short_name )
-        end
-      end
+# FIXME [Steve] NO DECORATOR CALLS in CORE 5.0
+#      describe "#get_record_meeting," do
+#        it "responds to #get_record_swimmer" do
+#          expect( subject ).to respond_to( :get_record_meeting )
+#        end
+#        it "returns an HTML link" do
+#          expect( subject.get_record_meeting ).to include( mir.meeting.get_short_name )
+#        end
+#      end
     end
     #-- -------------------------------------------------------------------------
 
@@ -324,14 +326,16 @@ describe RecordX4dDAO, type: :model do
       subject.add_record( mir, category, pool, gender, event )
       expect( subject.get_record( pool, gender, event, category, :get_record_date ) ).to eq( subject.records[0].get_record_date )
     end
-    it "returns the record element swimmer if swimmer is requested" do
-      subject.add_record( mir, category, pool, gender, event )
-      expect( subject.get_record( pool, gender, event, category, :get_record_swimmer ) ).to eq( subject.records[0].get_record_swimmer )
-    end
-    it "returns the record element meeting if meeting is requested" do
-      subject.add_record( mir, category, pool, gender, event )
-      expect( subject.get_record( pool, gender, event, category, :get_record_meeting ) ).to eq( subject.records[0].get_record_meeting )
-    end
+# FIXME [Steve] NO DECORATOR CALLS in CORE 5.0
+#    it "returns the record element swimmer if swimmer is requested" do
+#      subject.add_record( mir, category, pool, gender, event )
+#      expect( subject.get_record( pool, gender, event, category, :get_record_swimmer ) ).to eq( subject.records[0].get_record_swimmer )
+#    end
+# FIXME [Steve] NO DECORATOR CALLS in CORE 5.0
+#    it "returns the record element meeting if meeting is requested" do
+#      subject.add_record( mir, category, pool, gender, event )
+#      expect( subject.get_record( pool, gender, event, category, :get_record_meeting ) ).to eq( subject.records[0].get_record_meeting )
+#    end
   end
 
   describe "#delete_record," do

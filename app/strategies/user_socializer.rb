@@ -96,8 +96,12 @@ class UserSocializer
         I18n.t('newsfeed.invite_body').gsub("{SWIMMER_NAME}", @user.get_full_name),
         false # (This is no 'temp/achievement' kind of feed, so we'll generate a newsletter mail until it is read)
       )
+# FIXME [Steve, 20160616] WRONG PLACE HERE TO INVOKE DIRECLTY THE MAILER!
+# For framework vers. 5.0 we aim at a better separation between the presentation
+# layer and the B-L layer. So no presentation-related mailer should be called here.
+# *** TO RESTORE PREVIOUS FUNCTIONALITY, ADD A MAILER CALL TO THE CALLEE OF THIS METHOD ***
       # Generate a nofify mail without delay:
-      NewsletterMailer.community_mail( swimming_buddy, news_feed ).deliver
+#      NewsletterMailer.community_mail( swimming_buddy, news_feed ).deliver
     end
   end
 

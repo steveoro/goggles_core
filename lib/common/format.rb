@@ -216,6 +216,7 @@ module Format
       begin
         return DateTime.parse( datetime_value.to_s.gsub(/\//,'-') ).strftime(str_format)
       rescue
+# DEBUG
         $stderr.print "*[E]* Format.any_datetime('#{datetime_value}'): invalid DateTime.parse() parameter specified!\r\n#{$!}\r\n"
         return DateTime.now.strftime(str_format)
       end

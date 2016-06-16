@@ -1,6 +1,12 @@
+# encoding: utf-8
+
+
 =begin
 
 = SwimmingPool model
+
+  - version:  5.00
+  - author:   Steve A., Leega
 
 =end
 class SwimmingPool < ActiveRecord::Base
@@ -65,10 +71,48 @@ class SwimmingPool < ActiveRecord::Base
 
   # Computes a verbose or formal description for the name associated with this data
   def get_verbose_name
-    SwimmingPoolDecorator.decorate(self).get_verbose_name
+    "'#{get_full_name}' #{get_pool_attributes}, #{get_full_address}"
+  end
+
+  # Retrieves just the city name
+  def get_city_full_name
+    city ? city.get_full_name : ''
+  end
+
+  # Retrieves the full address
+  def get_full_address
+    "#{address} #{get_city_full_name}"
+  end
+
+  # Computes a verbose or formal description for the name associated with this data
+  def get_city_and_attributes
+    "#{city_name} #{get_pool_attributes}"
   end
 
   alias_method :i18n_short, :get_full_name
   alias_method :i18n_description, :get_verbose_name
-  # ----------------------------------------------------------------------------
+
+
+  # Retrieves the Meeting session swimming pool length in meters, or 0 if any
+  # E.g.: 50
+  #
+  def get_pool_length_in_meters
+    pool_type ? pool_type.length_in_meters : 0
+  end
+
+  # Retrieves the Meeting session swimming pool lane number, or 0 if any
+  # E.g.: 8
+  #
+  def get_pool_lanes_number
+    lanes_number ? lanes_number : 0
+  end
+
+  # Compose the swimming pool attributes (lanes_number x length_in_meters)
+  # E.g.: "(8x50)"
+  #
+  def get_pool_attributes
+    pool_type ? "(#{self.get_pool_lanes_number}x#{self.get_pool_length_in_meters})" : '(?)'
+  end
+  #-- -------------------------------------------------------------------------
+  #++
 end

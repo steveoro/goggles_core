@@ -1,0 +1,11 @@
+*** <%= WEB_APP_NAME %> *** (Internal framework vers.: <%= WEB_FRAMEWORK_VERSION %>)
+
+Server: <%= @host %>
+
+== ABUSE REPORT ==
+
+from: <%= @user_sender.get_verbose_name if @user_sender %>
+for:  <%= @user_involved.get_verbose_name if @user_involved %>
+
+- '<%= @entity_name %>', ID <%= @entity_id %>
+- title: '<%= @entity_title %>'

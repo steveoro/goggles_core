@@ -1,0 +1,18 @@
+An error was caught while running <%= WEB_APP_NAME %>.
+Internal framework vers.: <%= WEB_FRAMEWORK_VERSION %>
+
+Server.........: <%= @host %>
+To admin(s)....: <%= @admin_names %>
+Current User...: <%= @user_name %>
+
+<%= @description %>
+
+Trace:
+
+----8<----
+<% @backtrace.each do |trace_row| %>
+<%= trace_row %>
+<% end %>
+----8<----
+
+Please check the log files.

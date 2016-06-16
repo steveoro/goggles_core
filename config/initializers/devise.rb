@@ -257,7 +257,10 @@ Devise.setup do |config|
   #     mount MyEngine, at: '/core'
   #
   # The router that invoked `devise_for`, in the example above, would be:
-  config.router_name = :goggles_core
+
+  # [Steve, 20160616] Since the Engine is "full" (and not "mountable") we don't
+  # need a proxy/router class in the middle. This should remain commented out:
+#  config.router_name = :goggles_core
   #
   # When using OmniAuth, Devise cannot automatically set OmniAuth path,
   # so you need to do it manually. For the users scope, it would be:

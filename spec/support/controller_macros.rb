@@ -51,20 +51,6 @@ module ControllerMacros
     @user = chosen_user || FactoryGirl.create(:user)
     sign_in @user
   end
-
-  # Logs-in a User instance created with FactoryGirl
-  # before each test of the group when invoked.
-  # This version uses the Capybara stack for feature tests.
-  #
-  # Assigns an @user User instance with the currently logged-in user.
-  #
-  def login_user_with_capybara( chosen_user = nil )
-    @user = chosen_user || FactoryGirl.create(:user)
-    visit new_user_session_path()
-    fill_in "user_email", with: @user.email
-    fill_in "user_password", with: @user.password
-    click_button I18n.t('devise.new_session_submit')
-  end
   #-- -------------------------------------------------------------------------
   #++
 

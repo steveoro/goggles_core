@@ -6,10 +6,11 @@ This _full_ engine should contain only:
 
 - models
 - strategies
-- decorators
 - other pattern objects (services, proxies, whatever...)
+- mailers
 - current DB structure
-- **NO** DB data
+- **NO** decorators or other presentation-centric classs
+- **NO** DB data or dumps
 - full specs for all the above
 - versioning info for the DB & core modules & overall framework release
 - only the basic Rake tasks for DB rebuild/backup using (externally supplied) data dumps

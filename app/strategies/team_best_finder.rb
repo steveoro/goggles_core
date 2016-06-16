@@ -27,7 +27,7 @@ class TeamBestFinder
     unless team.meeting_individual_results.count > 0
       raise ArgumentError.new("Team #{team.get_full_name} hasn't results")
     end
-    
+
     @team                = team
     @gender_types        = GenderType.individual_only
     @pool_types          = PoolType.only_for_meetings
@@ -67,10 +67,10 @@ class TeamBestFinder
     @distinct_categories[element] if element
   end
 
-  # Find out the categories to retrieve best for
-  # Only individual categories will be considered
-  # Different season types have different categories
-  # Merge them if different season type categories are mergable 
+  # Find out the categories for which to retrieve the "team best".
+  # Only individual categories will be considered.
+  # Different season types have different categories.
+  # It will merge them whenever different season type categories are mergable.
   #
   def retrieve_distinct_categories
     if @distinct_categories
@@ -80,11 +80,11 @@ class TeamBestFinder
       @team.season_types.each do |season_type|
         season_type.seasons.sort_season_by_begin_date.last.category_types.are_not_relays.sort_by_age.each do |category_type|
           categories << category_type if ! categories.rindex{ |e| e.code == category_type.code }
-        end 
+        end
       end
     end
     categories
-  end 
+  end
 
   # Check if a category has to be splitted
   # Some categories are undivided and has to be splitted for definition
@@ -98,7 +98,7 @@ class TeamBestFinder
       needs_split = true
     end
     needs_split
-  end 
+  end
 
   # Find out the category to split in the actual one
   # The category to split in is the one, not splitted
@@ -110,14 +110,14 @@ class TeamBestFinder
   def get_category_to_split_into( meeting_individual_result )
     category_type = meeting_individual_result.category_type
     if category_needs_split?( category_type )
-      # Find the swimmer age 
+      # Find the swimmer age
       swimmer_age = meeting_individual_result.get_swimmer_age
       element = @distinct_categories.rindex{ |e| e.code != category_type.code && e.age_begin <= swimmer_age && e.age_end >= swimmer_age && ! e.is_undivided }
     end
     element ? @distinct_categories[element] : find_category_by_code( category_type.code )
-  end 
+  end
 
-  # Verify if exists results for given gender, pool, event and category 
+  # Verify if exists results for given gender, pool, event and category
   # for the selected team.
   # Disqualified results not considered
   #
@@ -135,10 +135,10 @@ class TeamBestFinder
       team.meeting_individual_results.is_not_disqualified.for_gender_type(gender_type).for_pool_type(pool_type).for_event_type(event_type).for_category_code(category_code).sort_by_timing.first :
       nil
   end
-  
+
   # Cycle between distinct categories to find out team bests
   # Team bests found should be rearranged for category split&merge operation
-  # Returns a RecordX4dDAO with a RecordElement for each 
+  # Returns a RecordX4dDAO with a RecordElement for each
   # pool type, gender type, event type and distinct category
   # with at least one not disqualified result
   #
@@ -165,7 +165,7 @@ class TeamBestFinder
   # Category split definition
   # Check out categories which needs to be splitted
   # and associates with target category
-  # 
+  #
   # Return an array with categories to split
   #
   def get_categories_to_split
@@ -204,24 +204,24 @@ class TeamBestFinder
           if team_distinct_best.has_record_for?( pool_code, gender_code, event_code, target_category.code )
             if record.get_timing_instance < team_distinct_best.get_record_instance( pool_code, gender_code, event_code, target_category.code ).get_timing_instance
               # Update previous target record
-              team_distinct_best.delete_record( pool_code, gender_code, event_code, target_category.code ) 
-              team_distinct_best.add_record( record, target_category.code, pool_code, gender_code, event_code ) 
+              team_distinct_best.delete_record( pool_code, gender_code, event_code, target_category.code )
+              team_distinct_best.add_record( record, target_category.code, pool_code, gender_code, event_code )
             end
           else
             # Creates new record
-            team_distinct_best.add_record( record, target_category.code, pool_code, gender_code, event_code ) 
+            team_distinct_best.add_record( record, target_category.code, pool_code, gender_code, event_code )
           end
-          team_distinct_best.delete_record( pool_code, gender_code, event_code, record_to_split.get_category_type ) 
+          team_distinct_best.delete_record( pool_code, gender_code, event_code, record_to_split.get_category_type )
         end
       end
     end
-    
+
     team_distinct_best
   end
 
-  
+
   # TODO Consider to populate next 2 array during best scan to avoid multiple array scan
-  
+
   # Retrieve categories with records for given pool and gender types
   #
   def get_categories_with_records( pool_type, gender_type, team_distinct_best )

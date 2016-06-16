@@ -1,7 +1,9 @@
 require 'devise'
 require 'simple_token_authentication'
 require 'draper'
+require 'haml'
 require 'acts-as-taggable-on'
+require 'acts_as_votable'
 
 
 module GogglesCore

@@ -3,7 +3,6 @@ require 'rails_helper'
 
 RSpec.describe "Sessions", type: :routing do
   describe "routing" do
-    routes { Engine.routes }
 
     # User Log-in / Log-out:
     it "routes to /users/sign_in" do

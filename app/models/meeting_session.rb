@@ -5,7 +5,7 @@
 
 = MeetingSession
 
-  - version:  4.00.399
+  - version:  5.00
   - author:   Steve A., Leega
 
 =end
@@ -99,36 +99,6 @@ class MeetingSession < ActiveRecord::Base
   #
   def get_begin_time
     begin_time && Format.a_time(begin_time) != '00:00' ? Format.a_time(begin_time) : ''
-  end
-  #-- -------------------------------------------------------------------------
-  #++
-
-  # Retrieves the Meeting session swimming pool length in meters, or 0 if any
-  # E.g.: 50
-  #
-  def get_pool_length_in_meters
-    SwimmingPoolDecorator.decorate(swimming_pool).get_pool_length_in_meters
-  end
-
-  # Retrieves the Meeting session swimming pool lane number, or 0 if any
-  # E.g.: 8
-  #
-  def get_pool_lanes_number
-    SwimmingPoolDecorator.decorate(swimming_pool).get_pool_lanes_number
-  end
-
-  # Compose the swimming pool attributes (lanes_number x length_in_meters)
-  # E.g.: "(8x50)"
-  #
-  def get_pool_attributes
-    SwimmingPoolDecorator.decorate(swimming_pool).get_pool_attributes
-  end
-
-  # Retrieves the Meeting session swimming pool full description
-  # E.g.: "Comunale Reggio Emilia (8x50)"
-  #
-  def get_pool_full_description
-    SwimmingPoolDecorator.decorate(swimming_pool).get_full_address
   end
   #-- -------------------------------------------------------------------------
   #++

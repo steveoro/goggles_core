@@ -2,8 +2,6 @@ require 'rails_helper'
 
 
 RSpec.describe HomeController, type: :controller do
-  include ControllerMacros
-
 
   context "for an unlogged user," do
     describe "GET #index" do

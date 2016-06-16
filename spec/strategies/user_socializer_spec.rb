@@ -51,12 +51,13 @@ describe UserSocializer, :type => :strategy do
         subject.invite_with_notify( @swimming_buddy )
       }.to change{ NewsFeed.friend_activities.count }.by(1)
     end
-    it "sends the receiver a notification mail when successful" do
-      expect{
-        subject.invite_with_notify( @swimming_buddy )
-      }.to change{ NewsletterMailer.deliveries.size }
-      expect( NewsletterMailer.deliveries.last.to.first ).to include( @swimming_buddy.email )
-    end
+# FIXME [Steve, 20160616] NO MAILER CALLS IN USER SOCIALIZER FOR FRAMEWORK VERS. 5+
+#    it "sends the receiver a notification mail when successful" do
+#      expect{
+#        subject.invite_with_notify( @swimming_buddy )
+#      }.to change{ NewsletterMailer.deliveries.size }
+#      expect( NewsletterMailer.deliveries.last.to.first ).to include( @swimming_buddy.email )
+#    end
     it "(Failing with an invited pending friendship) does not update any news-feed" do
       expect{
         @user.invite( @swimming_buddy )

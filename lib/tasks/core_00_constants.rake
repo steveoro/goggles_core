@@ -57,7 +57,8 @@ PROGRESS_BAR_STEPS  = 10 unless defined? PROGRESS_BAR_STEPS
 #++
 
 # Display current versioning each time Rake gets executed:
-puts "\r\n- Rake scripts vers.  : #{SCRIPT_VERSION}"
+puts "\r\n*** Goggles Core base scripts vers.: #{SCRIPT_VERSION} ***"
+puts " "
 
 
 desc "Check and creates missing directories needed by the structure assumed by some of the maintenance tasks."
