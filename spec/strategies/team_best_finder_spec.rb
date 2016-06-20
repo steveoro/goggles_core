@@ -388,7 +388,7 @@ describe TeamBestFinder, type: :strategy do
     # Those specs should be very slow using real data
     # because the team considered can have many results
     # Uncomment the before all cycle instead of before each
-    # to use real data fo CSI Nuoto Ober Ferrari Team
+    # to use real data for CSI Nuoto Ober Ferrari Team
     before( :all ) do
       @new_tbf = TeamBestFinder.new( Team.find(1) )
       @x4d_records = @new_tbf.scan_for_distinct_bests
@@ -473,6 +473,7 @@ describe TeamBestFinder, type: :strategy do
     end
   end
   #-- -----------------------------------------------------------------------
+  #++
 
   context "without requested parameters" do
     it "raises an exception for wrong swimmer parameter" do

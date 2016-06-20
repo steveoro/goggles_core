@@ -29,7 +29,7 @@ module GogglesCore
     MINOR   = '001'
 
     # Current build version.
-    BUILD   = '20160615'
+    BUILD   = '20160620'
 
     # Full versioning for the current release (Framework + Core).
     FULL    = "#{MAJOR}.#{MINOR}.#{BUILD} (#{CORE} v. #{VERSION})"
