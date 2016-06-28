@@ -29,7 +29,6 @@ class Badge < ActiveRecord::Base
   has_one  :gender_type, through: :swimmer
 
   has_many :meeting_individual_results
-  has_many :swimmer_results
   has_many :passages
   has_many :goggle_cup_standards
   has_many :meetings,    through: :meeting_individual_results
