@@ -1,0 +1,301 @@
+it:
+  activerecord:
+    models:
+      user: Utente
+      article: Articolo
+      category_type: "Categoria"
+      city: "Citta'"
+      data_import_city: "(Temp.) Citta'"
+      event_type: "Specialità"
+      result_type: "Tipo Risultato"
+      season_type: "Tipo Stagione"
+      season: "Stagione"
+      data_import_season: "(Temp.) Stagione"
+      meeting: "Meeting"
+      data_import_meeting: "(Temp.) Meeting"
+      meeting_session: "Sessione Meeting"
+      data_import_meeting_session: "(Temp.) Sessione Meeting"
+      meeting_program: "Programma Meeting"
+      data_import_meeting_program: "(Temp.) Programma Meeting"
+      meeting_entry: "Iscriz. Meeting"
+      data_import_meeting_entry: "(Temp.) Iscriz. Meeting"
+      meeting_individual_result: "Ris. Individ. Meeting"
+      data_import_meeting_individual_result: "(Temp.) Ris. Ind. Meeting"
+      data_import_swimmer: "(Temp.) Nuotatore"
+      team: "Squadra"
+      data_import_team: "(Temp.) Squadra"
+      badge: "Cartellino"
+      data_import_badge: "(Temp.) Cartellino"
+      meeting_relay: "Staffetta Meeting"
+      data_import_meeting_relay: "(Temp.) Staffetta Meeting"
+      meeting_relay_result: "Risultato Staff. Meeting"
+      data_import_meeting_relay_result: "(Temp.) Risult. Staff. Meeting"
+      meeting_relay_swimmer: "Nuotatore Staff. Meeting"
+      data_import_meeting_team_score: "(Temp.) Punteggio Squadra"
+      meeting_team_score: "Punteggio Squadra"
+      relay_type: "Tipo Staff."
+      gender_type: "Sesso"
+      entry_time_type: "Tipo Tempo Accred."
+      heat_type: "Tipo Batteria"
+      edition_type: "Tipo Edizione"
+      federation_type: "Federazione"
+      timing_type: "Cronometraggio"
+      time_standard: "Tempo Base"
+      individual_score_computation_type: "Tipo Calcolo Punti Ind."
+      relay_score_computation_type: "Tipo Calcolo Punti Staff."
+      team_score_computation_type: "Tipo Calcolo Punti Squadra"
+      meeting_event: "Specialità Meeting"
+      day_part_type: "Parte giorno"
+      accreditation_time_type: "Tipo Tempo Accred."
+      pool_type: "Tipo vasca"
+      locker_cabinet_type: "Tipo Armadietti"
+      hair_dryer_type: "Tipo Asciugacapelli"
+      exercise: "Esercizio"
+      passage: "Passaggio"
+      score_computation_type: "Tipo Calcolo Punti"
+      season_type: "Tipo Stagione"
+      season: "Stagione"
+      shower_type: "Tipo Docce"
+      stroke_type: "Stile"
+      swimmer_level_type: "Liv. nuotatore"
+      swimmer: "Nuotatore"
+      swimming_pool: "Piscina"
+      swimming_pool_review: "Recensione Piscina"
+      training_row: "Dettaglio esercizio"
+      training: "Allenamento"
+      training_row: "Dettaglio allenamento"
+      training_step_type: "Parte allenam."
+      training_mode_type: "Regime allenam."
+      trainings: "Allenamenti"
+      user_training: "Allenamento Utente"
+      user_training_story: "Storia Allenamento"
+      goggle_cup: "Goggle cup"
+
+    attributes:
+      article:
+        user: Nome utente
+        title: Titolo
+        entry_text: Testo
+        is_sticky: "Perman.?"
+      badge:
+        number: "N.Cartellino"
+      city:
+        name: Nome
+        zip: CAP
+        area: Provincia
+        country: Nazione
+        country_code: "Cod.Nazione"
+      meeting:
+        entry_deadline: "Limite registraz."
+        has_warm_up_pool: "Con piscina di risc.?"
+        is_under_25_admitted: "Ammessi under-25?"
+        reference_phone: "Tel. di riferim."
+        reference_e_mail: "e-mail di riferim."
+        reference_name: "Nome referente"
+        has_invitation: "C'e' l'invito?"
+        has_start_list: "C'e' la starting-list?"
+        are_results_acquired: "Risult. acquisiti?"
+        max_individual_events: "Max gare/atleta"
+        configuration_file: "File di config."
+        code: "Codice"
+        edition: "Edizione"
+        header_date: "Data intest."
+        header_year: "Anno intest."
+        max_individual_events_per_session: "Max gare/atleta x sessione"
+        is_out_of_season: "Fuori stagione?"
+        tag: "Tag"
+        is_autofilled: "Auto-fill?"
+      meeting_session:
+        session_order: "Ord. sessione"
+        scheduled_date: "Data prevista"
+        warm_up_time: "Data riscaldam."
+        begin_time: "Data/Ora inizio"
+        is_autofilled: "Auto-fill?"
+      meeting_program:
+        event_order: "Ord. specialità"
+        begin_time: "Ora inizio"
+        minutes: "Min."
+        seconds: "Sec."
+        hundreds: "Cent."
+        is_autofilled: "Auto-fill?"
+      meeting_entry:
+        start_list_number: "Start-list #"
+        is_no_time: "No-time?"
+        lane_number: "Corsia #"
+        heat_number: "Batt. #"
+        heat_arrival_order: "Arrivo batt."
+      meeting_individual_result:
+        athlete_name: "Nome Atleta"
+        team_name: "Nome Squadra"
+        athlete_badge_number: "Cartellino #"
+        team_badge_number: "Cod. squadra"
+        year_of_birth: "Data nascita"
+        rank: "Posizione"
+        is_play_off: "Finale?"
+        is_out_of_race: "Fuori gara?"
+        is_disqualified: "Squalif.?"
+        standard_points: "Punt. std."
+        meeting_points: "Punt. meeting"
+        timing: "Tempo"
+        minutes: "Min."
+        seconds: "Sec."
+        hundreds: "Cent."
+      meeting_relay_result:
+        rank: "Posizione"
+        is_play_off: "Finale?"
+        is_out_of_race: "Fuori gara?"
+        is_disqualified: "Squalif.?"
+        standard_points: "Punt. std."
+        meeting_points: "Punt. meeting"
+        timing: "Tempo"
+        minutes: "Min."
+        seconds: "Sec."
+        hundreds: "Cent."
+      meeting_relay_swimmer:
+        relay_order: "Ordine"
+      meeting_team_score:
+        rank: "Posizione"
+        total_individual_points: "Punti individ."
+        total_relay_points: "Punti Staff."
+      season:
+        begin_date: "Inizia il"
+        end_date: "Finisce il"
+        must_use_time_standards: "Usa tempi std?"
+        max_points: "Max punti"
+      swimmer:
+        last_name: "Cognome"
+        first_name: "Nome"
+        complete_name: "Nome completo"
+        year_of_birth: "Data nascita"
+        phone_mobile: "Cellulare"
+        phone_number: "Telefono"
+        e_mail: "e-mail"
+        nickname: "Nickname"
+        gender_type: "Sesso"
+        associated_user_id: "Utente associato"
+      swimming_pool:
+        nick_name: "Nome in codice"
+        lanes_number: "N. corsie"
+        phone_number: "Tel."
+        fax_number: "Fax"
+        e_mail: "e-mail"
+        contact_name: "Nome contatto"
+        has_multiple_pools: "Con più vasche?"
+        has_open_area: "Con distesa all'aperto?"
+        has_bar: "Con bar?"
+        has_restaurant_service: "Con ristorante?"
+        has_gym_area: "Con palestra?"
+        has_children_area: "Con area bimbi?"
+      swimming_pool_review:
+        title: "Titolo"
+      team:
+        name: Nome
+        address: "Indirizzo"
+        phone_mobile: "Cellulare"
+        phone_number: "Telefono"
+        e_mail: "e-mail"
+        fax_number: "FAX"
+        contact_name: "Contatto"
+        badge_number: "N.Cartellino"
+        zip: CAP
+      training:
+        title: "Titolo"
+        description: "Descrizione"
+        swimmer_level_type: "Livello del nuotatore"
+        min_swimmer_level: "Livello min. nuotatore"
+        max_swimmer_level: "Livello max. nuotatore"
+        user: "Un allenamento di"
+      training_rows:
+        part_order: "Parte"
+        times: "Ripetiz.(x)"
+        exercise: "Esercizio"
+        distance: "Metri"
+        start_and_rest: "Scatto+Riposo"
+        pause: "Pausa"
+      user:
+        created_on: Creato il
+        email: "e-mail"
+        updated_on: Ultima modifica
+        name: Nome utente
+        hashed_pwd: Password codificata
+        password_confirmation: Conferma password
+        description: "Descrizione / nome completo"
+        first_name: "Nome"
+        last_name: "Cognome"
+        year_of_birth: "Anno di nascita"
+        enable_blog: "Blogger?"
+        enable_edit: "Puo' modificare?"
+        enable_delete: "Puo' eliminare?"
+        enable_setup: Abilita set-up
+        authorization_level: Liv. autorizz.
+        use_email_data_updates_notify: "Notifica e-mail su dati gare aggiornati"
+        use_email_achievements_notify: "Notifica e-mail per 'achievements' interni"
+        use_email_newsletter_notify: "Newsletter su aggiornamenti sito"
+        use_email_community_notify: "Notifica e-mail su novita' della Community"
+
+    errors:
+      unable_to_retrieve_row_data: "Non ho trovato il record richiesto."
+      messages:
+        record_invalid: "Il record processato ha fallito le validazioni."
+      models:
+        article:
+          attributes:
+            user:
+              invalid: "non valido"
+              blank: "non puo' essere vuoto (va scelto dall'elenco)"
+            title:
+              too_long: "troppo lungo (max. 80 caratteri)"
+              too_short: troppo corto
+              blank: "non puo' essere vuoto (minimo 1 carattere)"
+            entry_text:
+              blank: "non puo' essere vuoto (minimo 1 carattere)"
+        category_type:
+          attributes:
+            code:
+              already_exists: "esiste gia'"
+        city:
+          attributes:
+            name:
+              already_exists: "esiste gia'"
+        data_import_city:
+          attributes:
+            name:
+              already_exists: "esiste gia'"
+        meeting:
+          attributes:
+            header_year:
+              invalid: "non valido"
+              blank: "non puo' essere vuoto"
+        training:
+          attributes:
+            title:
+              blank: "non puo' essere vuoto"
+            description:
+              blank: "non puo' essere vuoto"
+            min_swimmer_level:
+              blank: "non puo' essere vuoto"
+            max_swimmer_level:
+              blank: "non puo' essere vuoto"
+        training_row:
+          attributes:
+            exercise_id:
+              blank: "non puo' essere vuota"
+            description:
+              blank: "non puo' essere vuota"
+        user_training_story:
+          attributes:
+            swimming_pool:
+              invalid: "fallisce le validazioni o possiede attributi che non sono validi"
+            swam_date:
+              blank: "non puo' essere vuota"
+        user_training_row:
+          attributes:
+            exercise_id:
+              blank: "non puo' essere vuota"
+            description:
+              blank: "non puo' essere vuota"
+        user:
+          attributes:
+            current_password:
+              blank: "non puo' essere vuota"
+              too_short: "e' troppo corta"

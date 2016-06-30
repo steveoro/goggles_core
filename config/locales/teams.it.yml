@@ -1,0 +1,12 @@
+it:
+  team:
+    unable_to_retrieve_row_data: "Errore durante il reperimento dei dati pre-esistenti sulle Squadre! (tab: 'teams')"
+    title: "Squadre"
+    search_title: "Cerca Squadra"
+    affiliations: "Affiliazioni"
+    all_races: "Tutte le gare della Squadra"
+    team_records: "Record di Squadra"
+    team_records_load_tooltip: "Mostra tutti i record detenuti da questa Squadra nelle affiliazioni registrate"
+    meeting_presence: "Partecipazioni a gare"
+    season_presence: "Partecipazione a campionati"
+    visit_home_page: "Visita la home page della Squadra"

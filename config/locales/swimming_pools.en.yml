@@ -1,0 +1,27 @@
+en:
+  swimming_pool:
+    pools: "Swimming-pools"
+    index_title: "Search Swimming-pools"
+    details: "Details"
+    reviews: "Reviews"
+    maps_link_tooltip: "Click on the map icon to go to the Google Maps site, where you can also retrieve navigation directions from your preferred position"
+
+  swimming_pool_review:
+    navigation_title: "Swimming-pools reviews Archive"
+    title_index: "Swimming-pools Reviews"
+    title_show: "Swimming-pool Review"
+    regarding: "regarding"
+    add_new_review: "Add a new Review!"
+    create_successful: "Review created."
+    update_successful: "Review updated."
+    delete_successful: "Review deletion successful."
+    no_reviews: "(...It looks like there's nothing here yet...)"
+    report_as_abuse: "Report"
+    are_you_sure_to_report_as_abuse: "By reporting this review as 'abuse' you assume the responsibility of saying that this user also used unappropriate or offensive language. Are you sure you want to proceed with the report?"
+    thanks_for_the_report: "Thank you for your report. An e-mail has been sent to the System Administrators with all the required details."
+    upvote_tooltip: "Click this to cast your upvote for this review!"
+    downvote_tooltip: "Click this to cast your downvote for this review!"
+    thanks_for_the_vote: "Thanks for your vote!"
+    review_by: "Review by"
+    upvotes: "Upvotes"
+    downvotes: "Downvotes"

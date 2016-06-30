@@ -1,0 +1,27 @@
+it:
+  swimming_pool:
+    pools: "Piscine"
+    index_title: "Ricerca Piscine"
+    details: "Dettagli"
+    reviews: "Recensioni"
+    maps_link_tooltip: "Clicca sull'icona della mappa per andare al sito di Google Maps, dove e' anche possibile ottenere indicazioni di navigazione a partire da un indirizzo di tua scelta"
+
+  swimming_pool_review:
+    navigation_title: "Archivio Recensioni piscine"
+    title_index: "Recensioni Piscine"
+    title_show: "Recensione Piscina"
+    regarding: "a riguardo di"
+    add_new_review: "Fai una nuova Recensione!"
+    create_successful: "Recensione creata."
+    update_successful: "Recensione aggiornata."
+    delete_successful: "Recensione eliminata con successo."
+    no_reviews: "(...Sembra che qui non sia stato recensito ancora niente...)"
+    report_as_abuse: "Segnala"
+    are_you_sure_to_report_as_abuse: "Segnalando questa recensione come 'abuso' ti assumi la responsabilita' di dire anche che questo utente e' stato scorretto o ha usato linguaggio scurrile o offensivo. Siamo sicuri di voler continuare?"
+    thanks_for_the_report: "Grazie per la tua segnalazione. Un'e-mail e' stata mandata agli Amministratori di Sistema con tutti i dettagli necessari."
+    upvote_tooltip: "Dai un 'upvote' (voto positivo) a questa recensione!"
+    downvote_tooltip: "Dai un 'downvote' (voto negativo) a questa recensione!"
+    thanks_for_the_vote: "Grazie per il tuo voto!"
+    review_by: "Recensione di"
+    upvotes: "Upvotes"
+    downvotes: "Downvotes"

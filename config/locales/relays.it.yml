@@ -1,0 +1,6 @@
+it:
+  relay_types:
+    relay: "Staffetta"
+    mixed_relay: "Mistaffetta"
+    relay_short: "Staff."
+    mixed_relay_short: "Mistaff."

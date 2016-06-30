@@ -1,0 +1,12 @@
+en:
+  team:
+    unable_to_retrieve_row_data: "Error during the retrieval of the pre-existing data from table 'teams'!"
+    title: "Teams"
+    search_title: "Search Teams"
+    affiliations: "Affiliations"
+    all_races: "All races for the Team"
+    team_records: "Team records"
+    team_records_load_tooltip: "Show all the records detained by this Team for the registered affiliations"
+    meeting_presence: "Meeting presence"
+    season_presence: "Season presence"
+    visit_home_page: "Visit the Team's home page"

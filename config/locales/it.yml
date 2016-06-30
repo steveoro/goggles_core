@@ -1,0 +1,166 @@
+it:
+  yes: "Sì"
+  no: "No"
+  ok: 'OK'
+  rank: "Posizione"
+  average: "Media"
+  best: "Migliore"
+  worst: "Peggiore"
+  total: "Totale"
+  score: "Punteggio"
+  scores: "Punteggi"
+  points: "Punti"
+  timing: "Tempo"
+  rnk: "Pos"
+  avg: "Med"
+  max: "Max"
+  min: "Min"
+  tot: "Tot"
+  number_short: 'N.'
+  meeting: 'Gara'
+  meetings: 'Gare'
+  event: 'Specialità'
+  events: 'Specialità'
+  medals: 'Medaglie'
+  ranking: 'Classifica'
+  rankings: 'Classifiche'
+  ranked: 'Classificato'
+  result: 'Risultato'
+  results: 'Risultati'
+  qualified: 'Qualificato'
+  qualifieds: 'Qualificati'
+  team: 'Squadra'
+  teams: 'Squadre'
+  swimmer: 'Nuotatore'
+  swimmers: 'Nuotatori'
+
+  general:
+    team: 'Squadra'
+    teams: 'Squadre'
+    swimmer: 'Nuotatore'
+    swimmers: 'Nuotatori'
+    meeting: 'Gara'
+    meetings: 'Gare'
+
+  agex_action:
+    main: Principale
+    home: "Home"
+    home_tooltip: "Vai alla pagina principale"
+    login: "Accedi"
+    logout: "Esci / Rientra"
+    logout_tooltip: "Esci (effettua il Log-out richiedendo un nuovo log-in)"
+    about: "Informazioni"
+    about_tooltip: "Vai alla pagina Informazioni"
+    contact_us: "Contattaci"
+    contact_us_tooltip: "Vai alla pagina 'Contattaci'"
+    news_log: "Archivio news"
+    news_log_tooltip: "Vai alla pagina 'Archivio news'"
+    data_filtered_from: "Dati filtrati a partire dal"
+    data_filtered_to: "al"
+
+  combobox_generic_tooltip: "Scrivi direttamente quello che vuoi cercare o premi il pulsante per mostrare tutte le voci."
+  combobox_3char_tooltip: "Scrivi almeno i primi 3 caratteri..."
+  something_went_wrong: "Qualcosa e' andato storto, controllare il file di log."
+  requested_entity_missing: "Un entita' fondamentale non e' stata ancora creata"
+  transaction_cancelled: "Transazione annullata."
+  missing_request_parameter: "Azione non valida: parametro della richiesta mancante!"
+  invalid_action_request: "Azione richiesta non valida!"
+  no_result_to_show: "Non ci sono risultati da mostrare per i parametri richiesti!"
+  no_detail_to_process: "Non ci sono dettagli da elaborare per questo elemento!"
+  file_not_created_for_some_reason: "Il file non è stato creato per qualche motivo."
+  feature_wip_disclaimer: "Per favore, ricorda che questa 'feature' del sito è disponibile solo come 'PREVIEW' (beta) della funzionalità originariamente prevista.\r\nE' tutt'ora in corso il suo sviluppo e cambierà sostanzialmente nel giro dei prossimi mesi!\r\nSe sei un 'goggler' registrato ti avviseremo con un e-mail quando il suo aggiornamento sarà completo."
+
+  main: Principale
+  home: Home
+  top_of_page: Inizio pagina
+  who_are_you: "Hey tu! Chi sei?"
+  login: Accedi
+  logout: Disconnetti
+  remember_me: "Ricordati di me"
+  sign_up: "Registrati!"
+  about: Informazioni
+  contact_us: Contattaci
+  questions_about: Domande riguardanti
+  sections: 'Sezioni:'
+  setup: 'Setup:'
+  user: Utente
+  user_name: Nome utente
+  login_to_proceed: "Per continuare e' necessario fare Log-in."
+  login_to_view_this_data: "Esegui il log-in per poter vedere queste informazioni!"
+  login_tooltip: Accedi
+  password: Password
+  user_not_authenticated: 'Utente non registrato'
+  invalid_user: "Utente / Password non corretti!"
+  access_denied: "Accesso negato."
+  disconnected: Disconnesso
+  welcome: 'Benvenuto !'
+  hi: Ciao
+  or: oppure
+  user_created: Utente creato con successo.
+  user_deleted: Utente eliminato con successo.
+  req_functionality_under_development: "La funzionalita' richiesta non e' attualmente disponibile perche' e' stata sottoposta a revisione o ci sono lavori di manutenzione in corso."
+  or_you_tried_something_wrong: "...Oppure hai provato a fare qualcosa di TREMENDAMENTE SBAGLIATO! (Vergognati. ;-) )"
+  coming_soon: "Coming soon!!"
+  copy_of: "Copia di"
+  language: "Lingua"
+  none: "Nessuna"
+  unknown: "Sconosciuto"
+  not_present: "Non presente"
+  not_computable: "Non calcolabile"
+
+  no_new_articles: Nessun nuovo articolo
+  select_file: "Scegli un file"
+  commit_rows: "Concludi"
+  commit_rows_tooltip: "Conclude l'importazione dati, salvando tutte le righe elencate nella loro destinazione"
+  existing_data_import_sessions: "Sessioni di importazione dati esistenti o in progresso"
+  last_phase: "Ultima fase"
+  data_rows: "Righe dati"
+  data_format: "Formato"
+  select_create_session: "Seleziona / Crea sessione"
+  review_edit_data: "Rivedi / Modifica dati"
+  continue_on_phase2: "Continua con Fase 2"
+  result_log: "Log risultato"
+  please_select: "-- Scegli --"
+  please_wait: "Attendi..."
+  drag_and_drop_to_sort_rows: "Clicca negli spazi fra le celle e trascina le righe per riordinarle."
+  invalid_token: "Token non valido!"
+  log_in_successful: "Log-in eseguito con successo."
+  log_out_successful: "Log-out eseguito con successo."
+  api_request_must_be_json: "La richiesta deve essere JSON."
+  api_request_must_contain_user_and_password: "La richiesta deve contenere email & password utente."
+
+  id: Id
+  name: Nome
+  description: Descrizione
+  tot: Tot.
+  sum: 'Somma'
+  mean: 'Media'
+  notes: Note
+  tag: Tag
+  created_at: Creato il
+  updated_at: Modificato il
+  created_on: Creato il
+  updated_on: Modificato il
+  created_slash_updated_at: "Creato/Aggiorn. il"
+  created_slash_updated_on: "Creato/Aggiorn. il"
+  details_for: Dettagli per
+  refresh: Aggiorna
+  refresh_tooltip: "Ricarica i dati per la pagina corrente"
+  click_on_the_grid: "(Clicca sulla griglia per contare)"
+  tot_rows: "Righe tot."
+  selected: Selezionate
+  grand_total: Totale Complessivo
+  subtotals: Subtotali
+  sums: Somme
+  costs: Costi
+  error: Errore
+  undefined: "(non definito)"
+  in_conflict: "In conflitto"
+
+  meters: "metri"
+  meters_short: "mt."
+  athletes: "atleti"
+  pool_type_des: "Vasca da {POOL_LENGTH} metri"
+  females: "Femmine"
+  males: "Maschi"
+  relays: "Staffette"

@@ -1,0 +1,297 @@
+en:
+  activerecord:
+    models:
+      user: User
+      article: Article
+      category_type: "Category Type"
+      city: "City"
+      data_import_city: "(Temp.) City"
+      event_type: "Event Type"
+      result_type: "Result Type"
+      season_type: "Season Type"
+      season: "Season"
+      data_import_season: "(Temp.) Season"
+      meeting: "Meeting"
+      data_import_meeting: "(Temp.) Meeting"
+      meeting_session: "Meeting Session"
+      data_import_meeting_session: "(Temp.) Meeting Session"
+      meeting_program: "Meeting Program"
+      data_import_meeting_program: "(Temp.) Meeting Program"
+      meeting_entry: "Meeting Entry"
+      data_import_meeting_entry: "(Temp.) Meeting Entry"
+      meeting_individual_result: "Meeting Individ. Result"
+      data_import_meeting_individual_result: "(Temp.) Meeting Ind. Result"
+      swimmer: "Swimmer"
+      data_import_swimmer: "(Temp.) Swimmer"
+      swimming_pool: "Swimming Pool"
+      team: "Team"
+      data_import_team: "(Temp.) Team"
+      badge: "Badge"
+      data_import_badge: "(Temp.) Badge"
+      meeting_relay: "Meeting Relay"
+      data_import_meeting_relay: "(Temp.) Meeting Relay"
+      meeting_relay_result: "Meeting Relay Result"
+      data_import_meeting_relay_result: "(Temp.) Meeting Relay Result"
+      meeting_relay_swimmer: "Meeting Relay Swimmer"
+      data_import_meeting_team_score: "(Temp.) Meeting Team Score"
+      meeting_team_score: "Meeting Team Score"
+      relay_type: "Relay"
+      gender_type: "Gender"
+      stroke_type: "Stroke"
+      entry_time_type: "Entry-Time Type"
+      heat_type: "Heat Type"
+      edition_type: "Edition Type"
+      federation_type: "Federation Type"
+      timing_type: "Timing Type"
+      time_standard: "Base Time"
+      score_computation_type: "Scoring Type"
+      individual_score_computation_type: "Individ. Scoring Type"
+      relay_score_computation_type: "Relay Scoring Type"
+      team_score_computation_type: "Team Scoring Type"
+      meeting_event: "Meeting Event"
+      day_part_type: "Day Part"
+      accreditation_time_type: "Accred. Time Type"
+      pool_type: "Pool Type"
+      locker_cabinet_type: "Locker Cabinet Type"
+      shower_type: "Shower Type"
+      hair_dryer_type: "Hair-drier Type"
+      exercise: "Exercise"
+      exercise_row: "Exercise detail"
+      training: "Training"
+      training_row: "Training detail"
+      swimmer_level_type: "Swimmer level"
+      training_step_type: "Training step"
+      training_mode_type: "Training mode"
+      trainings: "Trainings"
+      user_training: "User Training"
+      user_training_story: "User Training Story"
+      goggle_cup: "Goggle cup"
+
+    attributes:
+      user:
+        created_on: Created on
+        updated_on: Updated on
+        email: "e-mail"
+        name: "User name"
+        hashed_pwd: Hashed password
+        password_confirmation: Confirm Password
+        description: "Description/Full name"
+        first_name: "First name"
+        last_name: "Last name"
+        year_of_birth: "Year of birth"
+        enable_blog: "Blogger?"
+        enable_edit: "Can edit?"
+        enable_delete: "Can delete?"
+        enable_setup: Enable set-up
+        authorization_level: "Author.lev."
+      article:
+        user: User
+        title: "Title"
+        entry_text: "Entry text"
+        is_sticky: "Sticky?"
+      city:
+        name: Name
+        zip: ZIP
+        area: Area
+        country: Country
+        country_code: Country Code
+      season:
+        begin_date: "Begins on"
+        end_date: "Ends on"
+        must_use_time_standards: "Must use time std?"
+        max_points: "Max points"
+      meeting:
+        entry_deadline: "Entry deadline"
+        has_warm_up_pool: "Warm-up pool?"
+        is_under_25_admitted: "Under-25 allowed?"
+        reference_phone: "Ref. phone #"
+        reference_e_mail: "Ref. e-mail"
+        reference_name: "Ref. contact"
+        has_invitation: "Invitation?"
+        has_start_list: "Starting list?"
+        are_results_acquired: "Results acquired?"
+        max_individual_events: "Max individ. events"
+        configuration_file: "Config. file"
+        code: "Code"
+        edition: "Edition"
+        header_date: "Header date"
+        header_year: "Header year"
+        max_individual_events_per_session: "Max events/athlete x session"
+        is_out_of_season: "Out of Season?"
+        tag: "Tag"
+        is_autofilled: "Auto-filled?"
+      meeting_session:
+        session_order: "Session ord."
+        scheduled_date: "Scheduled date"
+        warm_up_time: "Warm-up at"
+        begin_time: "Begins at"
+        is_autofilled: "Auto-filled?"
+      meeting_program:
+        event_order: "Event ord."
+        begin_time: "Begins at"
+        minutes: "Min."
+        seconds: "Sec."
+        hundreds: "Hnd."
+        is_autofilled: "Auto-filled?"
+      meeting_entry:
+        start_list_number: "Start-list #"
+        is_no_time: "No-time?"
+        lane_number: "Lane #"
+        heat_number: "Heat #"
+        heat_arrival_order: "Heat arrival"
+      meeting_individual_result:
+        athlete_name: "Athlete"
+        team_name: "Team"
+        athlete_badge_number: "Athlete badge #"
+        team_badge_number: "Team badge #"
+        year_of_birth: "Birth date"
+        rank: "Rank"
+        is_play_off: "Finals?"
+        is_out_of_race: "Out of race?"
+        is_disqualified: "Disqualified?"
+        standard_points: "Std. points"
+        meeting_points: "Meeting points"
+        timing: "Time"
+        minutes: "Min."
+        seconds: "Sec."
+        hundreds: "Hnd."
+      swimmer:
+        last_name: "Last name"
+        first_name: "First name"
+        complete_name: "Complete name"
+        year_of_birth: "Birth date"
+        phone_mobile: "Mobile #"
+        phone_number: "Phone #"
+        e_mail: "e-mail"
+        nickname: "Nickname"
+        gender_type: "Gender"
+        associated_user_id: "Associated user"
+      team:
+        name: Name
+        address: "Address"
+        phone_mobile: "Mobile #"
+        phone_number: "Phone #"
+        e_mail: "e-mail"
+        fax_number: "FAX #"
+        contact_name: "Contact name"
+        badge_number: "Badge #"
+        zip: ZIP
+      badge:
+        number: "Badge #"
+      meeting_relay_result:
+        rank: "Rank"
+        is_play_off: "Finals?"
+        is_out_of_race: "Out of race?"
+        is_disqualified: "Disqualified?"
+        standard_points: "Std. points"
+        meeting_points: "Meeting points"
+        timing: "Time"
+        minutes: "Min."
+        seconds: "Sec."
+        hundreds: "Hnd."
+      meeting_relay_swimmer:
+        relay_order: "Order"
+      meeting_team_score:
+        rank: "Rank"
+        total_individual_points: "Individ. Score"
+        total_relay_points: "Relay Score"
+      swimming_pool:
+        nick_name: "Codename"
+        lanes_number: "Lanes #"
+        phone_number: "Phone #"
+        fax_number: "FAX #"
+        e_mail: "e-mail"
+        contact_name: "Contact name"
+        has_multiple_pools: "With multiple pools?"
+        has_open_area: "With outside open area?"
+        has_bar: "With bar?"
+        has_restaurant_service: "With restaurant?"
+        has_gym_area: "With gym?"
+        has_children_area: "With children area?"
+      training:
+        title: "Title"
+        description: "Description"
+        swimmer_level_type: "Swimmer level type"
+        min_swimmer_level: "Min swimmer level"
+        max_swimmer_level: "Max swimmer level"
+        user: "A training from"
+      training_rows:
+        part_order: "Part"
+        times: "Times (x)"
+        distance: "Metres"
+        exercise: "Exercise"
+        start_and_rest: "Start+Rest"
+        pause: "Pause"
+      user:
+        created_on: Created on
+        email: "e-mail"
+        updated_on: Updated on
+        name: User name
+        hashed_pwd: Hashed Password
+        first_name: "Name"
+        last_name: "Last name"
+        year_of_birth: "Year of birth"
+        enable_blog: "Blogger?"
+        enable_edit: "Can edit?"
+        enable_delete: "Can delete?"
+        enable_setup: Enable set-up
+        authorization_level: Auth. Lev.
+        use_email_data_updates_notify: "Meeting data update e-mail notify"
+        use_email_achievements_notify: "Achievements update e-mail notify"
+        use_email_newsletter_notify: "Site update newsletter"
+        use_email_community_notify: "Community e-mail newsletter"
+
+    errors:
+      unable_to_retrieve_row_data: "Unable to retrieve the requested record."
+      messages:
+        record_invalid: "The record has failed the validation process."
+      models:
+        category_type:
+          attributes:
+            code:
+              already_exists: "already exists"
+        city:
+          attributes:
+            name:
+              already_exists: "already exists"
+        data_import_city:
+          attributes:
+            name:
+              already_exists: "already exists"
+        meeting:
+          attributes:
+            header_year:
+              blank: "can't be blank"
+        training:
+          attributes:
+            title:
+              blank: "can't be blank"
+            description:
+              blank: "can't be blank"
+            min_swimmer_level:
+              blank: "can't be blank"
+            max_swimmer_level:
+              blank: "can't be blank"
+        training_row:
+          attributes:
+            exercise_id:
+              blank: "can't be blank"
+            description:
+              blank: "can't be blank"
+        user_training_story:
+          attributes:
+            swimming_pool:
+              invalid: "fails validations or has invalid attributes"
+            swam_date:
+              blank: "can't be blank"
+        user_training_row:
+          attributes:
+            exercise_id:
+              blank: "can't be blank"
+            description:
+              blank: "can't be blank"
+        user:
+          attributes:
+            password:
+              blank: "can't be blank"
+              too_short: "is too short"

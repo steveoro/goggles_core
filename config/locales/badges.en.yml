@@ -1,0 +1,4 @@
+en:
+  badge:
+    unable_to_retrieve_row_data: "Error during the retrieval of the pre-existing data from table 'badges'!"
+    short: "Badge"

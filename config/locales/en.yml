@@ -1,0 +1,166 @@
+en:
+  yes: "Yes"
+  no: "No"
+  ok: 'OK'
+  rank: "Rank"
+  average: "Average"
+  best: "Best"
+  worst: "Worst"
+  total: "Totale"
+  score: "Score"
+  scores: "Scores"
+  points: "Points"
+  timing: "Timing"
+  rnk: "Rnk"
+  avg: "Avg"
+  max: "Max"
+  min: "Min"
+  tot: "Tot"
+  number_short: "N."
+  meeting: 'Meeting'
+  meetings: 'Meetings'
+  event: 'Event'
+  events: 'Events'
+  medals: Medals
+  ranking: "Ranking"
+  rankings: "Rankings"
+  ranked: 'Ranked'
+  result: "Result"
+  results: 'Results'
+  qualified: 'Qualified'
+  qualifieds: 'Qualifies'
+  swimmer: 'Swimmer'
+  swimmers: 'Swimmers'
+  team: 'Team'
+  teams: 'Teams'
+
+  general:
+    swimmer: 'Swimmer'
+    swimmers: 'Swimmers'
+    team: 'Team'
+    teams: 'Teams'
+    meeting: 'Meeting'
+    meetings: 'Meetings'
+
+  agex_action:
+    main: Main
+    home: "Home"
+    home_tooltip: "Go to the Home page"
+    login: "Login"
+    logout: "Exit / Re-enter"
+    logout_tooltip: "Exit (Executes a new log-in)"
+    about: "About"
+    about_tooltip: "Go to the About page"
+    contact_us: "Contact Us"
+    contact_us_tooltip: "Go to the 'Contact us' page"
+    news_log: "News log"
+    news_log_tooltip: "Go to the 'News' archive"
+    data_filtered_from: "Data filtered from"
+    data_filtered_to: "to"
+
+  combobox_generic_tooltip: "Write directly what you want to search or press the button to show all the items."
+  combobox_3char_tooltip: "Write at least the first 3 characters..."
+  something_went_wrong: "Something went wrong, check the log file."
+  requested_entity_missing: "A requested entity has not been created yet"
+  transaction_cancelled: "Transaction cancelled."
+  missing_request_parameter: "Invalid Action: missing a request parameter!"
+  invalid_action_request: "Invalid Action requested!"
+  no_detail_to_process: "There aren't any details to process for this element!"
+  no_result_to_show: "There aren't any results to show with the specified parameters!"
+  file_not_created_for_some_reason: "The file hasn't been created as expected."
+  feature_wip_disclaimer: "Please, be advised that this feature is currently available as a PREVIEW (beta) of the actual functionality planned.\r\nIt's still under heavy development and will change substantially during the next few months!\r\nIf you are a registered 'goggler' we will notify you with an e-mail when the upgrade is complete."
+
+  main: Main
+  home: Home
+  top_of_page: Top of page
+  who_are_you: "Hey You! Who are you?"
+  login: Login
+  logout: Logout
+  remember_me: "Remember me"
+  sign_up: "Sign-up!"
+  about: About
+  contact_us: Contact us
+  questions_about: Questions about
+  sections: 'Sections:'
+  setup: 'Setup:'
+  user: User
+  user_name: User name
+  password: Password
+  login_to_proceed: To proceed, a log-in is required.
+  login_to_view_this_data: "Log-in to view this information!"
+  login_tooltip: Log in
+  user_not_authenticated: 'User Not Yet Authenticated'
+  invalid_user: "Invalid User / Password combination!"
+  access_denied: "Access denied."
+  disconnected: Disconnected
+  welcome: 'Welcome !'
+  hi: Hi
+  or: or
+  user_created: User successfully created.
+  user_deleted: User successfully deleted.
+  req_functionality_under_development: "The requested functionality is not currently available due to revisions or maintenance."
+  or_you_tried_something_wrong: "...Or you just tried something that is awfully WRONG! (Be ashamed of yourself. ;-) )"
+  coming_soon: "Coming soon!!"
+  copy_of: "Copy of"
+  language: "Language"
+  none: "None"
+  unknown: "Unknown"
+  not_present: "Not present"
+  not_computable: "Not computable"
+
+  no_new_articles: No new articles
+  select_file: "Select a file"
+  commit_rows: "Commit"
+  commit_rows_tooltip: "Commit all enlisted data rows to their import destination"
+  existing_data_import_sessions: "Existing or in-progress data-import sessions"
+  last_phase: "Last phase"
+  data_rows: "Data rows"
+  data_format: "Data format"
+  select_create_session: "Select / Create session"
+  review_edit_data: "Review / Edit data"
+  continue_on_phase2: "Continue with Phase 2"
+  result_log: "Result Log"
+  please_select: "-- Select --"
+  please_wait: "Please wait..."
+  drag_and_drop_to_sort_rows: "Click on the space between the cells and drag around to (re-)sort the rows."
+  invalid_token: "Invalid token!"
+  log_in_successful: "Login successful."
+  log_out_successful: "Logout successful."
+  api_request_must_be_json: "The request must be JSON."
+  api_request_must_contain_user_and_password: "The request MUST contain the user email and password."
+
+  id: Id
+  name: Name
+  description: Description
+  tot: Tot.
+  sum: Sum
+  mean: 'Aver.'
+  notes: Notes
+  tag: Tag
+  created_at: Created at
+  updated_at: Updated at
+  created_on: Created on
+  updated_on: Updated on
+  created_slash_updated_at: "Created/Updated at"
+  created_slash_updated_on: "Created/Updated on"
+  details_for: Details for
+  refresh: Refresh
+  refresh_tooltip: "Reload data for the current page"
+  click_on_the_grid: "(Click on the grid to count)"
+  tot_rows: "Tot. rows"
+  selected: Selected
+  grand_total: Grand total
+  subtotals: Subtotals
+  sums: Sums
+  costs: Costs
+  error: Error
+  undefined: "(undefined)"
+  in_conflict: "In conflict"
+
+  meters: "meters"
+  meters_short: "mt."
+  athletes: "athletes"
+  pool_type_des: "{POOL_LENGTH} meters pool"
+  females: "Females"
+  males: "Males"
+  relays: "Relays"

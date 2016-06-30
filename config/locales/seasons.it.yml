@@ -1,0 +1,3 @@
+it:
+  season:
+    unable_to_retrieve_row_data: "Errore durante il reperimento dei dati pre-esistenti sulle Stagioni'! (tab: 'seasons')"

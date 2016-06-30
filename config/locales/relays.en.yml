@@ -1,0 +1,6 @@
+en:
+  relay_types:
+    relay: "Relay"
+    mixed_relay: "Mixed Relay"
+    relay_short: "Rel."
+    mixed_relay_short: "Mix.Rel."
