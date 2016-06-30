@@ -6,6 +6,7 @@ require 'acts-as-taggable-on'
 require 'acts_as_votable'
 
 require 'extensions/roman_numeral'
+require 'framework/application_constants'
 
 
 module GogglesCore
