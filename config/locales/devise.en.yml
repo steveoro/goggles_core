@@ -2,10 +2,25 @@
 
 en:
   devise:
+    email_label: "E-Mail"
+    email_placeholder: "E-MAIL"
+    password_label: "Password"
+    password_placeholder: "PASSWORD"
+    password_hint: "%{min_length} characters minimum"
+    retype_password_label: "Password confirmation"
+    retype_password_placeholder: "RE-TYPE PASSWORD"
+    shared_links:
+      log_in: "Log in"
+      sign_up: "Sign up"
+      forgot_password: "Forgot your password?"
+      resend_confirmation: "Didn't receive confirmation instructions?"
+      resend_unlock: "Didn't receive unlock instructions?"
+      sign_in_with: "Sign in with"
     confirmations:
       confirmed: "Your email address has been successfully confirmed."
       send_instructions: "You will receive an email with instructions for how to confirm your email address in a few minutes."
       send_paranoid_instructions: "If your email address exists in our database, you will receive an email with instructions for how to confirm your email address in a few minutes."
+      resend_confirmation_label: "Resend confirmation instructions"
     failure:
       already_authenticated: "You are already signed in."
       inactive: "Your account is not activated yet."
@@ -29,11 +44,15 @@ en:
       failure: "Could not authenticate you from %{kind} because \"%{reason}\"."
       success: "Successfully authenticated from %{kind} account."
     passwords:
+      change_password: "Change your password"
+      forgot_password: "Forgot your password?"
       no_token: "You can't access this page without coming from a password reset email. If you do come from a password reset email, please make sure you used the full URL provided."
       send_instructions: "You will receive an email with instructions on how to reset your password in a few minutes."
       send_paranoid_instructions: "If your email address exists in our database, you will receive a password recovery link at your email address in a few minutes."
       updated: "Your password has been changed successfully. You are now signed in."
       updated_not_active: "Your password has been changed successfully."
+      submit_change_label: "Change my password"
+      send_reset_label: "Send me reset password instructions"
     registrations:
       destroyed: "Bye! Your account has been successfully cancelled. We hope to see you again soon."
       signed_up: "Welcome! You have signed up successfully."
@@ -52,6 +71,7 @@ en:
       unlocked: "Your account has been unlocked successfully. Please sign in to continue."
   errors:
     messages:
+      account_already_registered: "This account has already been registered. Please Log-in instead of sign-up!"
       already_confirmed: "was already confirmed, please try signing in"
       confirmation_period_expired: "needs to be confirmed within %{period}, please request a new one"
       expired: "has expired, please request a new one"
