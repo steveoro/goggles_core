@@ -160,16 +160,16 @@ class SeasonCreator
   # If header_year is in the format aaaa/aaaa increments both years
   # else increments the numerical corrisponding value
   #
-  def self.next_header_year( header_year )
+  def self.next_header_year( header_year, increment = 1 )
     if header_year.length == 9 
       separator = header_year[4]
       years = header_year.split( separator )
-      years[0] = (years[0].to_i + 1 ).to_s
-      years[1] = (years[1].to_i + 1 ).to_s
+      years[0] = (years[0].to_i + increment ).to_s
+      years[1] = (years[1].to_i + increment ).to_s
       header_year = years.join( separator )
     else
       if header_year.to_i > 0
-        header_year = ( header_year.to_i + 1 ).to_s
+        header_year = ( header_year.to_i + increment ).to_s
       end
     end
     header_year    
@@ -178,10 +178,10 @@ class SeasonCreator
   # Increments date of an year and tune it to the equivalent day of week
   # subtracting some days
   #
-  def self.next_year_eq_day( date )
+  def self.next_year_eq_day( date, increment = 1 )
     if date
       original_day = date.wday
-      date = date.next_year
+      date = date.next_year( increment ) 
       until ( date.wday == original_day ) do 
         date = date.prev_day 
       end
