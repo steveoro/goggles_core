@@ -37,7 +37,7 @@ class SeasonCreator
     @new_id       = older_season.id + 10
     @begin_date   = older_season.begin_date.next_year
     @end_date     = older_season.end_date.next_year
-    @header_year  = next_header_year( older_season.header_year ) 
+    @header_year  = SeasonCreator.next_header_year( older_season.header_year ) 
     @edition      = older_season.edition + 1 
 
     if Season.exists?( @new_id )
@@ -111,9 +111,9 @@ class SeasonCreator
       newer_meeting = Meeting.new( meeting.attributes.reject{ |e| ['lock_version','created_at','updated_at'].include?(e) } )
       newer_meeting.id                   = meeting.id + 1000
       newer_meeting.season_id            = @new_id
-      newer_meeting.header_date          = self.next_year_eq_day( newer_meeting.header_date ) 
-      newer_meeting.entry_deadline       = self.next_year_eq_day( newer_meeting.entry_deadline )
-      newer_meeting.header_year          = self.next_header_year( newer_meeting.header_year )
+      newer_meeting.header_date          = SeasonCreator.next_year_eq_day( newer_meeting.header_date ) 
+      newer_meeting.entry_deadline       = SeasonCreator.next_year_eq_day( newer_meeting.entry_deadline )
+      newer_meeting.header_year          = SeasonCreator.next_header_year( newer_meeting.header_year )
       newer_meeting.edition              = self.edition + 1 if self.edition
       newer_meeting.are_results_acquired = false
       newer_meeting.is_autofilled        = true
@@ -129,7 +129,7 @@ class SeasonCreator
         meeting.meeting_sessions.each do |meeting_session|
           newer_session = MeetingSession.new( meeting_session.attributes.reject{ |e| ['lock_version','created_at','updated_at'].include?(e) } )
           newer_session.meeting_id     = newer_meeting.id
-          newer_session.scheduled_date = self.next_year_eq_day( newer_session.scheduled_date ) if newer_session.scheduled_date > Date.new()
+          newer_session.scheduled_date = SeasonCreator.next_year_eq_day( newer_session.scheduled_date ) if newer_session.scheduled_date > Date.new()
           newer_session.is_autofilled  = true
           if newer_session.save
             sql_diff_text_log << to_sql_insert( newer_session, false, "\r\n" ) # no additional comment
@@ -160,7 +160,7 @@ class SeasonCreator
   # If header_year is in the format aaaa/aaaa increments both years
   # else increments the numerical corrisponding value
   #
-  def next_header_year( header_year )
+  def self.next_header_year( header_year )
     if header_year.length == 9 
       separator = header_year[4]
       years = header_year.split( separator )
@@ -178,7 +178,7 @@ class SeasonCreator
   # Increments date of an year and tune it to the equivalent day of week
   # subtracting some days
   #
-  def next_year_eq_day( date )
+  def self.next_year_eq_day( date )
     if date
       original_day = date.wday
       date = date.next_year

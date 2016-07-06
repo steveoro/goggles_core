@@ -79,7 +79,7 @@ class Meeting < ActiveRecord::Base
                   :max_individual_events_per_session, :is_out_of_season,
                   :edition_type_id, :timing_type_id, :individual_score_computation_type_id,
                   :relay_score_computation_type_id, :team_score_computation_type_id,
-                  :meeting_score_computation_type_id,
+                  :meeting_score_computation_type_id, :is_confirmed,
                   :invitation
 
 
