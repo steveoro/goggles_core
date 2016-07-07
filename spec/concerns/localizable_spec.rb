@@ -1,5 +1,7 @@
 require 'spec_helper'
 
+require 'achievement'
+
 # Surely this spec is actually not really required anymore, since there are already
 # plenty of Modules that have their own specs testing the inclusion and the inner workings
 # of this concern.

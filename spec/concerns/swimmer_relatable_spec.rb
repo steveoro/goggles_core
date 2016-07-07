@@ -1,5 +1,7 @@
 require 'spec_helper'
 
+require 'meeting_entry'
+
 
 # Dummy class holder for the fields used by the module
 class DummySwimmerRelatableIncludee < MeetingEntry

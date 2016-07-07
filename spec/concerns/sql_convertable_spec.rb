@@ -1,5 +1,7 @@
 require 'spec_helper'
 
+require 'goggle_cup'
+
 
 # Dummy class holder for the fields used by the module
 # Doesn't metter the model class used as base
@@ -11,7 +13,7 @@ end
 
 describe DummySqlConvertableIncludee do
   subject = DummySqlConvertableIncludee.new
-  
+
   # Describes the requistes of the including class
   # and the outcome of the module inclusion.
   #
@@ -22,13 +24,13 @@ describe DummySqlConvertableIncludee do
         :reset_sql_diff_text_log,
         :create_sql_diff_header,
         :create_sql_diff_footer,
-        :add_sql_diff_comment        
+        :add_sql_diff_comment
       ]
     )
   end
   #-- -------------------------------------------------------------------------
   #++
-  
+
   describe "#reset_sql_diff_text_log," do
     it "resets @sql_diff_text_log" do
       subject.reset_sql_diff_text_log
@@ -39,7 +41,7 @@ describe DummySqlConvertableIncludee do
   #++
 
   describe "#create_sql_diff_header," do
-    context "without parameters" do 
+    context "without parameters" do
       it "adds begin script comment to @sql_diff_text_log" do
         subject.reset_sql_diff_text_log
         subject.create_sql_diff_header
@@ -47,7 +49,7 @@ describe DummySqlConvertableIncludee do
       end
     end
 
-    context "with parameters" do 
+    context "with parameters" do
       it "adds also a line containing given text to @sql_diff_text_log" do
         fix_text = FFaker::Lorem.sentence
         subject.reset_sql_diff_text_log
@@ -61,7 +63,7 @@ describe DummySqlConvertableIncludee do
   #++
 
   describe "#create_sql_diff_footer," do
-    context "without parameters" do 
+    context "without parameters" do
       it "adds script ended comment to @sql_diff_text_log" do
         subject.reset_sql_diff_text_log
         subject.create_sql_diff_footer
@@ -69,7 +71,7 @@ describe DummySqlConvertableIncludee do
       end
     end
 
-    context "with parameters" do 
+    context "with parameters" do
       it "adds also a line containing given text to @sql_diff_text_log" do
         fix_text = FFaker::Lorem.sentence
         subject.reset_sql_diff_text_log
@@ -83,7 +85,7 @@ describe DummySqlConvertableIncludee do
   #++
 
   describe "#add_sql_diff_comment," do
-    context "without parameters" do 
+    context "without parameters" do
       it "adds at least 1 comment line to @sql_diff_text_log" do
         subject.reset_sql_diff_text_log
         subject.add_sql_diff_comment
@@ -91,7 +93,7 @@ describe DummySqlConvertableIncludee do
       end
     end
 
-    context "with parameters" do 
+    context "with parameters" do
       it "adds a line containing given text to @sql_diff_text_log" do
         fix_text = FFaker::Lorem.sentence
         subject.reset_sql_diff_text_log
