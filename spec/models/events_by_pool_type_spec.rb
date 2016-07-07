@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe EventsByPoolType, :type => :model do
   #subject { create(:events_by_pool_type) }

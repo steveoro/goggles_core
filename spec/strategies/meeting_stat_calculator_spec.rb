@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 
 shared_examples_for "(existance of meeting stats relation of swimmers)" do |method_name_array|

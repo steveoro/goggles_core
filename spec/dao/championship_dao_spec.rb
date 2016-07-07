@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-require 'spec_helper'
+require 'rails_helper'
 
 describe ChampionshipDAO, type: :model do
   let(:team)          { create(:team) }

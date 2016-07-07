@@ -5,13 +5,13 @@
 # policy.
 #
 # @author   Steve A.
-# @version  4.00.450
+# @version  5.00
 #
 class UserTrainingAccessibility
 
   # == Params:
   # An instance of UserTraining, the current User instance and the flag indicating if the Admin is logged-in or not.
-  def initialize( current_user, user_training, is_admin_logged_in )
+  def initialize( current_user, user_training, is_admin_logged_in = false )
     @current_user = current_user
     @user_training = user_training
     @is_admin_logged_in = is_admin_logged_in
@@ -26,9 +26,9 @@ class UserTrainingAccessibility
     !!(
       @user_training &&
       @user_training.id &&
-      ( 
+      (
         @is_admin_logged_in ||
-        ( @current_user && (@user_training.user_id == @current_user.id) ) 
+        ( @current_user && (@user_training.user_id == @current_user.id) )
       )
     )
   end
@@ -38,11 +38,11 @@ class UserTrainingAccessibility
   #
   def is_visible()
     !!(
-      @user_training && 
+      @user_training &&
       @user_training.id &&
-      ( 
+      (
         @is_admin_logged_in ||
-        ( @current_user && @user_training.visible_to_user(@current_user) ) 
+        ( @current_user && @user_training.visible_to_user(@current_user) )
       )
     )
   end

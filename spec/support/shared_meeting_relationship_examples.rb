@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 
 shared_examples_for "a valid instance having a valid Season, Meeting and Team (+Affiliation)" do

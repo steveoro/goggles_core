@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 
 shared_examples_for "MeetingAccountable" do |team_id, tot_male_results, tot_female_results, tot_team_results, tot_male_entries, tot_female_entries, tot_team_entries|

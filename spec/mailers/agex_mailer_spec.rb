@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 require 'ffaker'
 
 require 'framework/application_constants'

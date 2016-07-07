@@ -5,13 +5,13 @@
 # policy.
 #
 # @author   Steve A.
-# @version  4.00.450
+# @version  5.00
 #
 class TrainingAccessibility
 
   # == Params:
   # An instance of Training, the current User instance and the flag indicating if the Admin is logged-in or not.
-  def initialize( current_user, training, is_admin_logged_in )
+  def initialize( current_user, training, is_admin_logged_in = false )
     @current_user = current_user
     @training = training
     @is_admin_logged_in = is_admin_logged_in
@@ -24,10 +24,10 @@ class TrainingAccessibility
   #
   def is_owned()
     !!(
-      @training && 
+      @training &&
       @training.id &&
-      ( 
-        @is_admin_logged_in || ( @current_user && (@training.user_id == @current_user.id) ) 
+      (
+        @is_admin_logged_in || ( @current_user && (@training.user_id == @current_user.id) )
       )
     )
   end

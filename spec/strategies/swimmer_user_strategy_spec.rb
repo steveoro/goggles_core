@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 
 shared_examples_for "(an action allowed only to different users)" do |method_name_array, parameter, description|

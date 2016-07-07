@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 require 'date'
 
 describe Season, :type => :model do

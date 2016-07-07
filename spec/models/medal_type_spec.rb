@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe MedalType, :type => :model do
   # Assumes presence in seeds

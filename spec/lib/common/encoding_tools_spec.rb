@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-require 'spec_helper'
+require 'rails_helper'
 
 # [Steve, 20140925] we must use a relative path for sake of CI server happyness:
 require_relative '../../../lib/common/encoding_tools'

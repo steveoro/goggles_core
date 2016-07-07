@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-require 'spec_helper'
+require 'rails_helper'
 
 describe BalancedIndividualRankingDAO, type: :model do
   let(:season)  { Season.find(141) }
