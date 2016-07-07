@@ -132,7 +132,7 @@ describe EnhanceIndividualRankingDAO, type: :model do
     end
 
     describe "#get_total_points" do
-      it "is the sum of event_points, prestation points and enhance_points" do
+      it "is the sum of event_points, performance points and enhance_points" do
         expect( subject.get_total_points ).to eq( subject.enhance_points + subject.performance_points + subject.event_points ) 
       end
     end

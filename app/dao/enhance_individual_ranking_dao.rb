@@ -10,8 +10,8 @@
  DAO class containing the structure for enhance individual ranking rendering.
  Enhance individual ranking (EIR) is a method adopted by csi 2015-2016 season
  in which individual scores are calculated considering placement, 
- prestation value, personal enhancement and special bonuses. 
- prestation value are calculated in relation of best season type results
+ performance value, personal enhancement and special bonuses. 
+ performance value are calculated in relation of best season type results
  Personal enhancement are referred to past seasons personal bests.
  Special bonuses are obtained with multiple medals placement in the same meeting
  or partecipation at particularly "hard" event types.  
@@ -61,14 +61,14 @@ class EnhanceIndividualRankingDAO
     #-- -------------------------------------------------------------------------
     #++
     
-    # Calculate the prestation points for the event
-    # The prestation points are calculated considering the time swam related to
+    # Calculate the performance points for the event
+    # The performance points are calculated considering the time swam related to
     # the season type best performance (for event, category, gender and pool type)
     # 
     # best_performance : time_swam = 100 : performance_points
-    # If time swam is the same prestation points are 100
-    # If time swam is better prestation points are greater than 100
-    # If time swam is worst prestation points are less than 100
+    # If time swam is the same performance points are 100
+    # If time swam is better performance points are greater than 100
+    # If time swam is worst performance points are less than 100
     #
     def compute_performance_points( standard_points, decimals )
       score_calculator = ScoreCalculator.new( @season, @gender_type, @category_type, @pool_type, @event_type )
@@ -101,7 +101,7 @@ class EnhanceIndividualRankingDAO
     #++
 
     # Get the total points for the event
-    # Totale point is the sum of event, prestation value and enhanchement 
+    # Totale point is the sum of event, performance value and enhanchement 
     def get_total_points
       @event_points + @performance_points + @enhance_points
     end
