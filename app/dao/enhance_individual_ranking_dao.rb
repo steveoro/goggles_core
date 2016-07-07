@@ -28,7 +28,7 @@ class EnhanceIndividualRankingDAO
     # These can be edited later on:
     attr_accessor :event_date, :event_type, 
                   :rank, :event_points, 
-                  :prestation_points, :enhance_points,
+                  :performance_points, :enhance_points,
                   :season, :pool_type, :event_type, :gender_type, :category_type, :swimmer
     #-- -------------------------------------------------------------------------
     #++
@@ -54,7 +54,7 @@ class EnhanceIndividualRankingDAO
 
       # TODO store on DB standard points score definition (100 with no decimals)
       # Should use calculation rules definition
-      @prestation_points = compute_prestation_points( 100, 0 )
+      @performance_points = compute_performance_points( 100, 0 )
 
       @enhance_points    = compute_enhance_points
     end
@@ -65,12 +65,12 @@ class EnhanceIndividualRankingDAO
     # The prestation points are calculated considering the time swam related to
     # the season type best performance (for event, category, gender and pool type)
     # 
-    # best_performance : time_swam = 100 : prestation_points
+    # best_performance : time_swam = 100 : performance_points
     # If time swam is the same prestation points are 100
     # If time swam is better prestation points are greater than 100
     # If time swam is worst prestation points are less than 100
     #
-    def compute_prestation_points( standard_points, decimals )
+    def compute_performance_points( standard_points, decimals )
       score_calculator = ScoreCalculator.new( @season, @gender_type, @category_type, @pool_type, @event_type )
       score_calculator.get_custom_score( @meeting_individual_result.get_timing_instance, standard_points, decimals )
     end
@@ -103,7 +103,7 @@ class EnhanceIndividualRankingDAO
     # Get the total points for the event
     # Totale point is the sum of event, prestation value and enhanchement 
     def get_total_points
-      @event_points + @prestation_points + @enhance_points
+      @event_points + @performance_points + @enhance_points
     end
     #-- -------------------------------------------------------------------------
     #++
@@ -116,7 +116,7 @@ class EnhanceIndividualRankingDAO
     # These can be edited later on:
     attr_accessor :meeting, :header_date, 
                   :event_bonus_points, :medal_bonus_points,
-                  :event_points, :prestation_points, :enhance_points, 
+                  :event_points, :performance_points, :enhance_points, 
                   :event_results 
     #-- -------------------------------------------------------------------------
     #++
@@ -133,7 +133,7 @@ class EnhanceIndividualRankingDAO
       @event_bonus_points = 0
       @medal_bonus_points = 0
       @event_points       = 0
-      @prestation_points  = 0
+      @performance_points  = 0
       @enhance_points     = 0
       
       @event_results = []
@@ -171,7 +171,7 @@ class EnhanceIndividualRankingDAO
   
         # Find out best event points
         @event_points      = @event_results.first.event_points
-        @prestation_points = @event_results.first.prestation_points
+        @performance_points = @event_results.first.performance_points
         @enhance_points    = @event_results.first.enhance_points
       end
     end
@@ -180,14 +180,14 @@ class EnhanceIndividualRankingDAO
     
     # Get the total points for the meeting
     def get_total_points
-      @event_points + @prestation_points + @enhance_points + @event_bonus_points + @medal_bonus_points
+      @event_points + @performance_points + @enhance_points + @event_bonus_points + @medal_bonus_points
     end
     #-- -------------------------------------------------------------------------
     #++
 
     # Get the meetings results detail description for the swimmer
     def get_meeting_scores_detail
-      "#{@event_points}+#{@prestation_points}+#{@enhance_points}+#{@event_bonus_points}+#{@medal_bonus_points}"
+      "#{@event_points}+#{@performance_points}+#{@enhance_points}+#{@event_bonus_points}+#{@medal_bonus_points}"
     end
     #-- -------------------------------------------------------------------------
     #++

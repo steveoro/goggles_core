@@ -18,7 +18,7 @@ describe EnhanceIndividualRankingDAO, type: :model do
 
     it_behaves_like( "(the existance of a method)", [
       :event_date, :event_type, :rank, 
-      :event_points, :enhance_points, :prestation_points,
+      :event_points, :enhance_points, :performance_points,
       :season, :pool_type, :event_type, :gender_type, :category_type, :swimmer,
       :get_total_points,
     ] )
@@ -49,22 +49,22 @@ describe EnhanceIndividualRankingDAO, type: :model do
         expect( subject.enhance_points ).to be <= 10 
       end
     end
-    describe "#prestation_points" do
+    describe "#performance_points" do
       it "is a value between 0 and 150" do
-        expect( subject.prestation_points ).to be >= 0 
-        expect( subject.prestation_points ).to be <= 150 
+        expect( subject.performance_points ).to be >= 0 
+        expect( subject.performance_points ).to be <= 150 
       end
     end
 
     # Uses the score calculator class assumed correctly spec'd
-    describe "#compute_prestation_points" do
+    describe "#compute_performance_points" do
       it "returns a number >= 0" do
-        expect( subject.compute_prestation_points( 100, 0 ) ).to be >= 0 
+        expect( subject.compute_performance_points( 100, 0 ) ).to be >= 0 
       end
       it "returns a number proportinale to the limit" do
-        val_100 = subject.compute_prestation_points( 100, 0 ) 
-        val_500 = subject.compute_prestation_points( 500, 0 ) 
-        val_1000 = subject.compute_prestation_points( 1000, 0 ) 
+        val_100 = subject.compute_performance_points( 100, 0 ) 
+        val_500 = subject.compute_performance_points( 500, 0 ) 
+        val_1000 = subject.compute_performance_points( 1000, 0 ) 
         expect( val_100 ).to be < val_500 
         expect( val_500 ).to be < val_1000 
         expect( ( val_100 * 10 ) + 10 ).to be >= val_1000 
@@ -133,7 +133,7 @@ describe EnhanceIndividualRankingDAO, type: :model do
 
     describe "#get_total_points" do
       it "is the sum of event_points, prestation points and enhance_points" do
-        expect( subject.get_total_points ).to eq( subject.enhance_points + subject.prestation_points + subject.event_points ) 
+        expect( subject.get_total_points ).to eq( subject.enhance_points + subject.performance_points + subject.event_points ) 
       end
     end
   end
@@ -146,7 +146,7 @@ describe EnhanceIndividualRankingDAO, type: :model do
     subject { EnhanceIndividualRankingDAO::EIRMeetingScoreDAO.new( meeting, mirs ) }
     
     it_behaves_like( "(the existance of a method)", [
-      :header_date, :event_bonus_points, :medal_bonus_points, :event_points, :prestation_points, :enhance_points, :event_results, :get_total_points
+      :header_date, :event_bonus_points, :medal_bonus_points, :event_points, :performance_points, :enhance_points, :event_results, :get_total_points
     ] )
 
     describe "#header_date" do
@@ -172,10 +172,10 @@ describe EnhanceIndividualRankingDAO, type: :model do
         expect( subject.event_points ).to be <= 100 
       end
     end
-    describe "#prestation_points" do
+    describe "#performance_points" do
       it "is a value between 0 and 100" do
-        expect( subject.prestation_points ).to be >= 0 
-        expect( subject.prestation_points ).to be <= 100 
+        expect( subject.performance_points ).to be >= 0 
+        expect( subject.performance_points ).to be <= 100 
       end
     end
     describe "#enhance_points" do
@@ -199,8 +199,8 @@ describe EnhanceIndividualRankingDAO, type: :model do
         expect( subject.get_total_points ).to be >= 0 
         expect( subject.get_total_points ).to be <= 278 
       end
-      it "is the sum of event_points, prestation_points, enhance_points, ranking_points, medal_bonus and hard event_bonus" do
-        expect( subject.get_total_points ).to eq( subject.event_points + subject.prestation_points + subject.enhance_points + subject.event_bonus_points + subject.medal_bonus_points ) 
+      it "is the sum of event_points, performance_points, enhance_points, ranking_points, medal_bonus and hard event_bonus" do
+        expect( subject.get_total_points ).to eq( subject.event_points + subject.performance_points + subject.enhance_points + subject.event_bonus_points + subject.medal_bonus_points ) 
       end
     end
 
