@@ -13,7 +13,7 @@ describe UserTrainingStory, :type => :model do
 
     context "[implemented instance methods]" do
       it_behaves_like( "(the existance of a method returning strings)",
-        [ 
+        [
           :get_user_name
         ]
       )

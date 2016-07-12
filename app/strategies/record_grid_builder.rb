@@ -25,7 +25,7 @@ class RecordGridBuilder
     @collector  = record_collector
     @record_type_code = record_type_code
 
-    @pool_types = PoolType.where{ code != '33' }   # (uses Squeel DSL syntax)
+    @pool_types = PoolType.where( ["code <> ?", '33'] )
     # This will create an Hash with all the tuples made by (pool_type.id => event_type lists),
     # with each event list built using the distribution of events found inside EventsByPoolType:
 
@@ -34,7 +34,7 @@ class RecordGridBuilder
       event_by_pool_type_ids = EventsByPoolType
         .where( pool_type_id: pool_type.id )
         .includes( :event_type )
-        .where{ event_types.is_a_relay == false }
+        .where( ["event_types.is_a_relay = ?", false] )
         .select( :event_type_id )
       @event_types_by_pool[ pool_type.id ] = EventType.where( id: event_by_pool_type_ids )
     end
@@ -55,9 +55,13 @@ class RecordGridBuilder
       @collector.get_collected_season_types.values
     end
     # Get the list of Ids from all the most recent Season(s), by available SeasonType (uses Squeel DSL syntax):
-    season_ids = season_types.map{ |st| Season.where{ season_type_id == st.id }.max.id }
+    season_ids = season_types.map do |st|
+      Season.where( ["season_type_id = ?", st.id] ).max.id
+    end
     # Get the list of available CategoryType(s) filtered by Season#id (uses Squeel DSL syntax):
-    category_types = CategoryType.is_valid.are_not_relays.is_divided.sort_by_age.where{ season_id.in season_ids }
+    category_types = CategoryType.is_valid.are_not_relays
+      .is_divided.sort_by_age
+      .where( ["season_id IN (?)", season_ids] )
     uniq_codes = category_types.map{ |c| c.code }.uniq
     # Filter out duplicate categories by code:
     @category_types = []
@@ -73,7 +77,7 @@ class RecordGridBuilder
     @gender_types = if @collector.swimmer
       [ @collector.swimmer.gender_type ]
     else
-      GenderType.where{ code != 'X' } # (uses Squeel DSL syntax)
+      GenderType.where( ["code <> ?", 'X'] )
     end
   end
   #-- --------------------------------------------------------------------------

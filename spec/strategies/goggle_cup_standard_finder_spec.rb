@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'wrappers/timing'
 
 
-describe GoggleCupStandardFinder, type: :strategy do
+describe GoggleCupStandardFinder, type: :strategy, tag: :slow do
 
   context "with requested parameters" do
     # Leega
