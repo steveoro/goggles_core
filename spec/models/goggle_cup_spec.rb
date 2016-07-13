@@ -4,14 +4,14 @@ require 'rails_helper'
 describe GoggleCup, :type => :model do
   # Force Ober cup 2014 for CSI Ober Ferrari
   let( :fix_goggle_cup )   { GoggleCup.find(8) }
-          
+
   describe "[a non-valid instance]" do
-    it_behaves_like( "(missing required values)", [ 
-      :description, 
-      :season_year, 
+    it_behaves_like( "(missing required values)", [
+      :description,
+      :season_year,
       :max_points,
       :max_performance
-    ])    
+    ])
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -24,15 +24,15 @@ describe GoggleCup, :type => :model do
     it "is a valid istance" do
       expect( subject ).to be_valid
     end
-    
+
     # Validated (owned foreign-key) relations:
     it_behaves_like( "(belongs_to required models)", [
        :team
     ])
-    
+
     # Test the existance of all the required has_many / has_one relationships:
     it_behaves_like( "(the existance of a method returning a collection of some kind of instances)",
-      [ 
+      [
         :goggle_cup_definitions,
         :goggle_cup_standards,
         :seasons,
@@ -41,11 +41,14 @@ describe GoggleCup, :type => :model do
       ],
       ActiveRecord::Base
     )
-        
+
     # Filtering scopes:
     it_behaves_like( "(the existance of a class method)", [
       :sort_goggle_cup_by_user,
-      :sort_goggle_cup_by_team
+      :sort_goggle_cup_by_team,
+      :is_closed_now,
+      :is_current,
+      :for_team
     ])
 
     context "[general methods]" do
@@ -53,18 +56,18 @@ describe GoggleCup, :type => :model do
         :get_full_name,
         :get_verbose_name
       ])
-      
+
       it_behaves_like( "(the existance of a method returning a date)", [
         :get_begin_date,
         :get_end_date
       ])
-      
+
       it_behaves_like( "(the existance of a method returning a boolean value)", [
         :is_closed_at?,
         :is_current_at?,
         :has_results?
       ])
-      
+
       it_behaves_like( "(the existance of a method returning an array)", [
         :calculate_goggle_cup_rank
       ])
@@ -72,7 +75,24 @@ describe GoggleCup, :type => :model do
     # ---------------------------------------------------------------------------
     #++
 
-    describe "#has_team_goggle_cup_for_season class method" do
+    describe "self.for_team" do
+      context "for a Team with existing GoggleCups," do
+        it "returns a list of GoggleCups" do
+          team = Team.find( 1 ) # This surely has some GoggleCup defined
+          expect( subject.class.for_team(team) ).to all be_a( GoggleCup )
+        end
+      end
+      context "for a Team with NO GoggleCups," do
+        it "returns an empty list" do
+          team = create( :team )
+          expect( subject.class.for_team(team) ).to be_empty
+        end
+      end
+    end
+    # ---------------------------------------------------------------------------
+    #++
+
+    describe "self.has_team_goggle_cup_for_season" do
       it "responds to #has_team_goggle_cup_for_season" do
         expect( subject.class ).to respond_to( :has_team_goggle_cup_for_season? )
       end
@@ -101,7 +121,7 @@ describe GoggleCup, :type => :model do
     end
     # ---------------------------------------------------------------------------
     #++
-    
+
     describe "#get_begin_date" do
       xit "returns the earliest begin date of seasons in goggle_cup_definition" do
         found_date = subject.get_begin_date
@@ -110,9 +130,9 @@ describe GoggleCup, :type => :model do
         end
       end
       xit "returns the expected begin date" do
-        fix_today = Date.today 
-        fix_tomorrow = fix_today + 1 
-        fix_date = fix_today - ((rand * 100) + 1) 
+        fix_today = Date.today
+        fix_tomorrow = fix_today + 1
+        fix_date = fix_today - ((rand * 100) + 1)
         fix_goggle_cup = create( :goggle_cup )
         fix_season1 = create( :season, begin_date: fix_tomorrow )
         fix_season2 = create( :season, begin_date: fix_today )
@@ -128,7 +148,7 @@ describe GoggleCup, :type => :model do
     end
     # ---------------------------------------------------------------------------
     #++
-    
+
     describe "#get_end_date" do
       xit "returns the latest end date of seasons in goggle_cup_definition" do
         found_date = subject.get_end_date
@@ -137,10 +157,10 @@ describe GoggleCup, :type => :model do
         end
       end
       xit "returns the expected end date" do
-        fix_today = Date.today 
-        fix_yesterday = fix_today - 1 
-        fix_year_ago = fix_today - 364 
-        fix_date = fix_today + ((rand * 100) + 1) 
+        fix_today = Date.today
+        fix_yesterday = fix_today - 1
+        fix_year_ago = fix_today - 364
+        fix_date = fix_today + ((rand * 100) + 1)
         fix_goggle_cup = create( :goggle_cup )
         fix_season1 = create( :season, begin_date: fix_year_ago, end_date: fix_yesterday )
         fix_season2 = create( :season, begin_date: fix_year_ago, end_date: fix_today )
@@ -236,7 +256,7 @@ describe GoggleCup, :type => :model do
           expect( result.size == 0 ).to be true
         end
       end
-      
+
       context "for a valid goggle cup" do
         it "assigns an empty array" do
           result = fix_goggle_cup.calculate_goggle_cup_rank
@@ -246,7 +266,7 @@ describe GoggleCup, :type => :model do
         it "assigns an array of hash in which swimmer key contains an instance of Swimmer" do
           fix_goggle_cup.calculate_goggle_cup_rank.each do |element|
             expect( element ).to be_a_kind_of( Hash )
-            expect( element[:swimmer] ).to be_an_instance_of( Swimmer ) 
+            expect( element[:swimmer] ).to be_an_instance_of( Swimmer )
           end
         end
         it "assigns an array of hash with points to every elements of goggle_cup_rank instance" do
@@ -262,15 +282,15 @@ describe GoggleCup, :type => :model do
         it "assigns an array where count key <= goggle_cup.max_performance" do
           fix_goggle_cup.calculate_goggle_cup_rank.each do |element|
             expect( element[:count] ).to be <= fix_goggle_cup.max_performance
-          end              
+          end
         end
         it "assigns a sorted by total key array" do
           rank_array = fix_goggle_cup.calculate_goggle_cup_rank
           current_item = rank_array.first[:total]
           rank_array.each do |item|
             expect( item[:total] ).to be <= current_item
-            current_item = item[:total] 
-          end      
+            current_item = item[:total]
+          end
         end
       end
     end

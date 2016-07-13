@@ -22,9 +22,9 @@ class GoggleCup < ActiveRecord::Base
   has_many :goggle_cup_definitions
   has_many :seasons,                    through: :goggle_cup_definitions
   has_many :meetings,                   through: :seasons
-  has_many :season_types,               through: :seasons  
+  has_many :season_types,               through: :seasons
   has_many :badges,                     through: :seasons
-  has_many :swimmers,                   through: :badges # Should used with uniq  
+  has_many :swimmers,                   through: :badges # Should used with uniq
   has_many :meeting_individual_results, through: :badges
 
   validates_presence_of     :description
@@ -44,11 +44,11 @@ class GoggleCup < ActiveRecord::Base
   scope :sort_goggle_cup_by_user,  ->(dir)  { order("users.name #{dir.to_s}, teams.name #{dir.to_s}, goggle_cups.season_year #{dir.to_s}") }
   scope :sort_goggle_cup_by_team,  ->(dir)  { order("teams.name #{dir.to_s}, goggle_cups.season_year #{dir.to_s}") }
   scope :sort_goggle_cup_by_year,  ->(dir)  { order("goggle_cups.season_year #{dir.to_s}") }
-  
+
   scope :is_closed_now,            ->       { where("goggle_cups.end_date < curdate()") }
   scope :is_current,               ->       { where("goggle_cups.end_date >= curdate()") }
 
-  scope :for_team,                 ->(team) { where(team: team) }
+  scope :for_team,                 ->(team) { where( team_id: team.id ) }
 
   # ----------------------------------------------------------------------------
   # Base methods:
@@ -75,43 +75,43 @@ class GoggleCup < ActiveRecord::Base
   # The Goggle begin date is the earliest begin date of the seasons that compose the Goggle cup
   #
   def get_begin_date
-    get_end_date.prev_year 
+    get_end_date.prev_year
   end
 
   # Get the end date for the Goggle cup
   # The Goggle end date is the latest end date of the seasons that compose the Goggle cup
   #
   def get_end_date
-    self.end_date 
+    self.end_date
   end
 
   # Check if a Goggle cup is closed (terminated) at a certain date
   # The Goggle cup is closed if the season that compose the Goggle cup are all closed
-  # The latest end date should be past at least by one day 
+  # The latest end date should be past at least by one day
   #
   # Params
   # evaluation_date: the date for the evaluation, default today
   #
-  def is_closed_at?( evaluation_date = Date.today ) 
+  def is_closed_at?( evaluation_date = Date.today )
     get_end_date < evaluation_date
   end
 
   # Check if a Goggle cup is the current (active) at a certain date
   # The Goggle cup is the current if the season that compose the Goggle cup are opened
   # that means that begin date is earlier that given date and
-  # end date is is not past 
+  # end date is is not past
   #
   # Params
   # evaluation_date: the date for the evaluation, default today
   #
-  def is_current_at?( evaluation_date = Date.today ) 
-    get_begin_date <= evaluation_date && get_end_date >= evaluation_date  
+  def is_current_at?( evaluation_date = Date.today )
+    get_begin_date <= evaluation_date && get_end_date >= evaluation_date
   end
 
   # Check if a Goggle cup has at least one valid result
   #
-  def has_results? 
-    meeting_individual_results.has_points( :goggle_cup_points ).count > 0  
+  def has_results?
+    meeting_individual_results.has_points( :goggle_cup_points ).count > 0
   end
   # ----------------------------------------------------------------------------
 
@@ -142,7 +142,7 @@ class GoggleCup < ActiveRecord::Base
         .where(['goggle_cup_definitions.goggle_cup_id = ?', self.id])
         .collect{|badge| badge.swimmer }
         .uniq
-      
+
       # Collects best results for each swimmer
       # The number of result to consider is set in the goggle cup header
       swimmers.each do |swimmer|
@@ -154,15 +154,15 @@ class GoggleCup < ActiveRecord::Base
           .limit(self.max_performance)
           .collect{ |meeting_individual_result| meeting_individual_result.goggle_cup_points }
         goggle_cup_rank << {
-          swimmer: swimmer, 
-          total:   points.sum, 
+          swimmer: swimmer,
+          total:   points.sum,
           max:     points.max,
           min:     points.min,
           count:   points.count,
-          average: (points.sum / points.count).round( 2 ) 
+          average: (points.sum / points.count).round( 2 )
         } if points.count > 0
       end
-      
+
       # Sorts the hash to create rank
       goggle_cup_rank.sort!{ |hash_element_prev, hash_element_next| hash_element_next[:total] <=> hash_element_prev[:total] }
     end
