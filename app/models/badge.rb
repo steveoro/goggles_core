@@ -47,15 +47,15 @@ class Badge < ActiveRecord::Base
   scope :sort_by_swimmer,       ->(dir)  { joins(:swimmer).order("swimmers.complete_name #{dir.to_s}") }
   scope :sort_by_category_type, ->(dir)  { joins(:category_type).order("category_types.code #{dir.to_s}") }
 
-  scope :for_category_type,     ->(category_type)    { joins(:category_type).where(['category_types.id = ?', category_type.id]) }
-  scope :for_gender_type,       ->(gender_type)      { joins(:gender_type).where(['gender_types.id = ?', gender_type.id]) }
-  scope :for_season,            ->(season)           { where(season: season) }
-  scope :for_team,              ->(team)             { where(team: team) }
-  scope :for_swimmer,           ->(swimmer)          { where(swimmer: swimmer) }
+  scope :for_category_type,     ->(category_type)    { joins(:category_type).where( ['category_types.id = ?', category_type.id] ) }
+  scope :for_gender_type,       ->(gender_type)      { joins(:gender_type).where( ['gender_types.id = ?', gender_type.id] ) }
+  scope :for_season,            ->(season)           { where( season_id: season.id ) }
+  scope :for_team,              ->(team)             { where( team_id: team.id ) }
+  scope :for_swimmer,           ->(swimmer)          { where( swimmer_id: swimmer.id ) }
   scope :for_final_rank,        ->(final_rank = 1)   { where(['final_rank = ?', final_rank]) }
-  scope :for_season_type,       ->(season_type)      { joins(:season_type).where(['season_types.id = ?', season_type.id]) }
-  scope :for_year,              ->(header_year)      { joins(:season).where( ['seasons.header_year = ?', header_year]) }
-  scope :for_team_affiliation,  ->(team_affiliation) { where(team_affiliation: team_affiliation) }
+  scope :for_season_type,       ->(season_type)      { joins(:season_type).where( ['season_types.id = ?', season_type.id] ) }
+  scope :for_year,              ->(header_year)      { joins(:season).where( ['seasons.header_year = ?', header_year] ) }
+  scope :for_team_affiliation,  ->(team_affiliation) { where( team_affiliation_id: team_affiliation.id ) }
   #-- -------------------------------------------------------------------------
   #++
 

@@ -90,7 +90,10 @@ class TeamBestFinder
   # Some categories are undivided and has to be splitted for definition
   # Some categories have different age definition in different season types and need to be compared
   #
+  # Returns a default false value for a nil category_type.
+  #
   def category_needs_split?( category_type )
+    return false if category_type.nil?
     needs_split = false
     if category_type.is_undivided
       needs_split = true

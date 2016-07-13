@@ -58,9 +58,9 @@ class Season < ActiveRecord::Base
   scope :is_ended_before,            ->(end_date) { where(["end_date is not null and end_date < ?", end_date]) }
   scope :is_in_range,                ->(from_date, to_date) { where(["(begin_date is not null and begin_date <= ?) and (end_date is not null and end_date >= ?)", to_date, from_date]) }
 
-  scope :for_season_type,            ->(season_type) { where(season_type: season_type) }
+  scope :for_season_type,            ->(season_type) { where(season_type_id: season_type.id) }
   scope :has_results,                -> { where("EXISTS(SELECT 1 from meetings where are_results_acquired)") }
-  
+
   attr_accessible :season_type_id, :edition_type_id, :timing_type_id,
                   :header_year, :edition, :description, :begin_date, :end_date, :rules, :has_individual_rank
   #-- -------------------------------------------------------------------------

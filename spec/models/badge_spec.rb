@@ -24,6 +24,25 @@ describe Badge, :type => :model do
       :entry_time_type
     ])
 
+    # Filtering scopes:
+    it_behaves_like( "(the existance of a class method)", [
+      :sort_by_user,
+      :sort_by_season,
+      :sort_by_team,
+      :sort_by_swimmer,
+      :sort_by_category_type,
+
+      :for_category_type,
+      :for_gender_type,
+      :for_season,
+      :for_team,
+      :for_swimmer,
+      :for_final_rank,
+      :for_season_type,
+      :for_year,
+      :for_team_affiliation,
+    ])
+
     context "[general methods]" do
       it_behaves_like( "(the existance of a method returning non-empty strings)", [
         :get_full_name,
@@ -32,5 +51,71 @@ describe Badge, :type => :model do
     end
   end
   #-- -------------------------------------------------------------------------
+  #++
+
+
+  describe "self.for_season" do
+    context "for a Season with existing Badges," do
+      it "returns a list of Badges" do
+        season = Season.find( rand(15) + 1 )
+        expect( subject.class.for_season(season) ).to all be_a( Badge )
+      end
+    end
+    context "for a Season with NO Badges," do
+      it "returns an empty list" do
+        season = create( :season )
+        expect( subject.class.for_season(season) ).to be_empty
+      end
+    end
+  end
+
+
+  describe "self.for_team" do
+    context "for a Team with existing Badges," do
+      it "returns a list of Badges" do
+        team = Team.find( rand(10) + 1 )
+        expect( subject.class.for_team(team) ).to all be_a( Badge )
+      end
+    end
+    context "for a Team with NO Badges," do
+      it "returns an empty list" do
+        team = create( :team )
+        expect( subject.class.for_team(team) ).to be_empty
+      end
+    end
+  end
+
+
+  describe "self.for_swimmer" do
+    context "for a Swimmer with existing Badges," do
+      it "returns a list of Badges" do
+        swimmer = Swimmer.find( rand(10) + 1 )
+        expect( subject.class.for_swimmer(swimmer) ).to all be_a( Badge )
+      end
+    end
+    context "for a Swimmer with NO Badges," do
+      it "returns an empty list" do
+        swimmer = create( :swimmer )
+        expect( subject.class.for_swimmer(swimmer) ).to be_empty
+      end
+    end
+  end
+
+
+  describe "self.for_team_affiliation" do
+    context "for a TeamAffiliation with existing Badges," do
+      it "returns a list of Badges" do
+        ta = TeamAffiliation.find( rand(10) + 1 )
+        expect( subject.class.for_team_affiliation(ta) ).to all be_a( Badge )
+      end
+    end
+    context "for a TeamAffiliation with NO Badges," do
+      it "returns an empty list" do
+        ta = create( :team_affiliation )
+        expect( subject.class.for_team_affiliation(ta) ).to be_empty
+      end
+    end
+  end
+  # ---------------------------------------------------------------------------
   #++
 end

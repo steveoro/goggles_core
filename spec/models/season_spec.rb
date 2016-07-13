@@ -1,7 +1,8 @@
 require 'rails_helper'
 require 'date'
 
-describe Season, :type => :model do
+
+describe Season, type: :model do
   it_behaves_like "DropDownListable"
   it_behaves_like "UserRelatable"
 
@@ -52,18 +53,29 @@ describe Season, :type => :model do
     it "is a valid istance" do
       expect( subject ).to be_valid
     end
+
     # Validated relations:
     it_behaves_like( "(belongs_to required models)", [
       :season_type,
       :timing_type,
       :edition_type
     ])
+
     # Filtering scopes:
     it_behaves_like( "(the existance of a class method)", [
       :sort_season_by_begin_date,
       :sort_season_by_season_type,
-      :sort_season_by_user
+      :sort_season_by_user,
+
+      :is_not_ended,
+      :is_ended,
+      :is_ended_before,
+      :is_in_range,
+
+      :for_season_type,
+      :has_results
     ])
+
     it_behaves_like( "(the existance of a method)", [
       :get_full_name,
       :get_verbose_name,
@@ -74,6 +86,25 @@ describe Season, :type => :model do
       :get_last_season_by_type,
       :build_header_year
     ])
+    #-- -----------------------------------------------------------------------
+    #++
+
+    describe "self.for_season_type" do
+      context "for a SeasonType with existing Seasons," do
+        it "returns a list of Seasons" do
+          season_type = SeasonType.find_by_code( SeasonType::CODE_MAS_CSI )
+          expect( subject.class.for_season_type(season_type) ).to all be_a( Season )
+        end
+      end
+      context "for a SeasonType with NO Seasons," do
+        it "returns an empty list" do
+          season_type = create( :season_type )
+          expect( subject.class.for_season_type(season_type) ).to be_empty
+        end
+      end
+    end
+    #-- -----------------------------------------------------------------------
+    #++
 
     describe "#get_full_name" do
       it "returns the correct full description" do
@@ -185,13 +216,6 @@ describe Season, :type => :model do
         date = Date.parse("#{ 2000 + ((rand * 100) % 15).to_i }-09-01")
         expect( Season.build_header_year_from_date( date ) ).to include( date.year.to_s )
       end
-    end
-    #-- -----------------------------------------------------------------------
-    #++
-
-
-    context "[season result methods]" do
-      xit "has a method to determine the season athlete charts"
     end
     #-- -----------------------------------------------------------------------
     #++

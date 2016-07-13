@@ -123,12 +123,19 @@ describe GoggleCup, :type => :model do
     #++
 
     describe "#get_begin_date" do
+# FIXME
       xit "returns the earliest begin date of seasons in goggle_cup_definition" do
         found_date = subject.get_begin_date
+# DEBUG
+        puts "\r\n- get_begin_date: #{ found_date }"
         subject.seasons.each do |season|
+# DEBUG
+          puts "\r\n- season.begin_date: #{ season.begin_date }"
           expect( season.begin_date ).to be >= found_date
         end
       end
+
+# FIXME
       xit "returns the expected begin date" do
         fix_today = Date.today
         fix_tomorrow = fix_today + 1
@@ -150,12 +157,14 @@ describe GoggleCup, :type => :model do
     #++
 
     describe "#get_end_date" do
+# FIXME
       xit "returns the latest end date of seasons in goggle_cup_definition" do
         found_date = subject.get_end_date
         subject.seasons.each do |season|
           expect( season.end_date ).to be <= found_date
         end
       end
+# FIXME
       xit "returns the expected end date" do
         fix_today = Date.today
         fix_yesterday = fix_today - 1
