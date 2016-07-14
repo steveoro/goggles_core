@@ -98,7 +98,7 @@ describe Season, type: :model do
       end
       context "for a SeasonType with NO Seasons," do
         it "returns an empty list" do
-          season_type = create( :season_type )
+          season_type = create( :season_type, code: "FK#{ SeasonType.count + 1 }"[0..9] )
           expect( subject.class.for_season_type(season_type) ).to be_empty
         end
       end
