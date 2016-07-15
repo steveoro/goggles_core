@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'ffaker'
 
-require 'framework/application_constants'
+require 'goggles_core/app_constants'
 
 
 describe AgexMailer, type: :mailer do
@@ -13,13 +13,13 @@ describe AgexMailer, type: :mailer do
     subject           { AgexMailer.exception_mail( user, description, backtrace ) }
 
     it 'renders the receiver email' do
-      expect( subject.to.first ).to include( WEB_ADMIN_EMAILS )
+      expect( subject.to.first ).to include( GogglesCore::AppConstants::WEB_ADMIN_EMAILS )
     end
     it 'renders the description in the subject' do
       expect( subject.subject ).to match( description )
     end
     it 'renders the hostname in the subject' do
-      expect( subject.subject ).to match( WEB_MAIN_DOMAIN_NAME )
+      expect( subject.subject ).to match( GogglesCore::AppConstants::WEB_MAIN_DOMAIN_NAME )
     end
     it 'renders the user_name in the message' do
       expect( subject.body.encoded ).to match( user.name )
@@ -52,13 +52,13 @@ describe AgexMailer, type: :mailer do
     subject                   { AgexMailer.action_notify_mail( user, action_name, action_description ) }
 
     it 'renders the receiver email' do
-      expect( subject.to.first ).to include( WEB_ADMIN_EMAILS )
+      expect( subject.to.first ).to include( GogglesCore::AppConstants::WEB_ADMIN_EMAILS )
     end
     it 'renders the action_name in the subject' do
       expect( subject.subject ).to match(action_name)
     end
     it 'renders the hostname in the subject' do
-      expect( subject.subject ).to match( WEB_MAIN_DOMAIN_NAME )
+      expect( subject.subject ).to match( GogglesCore::AppConstants::WEB_MAIN_DOMAIN_NAME )
     end
     it 'renders the user_name in the message' do
       expect( subject.body.encoded ).to match( user.name )
@@ -91,7 +91,7 @@ describe AgexMailer, type: :mailer do
     subject             { AgexMailer.report_abuse_mail( user, user_involved, entity_name, entity_id, entity_title ) }
 
     it 'renders the receiver email' do
-      expect( subject.to.first ).to include( WEB_ADMIN_EMAILS )
+      expect( subject.to.first ).to include( GogglesCore::AppConstants::WEB_ADMIN_EMAILS )
     end
     it 'renders the entity_name in the subject' do
       expect( subject.subject ).to match( entity_name )
@@ -100,7 +100,7 @@ describe AgexMailer, type: :mailer do
       expect( subject.subject ).to match( "ID:#{entity_id}" )
     end
     it 'renders the hostname in the subject' do
-      expect( subject.subject ).to match( WEB_MAIN_DOMAIN_NAME )
+      expect( subject.subject ).to match( GogglesCore::AppConstants::WEB_MAIN_DOMAIN_NAME )
     end
     it 'renders the name of the sender user in the message' do
       expect( subject.body.encoded ).to match( user.name )

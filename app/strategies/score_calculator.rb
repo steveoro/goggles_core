@@ -36,7 +36,11 @@ class ScoreCalculator
   end
 
   def get_custom_score( time_swam, standard_points = 1000, decimals = 2 )
-    compute_fin_score( time_swam, standard_points, decimals )
+    result = compute_fin_score( time_swam, standard_points, decimals )
+# DEBUG
+#    puts "\r\n- get_custom_score( #{time_swam}, #{standard_points}, #{decimals} ) = #{ result }"
+#    puts "  #{ @event_type.i18n_description } #{@swimmer_gender.code}, #{@swimmer_category.code}, #{@pool_type.code} mt."
+    result
   end
 
   def get_fin_timing( goal_score )

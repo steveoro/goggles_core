@@ -1,4 +1,4 @@
-require 'framework/application_constants'
+require 'goggles_core/app_constants'
 
 
 =begin
@@ -14,7 +14,7 @@ class AgexMailer < ActionMailer::Base
 
   # Internal Mailer address for the "From" field of the e-mails. Usually something like "no-reply@fasar.software.it"
   #
-  default from: "AgeX Mailer <no-reply@#{ WEB_MAIN_DOMAIN_NAME }>"
+  default from: "AgeX Mailer <no-reply@#{ GogglesCore::AppConstants::WEB_MAIN_DOMAIN_NAME }>"
 
 
   # "Exception intercepted" message.
@@ -27,15 +27,15 @@ class AgexMailer < ActionMailer::Base
   # - error_backtrace: an array of string rows describing the current error backtrace
   #
   def exception_mail( user, error_description, error_backtrace )
-    @admin_names = WEB_ADMIN_EMAILS
+    @admin_names = GogglesCore::AppConstants::WEB_ADMIN_EMAILS
     @user_name   = user.name if user.respond_to?(:name)
     @description = error_description
     @backtrace   = error_backtrace
-    @host = WEB_MAIN_DOMAIN_NAME
+    @host = GogglesCore::AppConstants::WEB_MAIN_DOMAIN_NAME
 
     mail(
-      subject: "[#{ WEB_APP_NAME }@#{ @host }] AgexMailer EXCEPTION: '#{error_description}'.",
-      to:      WEB_ADMIN_EMAILS,
+      subject: "[#{ GogglesCore::AppConstants::WEB_APP_NAME }@#{ @host }] AgexMailer EXCEPTION: '#{error_description}'.",
+      to:      GogglesCore::AppConstants::WEB_ADMIN_EMAILS,
       date:    Time.now
     )
   end
@@ -58,14 +58,14 @@ class AgexMailer < ActionMailer::Base
     @user_name = user.name if user.respond_to?(:name)
     @action_name = action_name
     @description = action_description
-    @host = WEB_MAIN_DOMAIN_NAME
+    @host = GogglesCore::AppConstants::WEB_MAIN_DOMAIN_NAME
     if attachment_file_name
       attachments[ attachment_file_name ] = File.read( attachment_full_local_path )
     end
 
     mail(
-      subject: "[#{ WEB_APP_NAME }@#{ @host }] AgexMailer '#{action_name}'",
-      to:      WEB_ADMIN_EMAILS,
+      subject: "[#{ GogglesCore::AppConstants::WEB_APP_NAME }@#{ @host }] AgexMailer '#{action_name}'",
+      to:      GogglesCore::AppConstants::WEB_ADMIN_EMAILS,
       date:    Time.now
     )
   end
@@ -90,11 +90,11 @@ class AgexMailer < ActionMailer::Base
     @entity_name   = entity_name
     @entity_id     = entity_id
     @entity_title  = entity_title
-    @host = WEB_MAIN_DOMAIN_NAME
+    @host = GogglesCore::AppConstants::WEB_MAIN_DOMAIN_NAME
 
     mail(
-      subject: "[#{ WEB_APP_NAME }@#{ @host }] Abuse report for '#{entity_name}', ID:#{entity_id}",
-      to:      WEB_ADMIN_EMAILS,
+      subject: "[#{ GogglesCore::AppConstants::WEB_APP_NAME }@#{ @host }] Abuse report for '#{entity_name}', ID:#{entity_id}",
+      to:      GogglesCore::AppConstants::WEB_ADMIN_EMAILS,
       date:    Time.now
     )
   end

@@ -246,6 +246,7 @@ describe RecordUpdater, type: :strategy do
 
 
     context "when scanning a list of MIRs with some new (missing) records," do
+# FIXME THIS FAILS RANDOMLY W/ nil federation_type for some MIR, see RecordUpdater @ line 163
       let(:test_subject) do
         new_subject = RecordUpdater.new()
         new_subject.scan_results_for_season_type_records( fixture_missing_list )
