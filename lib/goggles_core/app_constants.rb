@@ -17,21 +17,21 @@ module GogglesCore
 
   module AppConstants
     # Current Framework version
-    WEB_FRAMEWORK_VERSION  = GogglesCore::Version::FULL unless defined? WEB_FRAMEWORK_VERSION
+    WEB_FRAMEWORK_VERSION  = GogglesCore::Version::FULL
 
     # App-name, lowercase, used in shared modules or sub-projects
-    WEB_APP                = 'goggles' unless defined? WEB_APP
+    WEB_APP                = 'goggles'
 
     # "Displayable" App-name, used in shared modules or sub-projects
-    WEB_APP_NAME           = 'Goggles' unless defined? WEB_APP_NAME
+    WEB_APP_NAME           = 'Goggles'
 
     # Main web-app domain name, lowercase, used in shared modules or sub-projects
-    WEB_MAIN_DOMAIN_NAME   = ( Rails.env.production? ? 'master-goggles.org' : ENV['HOSTNAME'] ) unless defined? WEB_MAIN_DOMAIN_NAME
+    WEB_MAIN_DOMAIN_NAME   = ( Rails.env.production? ? 'master-goggles.org' : ENV['HOSTNAME'] )
 
     # Main web-app admin email accounts, used by the internal mailer to notify critical events
-    WEB_ADMIN_EMAILS       = 'steve.alloro@gmail.com' unless defined? WEB_ADMIN_EMAILS
+    WEB_ADMIN_EMAILS       = 'steve.alloro@gmail.com'
 
     # Main logo image file for this App, used in shared modules or sub-projects
-    WEB_APP_LOGO           = 'goggles_blue_128.png' unless defined? WEB_APP_LOGO
+    WEB_APP_LOGO           = 'goggles_blue_128.png'
   end
 end
