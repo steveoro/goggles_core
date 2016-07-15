@@ -19,6 +19,12 @@ describe AgexMailer, type: :mailer do
       expect( subject.subject ).to match( description )
     end
     it 'renders the hostname in the subject' do
+# DEBUG
+      puts "\r\n- AppConstants: '#{ GogglesCore::AppConstants.constants.inspect }'"
+      puts "- subject........: #{ subject.inspect }"
+      puts "- subject.subject: '#{ subject.subject.inspect }'"
+      puts "- constant.......: '#{ GogglesCore::AppConstants::WEB_MAIN_DOMAIN_NAME.inspect }'"
+      expect( GogglesCore::AppConstants.constants ).not_to be_empty
       expect( subject.subject ).to match( GogglesCore::AppConstants::WEB_MAIN_DOMAIN_NAME )
     end
     it 'renders the user_name in the message' do
@@ -58,6 +64,12 @@ describe AgexMailer, type: :mailer do
       expect( subject.subject ).to match(action_name)
     end
     it 'renders the hostname in the subject' do
+# DEBUG
+      puts "\r\n- AppConstants: '#{ GogglesCore::AppConstants.constants.inspect }'"
+      puts "- subject........: #{ subject.inspect }"
+      puts "- subject.subject: '#{ subject.subject.inspect }'"
+      puts "- constant.......: '#{ GogglesCore::AppConstants::WEB_MAIN_DOMAIN_NAME.inspect }'"
+      expect( GogglesCore::AppConstants.constants ).not_to be_empty
       expect( subject.subject ).to match( GogglesCore::AppConstants::WEB_MAIN_DOMAIN_NAME )
     end
     it 'renders the user_name in the message' do
@@ -100,6 +112,12 @@ describe AgexMailer, type: :mailer do
       expect( subject.subject ).to match( "ID:#{entity_id}" )
     end
     it 'renders the hostname in the subject' do
+# DEBUG
+      puts "\r\n- AppConstants: '#{ GogglesCore::AppConstants.constants.inspect }'"
+      puts "- subject........: #{ subject.inspect }"
+      puts "- subject.subject: '#{ subject.subject.inspect }'"
+      puts "- constant.......: '#{ GogglesCore::AppConstants::WEB_MAIN_DOMAIN_NAME.inspect }'"
+      expect( GogglesCore::AppConstants.constants ).not_to be_empty
       expect( subject.subject ).to match( GogglesCore::AppConstants::WEB_MAIN_DOMAIN_NAME )
     end
     it 'renders the name of the sender user in the message' do
