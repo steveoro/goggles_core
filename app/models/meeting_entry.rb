@@ -59,12 +59,12 @@ class MeetingEntry < ActiveRecord::Base
 
   # Computes a shorter description for the name associated with this data.
   def get_full_name
-    "#{get_scheduled_date} #{get_event_type}: #{start_list_number}) #{get_swimmer_name}, #{get_timing}"
+    "#{get_scheduled_date} #{get_event_type}: #{start_list_number}) #{swimmer.get_full_name}, #{get_timing}"
   end
 
   # Computes a verbose or formal description for the name associated with this data.
   def get_verbose_name
-    "#{get_meeting_program_verbose_name}: #{start_list_number}) #{get_swimmer_name} (#{get_year_of_birth}), #{get_timing}"
+    "#{get_meeting_program_verbose_name}: #{start_list_number}) #{swimmer.get_full_name} (#{swimmer.year_of_birth}), #{get_timing}"
   end
   # ----------------------------------------------------------------------------
 
