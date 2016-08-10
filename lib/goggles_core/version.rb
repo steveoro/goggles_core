@@ -14,7 +14,7 @@ module GogglesCore
   #++
 
   # Actual Core versioning, used for Gem differentiation.
-  VERSION = "0.0.26"
+  VERSION = "1.0.01"
 
   module Version
     # Framework Core internal name.
@@ -26,10 +26,10 @@ module GogglesCore
     MAJOR   = '5'
 
     # Minor version.
-    MINOR   = '001'
+    MINOR   = '002'
 
     # Current build version.
-    BUILD   = '20160729'
+    BUILD   = '20160810'
 
     # Full versioning for the current release (Framework + Core).
     FULL    = "#{MAJOR}.#{MINOR}.#{BUILD} (#{CORE} v. #{VERSION})"
