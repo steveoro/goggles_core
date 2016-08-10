@@ -428,8 +428,8 @@ describe TeamBestFinder, type: :strategy do
         @records_to_split = @x4d_records.records.select{ |record| @category_to_split.rindex( record.get_category_type ) }
         @splitted_records = @new_tbf.split_categories( @x4d_records )
 # DEBUG
-#        puts "\r\nDistinct categories: #{@new_tbf.distinct_categories.map{ |e| e.code }}"
-#        puts "Found #{@records_to_split.size} to split."
+        puts "\r\nDistinct categories: #{@new_tbf.distinct_categories.map{ |e| e.code }}"
+        puts "Found #{@records_to_split.size} to split."
       end
 =begin
       before( :each ) do
@@ -494,7 +494,7 @@ describe TeamBestFinder, type: :strategy do
           record          = record_to_split.get_record_instance
           target_category = @new_tbf.get_category_to_split_into( record ).code
 # DEBUG
-#          puts "#{pool_code} #{gender_code} #{event_code} - #{record.category_type.code} => #{target_category} (#{record.swimmer.complete_name} #{record.swimmer.year_of_birth} #{record.get_swimmer_age} at #{ record.meeting.get_scheduled_date })"
+          puts "#{pool_code} #{gender_code} #{event_code} - #{record.category_type.code} => #{target_category} (#{record.swimmer.complete_name} #{record.swimmer.year_of_birth} #{record.get_swimmer_age} at #{ record.meeting.get_scheduled_date })"
           expect( @splitted_records.has_record_for?( pool_code, gender_code, event_code, category_code ) ).to be nil
           expect( @splitted_records.has_record_for?( pool_code, gender_code, event_code, target_category ) ).to be >= 0
           expect( @splitted_records.get_record( pool_code, gender_code, event_code, target_category ).get_timing_instance ).to be <= record.get_timing_instance
