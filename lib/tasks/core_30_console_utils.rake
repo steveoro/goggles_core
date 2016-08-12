@@ -68,7 +68,7 @@ DESC
     logger.info( "\r\n<------------------------------------------------------------>\r\n" )
     Meeting.where("code like '%#{meeting_code}%'").sort_by_date.each do |meeting|
       meeting_found += 1
-      logger.info( "\r\n#{meeting.id} - #{meeting.get_meeting_date} #{meeting.get_full_name} (#{meeting.code})#{': OK' if meeting.are_results_acquired}\r\n" )
+      logger.info( "\r\n#{meeting.id} - #{meeting.get_meeting_date} #{meeting.get_full_name} (#{meeting.code} - #{meeting.get_data_import_file_name})#{': OK' if meeting.are_results_acquired}\r\n" )
     end
 
     # If no meetings found log warning
