@@ -133,7 +133,7 @@ describe Team, :type => :model do
     end
     # ---------------------------------------------------------------------------
     #++
-    
+
     describe "#get_current_affiliation" do
       it "responds to #get_current_affiliationt" do
         expect( subject ).to respond_to( :get_current_affiliation )
@@ -148,11 +148,19 @@ describe Team, :type => :model do
           fix_season_type = SeasonType.all[ ((rand * SeasonType.count) % SeasonType.count).to_i ]
           expect( subject.get_current_affiliation( fix_season_type ) ).to be_an_instance_of( TeamAffiliation ).or be_nil
         end
-        it "returns a valid team affiliation for CSI Ober Ferrari" do
+        # XXX Since the team affiliation is currently created by hand at the beginning
+        # of the academic year, there's a small gap of several weeks in which this
+        # test may fail. Thus, the additional check on the current date.
+        it "returns a valid team affiliation for CSI Ober Ferrari during the 'academic year'" do
           fix_season_type = SeasonType.find_by_code('MASFIN')
-          expect( subject.get_current_affiliation( fix_season_type ) ).to be_an_instance_of( TeamAffiliation )
+          # This is the range of months inside which we are actually expecting the
+          # affiliation to be defined:
+          if Date.today.month.in?( 1..6 ) || Date.today.month.in?( 10..12 )
+            expect( subject.get_current_affiliation( fix_season_type ) ).to be_an_instance_of( TeamAffiliation )
+          end
+
         end
-        it "returns nil for newely created team" do
+        it "returns nil for newly created team" do
           fix_team = create( :team )
           fix_season_type = SeasonType.all[ ((rand * SeasonType.count) % SeasonType.count).to_i ]
           expect( fix_team.get_current_affiliation( fix_season_type ) ).to be_nil
@@ -160,7 +168,7 @@ describe Team, :type => :model do
       end
     end
     # ---------------------------------------------------------------------------
-    #++   
+    #++
   end
   #-- -------------------------------------------------------------------------
   #++
