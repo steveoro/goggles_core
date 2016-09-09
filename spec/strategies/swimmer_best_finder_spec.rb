@@ -166,12 +166,30 @@ describe SwimmerBestFinder, type: :strategy do
         fix_pool    = PoolType.find_by_code('25')
         expect( fix_sbf.get_involved_season_best_for_event( fix_sbf.get_closed_seasons_involved_into( csi_season_type ), fix_event, fix_pool ) ).to be_nil
       end
+
+      # FIXME This yields random failures sometimes
       it "returns a time swam if swam before or nil if not" do
         event = EventsByPoolType.not_relays.order('RAND()').first
-        if active_swimmer.meeting_individual_results.is_not_disqualified.for_season( csi_season ).for_pool_type( event.pool_type ).for_event_type( event.event_type ).count > 0
-          expect( subject.get_involved_season_best_for_event( subject.get_contemporary_seasons_involved_into( csi_season ), event.event_type, event.pool_type ) ).to be_an_instance_of( Timing )
+        if active_swimmer.meeting_individual_results
+            .is_not_disqualified
+            .for_season( csi_season )
+            .for_pool_type( event.pool_type )
+            .for_event_type( event.event_type ).count > 0
+          expect(
+            subject.get_involved_season_best_for_event(
+              subject.get_contemporary_seasons_involved_into( csi_season ),
+              event.event_type,
+              event.pool_type
+            )
+          ).to be_an_instance_of( Timing )
         else
-          expect( subject.get_involved_season_best_for_event( subject.get_contemporary_seasons_involved_into( csi_season ), event.event_type, event.pool_type ) ).to be nil
+          expect(
+            subject.get_involved_season_best_for_event(
+              subject.get_contemporary_seasons_involved_into( csi_season ),
+              event.event_type,
+              event.pool_type
+            )
+          ).to be nil
         end
       end
     end
@@ -272,14 +290,14 @@ describe SwimmerBestFinder, type: :strategy do
         fix_swimmer            = Swimmer.find(23)
         fix_sbf                = SwimmerBestFinder.new( fix_swimmer )
         fix_event_by_pool_type = EventsByPoolType.find_by_pool_and_event_codes('25', '50FA')
-        worst_result           = fix_swimmer.meeting_individual_results.for_event_by_pool_type( fix_event_by_pool_type ).sort_by_timing('DESC').first 
+        worst_result           = fix_swimmer.meeting_individual_results.for_event_by_pool_type( fix_event_by_pool_type ).sort_by_timing('DESC').first
         expect( fix_sbf.is_personal_best( worst_result ) ).to eq( false )
       end
       it "returns false if disqualified" do
         fix_swimmer            = Swimmer.find(23)
         fix_sbf                = SwimmerBestFinder.new( fix_swimmer )
         fix_event_by_pool_type = EventsByPoolType.find_by_pool_and_event_codes('25', '100MI')
-        disqualified_result    = fix_swimmer.meeting_individual_results.for_event_by_pool_type( fix_event_by_pool_type ).is_disqualified.first 
+        disqualified_result    = fix_swimmer.meeting_individual_results.for_event_by_pool_type( fix_event_by_pool_type ).is_disqualified.first
         expect( fix_sbf.is_personal_best( disqualified_result ) ).to eq( false )
       end
     end
