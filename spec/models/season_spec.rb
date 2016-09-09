@@ -101,8 +101,8 @@ describe Season, type: :model do
         it "returns an empty list" do
           season_type = create( :season_type, code: Time.now.to_i.to_s )
 # DEBUG
-          puts "\r\n- Testing scope on Season for fake season_type: #{ season_type.inspect }"
-          puts "count should be zero: #{ subject.class.for_season_type(season_type).count }"
+#          puts "\r\n- Testing scope on Season for fake season_type: #{ season_type.inspect }"
+#          puts "count should be zero: #{ subject.class.for_season_type(season_type).count }"
           expect( subject.class.for_season_type(season_type) ).to be_empty
         end
       end

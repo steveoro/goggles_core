@@ -228,10 +228,10 @@ describe TeamBestFinder, type: :strategy do
         fin_category = fin_categories.sort{ rand - 0.5 }[0]
         # .order('RAND()').first
 # DEBUG
-        puts "\r\n- fin_season...: #{ fin_season.inspect }"
+#        puts "\r\n- fin_season...: #{ fin_season.inspect }"
 #        puts "\r\n- fin_season.category_types.are_not_relays: #{ fin_season.category_types.are_not_relays.map{|r| r.code}.inspect }"
-        puts "- possible fin_categories...: #{ fin_categories.map{|r| r.code}.inspect }"
-        puts "- resulting fin_category....: #{ fin_category.inspect }"
+#        puts "- possible fin_categories...: #{ fin_categories.map{|r| r.code}.inspect }"
+#        puts "- resulting fin_category....: #{ fin_category.inspect }"
         expect( fin_category ).to be_a( CategoryType )
         expect( fix_tbf.category_needs_split?( fin_category ) ).to eq( false )
       end
@@ -417,10 +417,10 @@ describe TeamBestFinder, type: :strategy do
 
 
     describe "#split_categories," do
-      # Those specs should be very slow using real data
-      # because the team considered can have many results
-      # Uncomment the before all cycle instead of before each
-      # to use real data for CSI Nuoto Ober Ferrari Team
+      # The following specs may result very slow using real data if the chosen
+      # team has too many results.
+      # Uncomment the "before(:all)" cycle instead of "before(:each)" to use real
+      # data from the "CSI Nuoto Ober Ferrari" swim team.
       before( :all ) do
         @new_tbf = TeamBestFinder.new( Team.find(1) )
         @x4d_records = @new_tbf.scan_for_distinct_bests
@@ -428,8 +428,8 @@ describe TeamBestFinder, type: :strategy do
         @records_to_split = @x4d_records.records.select{ |record| @category_to_split.rindex( record.get_category_type ) }
         @splitted_records = @new_tbf.split_categories( @x4d_records )
 # DEBUG
-        puts "\r\nDistinct categories: #{@new_tbf.distinct_categories.map{ |e| e.code }}"
-        puts "Found #{@records_to_split.size} to split."
+#        puts "\r\nDistinct categories: #{@new_tbf.distinct_categories.map{ |e| e.code }}"
+#        puts "Found #{@records_to_split.size} to split."
       end
 =begin
       before( :each ) do
@@ -484,7 +484,7 @@ describe TeamBestFinder, type: :strategy do
         end
       end
 
-# FIXME THIS HAS LINE #468 returning nil AND IT FAILS
+# FIXME THIS HAS A LINE returning nil AND IT FAILS
       it "returns a RecordX4dDAO with splitted category records correctly managed" do
         @records_to_split.each do |record_to_split|
           pool_code       = record_to_split.get_pool_type
@@ -494,7 +494,7 @@ describe TeamBestFinder, type: :strategy do
           record          = record_to_split.get_record_instance
           target_category = @new_tbf.get_category_to_split_into( record ).code
 # DEBUG
-          puts "#{pool_code} #{gender_code} #{event_code} - #{record.category_type.code} => #{target_category} (#{record.swimmer.complete_name} #{record.swimmer.year_of_birth} #{record.get_swimmer_age} at #{ record.meeting.get_scheduled_date })"
+#          puts "#{pool_code} #{gender_code} #{event_code} - #{record.category_type.code} => #{target_category} (#{record.swimmer.complete_name} #{record.swimmer.year_of_birth} #{record.get_swimmer_age} at #{ record.meeting.get_scheduled_date })"
           expect( @splitted_records.has_record_for?( pool_code, gender_code, event_code, category_code ) ).to be nil
           expect( @splitted_records.has_record_for?( pool_code, gender_code, event_code, target_category ) ).to be >= 0
           expect( @splitted_records.get_record( pool_code, gender_code, event_code, target_category ).get_timing_instance ).to be <= record.get_timing_instance

@@ -20,10 +20,10 @@ describe AgexMailer, type: :mailer do
     end
     it 'renders the hostname in the subject' do
 # DEBUG
-      puts "\r\n- AppConstants: '#{ GogglesCore::AppConstants.constants.inspect }'"
-      puts "- subject........: #{ subject.inspect }"
-      puts "- subject.subject: '#{ subject.subject.inspect }'"
-      puts "- constant.......: '#{ GogglesCore::AppConstants::WEB_MAIN_DOMAIN_NAME.inspect }'"
+#      puts "\r\n- AppConstants: '#{ GogglesCore::AppConstants.constants.inspect }'"
+#      puts "- subject........: #{ subject.inspect }"
+#      puts "- subject.subject: '#{ subject.subject.inspect }'"
+#      puts "- constant.......: '#{ GogglesCore::AppConstants::WEB_MAIN_DOMAIN_NAME.inspect }'"
       expect( GogglesCore::AppConstants.constants ).not_to be_empty
       expect( subject.subject ).to match( GogglesCore::AppConstants::WEB_MAIN_DOMAIN_NAME )
     end
@@ -65,10 +65,10 @@ describe AgexMailer, type: :mailer do
     end
     it 'renders the hostname in the subject' do
 # DEBUG
-      puts "\r\n- AppConstants: '#{ GogglesCore::AppConstants.constants.inspect }'"
-      puts "- subject........: #{ subject.inspect }"
-      puts "- subject.subject: '#{ subject.subject.inspect }'"
-      puts "- constant.......: '#{ GogglesCore::AppConstants::WEB_MAIN_DOMAIN_NAME.inspect }'"
+#      puts "\r\n- AppConstants: '#{ GogglesCore::AppConstants.constants.inspect }'"
+#      puts "- subject........: #{ subject.inspect }"
+#      puts "- subject.subject: '#{ subject.subject.inspect }'"
+#      puts "- constant.......: '#{ GogglesCore::AppConstants::WEB_MAIN_DOMAIN_NAME.inspect }'"
       expect( GogglesCore::AppConstants.constants ).not_to be_empty
       expect( subject.subject ).to match( GogglesCore::AppConstants::WEB_MAIN_DOMAIN_NAME )
     end
@@ -113,10 +113,10 @@ describe AgexMailer, type: :mailer do
     end
     it 'renders the hostname in the subject' do
 # DEBUG
-      puts "\r\n- AppConstants: '#{ GogglesCore::AppConstants.constants.inspect }'"
-      puts "- subject........: #{ subject.inspect }"
-      puts "- subject.subject: '#{ subject.subject.inspect }'"
-      puts "- constant.......: '#{ GogglesCore::AppConstants::WEB_MAIN_DOMAIN_NAME.inspect }'"
+#      puts "\r\n- AppConstants: '#{ GogglesCore::AppConstants.constants.inspect }'"
+#      puts "- subject........: #{ subject.inspect }"
+#      puts "- subject.subject: '#{ subject.subject.inspect }'"
+#      puts "- constant.......: '#{ GogglesCore::AppConstants::WEB_MAIN_DOMAIN_NAME.inspect }'"
       expect( GogglesCore::AppConstants.constants ).not_to be_empty
       expect( subject.subject ).to match( GogglesCore::AppConstants::WEB_MAIN_DOMAIN_NAME )
     end

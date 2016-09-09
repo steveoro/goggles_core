@@ -166,16 +166,6 @@ describe RecordUpdater, type: :strategy do
       list = IndividualRecord.where(is_team_record: false).limit(1000).all.sort{ rand - 0.5 }[0..5]
       list.map{ |row| row.seconds -= 1; row }
     end
-    let(:fixture_missing_list) do
-      # We use a factory to create a list of MIRs in a meeting on 33mts, so that
-      # we may be sure that there won't ever be records for these events:
-      mir_list = build_list( :meeting_individual_result, 3 )
-      mir_list.each do |mir|
-        pool = mir.meeting.swimming_pools.first
-        pool.pool_type_id = PoolType::MT33_ID
-      end
-      mir_list
-    end
 
 
     context "when scanning an empty list (with no new record or record updates)," do
@@ -246,7 +236,10 @@ describe RecordUpdater, type: :strategy do
 
 
     context "when scanning a list of MIRs with some new (missing) records," do
-# FIXME THIS FAILS RANDOMLY W/ nil federation_type for some MIR, see RecordUpdater @ line 163
+      let(:fixture_missing_list) do
+        MeetingIndividualResultFactoryTools.create_unique_result_list( create(:swimmer), 3 )
+      end
+# XXX THIS WAS FAILING RANDOMLY W/ nil federation_type for some MIR, (see RecordUpdater @ line 163) - corrected with new fixture_missing_list
       let(:test_subject) do
         new_subject = RecordUpdater.new()
         new_subject.scan_results_for_season_type_records( fixture_missing_list )
@@ -266,6 +259,8 @@ describe RecordUpdater, type: :strategy do
 #        puts( "\r\nResulting SQL for inserts:\r\n----8<----\r\n" + test_subject.sql_executable_log + "\r\n----8<----\r\n")
       end
       it "updates the SQL executable log text with no UPDATE statements" do
+# DEBUG
+#        puts( "\r\nResulting SQL for UPDATE:\r\n----8<----\r\n" + test_subject.sql_executable_log + "\r\n----8<----\r\n")
         expect( test_subject.sql_executable_log ).not_to match(/UPDATE\s/i)
       end
     end
@@ -281,16 +276,6 @@ describe RecordUpdater, type: :strategy do
     let(:fixture_better_list) do
       list = IndividualRecord.where(is_team_record: true).limit(1000).all.sort{ rand - 0.5 }[0..5]
       list.map{ |row| row.seconds -= 1; row }
-    end
-    let(:fixture_missing_list) do
-      # We use a factory to create a list of MIRs in a meeting on 33mts, so that
-      # we may be sure that there won't ever be records for these events:
-      mir_list = build_list( :meeting_individual_result, 3 )
-      mir_list.each do |mir|
-        pool = mir.meeting.swimming_pools.first
-        pool.pool_type_id = PoolType::MT33_ID
-      end
-      mir_list
     end
 
 
@@ -362,6 +347,18 @@ describe RecordUpdater, type: :strategy do
 
 
     context "when scanning a list of MIRs with some new (missing) records," do
+      let(:fixture_missing_list) do
+        MeetingIndividualResultFactoryTools.create_unique_result_list( create(:swimmer), 3 )
+        # XXX Old method (wrong -- cannot use build, must force a create instead; see above):
+        # We use a factory to create a list of MIRs in a meeting on 33mts, so that
+        # we may be sure that there won't ever be records for these events:
+  #      mir_list = build_list( :meeting_individual_result, 3 )
+  #      mir_list.each do |mir|
+  #        pool = mir.meeting.swimming_pools.first
+  #        pool.pool_type_id = PoolType::MT33_ID
+  #      end
+  #      mir_list
+      end
       let(:test_subject) do
         new_subject = RecordUpdater.new()
         new_subject.scan_results_for_team_records( fixture_missing_list )
