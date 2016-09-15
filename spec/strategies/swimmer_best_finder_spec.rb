@@ -417,6 +417,7 @@ describe SwimmerBestFinder, type: :strategy do
         fix_sbf     = SwimmerBestFinder.new( new_swimmer )
         expect( fix_sbf.scan_for_personal_bests ).to eq( 0 )
       end
+# FIXME Raises random failures, depending upon chosen season, current date & current  academic year
       it "sets a personal best for each event by pool type swam by swimmer" do
         event_swam = 0
         subject.scan_for_personal_bests

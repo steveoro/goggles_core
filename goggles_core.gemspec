@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   ]
   s.test_files = Dir["spec/**/*"]
 
-  s.add_dependency "rails", "~> 3.2.22"
+  s.add_dependency "rails", "~> 3.2.22.2"
   s.add_dependency "jquery-rails"
   s.add_dependency "haml", '~> 4.0.5'
 
@@ -43,6 +43,10 @@ Gem::Specification.new do |s|
 #   Single instance => Article.first.decorate
 #   Indirect        => ArticleDecorator.decorate( OtherCompatibleModel.first )
 #   Collection      => ArticleDecorator.decorate_collection( Article.all )
+
+  # [Steve, 201600915] Used in new API/v3 namespace: (Requires Rails >= 4)
+#  s.add_dependency 'active_model_serializers', '~> 0.10.0'
+#  s.add_dependency 'active_hash_relation'
 
   s.add_development_dependency "test-unit", "~> 3.0"
   s.add_development_dependency "guard"
