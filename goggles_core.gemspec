@@ -21,11 +21,11 @@ Gem::Specification.new do |s|
   ]
   s.test_files = Dir["spec/**/*"]
 
-  s.add_dependency "rails", "~> 3.2.22.2"
+  s.add_dependency "rails", "~> 5"
   s.add_dependency "jquery-rails"
-  s.add_dependency "haml", '~> 4.0.5'
+  s.add_dependency "haml" #, '~> 4.0.5'
 
-  s.add_dependency "mysql2", "~> 0.3.11"
+  s.add_dependency "mysql2" #, "~> 0.3.11"
   s.add_dependency "devise"
   s.add_dependency "devise-i18n"
   s.add_dependency "simple_token_authentication", '~> 1'
@@ -33,11 +33,11 @@ Gem::Specification.new do |s|
   s.add_dependency "execjs"
   s.add_dependency "therubyracer"
 
-  s.add_dependency "acts_as_votable", "~> 0.9.0"
-  s.add_dependency "acts-as-taggable-on", "~> 3.4"
+  s.add_dependency "acts_as_votable", "~> 0.10"
+  s.add_dependency "acts-as-taggable-on", "~> 4"
   s.add_dependency "fuzzy-string-match_pure"        # [Steve, 20131106] Used for Team/Swimmer names comparison & existence checking
 
-  s.add_dependency "draper", "~> 1.3"               # [Steve] For Decorator pattern support
+  s.add_dependency "draper" #, "~> 1.3"               # [Steve] For Decorator pattern support
 # Draper usage: "rails generate decorator Article" for existing models,
 # or "rails generate resource Article" to scaffold a new resource;
 #   Single instance => Article.first.decorate
@@ -45,8 +45,9 @@ Gem::Specification.new do |s|
 #   Collection      => ArticleDecorator.decorate_collection( Article.all )
 
   # [Steve, 201600915] Used in new API/v3 namespace: (Requires Rails >= 4)
-#  s.add_dependency 'active_model_serializers', '~> 0.10.0'
-#  s.add_dependency 'active_hash_relation'
+  s.add_dependency 'active_model_serializers', '~> 0.10.0'
+  s.add_dependency 'active_hash_relation'
+  s.add_dependency 'activemodel-serializers-xml' # Required by Draper
 
   s.add_development_dependency "test-unit", "~> 3.0"
   s.add_development_dependency "guard"

@@ -6,11 +6,15 @@
 /coverage/
 
 # Ignore all logfiles and tempfiles.
-log/*.log
-/log
-/tmp
-
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
 /spec/tmp
+
+# Ignore Byebug command history file. (Replaces debugger in Rails 5)
+.byebug_history
+
 # Ignore the default SQLite database.
 /db/*.sqlite3
 spec/dummy/db/*.sqlite3

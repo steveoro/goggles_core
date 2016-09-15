@@ -8,7 +8,7 @@ gemspec
 # jquery-rails is used by the dummy application
 gem "jquery-rails"
 
-gem "amistad", git: "https://github.com/fasar-sw/amistad.git"  # [Steve] Customized version. For Facebook-like friendship management
+gem "amistad", git: "https://github.com/fasar-sw/amistad.git", branch: 'version5'  # [Steve] Customized version. For Facebook-like friendship management
 
 # Declare any dependencies that are still in development here instead of in
 # your gemspec. These might include edge Rails or gems from your path or
