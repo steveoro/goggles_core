@@ -2,7 +2,7 @@ require 'drop_down_listable'
 require 'localizable'
 
 
-class ScoreMappingType < ActiveRecord::Base
+class ScoreMappingType < ApplicationRecord
   include DropDownListable
   include Localizable
 

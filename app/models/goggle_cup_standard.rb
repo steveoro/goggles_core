@@ -3,7 +3,7 @@ require 'timing_gettable'
 require 'timing_validatable'
 
 
-class GoggleCupStandard < ActiveRecord::Base
+class GoggleCupStandard < ApplicationRecord
   include SwimmerRelatable
   include TimingGettable
   include TimingValidatable

@@ -8,7 +8,7 @@ require 'drop_down_listable'
   - author:   Steve A.
 
 =end
-class City < ActiveRecord::Base
+class City < ApplicationRecord
   include DropDownListable
 
   belongs_to :user                                  # [Steve, 20120212] Do not validate associated user!
@@ -21,7 +21,8 @@ class City < ActiveRecord::Base
   validates_presence_of   :country_code, length: { within: 1..10 }, allow_nil: false
 
 
-  attr_accessible :name, :zip, :area, :country, :country_code, :user_id
+# FIXME for Rails 4+, move required/permitted check to the controller using the model
+#  attr_accessible :name, :zip, :area, :country, :country_code, :user_id
   #-- -------------------------------------------------------------------------
   #++
 

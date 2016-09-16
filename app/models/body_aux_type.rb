@@ -2,7 +2,7 @@ require 'drop_down_listable'
 require 'localizable'
 
 
-class BodyAuxType < ActiveRecord::Base
+class BodyAuxType < ApplicationRecord
   include DropDownListable
   include Localizable
 

@@ -11,7 +11,7 @@ require 'timing_gettable'
   - author:   Steve A.
 
 =end
-class MeetingReservation < ActiveRecord::Base
+class MeetingReservation < ApplicationRecord
   include SwimmerRelatable
 
   include EventTypeRelatable
@@ -26,7 +26,8 @@ class MeetingReservation < ActiveRecord::Base
   has_one  :season_type,      through: :meeting_event
   has_one  :event_type,       through: :meeting_event
 
-  attr_accessible :suggested_minutes, :suggested_seconds, :suggested_hundreds
+# FIXME for Rails 4+, move required/permitted check to the controller using the model
+#  attr_accessible :suggested_minutes, :suggested_seconds, :suggested_hundreds
 
   # Low-level instance aliases to column dynamic fields to make TimingGettable work anyway:
   def minutes;  suggested_minutes; end

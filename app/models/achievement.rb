@@ -1,7 +1,7 @@
 require 'localizable'
 
 
-class Achievement < ActiveRecord::Base
+class Achievement < ApplicationRecord
   include Localizable
 
   belongs_to :user

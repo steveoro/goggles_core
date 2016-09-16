@@ -11,7 +11,7 @@ require 'drop_down_listable'
   - author:   Steve A., Leega
 
 =end
-class Season < ActiveRecord::Base
+class Season < ApplicationRecord
   include DropDownListable
   include UserRelatable
 
@@ -61,8 +61,9 @@ class Season < ActiveRecord::Base
   scope :for_season_type,            ->(season_type) { where(season_type_id: season_type.id) }
   scope :has_results,                -> { where("EXISTS(SELECT 1 from meetings where are_results_acquired)") }
 
-  attr_accessible :season_type_id, :edition_type_id, :timing_type_id,
-                  :header_year, :edition, :description, :begin_date, :end_date, :rules, :has_individual_rank
+# FIXME for Rails 4+, move required/permitted check to the controller using the model
+#  attr_accessible :season_type_id, :edition_type_id, :timing_type_id,
+#                  :header_year, :edition, :description, :begin_date, :end_date, :rules, :has_individual_rank
   #-- -------------------------------------------------------------------------
   #++
 

@@ -1,4 +1,4 @@
-class EventsByPoolType < ActiveRecord::Base
+class EventsByPoolType < ApplicationRecord
 
   belongs_to :pool_type
   validates_presence_of :pool_type                  # (must be not null)
@@ -14,15 +14,15 @@ class EventsByPoolType < ActiveRecord::Base
   delegate :code, :length_in_meters, :is_suitable_for_meetings, :i18n_description, :i18n_verbose, :to => :pool_type, :prefix => true
   delegate :code, :i18n_description, :to => :stroke_type, :prefix => true
 
-  scope :are_relays,         joins(:event_type).where('event_types.is_a_relay = true')
-  scope :not_relays,         joins(:event_type).where('event_types.is_a_relay = false')
-  scope :only_for_meetings,  joins(:pool_type).where('pool_types.is_suitable_for_meetings = true')
+  scope :are_relays,         -> { joins(:event_type).where('event_types.is_a_relay = true') }
+  scope :not_relays,         -> { joins(:event_type).where('event_types.is_a_relay = false') }
+  scope :only_for_meetings,  -> { joins(:pool_type).where('pool_types.is_suitable_for_meetings = true') }
   scope :for_pool_type_code, ->(pool_type_code) { joins(:pool_type).where(['pool_types.code = ?', pool_type_code]) }
   scope :distance_more_than, ->(length) { joins(:event_type).where(['event_types.length_in_meters >= ?', length]) }
   scope :distance_less_than, ->(length) { joins(:event_type).where(['event_types.length_in_meters <= ?', length]) }
 
-  scope :sort_by_pool,       joins(:event_type, :pool_type).order('pool_types.length_in_meters, event_types.style_order')
-  scope :sort_by_event,      joins(:event_type, :pool_type).order('event_types.style_order, pool_types.length_in_meters')
+  scope :sort_by_pool,       -> { joins(:event_type, :pool_type).order('pool_types.length_in_meters, event_types.style_order') }
+  scope :sort_by_event,      -> { joins(:event_type, :pool_type).order('event_types.style_order, pool_types.length_in_meters') }
   # ----------------------------------------------------------------------------
 
   # Returns a short description for the event by pool

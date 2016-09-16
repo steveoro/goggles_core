@@ -1,4 +1,4 @@
-class AchievementRow < ActiveRecord::Base
+class AchievementRow < ApplicationRecord
   belongs_to :achievement
   belongs_to :achievement_type
 

@@ -11,7 +11,7 @@ require 'date'
   - author:   Steve A.
 
 =end
-class CategoryType < ActiveRecord::Base
+class CategoryType < ApplicationRecord
   include DropDownListable
 
   validates_presence_of :code, length: { within: 1..7 }, allow_nil: false
@@ -41,8 +41,9 @@ class CategoryType < ActiveRecord::Base
   scope :for_season_type, ->(season_type) { joins(:season_type).where(['season_types.id = ?', season_type.id]) }
   scope :for_season,      ->(season)      { where(['season_id = ?', season.id]) }
 
-  attr_accessible :code, :federation_code, :description, :short_name, :group_name, :age_begin, :age_end,
-                  :season_id, :is_a_relay, :is_out_of_race  
+# FIXME for Rails 4+, move required/permitted check to the controller using the model
+#  attr_accessible :code, :federation_code, :description, :short_name, :group_name, :age_begin, :age_end,
+#                  :season_id, :is_a_relay, :is_out_of_race
   # ----------------------------------------------------------------------------
 
 

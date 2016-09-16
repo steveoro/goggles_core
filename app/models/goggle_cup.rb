@@ -9,7 +9,7 @@
   - author:   Leega
 
 =end
-class GoggleCup < ActiveRecord::Base
+class GoggleCup < ApplicationRecord
 
   belongs_to :user
   # [Steve, 20120212] Validating on User fails always because of validation requirements inside User (password & salt)
@@ -45,8 +45,8 @@ class GoggleCup < ActiveRecord::Base
   scope :sort_goggle_cup_by_team,  ->(dir)  { order("teams.name #{dir.to_s}, goggle_cups.season_year #{dir.to_s}") }
   scope :sort_goggle_cup_by_year,  ->(dir)  { order("goggle_cups.season_year #{dir.to_s}") }
 
-  scope :is_closed_now,            ->       { where("goggle_cups.end_date < curdate()") }
-  scope :is_current,               ->       { where("goggle_cups.end_date >= curdate()") }
+  scope :is_closed_now,            -> { where("goggle_cups.end_date < curdate()") }
+  scope :is_current,               -> { where("goggle_cups.end_date >= curdate()") }
 
   scope :for_team,                 ->(team) { where( team_id: team.id ) }
 

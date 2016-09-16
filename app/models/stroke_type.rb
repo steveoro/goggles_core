@@ -8,7 +8,7 @@
   - author:   Steve A.
 
 =end
-class StrokeType < ActiveRecord::Base
+class StrokeType < ApplicationRecord
 
   # Unique ID used inside the DB to address the Freestyle (Crawl) StrokeType instance
   FREESTYLE_ID    = 1
@@ -33,9 +33,10 @@ class StrokeType < ActiveRecord::Base
   validates_length_of     :code, within: 1..2, allow_nil: false
   validates_uniqueness_of :code, message: :already_exists
 
-  attr_accessible :code
+# FIXME for Rails 4+, move required/permitted check to the controller using the model
+#  attr_accessible :code
 
-  scope :is_eventable,         where(is_eventable: true)
+  scope :is_eventable,         ->{ where(is_eventable: true) }
   # ----------------------------------------------------------------------------
 
 

@@ -2,7 +2,7 @@ require 'drop_down_listable'
 require 'localizable'
 
 
-class LockerCabinetType < ActiveRecord::Base
+class LockerCabinetType < ApplicationRecord
   include DropDownListable
   include Localizable
 

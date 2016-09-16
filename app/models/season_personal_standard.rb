@@ -3,7 +3,7 @@ require 'timing_gettable'
 require 'timing_validatable'
 
 
-class SeasonPersonalStandard < ActiveRecord::Base
+class SeasonPersonalStandard < ApplicationRecord
   include SwimmerRelatable
   include TimingGettable
   include TimingValidatable

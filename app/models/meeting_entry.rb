@@ -3,7 +3,7 @@ require 'swimmer_relatable'
 require 'timing_gettable'
 
 
-class MeetingEntry < ActiveRecord::Base
+class MeetingEntry < ApplicationRecord
   include SwimmerRelatable
 
   include TimingGettable
@@ -36,17 +36,18 @@ class MeetingEntry < ActiveRecord::Base
   belongs_to :entry_time_type
 
 
-  attr_accessible :start_list_number, :lane_number, :heat_number, :heat_arrival_order, :meeting_program_id,
-                  :swimmer_id, :team_id, :team_affiliation_id, :badge_id, :entry_time_type_id,
-                  :minutes, :seconds, :hundreds, :is_no_time, :user_id
+# FIXME for Rails 4+, move required/permitted check to the controller using the model
+#  attr_accessible :start_list_number, :lane_number, :heat_number, :heat_arrival_order, :meeting_program_id,
+#                  :swimmer_id, :team_id, :team_affiliation_id, :badge_id, :entry_time_type_id,
+#                  :minutes, :seconds, :hundreds, :is_no_time, :user_id
 
-  scope :is_male,    -> { joins(:swimmer).where(["swimmers.gender_type_id = ?", GenderType::MALE_ID]) }
-  scope :is_female,  -> { joins(:swimmer).where(["swimmers.gender_type_id = ?", GenderType::FEMALE_ID]) }
+  scope :is_male,               -> { joins(:swimmer).where(["swimmers.gender_type_id = ?", GenderType::MALE_ID]) }
+  scope :is_female,             -> { joins(:swimmer).where(["swimmers.gender_type_id = ?", GenderType::FEMALE_ID]) }
 
-  scope :for_gender, ->(gender_type_id) { joins(:meeting_program).where(["meeting_programs.gender_type_id = ?", gender_type_id]) }
-  scope :for_team,   ->(team_id) { where(["team_id = ?", team_id]) }
-  scope :for_category_type, ->(category_type) { joins(:category_type).where(['category_types.id = ?', category_type.id]) }
-  scope :for_event_type,    ->(event_type)    { joins(:event_type).where(["event_types.id = ?", event_type.id]) }
+  scope :for_gender,            ->(gender_type_id)  { joins(:meeting_program).where(["meeting_programs.gender_type_id = ?", gender_type_id]) }
+  scope :for_team,              ->(team_id)         { where(["team_id = ?", team_id]) }
+  scope :for_category_type,     ->(category_type)   { joins(:category_type).where(['category_types.id = ?', category_type.id]) }
+  scope :for_event_type,        ->(event_type)      { joins(:event_type).where(["event_types.id = ?", event_type.id]) }
 
   scope :sort_by_number,        -> { order('start_list_number ASC, is_no_time DESC, (minutes*6000+seconds*100+hundreds) DESC ') }
   scope :sort_by_gender_number, -> { joins(:meeting_program).order('meeting_programs.gender_type_id DESC, start_list_number ASC, is_no_time DESC, (minutes*6000+seconds*100+hundreds) DESC ') }

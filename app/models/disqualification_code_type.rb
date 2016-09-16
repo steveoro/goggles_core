@@ -2,7 +2,7 @@ require 'drop_down_listable'
 require 'localizable'
 
 
-class DisqualificationCodeType < ActiveRecord::Base
+class DisqualificationCodeType < ApplicationRecord
   include DropDownListable
   include Localizable
 

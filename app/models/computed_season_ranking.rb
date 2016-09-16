@@ -3,10 +3,10 @@
 # This entity stores the *team* final ranking in a (closed) season
 # Should provide data for season history (hall of fame), palmares and so on
 # without runtime ranking computation
-# 
+#
 # N.B. Maybe in a future should be updatated runtime for current seasons too
 #
-class ComputedSeasonRanking < ActiveRecord::Base
+class ComputedSeasonRanking < ApplicationRecord
 
   belongs_to :team
   belongs_to :season
@@ -25,7 +25,8 @@ class ComputedSeasonRanking < ActiveRecord::Base
   delegate :name,        to: :team,   prefix: true
   delegate :description, to: :season, prefix: true
 
-  attr_accessible :season_id, :team_id, :rank, :total_points
+# FIXME for Rails 4+, move required/permitted check to the controller using the model
+#  attr_accessible :season_id, :team_id, :rank, :total_points
 
   # ----------------------------------------------------------------------------
   # Base methods:

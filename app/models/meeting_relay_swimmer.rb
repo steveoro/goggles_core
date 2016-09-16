@@ -12,7 +12,7 @@ require 'timing_validatable'
 # @author   Steve A.
 # @version  4.00.341
 #
-class MeetingRelaySwimmer < ActiveRecord::Base
+class MeetingRelaySwimmer < ApplicationRecord
   include SwimmerRelatable
   include TimingGettable
   include TimingValidatable

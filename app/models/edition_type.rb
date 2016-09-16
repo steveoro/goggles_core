@@ -2,7 +2,7 @@ require 'drop_down_listable'
 require 'localizable'
 
 
-class EditionType < ActiveRecord::Base
+class EditionType < ApplicationRecord
   include DropDownListable
   include Localizable
 

@@ -1,7 +1,7 @@
 require 'localizable'
 
 
-class BaseMovement < ActiveRecord::Base
+class BaseMovement < ApplicationRecord
   include Localizable
 
   belongs_to :user                                  # [Steve, 20120212] Do not validate associated user!

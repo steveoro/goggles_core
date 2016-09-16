@@ -9,7 +9,7 @@
   - author:   Steve A.
 
 =end
-class SwimmingPoolReview < ActiveRecord::Base
+class SwimmingPoolReview < ApplicationRecord
   after_create    UserContentLogger.new('swimming_pool_reviews')
   after_update    UserContentLogger.new('swimming_pool_reviews')
   before_destroy  UserContentLogger.new('swimming_pool_reviews')
@@ -31,7 +31,8 @@ class SwimmingPoolReview < ActiveRecord::Base
 
   delegate :name, to: :user, prefix: true
 
-  attr_accessible :title, :entry_text, :user_id, :swimming_pool_id
+# FIXME for Rails 4+, move required/permitted check to the controller using the model
+#  attr_accessible :title, :entry_text, :user_id, :swimming_pool_id
 
   scope :sort_swimming_pool_by_user,          ->(dir) { order("users.name #{dir.to_s}, swimming_pools.name #{dir.to_s}") }
   scope :sort_swimming_pool_by_swimming_pool, ->(dir) { order("swimming_pools.name #{dir.to_s}") }

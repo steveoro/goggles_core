@@ -10,7 +10,7 @@ require 'timing_gettable'
 # @author   Steve A., Leega
 # @version  4.00.797
 #
-class MeetingIndividualResult < ActiveRecord::Base
+class MeetingIndividualResult < ApplicationRecord
   include SwimmerRelatable
   include TimingGettable
   include TimingValidatable
@@ -63,28 +63,29 @@ class MeetingIndividualResult < ActiveRecord::Base
   validates_numericality_of :reaction_time
 
 
-  attr_accessible :rank, :is_play_off, :is_out_of_race, :is_disqualified, :standard_points,
-                  :meeting_individual_points, :minutes, :seconds, :hundreds,
-                  :meeting_program_id, :swimmer_id, :team_id, :badge_id, :user_id,
-                  :disqualification_code_type_id, :goggle_cup_points, :reaction_time,
-                  :team_points, :team_affiliation_id, :is_personal_best
+# FIXME for Rails 4+, move required/permitted check to the controller using the model
+#  attr_accessible :rank, :is_play_off, :is_out_of_race, :is_disqualified, :standard_points,
+#                  :meeting_individual_points, :minutes, :seconds, :hundreds,
+#                  :meeting_program_id, :swimmer_id, :team_id, :badge_id, :user_id,
+#                  :disqualification_code_type_id, :goggle_cup_points, :reaction_time,
+#                  :team_points, :team_affiliation_id, :is_personal_best
 
 
   delegate :short_name, to: :category_type, prefix: true
   delegate :code,       to: :event_type, prefix: true
 
-  scope :is_valid,                    ->              { where(is_out_of_race: false, is_disqualified: false) }
-  scope :is_not_disqualified,         ->              { where(is_disqualified: false) }
-  scope :is_disqualified,             ->              { where(is_disqualified: true) }
-  scope :is_personal_best,            ->              { where(is_personal_best: true) }
-  scope :is_season_type_best,         ->              { where(is_season_type_best: true) }
+  scope :is_valid,                    -> { where(is_out_of_race: false, is_disqualified: false) }
+  scope :is_not_disqualified,         -> { where(is_disqualified: false) }
+  scope :is_disqualified,             -> { where(is_disqualified: true) }
+  scope :is_personal_best,            -> { where(is_personal_best: true) }
+  scope :is_season_type_best,         -> { where(is_season_type_best: true) }
 
-  scope :is_male,                     ->              { joins(:swimmer).where(["swimmers.gender_type_id = ?", GenderType::MALE_ID]) }
-  scope :is_female,                   ->              { joins(:swimmer).where(["swimmers.gender_type_id = ?", GenderType::FEMALE_ID]) }
+  scope :is_male,                     -> { joins(:swimmer).where(["swimmers.gender_type_id = ?", GenderType::MALE_ID]) }
+  scope :is_female,                   -> { joins(:swimmer).where(["swimmers.gender_type_id = ?", GenderType::FEMALE_ID]) }
 
   scope :has_rank,                    ->(rank_filter) { where(rank: rank_filter) }
   scope :has_points,                  ->(score_sym = 'standard_points') { where("#{score_sym.to_s} > 0") }
-  scope :has_time,                    ->              { where("((minutes * 6000) + (seconds * 100) + hundreds > 0)") }
+  scope :has_time,                    -> { where("((minutes * 6000) + (seconds * 100) + hundreds > 0)") }
 
   scope :sort_by_user,                ->(dir = 'ASC') { order("users.name #{dir.to_s}, meeting_programs.meeting_session_id #{dir.to_s}, swimmers.last_name #{dir.to_s}, swimmers.first_name #{dir.to_s}") }
   scope :sort_by_meeting,             ->(dir)         { order("meeting_programs.meeting_session_id #{dir.to_s}, swimmers.last_name #{dir.to_s}, swimmers.first_name #{dir.to_s}") }
@@ -113,10 +114,10 @@ class MeetingIndividualResult < ActiveRecord::Base
   scope :for_category_code,           ->(category_code)        { joins(:category_type).where(['category_types.code = ?', category_code]) }
   scope :for_date_range,              ->(date_begin, date_end) { joins(:meeting).where(['meetings.header_date between ? and ?', date_begin, date_end]) }
   scope :for_season,                  ->(season)               { joins(:season).where(['seasons.id = ?', season.id]) }
-  scope :for_closed_seasons,          ->                       { joins(:season).where("seasons.end_date is not null and seasons.end_date < curdate()") }
+  scope :for_closed_seasons,          -> { joins(:season).where("seasons.end_date is not null and seasons.end_date < curdate()") }
   scope :for_over_that_score,         ->(score_sym = 'standard_points', points = 800) { where("#{score_sym.to_s} > #{points}") }
   scope :for_meeting_editions,        ->(meeting)              { joins(:meeting).where(['meetings.code = ?', meeting.code]) }
-  
+
   # ----------------------------------------------------------------------------
   # Base methods:
   # ----------------------------------------------------------------------------
@@ -259,7 +260,7 @@ class MeetingIndividualResult < ActiveRecord::Base
   end
   #-- --------------------------------------------------------------------------
   #++
-  
+
   # Calculate the swimemr age
   def get_swimmer_age
     get_scheduled_date.year - swimmer.year_of_birth + ( get_scheduled_date.month > 9 ? 1 : 0 )

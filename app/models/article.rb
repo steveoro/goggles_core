@@ -6,7 +6,7 @@
   - author:   Steve A.
 
 =end
-class Article < ActiveRecord::Base
+class Article < ApplicationRecord
   belongs_to :user                                  # [Steve, 20120212] Do not validate associated user!
 
   validates_presence_of :title, length: { within: 1..80 }, allow_nil: false

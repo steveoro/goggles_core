@@ -10,7 +10,7 @@ require 'wrappers/timing'
   - author:   Steve A., Leega
 
 =end
-class TrainingRow < ActiveRecord::Base
+class TrainingRow < ApplicationRecord
   after_create    UserContentLogger.new('training_rows')
   after_update    UserContentLogger.new('training_rows')
   before_destroy  UserContentLogger.new('training_rows')
@@ -65,21 +65,22 @@ class TrainingRow < ActiveRecord::Base
 
   delegate :code, to: :training_step_type, prefix: true
 
-  attr_accessible :part_order,
-                  :group_id, :group_times, :group_start_and_rest, :group_pause,
-                  :times, :distance, :start_and_rest, :pause,
-                  :training_id, :exercise_id, :training_step_type_id,
-                  :arm_aux_type_id, :kick_aux_type_id, :body_aux_type_id, :breath_aux_type_id
+# FIXME for Rails 4+, move required/permitted check to the controller using the model
+#  attr_accessible :part_order,
+#                  :group_id, :group_times, :group_start_and_rest, :group_pause,
+#                  :times, :distance, :start_and_rest, :pause,
+#                  :training_id, :exercise_id, :training_step_type_id,
+#                  :arm_aux_type_id, :kick_aux_type_id, :body_aux_type_id, :breath_aux_type_id
 
-  scope :sort_by_part_order,    order('part_order')
-  scope :with_groups,           where('group_id > 0').order('part_order')
-  scope :without_groups,        where('(group_id is null) or (group_id = 0)').order('part_order')
+  scope :sort_by_part_order,    -> { order('part_order') }
+  scope :with_groups,           -> { where('group_id > 0').order('part_order') }
+  scope :without_groups,        -> { where('(group_id is null) or (group_id = 0)').order('part_order') }
 
 
   # Overload constructor for setting default values
   #
-  def initialize( attributes = nil, options = {} )
-    super( attributes, options )
+  def initialize( options = {} )
+    super( options )
     self.part_order = 1 unless self.part_order.to_i != 0
     self.times = 1      unless self.times.to_i > 0
     self.distance = 50  unless self.distance.to_i > 0

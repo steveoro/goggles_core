@@ -3,7 +3,7 @@ require 'drop_down_listable'
 require 'wrappers/timing'
 
 
-class ExerciseRow < ActiveRecord::Base
+class ExerciseRow < ApplicationRecord
   include DropDownListable
 
   belongs_to :exercise

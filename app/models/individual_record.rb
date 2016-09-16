@@ -15,7 +15,7 @@
   each MeetingIndividualResult insertion).
 
 =end
-class IndividualRecord < ActiveRecord::Base
+class IndividualRecord < ApplicationRecord
   include SwimmerRelatable
   include TimingGettable
   include TimingValidatable

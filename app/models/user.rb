@@ -14,7 +14,7 @@ require 'i18n'
   - author:   Steve A.
 
 =end
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   after_create    UserContentLogger.new('users', email_on_create: true)
   after_update    UserContentLogger.new('users')
   before_destroy  UserContentLogger.new('users')
@@ -60,17 +60,18 @@ class User < ActiveRecord::Base
   validates_length_of     :last_name,     maximum: 50
   validates_length_of     :year_of_birth, maximum: 4
 
-  attr_accessible :name, :email, :description, :password, :password_confirmation,
-                  :last_name, :first_name, :year_of_birth,
-                  :api_authentication_token,
-                  :outstanding_goggle_score_bias,
-                  :outstanding_standard_score_bias,
-                  :coach_level_type, :swimmer_level_type
+# FIXME for Rails 4+, move required/permitted check to the controller using the model
+#  attr_accessible :name, :email, :description, :password, :password_confirmation,
+#                  :last_name, :first_name, :year_of_birth,
+#                  :api_authentication_token,
+#                  :outstanding_goggle_score_bias,
+#                  :outstanding_standard_score_bias,
+#                  :coach_level_type, :swimmer_level_type
 
-  scope :data_updates_newsletter_readers, ->{ where(use_email_data_updates_notify: true) }
-  scope :achievements_newsletter_readers, ->{ where(use_email_achievements_notify: true) }
-  scope :generic_newsletter_readers,      ->{ where(use_email_newsletter_notify: true) }
-  scope :community_newsletter_readers,    ->{ where(use_email_community_notify: true) }
+  scope :data_updates_newsletter_readers, -> { where(use_email_data_updates_notify: true) }
+  scope :achievements_newsletter_readers, -> { where(use_email_achievements_notify: true) }
+  scope :generic_newsletter_readers,      -> { where(use_email_newsletter_notify: true) }
+  scope :community_newsletter_readers,    -> { where(use_email_community_notify: true) }
   #-- -------------------------------------------------------------------------
   #++
 

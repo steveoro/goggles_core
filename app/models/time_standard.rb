@@ -11,7 +11,7 @@ require 'timing_validatable'
  are computed in score.
 
 =end
-class TimeStandard < ActiveRecord::Base
+class TimeStandard < ApplicationRecord
   include TimingGettable
   include TimingValidatable
 
@@ -28,12 +28,13 @@ class TimeStandard < ActiveRecord::Base
   validates_associated :event_type
   validates_associated :category_type
 
-  has_one  :season_type,            through: :season
+  has_one  :season_type, through: :season
 
   delegate :name, to: :user, prefix: true
 
-  attr_accessible :season_id, :event_type_id, :category_type_id, :gender_type_id,
-                  :pool_type_id, :minutes, :seconds, :hundreds
+# FIXME for Rails 4+, move required/permitted check to the controller using the model
+#  attr_accessible :season_id, :event_type_id, :category_type_id, :gender_type_id,
+#                  :pool_type_id, :minutes, :seconds, :hundreds
 
   scope :sort_by_user,            ->(dir) { order("users.name #{dir.to_s}, seasons.code #{dir.to_s}") }
   scope :sort_by_season,          ->(dir) { order("seasons.code #{dir.to_s}") }

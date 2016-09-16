@@ -1,7 +1,7 @@
 require 'drop_down_listable'
 
 
-class SeasonType < ActiveRecord::Base
+class SeasonType < ApplicationRecord
   include DropDownListable
 
   # Commodity reference to a specific code stored in the DB; make sure this value is always correct
@@ -24,8 +24,8 @@ class SeasonType < ActiveRecord::Base
   has_many :swimmers,     through: :seasons
   has_many :teams,        through: :seasons
   has_many :event_types,  through: :seasons
-  
-  scope :is_master, where("code like 'MAS%'")
+
+  scope :is_master,   -> { where("code like 'MAS%'") }
   # ----------------------------------------------------------------------------
 
   # Comodity helper

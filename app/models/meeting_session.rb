@@ -9,7 +9,7 @@
   - author:   Steve A., Leega
 
 =end
-class MeetingSession < ActiveRecord::Base
+class MeetingSession < ApplicationRecord
   include MeetingAccountable
 
   belongs_to :user
@@ -41,9 +41,10 @@ class MeetingSession < ActiveRecord::Base
   validates_length_of :description, maximum: 100, allow_nil: false
 
 
-  attr_accessible :session_order, :scheduled_date, :warm_up_time, :begin_time,
-                  :notes, :meeting_id, :swimming_pool_id, :user_id, :description,
-                  :is_autofilled, :day_part_type_id
+# FIXME for Rails 4+, move required/permitted check to the controller using the model
+#  attr_accessible :session_order, :scheduled_date, :warm_up_time, :begin_time,
+#                  :notes, :meeting_id, :swimming_pool_id, :user_id, :description,
+#                  :is_autofilled, :day_part_type_id
 
 
   scope :sort_meeting_session_by_user,          ->(dir) { order("users.name #{dir.to_s}, meeting_sessions.scheduled_date #{dir.to_s}") }

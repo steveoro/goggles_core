@@ -16,7 +16,7 @@ require 'sql_converter'
   Typical usage involves declaring callback filters directly on the
   models like this:
 
-    class SwimmingPoolReview < ActiveRecord::Base
+    class SwimmingPoolReview < ApplicationRecord
 
       before_destroy  UserContentLogger.new( 'swimming_pool_reviews' )
 

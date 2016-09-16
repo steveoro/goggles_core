@@ -2,7 +2,7 @@ require 'drop_down_listable'
 require 'localizable'
 
 
-class HairDryerType < ActiveRecord::Base
+class HairDryerType < ApplicationRecord
   include DropDownListable
   include Localizable
 

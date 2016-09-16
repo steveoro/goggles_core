@@ -1,4 +1,4 @@
-class ScoreMappingTypeRow < ActiveRecord::Base
+class ScoreMappingTypeRow < ApplicationRecord
 
   belongs_to :score_mapping_type
   validates_associated :score_mapping_type

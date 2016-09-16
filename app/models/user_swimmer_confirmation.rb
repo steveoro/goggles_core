@@ -12,7 +12,7 @@
   swimmer_id.
 
 =end
-class UserSwimmerConfirmation < ActiveRecord::Base
+class UserSwimmerConfirmation < ApplicationRecord
   after_create    UserContentLogger.new('user_swimmer_confirmations')
   after_update    UserContentLogger.new('user_swimmer_confirmations')
   before_destroy  UserContentLogger.new('user_swimmer_confirmations')
@@ -26,7 +26,8 @@ class UserSwimmerConfirmation < ActiveRecord::Base
     class_name: User,
     foreign_key: "confirmator_id"
 
-  attr_accessible :user_id, :swimmer_id, :confirmator_id
+# FIXME for Rails 4+, move required/permitted check to the controller using the model
+#  attr_accessible :user_id, :swimmer_id, :confirmator_id
 
   scope :find_for_user,         ->(user) { where( user_id: user.id ) }
   scope :find_for_confirmator,  ->(confirmator) { where( confirmator_id: confirmator.id ) }

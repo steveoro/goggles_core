@@ -1,4 +1,4 @@
-class PoolType < ActiveRecord::Base
+class PoolType < ApplicationRecord
   include DropDownListable
 
 
@@ -12,15 +12,15 @@ class PoolType < ActiveRecord::Base
   has_many :events_by_pool_types
   has_many :event_types, through: :events_by_pool_types
 
-  scope :only_for_meetings, where(is_suitable_for_meetings: true)
+  scope :only_for_meetings, ->{ where(is_suitable_for_meetings: true) }
 
-  # Unique ID used inside the DB to address a 25 mt. PoolType instance 
+  # Unique ID used inside the DB to address a 25 mt. PoolType instance
   MT25_ID = 1
 
-  # Unique ID used inside the DB to address a 50 mt. PoolType instance 
+  # Unique ID used inside the DB to address a 50 mt. PoolType instance
   MT50_ID = 2
 
-  # Unique ID used inside the DB to address a 33 mt. PoolType instance 
+  # Unique ID used inside the DB to address a 33 mt. PoolType instance
   MT33_ID = 3
   # ----------------------------------------------------------------------------
 
@@ -48,7 +48,7 @@ class PoolType < ActiveRecord::Base
 
   # Computes a localized verbose description for the value/code associated with this data
   def i18n_verbose
-    I18n.t( :pool_type_des ).gsub("{POOL_LENGTH}", self.length_in_meters.to_s) 
+    I18n.t( :pool_type_des ).gsub("{POOL_LENGTH}", self.length_in_meters.to_s)
   end
   # ----------------------------------------------------------------------------
 end

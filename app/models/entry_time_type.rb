@@ -9,7 +9,7 @@ require 'localizable'
   - author:   Steve A.
 
 =end
-class EntryTimeType < ActiveRecord::Base
+class EntryTimeType < ApplicationRecord
   include DropDownListable
   include Localizable
 

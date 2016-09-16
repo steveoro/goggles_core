@@ -2,7 +2,7 @@ require 'drop_down_listable'
 require 'localizable'
 
 
-class HeatType < ActiveRecord::Base
+class HeatType < ApplicationRecord
   include DropDownListable
   include Localizable
 

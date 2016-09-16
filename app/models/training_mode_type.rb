@@ -2,7 +2,7 @@ require 'drop_down_listable'
 require 'localizable'
 
 
-class TrainingModeType < ActiveRecord::Base
+class TrainingModeType < ApplicationRecord
   include DropDownListable
   include Localizable
 

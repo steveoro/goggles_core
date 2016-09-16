@@ -4,7 +4,7 @@
 # to prepare the final meeting result chart of all the registered teams
 # for a specific meeting.
 #
-class MeetingTeamScore < ActiveRecord::Base
+class MeetingTeamScore < ApplicationRecord
 
   belongs_to :user
   # [Steve, 20120212] Validating on User fails always because of validation requirements inside User (password & salt)
@@ -41,14 +41,15 @@ class MeetingTeamScore < ActiveRecord::Base
   validates_numericality_of :season_team_points
 
 
-  attr_accessible :rank, :sum_individual_points, :sum_relay_points, :sum_team_points,
-                  :meeting_individual_points, :meeting_relay_points, :meeting_team_points,
-                  :season_individual_points, :season_relay_points, :season_team_points,
-                  :team, :team_affiliation, :meeting, :season,
-                  :team_id, :team_affiliation_id, :meeting_id, :season_id, :user_id
+# FIXME for Rails 4+, move required/permitted check to the controller using the model
+#  attr_accessible :rank, :sum_individual_points, :sum_relay_points, :sum_team_points,
+#                  :meeting_individual_points, :meeting_relay_points, :meeting_team_points,
+#                  :season_individual_points, :season_relay_points, :season_team_points,
+#                  :team, :team_affiliation, :meeting, :season,
+#                  :team_id, :team_affiliation_id, :meeting_id, :season_id, :user_id
 
 
-  scope :has_season_points,             where('(season_individual_points + season_relay_points + season_team_points) > 0')
+  scope :has_season_points, -> { where('(season_individual_points + season_relay_points + season_team_points) > 0') }
   scope :for_team,          ->(team)    { where(team_id: team.id) }
   scope :for_meeting,       ->(meeting) { where(meeting_id: meeting.id) }
 

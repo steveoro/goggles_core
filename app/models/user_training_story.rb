@@ -7,7 +7,7 @@
   - author:   Steve A.
 
 =end
-class UserTrainingStory < ActiveRecord::Base
+class UserTrainingStory < ApplicationRecord
   after_create    UserContentLogger.new('user_training_stories')
   after_update    UserContentLogger.new('user_training_stories')
   before_destroy  UserContentLogger.new('user_training_stories')
@@ -30,12 +30,13 @@ class UserTrainingStory < ActiveRecord::Base
 
   delegate :name, to: :user, prefix: true
 
-  attr_accessible :swam_date, :total_training_time, :notes,
-                  :user_training_id, :swimming_pool_id, :swimmer_level_type_id
+# FIXME for Rails 4+, move required/permitted check to the controller using the model
+#  attr_accessible :swam_date, :total_training_time, :notes,
+#                  :user_training_id, :swimming_pool_id, :swimmer_level_type_id
 
 
-  scope :sort_by_date,        order('swam_date')
-  scope :sort_by_duration,    order('total_training_time')
+  scope :sort_by_date,        -> { order('swam_date') }
+  scope :sort_by_duration,    -> { order('total_training_time') }
   #-- -------------------------------------------------------------------------
   #++
 

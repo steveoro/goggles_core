@@ -13,7 +13,7 @@
 require 'framework/naming_tools'
 
 
-class AppParameter < ActiveRecord::Base
+class AppParameter < ApplicationRecord
 
   validates_length_of :controller_name, maximum: 255, allow_nil: true
   validates_length_of :action_name, maximum: 255, allow_nil: true

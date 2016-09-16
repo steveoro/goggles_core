@@ -5,7 +5,7 @@
 
 = SqlConverter
 
-  - Goggles framework vers.:  4.00.733
+  - Goggles framework vers.:  6.00.00
   - author: Steve A.
 
   Container module for methods or strategies to obtain complete SQL statements from
@@ -18,9 +18,9 @@ module SqlConverter
   # (It assumes record.kind_of?(ActiveRecord::Base) is +true+).
   #
   def to_sql_insert( record, with_comment = true, eoln = "\r\n\r\n", explanation = nil )
-    con = record.connection
+    con = record.class.connection
     sql_text = with_comment ? get_sql_comment(record) : ''
-    sql_text << "-- #{explanation}\r\n" if explanation 
+    sql_text << "-- #{explanation}\r\n" if explanation
     sql_text << "INSERT INTO #{ con.quote_column_name( record.class.table_name ) } "
     columns = []
     values  = []
@@ -43,9 +43,9 @@ module SqlConverter
   # the Hash.
   #
   def to_sql_update( record, with_comment = true, attribute_hash = record.attributes, eoln = "\r\n\r\n", explanation = nil )
-    con = record.connection
+    con = record.class.connection
     sql_text = with_comment ? get_sql_comment(record) : ''
-    sql_text << "-- #{explanation}\r\n" if explanation 
+    sql_text << "-- #{explanation}\r\n" if explanation
     sql_text << "UPDATE #{ con.quote_column_name( record.class.table_name ) }\r\n"
     sets = []
     attribute_hash
@@ -63,9 +63,9 @@ module SqlConverter
   # (It assumes record.kind_of?(ActiveRecord::Base) is +true+).
   #
   def to_sql_delete( record, with_comment = true, eoln = "\r\n\r\n", explanation = nil )
-    con = record.connection
+    con = record.class.connection
     sql_text = with_comment ? get_sql_comment(record) : ''
-    sql_text << "-- #{explanation}\r\n" if explanation 
+    sql_text << "-- #{explanation}\r\n" if explanation
     sql_text << "DELETE FROM #{ con.quote_column_name( record.class.table_name ) } "
     sql_text << "WHERE (#{ con.quote_column_name('id') }=#{ record.id });#{ eoln }"
     sql_text

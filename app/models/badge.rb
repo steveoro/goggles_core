@@ -6,7 +6,7 @@
   - author:   Steve A.
 
 =end
-class Badge < ActiveRecord::Base
+class Badge < ApplicationRecord
   belongs_to :user                                  # [Steve, 20120212] Do not validate associated user!
   belongs_to :season
   belongs_to :swimmer
@@ -35,8 +35,9 @@ class Badge < ActiveRecord::Base
 
   validates_presence_of   :number, length: { within: 1..40 }, allow_nil: false
 
-  attr_accessible :number, :season_id, :swimmer_id, :team_id, :category_type_id, :user_id,
-                  :entry_time_type_id, :team_affiliation_id
+# FIXME for Rails 4+, move required/permitted check to the controller using the model
+#  attr_accessible :number, :season_id, :swimmer_id, :team_id, :category_type_id, :user_id,
+#                  :entry_time_type_id, :team_affiliation_id
 
 
   delegate :name, to: :user, prefix: true

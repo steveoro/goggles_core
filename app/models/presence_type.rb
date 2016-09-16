@@ -2,7 +2,7 @@ require 'drop_down_listable'
 require 'localizable'
 
 
-class PresenceType < ActiveRecord::Base
+class PresenceType < ApplicationRecord
   include DropDownListable
   include Localizable
 

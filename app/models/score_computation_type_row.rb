@@ -1,4 +1,4 @@
-class ScoreComputationTypeRow < ActiveRecord::Base
+class ScoreComputationTypeRow < ApplicationRecord
 
   belongs_to :score_computation_type
   belongs_to :score_mapping_type

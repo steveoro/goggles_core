@@ -9,7 +9,7 @@ require 'wrappers/timing'
 # @author   Steve A.
 # @version  4.00.797
 #
-class MeetingRelayResult < ActiveRecord::Base
+class MeetingRelayResult < ApplicationRecord
   include TimingGettable
   include TimingValidatable
 
@@ -55,21 +55,22 @@ class MeetingRelayResult < ActiveRecord::Base
   validates_numericality_of :reaction_time
 
 
-  attr_accessible :rank, :is_play_off, :is_out_of_race, :is_disqualified, :standard_points,
-                  :meeting_points, :minutes, :seconds, :hundreds,
-                  :meeting_program_id, :team_id, :user_id,
-                  :disqualification_code_type_id, :relay_header, :reaction_time,
-                  :entry_minutes, :entry_seconds, :entry_hundreds, :team_affiliation_id,
-                  :entry_time_type_id
+# FIXME for Rails 4+, move required/permitted check to the controller using the model
+#  attr_accessible :rank, :is_play_off, :is_out_of_race, :is_disqualified, :standard_points,
+#                  :meeting_points, :minutes, :seconds, :hundreds,
+#                  :meeting_program_id, :team_id, :user_id,
+#                  :disqualification_code_type_id, :relay_header, :reaction_time,
+#                  :entry_minutes, :entry_seconds, :entry_hundreds, :team_affiliation_id,
+#                  :entry_time_type_id
 
 
-  scope :is_valid,               ->              { where(is_out_of_race: false, is_disqualified: false) }
-  scope :is_not_disqualified,    ->              { where(is_disqualified: false) }
-  scope :is_disqualified,        ->              { where(is_disqualified: true) }
+  scope :is_valid,               -> { where(is_out_of_race: false, is_disqualified: false) }
+  scope :is_not_disqualified,    -> { where(is_disqualified: false) }
+  scope :is_disqualified,        -> { where(is_disqualified: true) }
 
   scope :has_rank,               ->(rank_filter) { where(rank: rank_filter) }
   scope :has_points,             ->(score_sym = 'standard_points') { where("#{score_sym.to_s} > 0") }
-  scope :has_time,               ->              { where("((minutes * 6000) + (seconds * 100) + hundreds > 0)") }
+  scope :has_time,               -> { where("((minutes * 6000) + (seconds * 100) + hundreds > 0)") }
 
   scope :sort_by_user,           ->(dir)         { order("users.name #{dir.to_s}, meeting_program_id #{dir.to_s}, rank #{dir.to_s}") }
   scope :sort_by_meeting_relay,  ->(dir)         { order("meeting_program_id #{dir.to_s}, rank #{dir.to_s}") }

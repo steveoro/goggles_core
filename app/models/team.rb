@@ -10,7 +10,7 @@ require 'drop_down_listable'
   one for each academic/sport year.
 
 =end
-class Team < ActiveRecord::Base
+class Team < ApplicationRecord
   include DropDownListable
 
   belongs_to :user                                  # [Steve, 20120212] Do not validate associated user!
@@ -49,15 +49,16 @@ class Team < ActiveRecord::Base
   scope :sort_team_by_city, ->(dir) { order("cities.name #{dir.to_s}, teams.name #{dir.to_s}") }
   scope :sort_by_name,      ->(dir) { order("teams.name #{dir.to_s}") }
 
-  scope :has_results,       ->      { where("EXISTS(SELECT 1 from meeting_individual_results where not is_disqualified and team_id = teams.id)") }
+  scope :has_results,       -> { where("EXISTS(SELECT 1 from meeting_individual_results where not is_disqualified and team_id = teams.id)") }
   scope :has_many_results,  ->(how_many=20) { where(["(SELECT count(id) from meeting_individual_results where not is_disqualified and team_id = teams.id) > ?", how_many]) }
 
   delegate :name, to: :user, prefix: true
 
-  attr_accessible :name, :name_variations, :user_id,
-                  :editable_name, :address, :zip, :phone_mobile, :phone_number,
-                  :fax_number, :e_mail, :contact_name, :home_page_url, :notes,
-                  :city_id
+# FIXME for Rails 4+, move required/permitted check to the controller using the model
+#  attr_accessible :name, :name_variations, :user_id,
+#                  :editable_name, :address, :zip, :phone_mobile, :phone_number,
+#                  :fax_number, :e_mail, :contact_name, :home_page_url, :notes,
+#                  :city_id
   #-- -------------------------------------------------------------------------
   #++
 
@@ -131,7 +132,7 @@ class Team < ActiveRecord::Base
   end
   #-- -------------------------------------------------------------------------
   #++
-  
+
   # Label symbol corresponding to either a column name or a model method to be used
   # mainly in generating DropDown option lists.
   #

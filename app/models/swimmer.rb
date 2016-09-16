@@ -11,7 +11,7 @@ require 'wrappers/timing'
   - author:   Steve A.
 
 =end
-class Swimmer < ActiveRecord::Base
+class Swimmer < ApplicationRecord
   # [Steve, 20140929] Here we just need to log the updates, since the users
   # can only add or remote UserSwimmerConfirmations, thus updating the only
   # related field on the table (:user_swimmer_confirmations).
@@ -72,10 +72,11 @@ class Swimmer < ActiveRecord::Base
 
   delegate :name, to: :user, prefix: true
 
-  attr_accessible :associated_user, :user, :user_id,
-                  :gender_type, :gender_type_id, :complete_name, :last_name, :first_name,
-                  :year_of_birth, :phone_mobile, :phone_number, :e_mail,
-                  :nickname, :is_year_guessed
+# FIXME for Rails 4+, move required/permitted check to the controller using the model
+#  attr_accessible :associated_user, :user, :user_id,
+#                  :gender_type, :gender_type_id, :complete_name, :last_name, :first_name,
+#                  :year_of_birth, :phone_mobile, :phone_number, :e_mail,
+#                  :nickname, :is_year_guessed
 
   scope :is_male,             -> { where(["swimmers.gender_type_id = ?", GenderType::MALE_ID]) }
   scope :is_female,           -> { where(["swimmers.gender_type_id = ?", GenderType::FEMALE_ID]) }

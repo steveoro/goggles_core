@@ -17,7 +17,7 @@ shared_examples_for "SqlConverter [param: let(:record)]" do
     end
     it "contains the list of values of the record (expcept :lock_version)" do
       required_attributes = record.attributes.reject{ |key| key == 'lock_version' }
-      quoted_values       = required_attributes.values.map{ |value| record.connection.quote(value) }
+      quoted_values       = required_attributes.values.map{ |value| record.class.connection.quote(value) }
       sql_text            = subject.to_sql_insert(record)
       expect( sql_text ).to include( quoted_values.join(', ') )
     end
@@ -33,7 +33,7 @@ shared_examples_for "SqlConverter [param: let(:record)]" do
     end
     it "contains the list of values of the record (expcept :id & :lock_version)" do
       required_attributes = record.attributes.reject{ |key| key == 'id' || key == 'lock_version' }
-      quoted_values       = required_attributes.values.map{ |value| record.connection.quote(value) }
+      quoted_values       = required_attributes.values.map{ |value| record.class.connection.quote(value) }
       sql_text            = subject.to_sql_update(record)
       quoted_values.each do |value|
         expect( sql_text ).to include( value )

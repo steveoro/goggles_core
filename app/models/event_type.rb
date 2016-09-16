@@ -8,7 +8,7 @@ require 'drop_down_listable'
   - author:   Steve A.
 
 =end
-class EventType < ActiveRecord::Base
+class EventType < ApplicationRecord
   include DropDownListable
 
   belongs_to :stroke_type
@@ -31,16 +31,16 @@ class EventType < ActiveRecord::Base
   validates_numericality_of :style_order
 
   has_many :meeting_events
-  has_many :meetings,         through: :meeting_events 
-  has_many :season_types,     through: :meetings 
+  has_many :meetings,         through: :meeting_events
+  has_many :season_types,     through: :meetings
   has_many :events_by_pool_types
   has_many :pool_types,       through: :events_by_pool_types
 
-  scope :only_relays,         where(is_a_relay: true)
-  scope :are_not_relays,      where(is_a_relay: false)
-  scope :for_fin_calculation, where('((length_in_meters % 50) = 0) AND (length_in_meters <= 1500)')
+  scope :only_relays,         ->{ where(is_a_relay: true) }
+  scope :are_not_relays,      ->{ where(is_a_relay: false) }
+  scope :for_fin_calculation, ->{ where('((length_in_meters % 50) = 0) AND (length_in_meters <= 1500)') }
 
-  scope :sort_by_style,       order('style_order')
+  scope :sort_by_style,       ->{ order('style_order') }
 
   scope :for_season_type,     ->(season_type) { joins(:season_types).where(['season_types.id = ?', season_type.id]) }
   #-- -------------------------------------------------------------------------

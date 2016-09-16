@@ -2,7 +2,7 @@ require 'drop_down_listable'
 require 'localizable'
 
 
-class ShowerType < ActiveRecord::Base
+class ShowerType < ApplicationRecord
   include DropDownListable
   include Localizable
 

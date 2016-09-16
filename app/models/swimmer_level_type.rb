@@ -2,7 +2,7 @@ require 'drop_down_listable'
 require 'localizable'
 
 
-class SwimmerLevelType < ActiveRecord::Base
+class SwimmerLevelType < ApplicationRecord
   include DropDownListable
   include Localizable
 

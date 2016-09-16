@@ -2,7 +2,7 @@ require 'drop_down_listable'
 require 'localizable'
 
 
-class MovementType < ActiveRecord::Base
+class MovementType < ApplicationRecord
   include DropDownListable
   include Localizable
 

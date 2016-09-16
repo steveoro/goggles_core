@@ -9,7 +9,7 @@
   - author:   Steve A., Leega
 
 =end
-class Training < ActiveRecord::Base
+class Training < ApplicationRecord
   after_create    UserContentLogger.new('trainings')
   after_update    UserContentLogger.new('trainings')
   before_destroy  UserContentLogger.new('trainings')
@@ -41,8 +41,9 @@ class Training < ActiveRecord::Base
 
   delegate :name, to: :user, prefix: true
 
-  attr_accessible :title, :description, :min_swimmer_level, :max_swimmer_level,
-                  :user_id, :training_rows_attributes # (Needed by the nested_form gem)
+# FIXME for Rails 4+, move required/permitted check to the controller using the model
+#  attr_accessible :title, :description, :min_swimmer_level, :max_swimmer_level,
+#                  :user_id, :training_rows_attributes # (Needed by the nested_form gem)
   #-- -------------------------------------------------------------------------
   #++
 

@@ -2,7 +2,7 @@ require 'drop_down_listable'
 require 'localizable'
 
 
-class KickAuxType < ActiveRecord::Base
+class KickAuxType < ApplicationRecord
   include DropDownListable
   include Localizable
 

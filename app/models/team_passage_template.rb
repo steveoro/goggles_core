@@ -1,4 +1,4 @@
-class TeamPassageTemplate < ActiveRecord::Base
+class TeamPassageTemplate < ApplicationRecord
   belongs_to :user
   # [Steve, 20120212] Validating on User fails always because of validation requirements inside User (password & salt)
   # validates_associated :user                       # (Do not enable this for User)
@@ -15,7 +15,7 @@ class TeamPassageTemplate < ActiveRecord::Base
 
   has_one  :stroke_type,    through: :event_type
 
-  scope :sort_by_length,     includes( :passage_type ).order('passage_types.length_in_meters')
+  scope :sort_by_length,     -> { includes( :passage_type ).order('passage_types.length_in_meters') }
 
   scope :for_team,           ->(team)       { where(['team_id = ?', team.id]) }
   scope :for_event_type,     ->(event_type) { where(['event_type_id = ?', event_type.id]) }

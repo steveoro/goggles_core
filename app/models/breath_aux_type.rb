@@ -2,7 +2,7 @@ require 'drop_down_listable'
 require 'localizable'
 
 
-class BreathAuxType < ActiveRecord::Base
+class BreathAuxType < ApplicationRecord
   include DropDownListable
   include Localizable
 

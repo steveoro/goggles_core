@@ -9,7 +9,7 @@ require 'drop_down_listable'
   - author:   Steve A., Leega
 
 =end
-class Exercise < ActiveRecord::Base
+class Exercise < ApplicationRecord
   include DropDownListable
 
   has_many :exercise_rows

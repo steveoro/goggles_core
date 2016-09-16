@@ -6,7 +6,7 @@
   - author:   Steve A.
 
 =end
-class NewsFeed < ActiveRecord::Base
+class NewsFeed < ApplicationRecord
   belongs_to :user                                  # [Steve, 20120212] Do not validate associated user!
   belongs_to :friend, class_name: "User", foreign_key: "friend_id"
 
@@ -20,7 +20,8 @@ class NewsFeed < ActiveRecord::Base
 
   scope :sort_by_user,            ->(dir) { order("users.name #{dir.to_s}, news_feeds.created_at #{dir.to_s}") }
 
-  attr_accessible :body, :user_id, :friend_id, :is_achievement, :is_friend_activity, :is_read, :title
+# FIXME for Rails 4+, move required/permitted check to the controller using the model
+#  attr_accessible :body, :user_id, :friend_id, :is_achievement, :is_friend_activity, :is_read, :title
 
   after_initialize do
     set_default_bool_value( :is_read )

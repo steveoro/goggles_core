@@ -1,6 +1,6 @@
 class HomeController < ApplicationController
   # Devise HTTP log-in strategy:
-  before_filter :authenticate_user!,  only: [:restricted_info]
+  before_action :authenticate_user!,  only: [:restricted_info]
 
   # Basic index action to test inclusion of the Core engine, open to all users
   #

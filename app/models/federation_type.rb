@@ -10,7 +10,7 @@ require 'drop_down_listable'
   - author:   Steve A.
 
 =end
-class FederationType < ActiveRecord::Base
+class FederationType < ApplicationRecord
   include DropDownListable
 
   validates_presence_of   :code, length: { within: 1..4 }, allow_nil: false

@@ -12,7 +12,7 @@ require 'timing_validatable'
 # @author   Leega, Steve A.
 # @version  4.00.811
 #
-class Passage < ActiveRecord::Base
+class Passage < ApplicationRecord
   include SwimmerRelatable
   include TimingGettable
   include TimingValidatable
@@ -65,7 +65,7 @@ class Passage < ActiveRecord::Base
   #validates_numericality_of :not_swam_part_hundreds
 
   scope :sort_by_user,       ->(dir) { order("users.name #{dir.to_s}, swimmer_id #{dir.to_s}") }
-  scope :sort_by_distance,   joins(:passage_type).order('passage_types.length_in_meters')
+  scope :sort_by_distance,   -> { joins(:passage_type).order('passage_types.length_in_meters') }
 
   scope :for_event_type,     ->(event_type) { joins(:event_type).where(['event_types.id = ?', event_type.id]) }
 #  scope :sort_by_program,    ->(dir) { order("meeting_programs.begin_time #{dir.to_s}, swimmers.last_name #{dir.to_s}, swimmers.first_name #{dir.to_s}") }

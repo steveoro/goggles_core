@@ -2,7 +2,7 @@ require 'drop_down_listable'
 require 'localizable'
 
 
-class CoachLevelType < ActiveRecord::Base
+class CoachLevelType < ApplicationRecord
   include DropDownListable
   include Localizable
 

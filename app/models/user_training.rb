@@ -10,7 +10,7 @@ require 'wrappers/timing'   # [Steve 20140311] Used by UserTrainingRow
   - author:   Steve A., Leega
 
 =end
-class UserTraining < ActiveRecord::Base
+class UserTraining < ApplicationRecord
   after_create    UserContentLogger.new('user_trainings')
   after_update    UserContentLogger.new('user_trainings')
   before_destroy  UserContentLogger.new('user_trainings')
@@ -31,11 +31,12 @@ class UserTraining < ActiveRecord::Base
 
   delegate :name, to: :user,               prefix: true
 
-  attr_accessible :description,
-                  :user_id, :user_training_rows_attributes, # (Needed by the nested_form gem)
-                  :user_training_story_attributes
+# FIXME for Rails 4+, move required/permitted check to the controller using the model
+#  attr_accessible :description,
+#                  :user_id, :user_training_rows_attributes, # (Needed by the nested_form gem)
+#                  :user_training_story_attributes
 
-  scope :sort_by_description,     order('description')
+  scope :sort_by_description,     -> { order('description') }
   #-- -------------------------------------------------------------------------
   #++
 

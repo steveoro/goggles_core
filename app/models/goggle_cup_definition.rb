@@ -1,5 +1,5 @@
 
-class GoggleCupDefinition < ActiveRecord::Base
+class GoggleCupDefinition < ApplicationRecord
 
   belongs_to :user                                  # [Steve, 20120212] Do not validate associated user!
 

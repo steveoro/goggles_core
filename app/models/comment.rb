@@ -6,7 +6,7 @@
   - author:   Steve A.
 
 =end
-class Comment < ActiveRecord::Base
+class Comment < ApplicationRecord
   after_create    UserContentLogger.new('comments')
   after_update    UserContentLogger.new('comments')
   before_destroy  UserContentLogger.new('comments')
@@ -19,8 +19,9 @@ class Comment < ActiveRecord::Base
 
   delegate :name, to: :user, prefix: true
 
-  attr_accessible :user_id, :swimming_pool_review_id, :comment_id
-                  :entry_text
+# FIXME for Rails 4+, move required/permitted check to the controller using the model
+#  attr_accessible :user_id, :swimming_pool_review_id, :comment_id
+#                  :entry_text
 
   scope :sort_by_user,  ->(dir) { order("users.name #{dir.to_s}, comments.created_at #{dir.to_s}") }
   #-- -------------------------------------------------------------------------

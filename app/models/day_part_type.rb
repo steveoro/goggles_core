@@ -2,7 +2,7 @@ require 'drop_down_listable'
 require 'localizable'
 
 
-class DayPartType < ActiveRecord::Base
+class DayPartType < ApplicationRecord
   include DropDownListable
   include Localizable
 

@@ -6,7 +6,7 @@
 # @author   Steve A.
 # @version  4.00.797
 #
-class MeetingProgram < ActiveRecord::Base
+class MeetingProgram < ApplicationRecord
   include MeetingAccountable
 
   belongs_to :user
@@ -38,13 +38,14 @@ class MeetingProgram < ActiveRecord::Base
   validates_length_of   :event_order, within: 1..3, allow_nil: false
 
 
-  attr_accessible :event_order, :category_type_id, :gender_type_id, :user_id,
-                  :is_autofilled, :is_out_of_race, :begin_time, :meeting_event_id,
-                  :pool_type_id, :time_standard_id
+# FIXME for Rails 4+, move required/permitted check to the controller using the model
+#  attr_accessible :event_order, :category_type_id, :gender_type_id, :user_id,
+#                  :is_autofilled, :is_out_of_race, :begin_time, :meeting_event_id,
+#                  :pool_type_id, :time_standard_id
 
 
-  scope :only_relays,             includes(:event_type).where('event_types.is_a_relay' => true)
-  scope :are_not_relays,          includes(:event_type).where('event_types.is_a_relay' => false)
+  scope :only_relays,        -> { includes(:event_type).where('event_types.is_a_relay' => true) }
+  scope :are_not_relays,     -> { includes(:event_type).where('event_types.is_a_relay' => false) }
 
   scope :sort_meeting_program_by_user,            ->(dir) { order("users.name #{dir.to_s}, meeting_sessions.scheduled_date #{dir.to_s}, meeting_programs.event_order #{dir.to_s}") }
   scope :sort_meeting_program_by_event_type,      ->(dir) { order("event_types.code #{dir.to_s}") }

@@ -6,7 +6,7 @@
  This entity stores the *team* affiliation to a specific sporting season..
 
 =end
-class TeamAffiliation < ActiveRecord::Base
+class TeamAffiliation < ApplicationRecord
 
   belongs_to :user
   # [Steve, 20120212] Validating on User fails always because of validation requirements inside User (password & salt)
@@ -36,8 +36,9 @@ class TeamAffiliation < ActiveRecord::Base
   delegate :name, to: :user, prefix: true
   delegate :name, :editable_name, to: :team, prefix: true
 
-  attr_accessible :name, :number, :team_id, :season_id,
-                  :user_id, :is_autofilled, :must_calculate_goggle_cup
+# FIXME for Rails 4+, move required/permitted check to the controller using the model
+#  attr_accessible :name, :number, :team_id, :season_id,
+#                  :user_id, :is_autofilled, :must_calculate_goggle_cup
 
   scope :for_season_type,       ->(season_type)    { joins(:season_type).where(['season_types.id = ?', season_type.id]) }
   scope :for_year,              ->(header_year)    { joins(:season).where( ['seasons.header_year = ?', header_year]) }
