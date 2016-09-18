@@ -38,7 +38,7 @@ describe TeamBuddyLinker, type: :strategy do
 
   describe "#uniq_team_mates" do
     it "returns the unique team mates of the user" do
-      team_mates = @user.swimmer.teams.inject([]) { |memo, team| memo += team.swimmers.uniq }
+      team_mates = @user.swimmer.teams.inject([]) { |memo, team| memo += team.swimmers.distinct }
       team_mates.uniq!
       expect( subject.uniq_team_mates.size ).to eq( team_mates.size - 1 )
     end

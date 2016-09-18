@@ -34,7 +34,7 @@ class SeasonPonderatedBestsDAO
       @pool_type           = pool_type
       @max_results         = max_results
       @bests_to_be_ignored = bests_to_be_ignored
-      
+
       @total_results       = MeetingIndividualResult
                               .for_season_type( season_type )
                               .for_gender_type( gender_type )
@@ -42,13 +42,13 @@ class SeasonPonderatedBestsDAO
                               .for_pool_type( pool_type )
                               .for_event_type( event_type )
                               .count
-      
+
       @best_results        = self.collect_event_bests
       @ponderated_time     = self.set_ponderated_best
     end
     #-- -------------------------------------------------------------------------
     #++
-    
+
     # Find the desidered number of best results for the overall meeting individual resuts
     # of the seasons with the same type of the given one
     # It colelcts exactly max_results + bests_to_be_ignored results it more are presents
@@ -57,7 +57,7 @@ class SeasonPonderatedBestsDAO
     def collect_event_bests
       # TODO
       # Limit the results to the season older than the target one
-      
+
       MeetingIndividualResult
         .for_season_type( @season_type )
         .for_gender_type( @gender_type )
@@ -67,11 +67,11 @@ class SeasonPonderatedBestsDAO
         .for_date_range( Date.new( 0 ), @season.begin_date - 1 )
         .sort_by_timing
         .limit( @bests_to_be_ignored + @max_results )
-      
+
       # TODO
       # Verify where for_category_type scope is used!!!
     end
-    
+
     # Calculate and set the ponderated best time swam
     # The ponderated best is the everage time calculated on the bests @max_results
     # excluding the first bests_to_be_ignored.
@@ -86,7 +86,7 @@ class SeasonPonderatedBestsDAO
 
       # If no results, no action performed
       if result_collected > 0
-        # If total best results collected >= (bests_to_be_ignored + max_results) 
+        # If total best results collected >= (bests_to_be_ignored + max_results)
         # excludes first @bests_to_be_ignored results
         if result_collected >= ( @bests_to_be_ignored + @max_results )
           @best_results.each_with_index do |mir, index|
@@ -98,14 +98,14 @@ class SeasonPonderatedBestsDAO
         else
           @best_results.each do |mir|
             total_time += mir.get_timing_instance.to_hundreds
-          end           
+          end
           result_considered = result_collected
         end
         everage_time = (total_time / result_considered).round(0)
       end
       @ponderated_time = Timing.new(everage_time)
     end
-    
+
     # Gets the ponderated best time
     #
     def get_ponderated_best
@@ -148,9 +148,9 @@ class SeasonPonderatedBestsDAO
     @bests_to_be_ignored = bests_to_be_ignored
     @event_types         = self.find_season_type_events
     @categories          = self.find_season_type_category_codes
-    @single_events       = [] 
-    @insert_events       = [] 
-    @update_events       = [] 
+    @single_events       = []
+    @insert_events       = []
+    @update_events       = []
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -174,13 +174,13 @@ class SeasonPonderatedBestsDAO
               .for_pool_type( pool_type )
               .for_event_type( event_type )
               .count > 0
-              @single_events << SeasonPonderatedBestsDAO::EventPonderatedBestDAO.new( 
-                @season, 
-                gender_type, 
-                CategoryType.for_season( @season ).find_by_code(category_code), 
-                event_type, 
-                pool_type, 
-                @max_results, 
+              @single_events << SeasonPonderatedBestsDAO::EventPonderatedBestDAO.new(
+                @season,
+                gender_type,
+                CategoryType.for_season( @season ).find_by_code(category_code),
+                event_type,
+                pool_type,
+                @max_results,
                 @bests_to_be_ignored )
             end
           end
@@ -208,7 +208,7 @@ class SeasonPonderatedBestsDAO
         @insert_events << event
       end
     end
-    @update_events.count + @insert_events.count == @single_events.count  
+    @update_events.count + @insert_events.count == @single_events.count
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -218,7 +218,10 @@ class SeasonPonderatedBestsDAO
   # in a meeting of the season type and are still present in the target season
   #
   def find_season_type_category_codes()
-    CategoryType.are_not_relays.is_divided.for_season_type(@season.season_type).for_season(@season).sort_by_age.pluck(:code).uniq
+    CategoryType.are_not_relays.is_divided.for_season_type(@season.season_type)
+      .for_season(@season)
+      .sort_by_age
+      .pluck(:code).uniq
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -228,25 +231,26 @@ class SeasonPonderatedBestsDAO
   # in a meeting of the season type
   #
   def find_season_type_events()
-    EventType.are_not_relays.for_season_type(@season.season_type).sort_by_style.uniq
+    EventType.are_not_relays.for_season_type(@season.season_type)
+      .sort_by_style.distinct
   end
   #-- -------------------------------------------------------------------------
   #++
 
-  # Create a CSV file (; delimited) with season ponderated calculation data 
+  # Create a CSV file (; delimited) with season ponderated calculation data
   #
   def to_csv( csv_file_name = 'ponderated_season_' + @season.id.to_s )
     # Check if data already collected and collect if needed
     scan_for_gender_category_and_event if @single_events.count == 0
-    
+
     rows = []
 
     File.open( csv_file_name + '.csv', 'w' ) do |f|
-      titles = ['gender',  'category', 'event', 'pool', 'total_results', 'ponderated best', 'best results'] 
-      rows << titles.join(';') 
-      
+      titles = ['gender',  'category', 'event', 'pool', 'total_results', 'ponderated best', 'best results']
+      rows << titles.join(';')
+
       @single_events.each do |event|
-        event_row = '' 
+        event_row = ''
         event_row += event.gender_type.code + ';'
         event_row += event.category_type.code + ';'
         event_row += event.event_type.code + ';'
@@ -254,18 +258,18 @@ class SeasonPonderatedBestsDAO
         event_row += event.total_results.to_s + ';'
         event_row += event.get_ponderated_best.to_s + ';'
         event_row += event.best_results.map{ |mir| mir.get_timing.to_s }.join(';')
-        rows << event_row 
+        rows << event_row
       end
       f.puts rows.map{ |row| row }
     end
   end
 
-  # Store collected data to the db structure of standard time 
+  # Store collected data to the db structure of standard time
   #
   def to_db()
     # Check if data already collected and collect if needed
-    prepare_to_store if @insert_events.count == 0 && @update_events.count == 0 
-    
+    prepare_to_store if @insert_events.count == 0 && @update_events.count == 0
+
     create_sql_diff_header( "Season ponderated best for season #{@season.get_full_name}" )
 
     # Store collected data into time_standard structure for event not already presents
@@ -277,22 +281,22 @@ class SeasonPonderatedBestsDAO
       time_standard.category_type_id = event.category_type.id
       time_standard.pool_type_id     = event.pool_type.id
       time_standard.event_type_id    = event.event_type.id
-      time_standard.minutes          = ponderated_time.minutes 
-      time_standard.seconds          = ponderated_time.seconds 
+      time_standard.minutes          = ponderated_time.minutes
+      time_standard.seconds          = ponderated_time.seconds
       time_standard.hundreds         = ponderated_time.hundreds
       time_standard.save
       time_standard.reload
       comment = "#{event.pool_type.code} #{event.gender_type.code}-#{event.category_type.code} #{event.event_type.code}: #{event.get_ponderated_best.to_s}"
       sql_diff_text_log << to_sql_insert( time_standard, false, "\r\n", comment )
     end
-    
+
     # Store collected data into time_standard structure for event already presents
     sql_fields = {}
     @update_events.each do |event|
       ponderated_time        = event.get_ponderated_best
       time_standard          = TimeStandard.where( :season => @season, :gender_type => event.gender_type, :category_type => event.category_type, :pool_type => event.pool_type, :event_type => event.event_type ).first
-      time_standard.minutes  = ponderated_time.minutes 
-      time_standard.seconds  = ponderated_time.seconds 
+      time_standard.minutes  = ponderated_time.minutes
+      time_standard.seconds  = ponderated_time.seconds
       time_standard.hundreds = ponderated_time.hundreds
       time_standard.save
       sql_fields['minutes']  = ponderated_time.minutes
@@ -301,7 +305,7 @@ class SeasonPonderatedBestsDAO
       comment = "#{event.pool_type.code} #{event.gender_type.code}-#{event.category_type.code} #{event.event_type.code}: #{event.get_ponderated_best.to_s}"
       sql_diff_text_log << to_sql_update( time_standard, false, sql_fields, "\r\n", comment )
     end
-    
+
     create_sql_diff_footer( "Season ponderated best for season #{@season.get_full_name} collected" )
   end
 end

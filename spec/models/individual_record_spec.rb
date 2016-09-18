@@ -10,7 +10,7 @@ describe IndividualRecord, :type => :model do
       expect( subject ).to be_valid
     end
     # Validated relations:
-    it_behaves_like( "(belongs_to required models)", [ 
+    it_behaves_like( "(belongs_to required models)", [
       :pool_type,
       :event_type,
       :gender_type,
@@ -20,7 +20,7 @@ describe IndividualRecord, :type => :model do
       :federation_type,
       :meeting_individual_result,
       :record_type
-    ])    
+    ])
 
     # Filtering scopes:
     it_behaves_like( "(the existance of a class method)", [
@@ -44,14 +44,14 @@ describe IndividualRecord, :type => :model do
 
     describe "self.for_team" do
       it "returns an instance of ActiveRecord::Relation" do
-        expect( subject.class.for_team(1) ).to be_an_instance_of( ActiveRecord::Relation )
+        expect( subject.class.for_team(1) ).to be_a_kind_of( ActiveRecord::Relation )
       end
     end
 
     describe "self.for_season_type" do
       it "returns an instance of ActiveRecord::Relation" do
         # season_type_id: 2 => 'MASCSI'
-        expect( subject.class.for_season_type(2) ).to be_an_instance_of( ActiveRecord::Relation )
+        expect( subject.class.for_season_type(2) ).to be_a_kind_of( ActiveRecord::Relation )
       end
     end
     #-- -----------------------------------------------------------------------

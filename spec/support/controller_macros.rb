@@ -61,7 +61,7 @@ module ControllerMacros
   # expects the response to redirect to the sign-in session page for a User.
   #
   def get_action_and_check_it_redirects_to_login_for( action_sym, login_absolute_path = "/users/sign_in", id = nil )
-    get( action_sym, id: id )
+    get( action_sym, params: { id: id } )
     expect(response).to be_a_redirect # (= 302, must redirect to the login page)
     # [Steve A.]
     # NOTE that the path below assumes that the Core Engine including

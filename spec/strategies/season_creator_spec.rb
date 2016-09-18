@@ -3,7 +3,8 @@ require 'rails_helper'
 
 describe SeasonCreator, type: :strategy do
   # Needs a season not duplicated
-  let(:older_season_id) { SeasonType.find_by_code('MASCSI').seasons.sort_season_by_begin_date('DESC').first.id }
+#  let(:older_season_id) { SeasonType.find_by_code('MASCSI').seasons.sort_season_by_begin_date('DESC').first.id }
+  let(:older_season_id) { SeasonType.find_by_code('MASCSI').seasons.last.id }
   let(:newer_season_id) { older_season_id + 10 }
   let(:older_season)    { Season.find( older_season_id ) }
   let(:description)     { 'Spec proof season ' + newer_season_id.to_s }
@@ -269,7 +270,8 @@ describe SeasonCreator, type: :strategy do
       expect{ SeasonCreator.new }.to raise_error( ArgumentError )
       expect{ SeasonCreator.new( 'only such description' ) }.to raise_error( ArgumentError )
       expect{ SeasonCreator.new( older_season ) }.to raise_error( ArgumentError )
-      expect{ SeasonCreator.new( Season.find(131), 'damn, that season was already duplicated' ) }.to raise_error( ArgumentError )
+      # TODO [Steve, 20160917] This is not true anymore: (free ID helper-finder added)
+#      expect{ SeasonCreator.new( Season.find(131), 'damn, that season was already duplicated' ) }.to raise_error( ArgumentError )
     end
   end
   #-- -------------------------------------------------------------------------

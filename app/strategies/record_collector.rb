@@ -69,26 +69,34 @@ class RecordCollector
     @team = nil if @season_type
 
     # Cache the unique codes lists:
-    @record_type_codes   = RecordType.select(:code).uniq.map{ |row| row.code }
+    @record_type_codes = RecordType.select(:code).distinct.map{ |row| row.code }
     # Let's refine the full scan loop parameters, when it's the case:
     if @meeting
-      @pool_type_codes     = @meeting.pool_types.flatten.map{ |row| row.code }.uniq
-      @event_type_codes    = @meeting.event_types.are_not_relays.flatten.map{ |row| row.code }.uniq
-      @category_type_codes = @meeting.meeting_events.flatten.uniq.map{ |me| me.category_types.flatten.map{|row| row.code} }.flatten.uniq
+      @pool_type_codes = @meeting.pool_types.select(:code).distinct
+        .map{ |row| row.code }.uniq
+      @event_type_codes = @meeting.event_types.are_not_relays.select(:code).distinct
+        .map{ |row| row.code }.uniq
+      @category_type_codes = @meeting.meeting_events.to_a
+        .map{ |me| me.category_types.select(:code).distinct
+          .map{ |row| row.code }
+        }.flatten.uniq
     else
-      @pool_type_codes     = PoolType.only_for_meetings.select(:code).map{ |row| row.code }.uniq
-      @event_type_codes    = EventType.are_not_relays.select(:code).map{ |row| row.code }.uniq
+      @pool_type_codes  = PoolType.only_for_meetings.select(:code).map{ |row| row.code }.uniq
+      @event_type_codes = EventType.are_not_relays.select(:code).map{ |row| row.code }.uniq
       if @season_type
         @category_type_codes = CategoryType.is_valid.are_not_relays.is_divided
-            .includes(:season).where( 'seasons.season_type_id' => @season_type.id )
-            .select(:code).uniq.map{|row| row.code }.uniq
+            .joins( :season )
+            .includes( :season )
+            .where( 'seasons.season_type_id' => @season_type.id )
+            .select(:code).distinct.map{|row| row.code }.uniq
       else
         @category_type_codes = CategoryType.is_valid.are_not_relays.is_divided
-            .select(:code).uniq.map{|row| row.code }.uniq
+            .select(:code).distinct.map{|row| row.code }.uniq
       end
     end
     # Genders for individual records are two, and that's it:
-    @gender_type_codes   = GenderType.individual_only.select(:code).uniq.map{ |row| row.code }
+    @gender_type_codes = GenderType.individual_only.select(:code).distinct
+        .map{ |row| row.code }
   end
   #-- --------------------------------------------------------------------------
   #++
@@ -442,10 +450,13 @@ class RecordCollector
 # DEBUG
 #    puts "Initial first_recs.size: #{first_recs.to_ary.size}"
 
-    if first_recs.to_ary.size > 0                          # Compute the first timing result value
+    if first_recs.count > 0                         # Compute the first timing result value
       first_timing_value = first_recs.first.minutes*6000 + first_recs.first.seconds*100 + first_recs.first.hundreds
-                                                    # Remove from the result all other rows that have a greater timing result (keep same ranking results)
-      first_recs.reject!{ |row| first_timing_value < (row.minutes*6000 + row.seconds*100 + row.hundreds) }
+      # [Steve, 20160916] Old implementation:
+      # Exclude from the result all other rows that have a greater timing result (keep same ranking results)
+#      first_recs.reject!{ |row| first_timing_value < (row.minutes*6000 + row.seconds*100 + row.hundreds) }
+      # [Steve, 20160916] New implementation:
+      first_recs = first_recs.where(["minutes*6000 + seconds*100 + hundreds <= ?", first_timing_value])
     end
 # DEBUG
 #    first_recs.each do |row|

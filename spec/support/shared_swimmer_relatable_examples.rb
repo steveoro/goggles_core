@@ -88,7 +88,7 @@ shared_examples_for "SwimmerRelatable" do
 #    end
 #    it "returns always a valid category_type value" do
 #      expect(
-#        CategoryType.select(:code).all.uniq.any?{ |row| 
+#        CategoryType.select(:code).all.distinct.any?{ |row| 
 #          row.code == subject.get_swimmer_current_category
 #        }
 #      ).to be true

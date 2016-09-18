@@ -118,7 +118,12 @@ class GoggleCup < ApplicationRecord
   # Check if a given team has a goggle cup for a certain season
   #
   def self.has_team_goggle_cup_for_season?( team_id, season_id )
-    GoggleCup.includes(:goggle_cup_definitions).where(['team_id = ? AND goggle_cup_definitions.season_id = ?', team_id, season_id]).count > 0
+    GoggleCup
+      .joins( :goggle_cup_definitions )
+      .includes( :goggle_cup_definitions )
+      .where(
+        ['team_id = ? AND goggle_cup_definitions.season_id = ?', team_id, season_id]
+      ).count > 0
   end
   # ----------------------------------------------------------------------------
 
@@ -138,17 +143,16 @@ class GoggleCup < ApplicationRecord
       # A swimmer is involved if has a badge for at a least a season of goggle cup definition
       # and is ranked if has at least a result for that badge(s)
       swimmers = self.team.badges
-        .joins(season: :goggle_cup_definitions)
+        .joins( season: :goggle_cup_definitions )
         .where(['goggle_cup_definitions.goggle_cup_id = ?', self.id])
-        .collect{|badge| badge.swimmer }
-        .uniq
+        .map{|badge| badge.swimmer }.uniq
 
       # Collects best results for each swimmer
       # The number of result to consider is set in the goggle cup header
       swimmers.each do |swimmer|
         points = swimmer.meeting_individual_results
-          .joins(season: :goggle_cup_definitions)
-          .where(['goggle_cup_definitions.goggle_cup_id = ?', self.id])
+          .joins( season: :goggle_cup_definitions )
+          .where( ['goggle_cup_definitions.goggle_cup_id = ?', self.id] )
           .has_points(:goggle_cup_points)
           .sort_by_goggle_cup('DESC')
           .limit(self.max_performance)

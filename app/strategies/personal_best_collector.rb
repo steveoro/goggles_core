@@ -209,8 +209,11 @@ class PersonalBestCollector
       first_recs = prefiltered_results.order( :minutes, :seconds, :hundreds ).limit(limit)
       if first_recs.size > 0                          # Compute the first timing result value
         first_timing_value = first_recs.first.minutes*6000 + first_recs.first.seconds*100 + first_recs.first.hundreds
-                                                      # Remove from the result all other rows that have a greater timing result (keep same ranking results)
-        first_recs.reject!{ |row| first_timing_value < (row.minutes*6000 + row.seconds*100 + row.hundreds) }
+        # [Steve, 20160916] Old implementation:
+        # Exclude from the result all other rows that have a greater timing result (keep same ranking results)
+#        first_recs.reject!{ |row| first_timing_value < (row.minutes*6000 + row.seconds*100 + row.hundreds) }
+        # [Steve, 20160916] New implementation:
+        first_recs = first_recs.where(["minutes*6000 + seconds*100 + hundreds <= ?", first_timing_value])
       end
     else
       first_recs = prefiltered_results

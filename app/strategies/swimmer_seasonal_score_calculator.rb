@@ -107,7 +107,7 @@ class SwimmerSeasonalScoreCalculator
     team_ranking_results = []
     events = []
     if @badge.category_type.code != 'U25' &&
-     @badge.meetings.uniq.count >= number_of_meetings
+     @badge.meetings.distinct.count >= number_of_meetings
       get_results.each do |meeting_individual_result|
         if meeting_individual_result.get_scheduled_date.year - @swimmer.year_of_birth >= 25
           if !events.include?( meeting_individual_result.event_type.code )

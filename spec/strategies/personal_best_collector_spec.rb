@@ -141,7 +141,7 @@ describe PersonalBestCollector, type: :strategy do
       expect( subject.events_by_pool_type_list.count ).to be > 0
     end
     it "returns a collection" do
-      expect( subject.events_by_pool_type_list ).to be_an_instance_of( ActiveRecord::Relation )
+      expect( subject.events_by_pool_type_list ).to be_a_kind_of( ActiveRecord::Relation )
     end
     it "returns a collection of EventsByPoolType" do
       subject.events_by_pool_type_list.each do |element|

@@ -282,7 +282,7 @@ class Meeting < ApplicationRecord
     events_by_pool_types = []
     pool_type = self.get_pool_type
     if pool_type
-      self.event_types.uniq.each do |event_type|
+      self.event_types.distinct.each do |event_type|
         event_key = "#{event_type.code}-#{pool_type.code}"
         events_by_pool_types << EventsByPoolType.find_by_key( event_key )
       end

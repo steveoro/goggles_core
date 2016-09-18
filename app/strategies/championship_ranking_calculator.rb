@@ -101,14 +101,14 @@ class ChampionshipRankingCalculator
   # and at least one valid seasonal result
   #
   def retrieve_involved_teams
-    @season.teams.joins(:meeting_team_scores).uniq
+    @season.teams.joins(:meeting_team_scores).distinct
   end
 
   # Retrieves meetings involved in season ranking
   # The meetings involved are those with at least one valid seasonal result
   #
   def retrieve_involved_meetings
-    @season.meetings.sort_by_date.joins(:meeting_team_scores).uniq
+    @season.meetings.sort_by_date.joins(:meeting_team_scores).distinct
   end
 
   # Retrieves meetings involved in season ranking

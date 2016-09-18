@@ -12,7 +12,7 @@ class SwimmerBestFinder
   include SqlConvertable
 
   # These can be edited later on:
-  attr_accessor :swimmer 
+  attr_accessor :swimmer
 
   # Initialization
   #
@@ -23,7 +23,7 @@ class SwimmerBestFinder
     unless swimmer && swimmer.instance_of?( Swimmer )
       raise ArgumentError.new("Needs a valid swimmer")
     end
-    
+
     @swimmer = swimmer
   end
   #-- --------------------------------------------------------------------------
@@ -34,8 +34,8 @@ class SwimmerBestFinder
   # of given type
   # In no given season type it scans all seasons
   def get_closed_seasons_involved_into( season_type = nil )
-    season_type ? 
-     @swimmer.seasons.for_season_type(season_type).is_ended.sort_season_by_begin_date( 'DESC' ) : 
+    season_type ?
+     @swimmer.seasons.for_season_type(season_type).is_ended.sort_season_by_begin_date( 'DESC' ) :
      @swimmer.seasons.is_ended.sort_season_by_begin_date( 'DESC' )
   end
   #-- --------------------------------------------------------------------------
@@ -97,7 +97,7 @@ class SwimmerBestFinder
     involved_seasons.each do |season|
       if @swimmer.meeting_individual_results.for_season( season ).for_pool_type( pool_type ).for_event_type( event_type ).is_not_disqualified.count > 0
         tmp_best = @swimmer.meeting_individual_results.for_season( season ).for_pool_type( pool_type ).for_event_type( event_type ).is_not_disqualified.sort_by_timing('ASC').first.get_timing_instance
-        best = tmp_best if best == nil || best.to_hundreds > tmp_best.to_hundreds   
+        best = tmp_best if best == nil || best.to_hundreds > tmp_best.to_hundreds
       end
     end
     return best
@@ -119,13 +119,14 @@ class SwimmerBestFinder
 
   # Check if the result is the personal best
   # without considering the apposite flag
-  # This is intended for new results or to handle 
+  # This is intended for new results or to handle
   # best results with same timing.
-  # Returns true if the result ise the personal best
-  # Returns false in any other cases
+  # == Returns
+  # true if the result ise the personal best
+  # false in any other cases
   def is_personal_best( meeting_individual_result )
     is_personal_best = false
-    unless meeting_individual_result.is_disqualified
+    unless meeting_individual_result.nil? || (meeting_individual_result && meeting_individual_result.is_disqualified)
       best_result = get_best_for_event( meeting_individual_result.event_type, meeting_individual_result.pool_type )
       is_personal_best = best_result && best_result < meeting_individual_result.get_timing_instance ? false : true
     end
@@ -145,15 +146,15 @@ class SwimmerBestFinder
   #++
 
   # Reset the personal best indicator (set to false)
-  # for the swimmer given event by pool type
+  # for the current swimmer, given the specified event by pool type
   #
-  # Parameters
+  # == Parameters
   # event by pool type
   #
   def reset_personal_best( event_by_pool_type )
     sql_attributes = {}
-    @swimmer.meeting_individual_results.for_event_by_pool_type(event_by_pool_type).is_personal_best.select( :id ).each do |mir_id|
-      mir = MeetingIndividualResult.find( mir_id )
+    @swimmer.meeting_individual_results.for_event_by_pool_type(event_by_pool_type).is_personal_best.select( :id ).each do |mir_only_id|
+      mir = MeetingIndividualResult.find_by_id( mir_only_id.id )
       mir.is_personal_best = false
       mir.save
       comment = "#{@swimmer.get_full_name}: Reset #{event_by_pool_type.i18n_description} (was #{mir.get_timing_instance})"
@@ -162,24 +163,25 @@ class SwimmerBestFinder
     end
   end
 
-  # Reset all the personal best indicator (set to false)
-  # for the swimmer
+  # Reset all the personal best indicator (sets the new value to false)
+  # for the current swimmer.
   #
   def reset_all_personal_bests
-    sql_attributes = {}
-    @swimmer.meeting_individual_results.update_all({:is_personal_best => false}, {:is_personal_best => true}) 
-    sql_diff_text_log << "update meeting_individual_results set is_personal_best = false where swimmer_id = #{@swimmer.id} and is_personal_best = true;\r\n" 
+    @swimmer.meeting_individual_results
+      .where( is_personal_best: true )
+      .update_all( is_personal_best: false )
+    sql_diff_text_log << "update meeting_individual_results set is_personal_best = false where swimmer_id = #{@swimmer.id} and is_personal_best = true;\r\n"
   end
-  
+
   # Set the personal best indicator to true
-  # for the swimmer given event by pool type
+  # for the current swimmer, given the event by pool type
   #
   # Parameters
   # event by pool type
   # reset previous results
   # new personal best id
   #
-  # Returns
+  # == Returns
   # Best timing or nil
   #
   def set_personal_best( event_by_pool_type, reset = true, mir_id = nil )
@@ -197,11 +199,11 @@ class SwimmerBestFinder
       mir.get_timing_instance
     end
   end
-  
-  # Scan events by pool type
-  # for finding out swimmer personal bests 
+
+  # Scan events by pool type for finding out the
+  # personal best timings for the current swimmer.
   #
-  # Returns
+  # == Returns
   # Swimmer personal bests found number
   #
   def scan_for_personal_bests

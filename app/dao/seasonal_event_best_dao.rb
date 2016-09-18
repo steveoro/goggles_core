@@ -66,9 +66,16 @@ class SeasonalEventBestDAO
   #
   # [FIXME, Steve] WHAT DOES IT RETURN? WHAT'S ITS DEFAULT?
   # nil or new SingleEventBestDAO? Why can't update self?
+  # Does this work also for relays?
   #
   def calculate_event_best( gender_type, category_type, event_type, event_total, event_swam )
-    # If event_type hasn't 50 meters event no conversion needed
+# DEBUG
+#    puts "\r\n=> #calculate_event_best:"
+#    puts "- gender: #{gender_type.inspect}"
+#    puts "- category: #{category_type.inspect}"
+#    puts "- event: #{event_type.inspect}"
+#    puts "- total_events: #{event_total}, events_swam: #{event_swam}"
+    # If event_type doesn't refer to a 50-meters event, no conversion is needed
     is_converted = false
     best_mir = @season.meeting_individual_results
       .is_valid
@@ -79,15 +86,22 @@ class SeasonalEventBestDAO
       .first
 
     if best_mir
+# DEBUG
+#      puts "\r\nbest_mir found! => #{ best_mir.inspect }"
       time_swam = best_mir.get_timing_instance
 
-      # If best_mir is in 50 metes pool should convert and stop
+      # If best_mir refers to a 50 metres pool, this doesn't need any conversion and we can stop:
       if best_mir.pool_type.length_in_meters == 50
+# DEBUG
+#        puts "best_mir pool_type = 50"
         is_converted = true
         time_swam = @timing_converter.convert_time_to_short( time_swam, gender_type, event_type )
-      # If event type has 50 meters event needs to convert and to compare
+      # If event type refers to a 50-meters event, it needs to be converted and be compared
       else
+# DEBUG
+#        puts "best_mir pool_type != 50"
         if @timing_converter.is_conversion_possible?( gender_type, event_type )
+#          puts "conversion possible!"
           # Find best event swam in 50 meters
           best_mir_50 = @season.meeting_individual_results
             .is_valid
@@ -99,6 +113,8 @@ class SeasonalEventBestDAO
             .first
 
           if best_mir_50
+# DEBUG
+#            puts "best_mir_50 found!"
             time_swam_50 = best_mir_50.get_timing_instance
             time_swam_50 = @timing_converter.convert_time_to_short( time_swam_50, gender_type, event_type )
             if time_swam_50.to_hundreds < time_swam.to_hundreds
@@ -109,6 +125,8 @@ class SeasonalEventBestDAO
         end
       end
 
+# DEBUG
+#      puts "creating new SingleEventBestDAO..."
       SingleEventBestDAO.new( gender_type, category_type, event_type, time_swam, is_converted, event_total, event_swam )
     end
   end
@@ -120,7 +138,7 @@ class SeasonalEventBestDAO
   # [FIXME, Steve] WHAT DOES IT RETURN? WHAT'S ITS DEFAULT?
   #
   def scan_for_gender_category_and_event
-    @season.event_types.are_not_relays.uniq.sort_by_style.each do |event_type|
+    @season.event_types.are_not_relays.distinct.sort_by_style.each do |event_type|
       event_total = @season.event_types.where(['event_types.code = ?', event_type.code]).count
       event_swam  = @season.event_types.where(['event_types.code = ? and meetings.are_results_acquired', event_type.code]).count
       if event_swam > 0

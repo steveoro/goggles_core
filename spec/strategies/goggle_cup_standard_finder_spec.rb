@@ -13,10 +13,10 @@ describe GoggleCupStandardFinder, type: :strategy, tag: :slow do
     # To test randomly should create:
     # A team with swimmers (badges) withe results swam before the goggle cup
     #
-    #let(:@active_team)    { SeasonType.find_by_code('MASCSI').seasons.is_ended.order('RAND()').first.teams.uniq.order('RAND()').first }
+    #let(:@active_team)    { SeasonType.find_by_code('MASCSI').seasons.is_ended.order('RAND()').first.teams.distinct.order('RAND()').first }
     #let(:@goggle_cup)     { create( :@goggle_cup, season_year: Date.today.year, team: @active_team ) }
     #let(:@goggle_cup)     { GoggleCup.for_team( @active_team ).is_closed_now.order('RAND()').first }
-    #let(:@active_swimmer) { @goggle_cup.swimmers.has_results.uniq.order('RAND()').first }
+    #let(:@active_swimmer) { @goggle_cup.swimmers.has_results.distinct.order('RAND()').first }
     #let( :team )    { create(:team) }
     #let( :badge )   { create( :badge, team: team ) }
     #let( :swimmer ) { badge.swimmer }

@@ -103,7 +103,7 @@ class ChampionshipHistoryManager
   # the given season type
   #
   def retrieve_involved_teams
-    Team.joins(computed_season_ranking: :season).where("seasons.season_type_id = #{@season_type.id}").uniq
+    Team.joins(computed_season_ranking: :season).where("seasons.season_type_id = #{@season_type.id}").distinct
   end
   #-- --------------------------------------------------------------------------
   #++

@@ -236,17 +236,17 @@ class Exercise < ApplicationRecord
         :true)
     else
       # Check if same movement in all rows
-      is_same_movement = ( base_movements.uniq.count == 1 )
+      is_same_movement = ( base_movements.distinct.count == 1 )
 
       if is_same_movement
         natural_description = er.first.base_movement_i18n_short + ' '
       end
 
       # Check if same trainng mode in all rows
-      is_same_mode = ( training_mode_types.uniq.count == 1 )
+      is_same_mode = ( training_mode_types.distinct.count == 1 )
 
       # Check if same distance
-      is_same_distance = ( er.select(:percentage).uniq.map{ |row| row.percentage }.count == 1 && er.first.percentage > 0 )
+      is_same_distance = ( er.select(:percentage).distinct.map{ |row| row.percentage }.count == 1 && er.first.percentage > 0 )
 
       # If same movements or training mode open parenthesys
       natural_description += '(' if is_same_movement or is_same_mode

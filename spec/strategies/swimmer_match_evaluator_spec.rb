@@ -11,8 +11,8 @@ describe SwimmerMatchEvaluator, :type => :model do
     @leega   = Swimmer.find(23)
     @steve   = Swimmer.find(142)
     @cavallo = Swimmer.find(1025)
-  end  
-  
+  end
+
   subject { SwimmerMatchEvaluator.new( swimmer ) }
 
   describe "[a well formed instance]" do
@@ -53,7 +53,7 @@ describe SwimmerMatchEvaluator, :type => :model do
       expect( subject.set_visitor( too_old_swimmer ) ).to be false
       expect( subject.set_visitor( wrong_gender_swimmer ) ).to be false
       expect( subject.visitor_swimmer ).to be nil
-    end   
+    end
   end
   #-- -------------------------------------------------------------------------
 
@@ -77,21 +77,21 @@ describe SwimmerMatchEvaluator, :type => :model do
       expect( subject.has_matches? ).to be true
     end
     it "returns false for Leega and Cavallo" do
-      sme = SwimmerMatchEvaluator.new( @leega ) 
+      sme = SwimmerMatchEvaluator.new( @leega )
       sme.visitor_swimmer = @cavallo
       expect( sme.has_matches? ).to be false
     end
     it "returns false for Leega and Cavallo forcing Cavallo" do
-      sme = SwimmerMatchEvaluator.new( @leega ) 
+      sme = SwimmerMatchEvaluator.new( @leega )
       expect( sme.has_matches?( @cavallo ) ).to be false
     end
     it "returns true for Leega and Steve" do
-      sme = SwimmerMatchEvaluator.new( @leega ) 
+      sme = SwimmerMatchEvaluator.new( @leega )
       sme.set_visitor( @steve )
       expect( sme.has_matches? ).to be true
     end
     it "returns true for Leega and Steve forcing Steve" do
-      sme = SwimmerMatchEvaluator.new( @leega ) 
+      sme = SwimmerMatchEvaluator.new( @leega )
       expect( sme.has_matches?( @steve ) ).to be true
     end
   end
@@ -117,19 +117,19 @@ describe SwimmerMatchEvaluator, :type => :model do
       expect( subject.has_matches_on_event?( mir.event_type ) ).to be true
     end
     it "returns false for Leega and Cavallo" do
-      sme = SwimmerMatchEvaluator.new( @leega ) 
+      sme = SwimmerMatchEvaluator.new( @leega )
       sme.visitor_swimmer = @cavallo
       expect( subject.has_matches_on_event?( fix_event ) ).to be false
     end
     it "returns true for Leega and Steve on 100MI, 50FA and 100SL" do
-      sme = SwimmerMatchEvaluator.new( @leega ) 
+      sme = SwimmerMatchEvaluator.new( @leega )
       sme.set_visitor( @steve )
       expect( sme.has_matches_on_event?( EventType.find_by_code( '100MI' ) ) ).to be true
       expect( sme.has_matches_on_event?( EventType.find_by_code( '50FA' ) ) ).to be true
       expect( sme.has_matches_on_event?( EventType.find_by_code( '100SL' ) ) ).to be true
     end
     it "returns false for Leega and Steve on 400MI and 1500SL" do
-      sme = SwimmerMatchEvaluator.new( @leega ) 
+      sme = SwimmerMatchEvaluator.new( @leega )
       sme.set_visitor( @steve )
       expect( sme.has_matches_on_event?( EventType.find_by_code( '400MI' ) ) ).to be false
       expect( sme.has_matches_on_event?( EventType.find_by_code( '1500SL' ) ) ).to be false
@@ -145,7 +145,7 @@ describe SwimmerMatchEvaluator, :type => :model do
       create_list( :meeting_individual_result, ( rand * 15 ).to_i + 1, swimmer: swimmer )
       subject.set_visitor( swimmer )
       matches = subject.get_matches
-      expect( matches ).to be_an_instance_of( ActiveRecord::Relation )
+      expect( matches ).to be_a_kind_of( ActiveRecord::Relation )
       expect( matches.count ).to be > 0
       expect( matches ).to all( be_an_instance_of( MeetingProgram ) )
       expect( matches.count ).to eq( swimmer.meeting_programs.count )
@@ -156,18 +156,18 @@ describe SwimmerMatchEvaluator, :type => :model do
       expect( subject.get_matches ).to be nil
     end
     it "returns a set of meeting programs for Leega and Steve including 50FA, 100MI and 100SL and doesn't includes 400MI and 1500SL" do
-      sme = SwimmerMatchEvaluator.new( @leega ) 
+      sme = SwimmerMatchEvaluator.new( @leega )
       sme.set_visitor( @steve )
       matches = sme.get_matches
-      expect( matches ).to be_an_instance_of( ActiveRecord::Relation )
+      expect( matches ).to be_a_kind_of( ActiveRecord::Relation )
       expect( matches.count ).to be > 0
       expect( matches ).to all( be_an_instance_of( MeetingProgram ) )
       events = matches.map{ |mp| mp.event_type.code }.uniq
-      expect( events ).to include( '50FA' )      
-      expect( events ).to include( '100SL' )      
-      expect( events ).to include( '100MI' )      
-      expect( events ).not_to include( '400MI' )      
-      expect( events ).not_to include( '1500SL' )      
+      expect( events ).to include( '50FA' )
+      expect( events ).to include( '100SL' )
+      expect( events ).to include( '100MI' )
+      expect( events ).not_to include( '400MI' )
+      expect( events ).not_to include( '1500SL' )
     end
   end
   #-- -------------------------------------------------------------------------
@@ -182,7 +182,7 @@ describe SwimmerMatchEvaluator, :type => :model do
       expect( subject.get_matches_on_event( fix_event ) ).to be nil
     end
     it "returns nil if no matches of given event type" do
-      sme = SwimmerMatchEvaluator.new( @leega ) 
+      sme = SwimmerMatchEvaluator.new( @leega )
       sme.set_visitor( @steve )
       expect( sme.has_matches? ).to be true
       expect( sme.has_matches_on_event?( EventType.find_by_code( '400MI' ) ) ).to be false
@@ -191,35 +191,37 @@ describe SwimmerMatchEvaluator, :type => :model do
       expect( sme.get_matches_on_event( EventType.find_by_code( '1500SL' ) ) ).to be nil
     end
     it "returns a set of meeting programs for Leega and Steve including only given event type" do
-      sme = SwimmerMatchEvaluator.new( @leega ) 
+      sme = SwimmerMatchEvaluator.new( @leega )
       sme.set_visitor( @steve )
       matches = sme.get_matches_on_event( EventType.find_by_code( '100MI' ) )
-      expect( matches ).to be_an_instance_of( ActiveRecord::Relation )
+      expect( matches ).to be_a_kind_of( ActiveRecord::Relation )
       expect( matches.count ).to be > 0
       expect( matches ).to all( be_an_instance_of( MeetingProgram ) )
       events = matches.map{ |mp| mp.event_type.code }.uniq
       expect( events.count ).to eq( 1 )
-      expect( events ).to include( '100MI' )      
-      expect( events ).not_to include( '50FA' )      
-      expect( events ).not_to include( '100SL' )      
+      expect( events ).to include( '100MI' )
+      expect( events ).not_to include( '50FA' )
+      expect( events ).not_to include( '100SL' )
+
       matches = sme.get_matches_on_event( EventType.find_by_code( '100SL' ) )
-      expect( matches ).to be_an_instance_of( ActiveRecord::Relation )
+      expect( matches ).to be_a_kind_of( ActiveRecord::Relation )
       expect( matches.count ).to be > 0
       expect( matches ).to all( be_an_instance_of( MeetingProgram ) )
       events = matches.map{ |mp| mp.event_type.code }.uniq
       expect( events.count ).to eq( 1 )
-      expect( events ).to include( '100SL' )      
-      expect( events ).not_to include( '50FA' )      
-      expect( events ).not_to include( '100MI' )      
+      expect( events ).to include( '100SL' )
+      expect( events ).not_to include( '50FA' )
+      expect( events ).not_to include( '100MI' )
+
       matches = sme.get_matches_on_event( EventType.find_by_code( '50FA' ) )
-      expect( matches ).to be_an_instance_of( ActiveRecord::Relation )
+      expect( matches ).to be_a_kind_of( ActiveRecord::Relation )
       expect( matches.count ).to be > 0
       expect( matches ).to all( be_an_instance_of( MeetingProgram ) )
       events = matches.map{ |mp| mp.event_type.code }.uniq
       expect( events.count ).to eq( 1 )
-      expect( events ).to include( '50FA' )      
-      expect( events ).not_to include( '100MI' )      
-      expect( events ).not_to include( '100SL' )      
+      expect( events ).to include( '50FA' )
+      expect( events ).not_to include( '100MI' )
+      expect( events ).not_to include( '100SL' )
     end
   end
   #-- -------------------------------------------------------------------------
@@ -234,7 +236,7 @@ describe SwimmerMatchEvaluator, :type => :model do
     it "returns a SwimmerMatchDAO if visitor swimmer set" do
       expect( subject.set_visitor( swimmer ) ).to be true
       expect( subject.matches_to_dao ).to be_an_instance_of( SwimmerMatchDAO )
-      sme = SwimmerMatchEvaluator.new( @leega ) 
+      sme = SwimmerMatchEvaluator.new( @leega )
       sme.set_visitor( @steve )
       expect( sme.matches_to_dao ).to be_an_instance_of( SwimmerMatchDAO )
       sme.visitor_swimmer = @cavallo
@@ -244,7 +246,7 @@ describe SwimmerMatchEvaluator, :type => :model do
       expect( subject.set_visitor( younger_swimmer ) ).to be true
       dao = subject.matches_to_dao
       expect( dao.get_matches_count ).to eq( 0 )
-      sme = SwimmerMatchEvaluator.new( @leega ) 
+      sme = SwimmerMatchEvaluator.new( @leega )
       sme.visitor_swimmer = @cavallo
       dao = sme.matches_to_dao
       expect( dao.get_matches_count ).to eq( 0 )
@@ -255,7 +257,7 @@ describe SwimmerMatchEvaluator, :type => :model do
       dao = subject.matches_to_dao
       expect( dao.get_matches_count ).to be > 0
       expect( dao.get_matches_count ).to eq( swimmer.meeting_individual_results.count )
-      sme = SwimmerMatchEvaluator.new( @leega ) 
+      sme = SwimmerMatchEvaluator.new( @leega )
       sme.set_visitor( @steve )
       matches = sme.get_matches
       dao = sme.matches_to_dao
@@ -272,7 +274,7 @@ describe SwimmerMatchEvaluator, :type => :model do
       expect( dao.get_neutrals_count ).to eq( swimmer.meeting_individual_results.count )
     end
     it "returns a SwimmerMatchDAO with wins, losses and neutrals for Leega and Steve" do
-      sme = SwimmerMatchEvaluator.new( @leega ) 
+      sme = SwimmerMatchEvaluator.new( @leega )
       sme.set_visitor( @steve )
       dao = sme.matches_to_dao
       expect( dao.get_wons_count ).to be > 0
@@ -282,11 +284,11 @@ describe SwimmerMatchEvaluator, :type => :model do
   end
   #-- -------------------------------------------------------------------------
 
-  context "not a valid instance" do   
+  context "not a valid instance" do
     it "raises an exception for wrong swimmer parameter" do
       expect{ SwimmerMatchEvaluator.new() }.to raise_error( ArgumentError )
       expect{ SwimmerMatchEvaluator.new( 'Wrong parameter' ) }.to raise_error( ArgumentError )
-    end   
+    end
   end
   #-- -------------------------------------------------------------------------
   #++

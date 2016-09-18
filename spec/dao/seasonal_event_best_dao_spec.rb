@@ -80,6 +80,7 @@ describe SeasonalEventBestDAO, type: :model do
       end
     end
 
+
     describe "#calculate_event_best" do
       it "returns an event best or nil" do
         expect( subject.calculate_event_best( gender_type, category_type, event_type, total_events, events_swam ) ).to be_a_kind_of( SeasonalEventBestDAO::SingleEventBestDAO ).or be_nil
@@ -91,6 +92,7 @@ describe SeasonalEventBestDAO, type: :model do
         event_best_50 = subject.calculate_event_best( GenderType.find_by_code("M"), season.category_types.find_by_code("M25"), EventType.find_by_code("50SL"), total_events, events_swam )
         expect( subject.calculate_event_best( GenderType.find_by_code("M"), season.category_types.find_by_code("M25"), EventType.find_by_code("100SL"), total_events, events_swam ).time_swam.to_hundreds ).to be > event_best_50.time_swam.to_hundreds
       end
+
       it "returns a value smaller than other of same gender, category and event" do
         mirs = season.meeting_individual_results.is_valid.for_gender_type(gender_type).for_category_type( category_type ).for_event_type( event_type )
         best_calculated = subject.calculate_event_best(
@@ -100,8 +102,17 @@ describe SeasonalEventBestDAO, type: :model do
           total_events,
           events_swam
         )
+# DEBUG
         if best_calculated.nil?
-          puts "\r\nLeega: YOU HAVE NIL RESULTS IN calculate_event_best, FIX IT or CHANGE THIS SPEC!\r\n"
+          puts "\r\n***********************************************************************************"
+          puts "\r\n=> seasonal_event_best_dao_spec, #106:"
+          puts "- gender: #{gender_type.inspect }"
+          puts "- category: #{ category_type.inspect }"
+          puts "- event: #{ event_type.inspect }"
+          puts "- total_events: #{ total_events }, events_swam: #{ events_swam }"
+          puts "\r\nLeega: YOU HAVE NIL RESULTS FROM #calculate_event_best (usually a relay is the culprit),"
+          puts "== FIX IT or CHANGE THIS SPEC! =="
+          puts "\r\n***********************************************************************************"
         else
           equivalent_mirs = mirs.map do |mir|
             mir.pool_type.code == '50' ?
@@ -113,6 +124,7 @@ describe SeasonalEventBestDAO, type: :model do
 #          equivalent_mirs.each{ |mir| puts mir.class.name + ", "  }
           expect( equivalent_mirs ).to all be >= best_calculated.time_swam
         end
+
 =begin OLD CONFUSING VERSION:
         mirs.each do |mir|
           time_swam = (
@@ -125,6 +137,7 @@ describe SeasonalEventBestDAO, type: :model do
 =end
       end
     end
+
 
     describe "#set_best_for_gender_category_and_event" do
       it "increments the event bests calculated" do

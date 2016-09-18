@@ -105,7 +105,7 @@ class BalancedMeetingScoreCalculator
   # Retrieves teams which has partecipated to a meeting
   #
   def retrieve_teams
-    @meeting.teams.uniq
+    @meeting.teams.distinct
   end
   #-- --------------------------------------------------------------------------
   #++
@@ -113,7 +113,7 @@ class BalancedMeetingScoreCalculator
   # Retrieves maximum different swimmer resukts for team in the meeting
   #
   def retrieve_max_ranked_swimmers_for_team( team )
-    @meeting.meeting_individual_results.is_valid.for_team( team ).select('meeting_individual_results.swimmer_id').uniq.count
+    @meeting.meeting_individual_results.is_valid.for_team( team ).select('meeting_individual_results.swimmer_id').distinct.count
   end
   #-- --------------------------------------------------------------------------
   #++

@@ -47,24 +47,25 @@ class SwimmingPoolFinder
         'name',
         @query_term
       )
-      ids += SwimmingPool.select(:id).where( query_condition ).map{ |row| row.id }.flatten.uniq
+      ids += SwimmingPool.select(:id).where( query_condition )
+        .map{ |row| row.id }.flatten.uniq
 
       # Search among other most-used text columns in SwimmingPool:
       search_like_text = "%#{@query_term}%"
-      ids += SwimmingPool.select(:id).where(
-        [
+      ids += SwimmingPool.select(:id)
+        .where([
           "(nick_name LIKE ?) OR (address LIKE ?)OR (contact_name LIKE ?) OR (e_mail LIKE ?)",
-          search_like_text, search_like_text, search_like_text, search_like_text
-        ]
-      ).map{ |row| row.id }.flatten.uniq
+          search_like_text, search_like_text,
+          search_like_text, search_like_text
+        ]).map{ |row| row.id }.flatten.uniq
 
       # Search among linked city names:
-      ids += SwimmingPool.select(:id).includes(:city).where(
-        [
+      ids += SwimmingPool.select(:id)
+        .joins(:city).includes(:city)
+        .where([
           "cities.name LIKE ?",
           search_like_text
-        ]
-      ).map{ |row| row.id }.flatten.uniq
+        ]).map{ |row| row.id }.flatten.uniq
     end
     # Return the results:
     ids.uniq

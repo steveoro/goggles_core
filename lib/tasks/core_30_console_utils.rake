@@ -132,7 +132,7 @@ DESC
     teams_found.sort{ |a,b| a.name <=> b.name }.each do |team|
       logger.info( "\r\n#{team.id} - #{team.get_verbose_name} (#{team.name})" )
       logger.info( "<------------------------------------------------------------>" )
-      team.team_affiliations.select(:name).uniq.each do |team_affiliation|
+      team.team_affiliations.select(:name).distinct.each do |team_affiliation|
         logger.info( " - #{team_affiliation.name}" )
       end
       logger.info( "\r\n\r\n" )

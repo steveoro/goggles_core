@@ -72,6 +72,7 @@ class SwimmerMatchEvaluator
     @local_swimmer.meeting_programs.count > 0 &&
      visitor_swimmer && visitor_swimmer.id &&
      @local_swimmer.meeting_programs
+      .joins( :meeting_event )
       .includes( :meeting_event )
       .where([
         'meeting_events.event_type_id = ? and exists (select 1 from meeting_individual_results mir join swimmers s on s.id = mir.swimmer_id where s.id = ? and mir.meeting_program_id = meeting_programs.id)',
@@ -85,7 +86,9 @@ class SwimmerMatchEvaluator
   #
   def get_matches
     @matches = @local_swimmer.meeting_programs
-      .sort_by_date( 'DESC' ).includes( :meeting, :event_type )
+      .sort_by_date( 'DESC' )
+      .joins( :meeting, :event_type )
+      .includes( :meeting, :event_type )
       .where([
         'exists (select 1 from meeting_individual_results mir join swimmers s on s.id = mir.swimmer_id where s.id = ? and mir.meeting_program_id = meeting_programs.id)',
         @visitor_swimmer.id
@@ -97,7 +100,9 @@ class SwimmerMatchEvaluator
   #
   def get_matches_on_event( event_type )
     @matches = @local_swimmer.meeting_programs
-      .sort_by_date( 'DESC' ).includes( :meeting, :event_type )
+      .sort_by_date( 'DESC' )
+      .joins( :meeting, :event_type )
+      .includes( :meeting, :event_type )
       .where([
         'meeting_events.event_type_id = ? and exists (select 1 from meeting_individual_results mir join swimmers s on s.id = mir.swimmer_id where s.id = ? and mir.meeting_program_id = meeting_programs.id)',
         event_type.id,

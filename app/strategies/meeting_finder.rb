@@ -62,20 +62,32 @@ class MeetingFinder
       ).map{ |row| row.id }.flatten.uniq
 
       # Search among linked Swimmers:
-      ids += Meeting.select(:id).includes( :swimmers ).where( query_swimmers_condition ).map{ |row| row.id }.flatten.uniq
+      ids += Meeting.select(:id)
+          .joins( :swimmers )
+          .includes( :swimmers )
+          .where( query_swimmers_condition ).map{ |row| row.id }.flatten.uniq
 
       # Search among linked Teams:
-      ids += Meeting.select(:id).includes( :teams ).where( query_teams_condition ).map{ |row| row.id }.flatten.uniq
+      ids += Meeting.select(:id)
+          .joins( :teams )
+          .includes( :teams )
+          .where( query_teams_condition ).map{ |row| row.id }.flatten.uniq
 
       # Search among linked EventTypes:
-      event_type_ids = EventType.includes(:stroke_type).find_all do |row|
+      event_type_ids = EventType
+          .joins( :stroke_type )
+          .includes( :stroke_type )
+          .find_all do |row|
         ( row.i18n_short =~ %r(#{@query_term})i ) ||
         ( row.i18n_description =~ %r(#{@query_term})i )
       end.map{ |row| row.id }.flatten.uniq
 
       # Complete the list of IDs to be retrieved:
-      ids += Meeting.select(:id).includes( :meeting_events ).where( :'meeting_events.event_type_id' => event_type_ids )
-        .map{ |row| row.id }.flatten.uniq
+      ids += Meeting.select(:id)
+          .joins( :meeting_events )
+          .includes( :meeting_events )
+          .where( :'meeting_events.event_type_id' => event_type_ids )
+          .map{ |row| row.id }.flatten.uniq
       # Return the results:
       ids.uniq
     else                                            # No search term:

@@ -40,7 +40,7 @@ class MeetingStatCalculator
   # and more than one team partecipating
   #
   def has_results?()
-    (( @meeting.are_results_acquired || @meeting.meeting_individual_results.count > 0 ) && @meeting.teams.uniq.count > 1 )
+    (( @meeting.are_results_acquired || @meeting.meeting_individual_results.count > 0 ) && @meeting.teams.distinct.count > 1 )
   end
 
   # Verify if meeting has relays
@@ -56,7 +56,7 @@ class MeetingStatCalculator
   # and more than one entered team
   #
   def has_entries?()
-    ( @meeting.meeting_entries.count > 0 && @meeting.meeting_entries.select('team_id').uniq.count > 1 )
+    ( @meeting.meeting_entries.count > 0 && @meeting.meeting_entries.select('team_id').distinct.count > 1 )
   end
   # ---------------------------------------------------------------------------
 
@@ -66,10 +66,10 @@ class MeetingStatCalculator
   #
   def get_teams()
     if has_results?
-      teams = @meeting.teams.sort_by_name('ASC').uniq
+      teams = @meeting.teams.sort_by_name('ASC').distinct
     elsif has_entries?
       teams = []
-      @meeting.meeting_entries.select( 'team_id' ).uniq.map{ |e| e.team_id }.each do |team_id|
+      @meeting.meeting_entries.select( 'team_id' ).distinct.map{ |e| e.team_id }.each do |team_id|
         teams << Team.find( team_id )
       end
       teams.sort!{ |n,p| n.name <=> p.name }
@@ -88,7 +88,9 @@ class MeetingStatCalculator
   # Temas are intended the distinct team with entries in the meeting
   #
   def get_entered_teams_count()
-    @meeting.meeting_entries.includes(:team).select('teams.id').uniq.count
+    @meeting.meeting_entries
+        .joins(:team).includes(:team)
+        .select('teams.id').distinct.count
   end
   # ---------------------------------------------------------------------------
 
@@ -110,7 +112,7 @@ class MeetingStatCalculator
   # Entries are intended the distinct entries for the meeting
   #
   def get_category_ent_swimmers_count( category_type, scope_name = :is_male )
-    @meeting.meeting_entries.for_category_type(category_type).send(scope_name.to_sym).select('swimmer_id').uniq.count
+    @meeting.meeting_entries.for_category_type(category_type).send(scope_name.to_sym).select('swimmer_id').distinct.count
   end
 
   # Statistic calculation for the meeting entries count for a given event
@@ -125,14 +127,14 @@ class MeetingStatCalculator
   # swimmers are intended the physical distinct swimmers entered the meeting
   #
   def get_entered_swimmers_count( scope_name = :is_male )
-    @meeting.meeting_entries.send(scope_name.to_sym).select('swimmer_id').uniq.count
+    @meeting.meeting_entries.send(scope_name.to_sym).select('swimmer_id').distinct.count
   end
 
   # Statistic calculation for the meeting entries swimmer count for a given team
   # swimmers are intended the physical distinct swimmers entered the meeting
   #
   def get_team_entered_swimmers_count( team, scope_name = :is_male )
-    @meeting.meeting_entries.for_team(team).send(scope_name.to_sym).select('swimmer_id').uniq.count
+    @meeting.meeting_entries.for_team(team).send(scope_name.to_sym).select('swimmer_id').distinct.count
   end
   # ---------------------------------------------------------------------------
 
@@ -145,7 +147,7 @@ class MeetingStatCalculator
   # Temas are intended the distinct team with results in the meeting
   #
   def get_teams_count()
-    @meeting.teams.uniq.count
+    @meeting.teams.distinct.count
   end
 
   # Statistic calculation for the meeting results count
@@ -166,7 +168,7 @@ class MeetingStatCalculator
   # Results are intended the distinct results swam in the meeting
   #
   def get_category_swimmers_count( category_type, scope_name = :is_male )
-    @meeting.meeting_individual_results.for_category_type(category_type).send(scope_name.to_sym).select('swimmer_id').uniq.count
+    @meeting.meeting_individual_results.for_category_type(category_type).send(scope_name.to_sym).select('swimmer_id').distinct.count
   end
 
   # Statistic calculation for the meeting results count for a given event
@@ -181,7 +183,7 @@ class MeetingStatCalculator
   # swimmers are intended the physical distinct swimmers swam in the meeting
   #
   def get_swimmers_count( scope_name = :is_male )
-    @meeting.swimmers.send(scope_name.to_sym).uniq.count
+    @meeting.swimmers.send(scope_name.to_sym).distinct.count
   end
   # ---------------------------------------------------------------------------
 
@@ -189,7 +191,7 @@ class MeetingStatCalculator
   # swimmers are intended the physical distinct swimmers swam in the meeting
   #
   def get_team_swimmers_count( team, scope_name = :is_male )
-    @meeting.meeting_individual_results.for_team(team).send(scope_name.to_sym).select('swimmer_id').uniq.count
+    @meeting.meeting_individual_results.for_team(team).send(scope_name.to_sym).select('swimmer_id').distinct.count
   end
   # ---------------------------------------------------------------------------
 
@@ -291,7 +293,7 @@ class MeetingStatCalculator
   # Statistic calculation of the oldest swimmers has swam in the meeting
   #
   def get_oldest_swimmers( scope_name = :is_male, swimmer_num = 3 )
-    @meeting.swimmers.send(scope_name.to_sym).order(:year_of_birth).uniq.limit(swimmer_num)
+    @meeting.swimmers.send(scope_name.to_sym).order(:year_of_birth).distinct.limit(swimmer_num)
   end
   # ---------------------------------------------------------------------------
 
@@ -434,7 +436,7 @@ class MeetingStatCalculator
   #
   def calculate_categories( entries = true )
     @meeting_stats.categories = []
-    @meeting.category_types.are_not_relays.is_divided.sort_by_age.uniq.each do |category_type|
+    @meeting.category_types.are_not_relays.is_divided.sort_by_age.distinct.each do |category_type|
       category_stat = @meeting_stats.new_category( category_type )
 
       # Entry-based
@@ -459,7 +461,7 @@ class MeetingStatCalculator
   #
   def calculate_events( entries = true )
     @meeting_stats.events = []
-    @meeting.event_types.are_not_relays.uniq.each do |event_type|
+    @meeting.event_types.are_not_relays.distinct.each do |event_type|
       event_stat = @meeting_stats.new_event( event_type )
 
       # Entry-based

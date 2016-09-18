@@ -14,27 +14,27 @@ end
 
 
 describe MeetingStatDAO, :type => :model do
-  
+
   # Pre-loaded seeded last CSI seasons
   before(:all) do
     @seeded_meets = [12101, 12102, 12103, 12104, 12105, 13101, 13102, 13103, 13104, 13105, 13106]
   end
-  
-  let( :meeting )              { Meeting.find( @seeded_meets.at( (rand * @seeded_meets.size).to_i ) ) }
+
+  let( :meeting )              { Meeting.find_by_id( @seeded_meets.at( (rand * @seeded_meets.size).to_i ) ) }
 
   context "TeamMeetingStatDAO subclass," do
-    
-    let( :team )               { meeting.teams.at( ( rand * meeting.teams.count ).to_i ) }
+
+    let( :team )               { meeting.teams.to_a.at( ( rand * meeting.teams.count ).to_i ) }
 
     subject { MeetingStatDAO::TeamMeetingStatDAO.new( team ) }
-  
+
     describe "[a well formed instance]" do
       it "team is the one used in costruction" do
         expect( subject.team ).to eq( team )
       end
 
       it_behaves_like( "(the existance of a method returning numeric values)", [
-        :male_entries,       :female_entries, 
+        :male_entries,       :female_entries,
         :male_ent_swimmers,  :female_ent_swimmers,
         :male_results,       :female_results,
         :male_swimmers,      :female_swimmers,
@@ -138,30 +138,30 @@ describe MeetingStatDAO, :type => :model do
     end
     #-- -------------------------------------------------------------------------
 
-    context "not a valid instance" do   
+    context "not a valid instance" do
       it "raises an exception for wrong meeting parameter" do
         expect{ MeetingStatDAO::TeamMeetingStatDAO.new() }.to raise_error( ArgumentError )
         expect{ MeetingStatDAO::TeamMeetingStatDAO.new( 'Wrong parameter' ) }.to raise_error( ArgumentError )
-      end   
+      end
     end
     #-- -------------------------------------------------------------------------
   end
   #-- -------------------------------------------------------------------------
   #++
-  
+
   context "CategoryMeetingStatDAO subclass," do
-    
-    let( :category_type )         { meeting.season.category_types.at( ( rand * meeting.season.category_types.count ).to_i ) }
+
+    let( :category_type )         { meeting.season.category_types.to_a.at( ( rand * meeting.season.category_types.count ).to_i ) }
 
     subject { MeetingStatDAO::CategoryMeetingStatDAO.new( category_type ) }
-  
+
     describe "[a well formed instance]" do
       it "category type is the one used in costruction" do
         expect( subject.category_type ).to eq( category_type )
       end
 
       it_behaves_like( "(the existance of a method returning numeric values)", [
-        :male_ent_swimmers, :female_ent_swimmers, 
+        :male_ent_swimmers, :female_ent_swimmers,
         :male_swimmers,     :female_swimmers
       ])
     end
@@ -184,30 +184,30 @@ describe MeetingStatDAO, :type => :model do
     end
     #-- -------------------------------------------------------------------------
 
-    context "not a valid instance" do   
+    context "not a valid instance" do
       it "raises an exception for wrong category parameter" do
         expect{ MeetingStatDAO::CategoryMeetingStatDAO.new() }.to raise_error( ArgumentError )
         expect{ MeetingStatDAO::CategoryMeetingStatDAO.new( 'Wrong parameter' ) }.to raise_error( ArgumentError )
-      end   
+      end
     end
     #-- -------------------------------------------------------------------------
   end
   #-- -------------------------------------------------------------------------
   #++
-  
+
   context "EventMeetingStatDAO subclass," do
-    
-    let( :event_type )         { meeting.event_types.at( ( rand * meeting.event_types.count ).to_i ) }
+
+    let( :event_type )         { meeting.event_types.to_a.at( ( rand * meeting.event_types.count ).to_i ) }
 
     subject { MeetingStatDAO::EventMeetingStatDAO.new( event_type ) }
-  
+
     describe "[a well formed instance]" do
       it "event type is the one used in costruction" do
         expect( subject.event_type ).to eq( event_type )
       end
 
       it_behaves_like( "(the existance of a method returning numeric values)", [
-        :male_entries,       :female_entries, 
+        :male_entries,       :female_entries,
         :male_results,       :female_results
       ])
     end
@@ -230,17 +230,17 @@ describe MeetingStatDAO, :type => :model do
     end
     #-- -------------------------------------------------------------------------
 
-    context "not a valid instance" do   
+    context "not a valid instance" do
       it "raises an exception for wrong event parameter" do
         expect{ MeetingStatDAO::EventMeetingStatDAO.new() }.to raise_error( ArgumentError )
         expect{ MeetingStatDAO::EventMeetingStatDAO.new( 'Wrong parameter' ) }.to raise_error( ArgumentError )
-      end   
+      end
     end
     #-- -------------------------------------------------------------------------
   end
   #-- -------------------------------------------------------------------------
   #++
-  
+
   subject { MeetingStatDAO.new( meeting ) }
 
   describe "[a well formed instance]" do
@@ -344,11 +344,11 @@ describe MeetingStatDAO, :type => :model do
   #-- -------------------------------------------------------------------------
   #++
 
-  context "not a valid instance" do   
+  context "not a valid instance" do
     it "raises an exception for wrong meeting parameter" do
       expect{ MeetingStatDAO.new() }.to raise_error( ArgumentError )
       expect{ MeetingStatDAO.new( 'Wrong parameter' ) }.to raise_error( ArgumentError )
-    end   
+    end
   end
   #-- -------------------------------------------------------------------------
   #++

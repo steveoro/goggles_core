@@ -50,7 +50,7 @@ class RecordGridBuilder
     season_types = if @collector.season_type
       [ @collector.season_type ]
     elsif @collector.team
-      @collector.team.season_types.uniq
+      @collector.team.season_types.distinct
     else
       @collector.get_collected_season_types.values
     end

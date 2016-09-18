@@ -151,13 +151,19 @@ class RecordX4dDAO
     @records.size
   end
 
-  # Returns the element number of the record in records collection
-  # Ignore event type if no event passed
-  # Ignore category type if no category passed
-  # Return nil if no record set
+  # Returns the element index number of the record stored inside the timing-records
+  # collection.
   #
-  def has_record_for?( pool_code, gender_code, event_code, category_code )
-    @records.rindex{ |e| e.pool_type_code == pool_code && e.gender_type_code == gender_code && ( event_code == nil || e.event_type_code == event_code ) && ( category_code == nil || e.category_type_code == category_code ) }
+  # When no category or event code is specified, these are simply ignored.
+  # Returns +nil+ when no previous record was found/collected.
+  #
+  def has_record_for?( pool_code, gender_code, event_code = nil, category_code = nil )
+    @records.rindex do |e|
+      e.pool_type_code == pool_code &&
+      e.gender_type_code == gender_code &&
+      ( event_code == nil || e.event_type_code == event_code ) &&
+      ( category_code == nil || e.category_type_code == category_code )
+    end
   end
 
   # Gets the record for the given parameters

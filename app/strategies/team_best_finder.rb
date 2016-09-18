@@ -78,26 +78,43 @@ class TeamBestFinder
     else
       categories = []
       @team.season_types.each do |season_type|
-        season_type.seasons.sort_season_by_begin_date.last.category_types.are_not_relays.sort_by_age.each do |category_type|
-          categories << category_type if ! categories.rindex{ |e| e.code == category_type.code }
+        season_type.seasons.sort_season_by_begin_date
+          .last
+          .category_types.are_not_relays
+          .sort_by_age.each do |category_type|
+            categories << category_type if ! categories.rindex{ |e| e.code == category_type.code }
         end
       end
     end
     categories
   end
 
-  # Check if a category has to be splitted
-  # Some categories are undivided and has to be splitted for definition
-  # Some categories have different age definition in different season types and need to be compared
+  # Checks if a category has to be splitted
+  # Some categories are undivided and have to be splitted for definition
+  # Some categories have different age definition in different season types
+  # and need to be compared.
   #
   # Returns a default false value for a nil category_type.
   #
+  # FIXME (by Steve) This description isn't clear for me and thus needs improvement!
+  #
   def category_needs_split?( category_type )
     return false if category_type.nil?
+    # Assume the default is "no splitting is needed"
     needs_split = false
+    # Check if the category has been already flagged as "grouped" from the start
     if category_type.is_undivided
       needs_split = true
-    elsif @distinct_categories.rindex{ |e| e.code != category_type.code && e.age_begin >= category_type.age_begin && e.age_end <= category_type.age_end }
+    # Check also among the list of distinct categories (different from this one)
+    # to see if the specified category type does fall in between of a specific
+    # age range, so that during category comparison this category may be
+    # "splitted" among other categories (that are grouping the same age
+    # variations)
+    elsif @distinct_categories.rindex{ |e|
+        (e.code != category_type.code) &&
+        (e.age_begin >= category_type.age_begin) &&
+        (e.age_end <= category_type.age_end)
+    }
       needs_split = true
     end
     needs_split
@@ -125,7 +142,13 @@ class TeamBestFinder
   # Disqualified results not considered
   #
   def has_individual_result?( gender_type, pool_type, event_type, category_code )
-    team.meeting_individual_results.is_not_disqualified.for_gender_type(gender_type).for_pool_type(pool_type).for_event_type(event_type).for_category_code(category_code).sort_by_timing.count > 0
+    team.meeting_individual_results
+      .is_not_disqualified
+      .for_gender_type(gender_type)
+      .for_pool_type(pool_type)
+      .for_event_type(event_type)
+      .for_category_code(category_code)
+      .sort_by_timing.count > 0
   end
 
   # Find best for given gender, pool, event and category code
@@ -134,13 +157,21 @@ class TeamBestFinder
   # Disqualified results not considered
   #
   def get_team_best_individual_result( gender_type, pool_type, event_type, category_code )
-    has_individual_result?( gender_type, pool_type, event_type, category_code ) ?
-      team.meeting_individual_results.is_not_disqualified.for_gender_type(gender_type).for_pool_type(pool_type).for_event_type(event_type).for_category_code(category_code).sort_by_timing.first :
+    if has_individual_result?( gender_type, pool_type, event_type, category_code )
+      team.meeting_individual_results
+        .is_not_disqualified
+        .for_gender_type(gender_type)
+        .for_pool_type(pool_type)
+        .for_event_type(event_type)
+        .for_category_code(category_code)
+        .sort_by_timing.first
+    else
       nil
+    end
   end
 
   # Cycle between distinct categories to find out team bests
-  # Team bests found should be rearranged for category split&merge operation
+  # Team best timings found should be rearranged for category split&merge operation
   # Returns a RecordX4dDAO with a RecordElement for each
   # pool type, gender type, event type and distinct category
   # with at least one not disqualified result

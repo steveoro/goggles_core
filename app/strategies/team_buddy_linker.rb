@@ -45,7 +45,7 @@ class TeamBuddyLinker
     @associated_teams   = user.swimmer.teams
     @uniq_team_mates    = []                        # Build up the team-mates list
     @associated_teams.each do |team|
-      @uniq_team_mates += team.swimmers.uniq
+      @uniq_team_mates += team.swimmers.distinct.to_a
     end
     @uniq_team_mates.reject!{ |swimmer| swimmer.id == @associated_swimmer.id }
     @uniq_team_mates.uniq!

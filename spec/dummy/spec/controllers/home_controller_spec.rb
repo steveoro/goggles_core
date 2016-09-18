@@ -66,10 +66,15 @@ RSpec.describe HomeController, type: :controller do
         get :restricted_info
         expect(response).to have_http_status(:success)
       end
-      it "assigns a variable @for_user_eyes_only" do
-        expect( assigns(:for_user_eyes_only) ).to be_an_instance_of( String )
-        expect( assigns(:for_user_eyes_only) ).to eq("I guess you are a logged-id User!")
-      end
+
+      # [Steve, 20160918] For Rails 5, assigns & asset_template have been removed
+      # since they refer to controller internals and a controller test should not
+      # care about these implementation details.
+#      it "assigns a variable @for_user_eyes_only" do
+#        expect( assigns(:for_user_eyes_only) ).to be_an_instance_of( String )
+#        expect( assigns(:for_user_eyes_only) ).to eq("I guess you are a logged-id User!")
+#      end
+
       it "shows the current_user email" do
         expect( response.body ).to include( @user.email )
       end

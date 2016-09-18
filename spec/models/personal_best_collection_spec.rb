@@ -4,9 +4,9 @@ require 'rails_helper'
 describe PersonalBestCollection, :type => :model do
   # Use pre-loaded seeds:
   let( :results )   { MeetingIndividualResult.where( swimmer_id: 23 ) }
-  let( :fixture )   { results.at( ((rand * 1000) % results.size).to_i ) }
-  let( :fixture2 )  { results.at( ((rand * 1000) % results.size).to_i ) }
-  let( :fixture3 )  { results.at( ((rand * 1000) % results.size).to_i ) }
+  let( :fixture )   { results.to_a.at( ((rand * 1000) % results.size).to_i ) }
+  let( :fixture2 )  { results.to_a.at( ((rand * 1000) % results.size).to_i ) }
+  let( :fixture3 )  { results.to_a.at( ((rand * 1000) % results.size).to_i ) }
 
   let( :record_type_code )    { RecordType.find( 1 ).code } # Assumes Swimmer personal best from seeds
 

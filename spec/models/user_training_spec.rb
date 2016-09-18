@@ -20,12 +20,12 @@ describe UserTraining, :type => :model do
       )
       it_behaves_like( "(the existance of a method returning non-empty strings)",
         [
-          :get_full_name, 
+          :get_full_name,
           :get_verbose_name
         ]
       )
       it_behaves_like( "(the existance of a method returning numeric values)",
-        [ 
+        [
           :total_distance,
           :compute_total_distance,
           :esteemed_total_seconds,
@@ -39,7 +39,7 @@ describe UserTraining, :type => :model do
   #-- -------------------------------------------------------------------------
   #++
 
-  [ 
+  [
     :total_distance,
     :compute_total_distance,
     :esteemed_total_seconds,
@@ -54,11 +54,11 @@ describe UserTraining, :type => :model do
   #-- -------------------------------------------------------------------------
   #++
 
-  [ 
+  [
     :compute_step_distance
   ].each do |method_name|
     before :each do
-      @fix_step_code = TrainingStepType.all[ ((rand * 100) % TrainingStepType.count).to_i ] # Assumes from seed 
+      @fix_step_code = TrainingStepType.all[ ((rand * 100) % TrainingStepType.count).to_i ] # Assumes from seed
     end
 
     describe "##{method_name}" do

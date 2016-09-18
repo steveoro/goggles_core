@@ -198,7 +198,7 @@ class GoggleCupStandardFinder
   # not wise...
   def scan_and_search_for_involved_swimmers
     involved_swimmers = []
-    swimmer_candidates = @goggle_cup.swimmers.has_results.uniq
+    swimmer_candidates = @goggle_cup.swimmers.has_results.distinct
 # DEBUG
     puts "\r\n- GoggleCupStandardFinder#scan_and_search_for_involved_swimmers: swimmer candidates = #{ swimmer_candidates.count }"
 #    puts "Callers [0..7]:"

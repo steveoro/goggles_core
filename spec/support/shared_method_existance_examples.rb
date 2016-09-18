@@ -15,8 +15,8 @@ shared_examples_for "(the existance of a scope with no parameters)" do |method_n
   it_behaves_like "(the existance of a class method)", method_name_array
 
   method_name_array.each do |method_name|
-    it "returns an instance of ActiveRecord::Relation" do
-      expect( subject.class.send(method_name) ).to be_an_instance_of( ActiveRecord::Relation )
+    it "returns a kind of ActiveRecord::Relation" do
+      expect( subject.class.send(method_name) ).to be_a_kind_of( ActiveRecord::Relation )
     end
   end
 end
