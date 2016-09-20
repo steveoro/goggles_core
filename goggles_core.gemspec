@@ -28,7 +28,11 @@ Gem::Specification.new do |s|
   s.add_dependency "mysql2" #, "~> 0.3.11"
   s.add_dependency "devise"
   s.add_dependency "devise-i18n"
-  s.add_dependency "simple_token_authentication", '~> 1'
+  s.add_dependency "simple_token_authentication", '~> 1.14' # '1.13' adds Rails 5 support
+  # XXX Alternatives (that require major rewriting & additional migrations):
+  # - simple_token_authentication, https://github.com/gonzalo-bulnes/simple_token_authentication/issues/67
+  # - devise-token_authenticatable, https://github.com/baschtl/devise-token_authenticatable
+  # - devise_token_auth, https://github.com/lynndylanhurley/devise_token_auth
 
   s.add_dependency "execjs"
   s.add_dependency "therubyracer"
