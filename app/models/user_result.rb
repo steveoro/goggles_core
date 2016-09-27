@@ -1,7 +1,5 @@
 # encoding: utf-8
 require 'wrappers/timing'
-require 'timing_gettable'
-require 'timing_validatable'
 
 
 =begin

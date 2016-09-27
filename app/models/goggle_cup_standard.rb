@@ -1,6 +1,4 @@
 require 'wrappers/timing'
-require 'timing_gettable'
-require 'timing_validatable'
 
 
 class GoggleCupStandard < ApplicationRecord
@@ -16,7 +14,7 @@ class GoggleCupStandard < ApplicationRecord
   validates_associated :goggle_cup
   validates_associated :event_type
   validates_associated :pool_type
-  
+
   has_one :team,  through: :goggle_cup
 
   scope :sort_by_user,        ->(dir) { order("users.name #{dir.to_s}, goggle_cups.season_year #{dir.to_s}, pool_types.code #{dir.to_s}, event_types.code #{dir.to_s}, swimmers.complete_name #{dir.to_s}") }
@@ -71,9 +69,9 @@ class GoggleCupStandard < ApplicationRecord
   #
   def self.has_standard?( goggle_cup_id, swimmer_id, pool_type_id, event_type_id )
     GoggleCupStandard.where([
-      'goggle_cup_id = ? AND swimmer_id = ? AND pool_type_id = ? AND event_type_id = ?', 
+      'goggle_cup_id = ? AND swimmer_id = ? AND pool_type_id = ? AND event_type_id = ?',
       goggle_cup_id, swimmer_id, pool_type_id, event_type_id])
-      .count > 0  
+      .count > 0
   end
 
   # Returns standard goggle cup for a given goggle_cup-swimmer-pool_typ-event_type
@@ -81,7 +79,7 @@ class GoggleCupStandard < ApplicationRecord
   #
   def self.get_standard( goggle_cup_id, swimmer_id, pool_type_id, event_type_id )
     GoggleCupStandard.where([
-      'goggle_cup_id = ? AND swimmer_id = ? AND pool_type_id = ? AND event_type_id = ?', 
+      'goggle_cup_id = ? AND swimmer_id = ? AND pool_type_id = ? AND event_type_id = ?',
       goggle_cup_id, swimmer_id, pool_type_id, event_type_id]).first
   end
   # ----------------------------------------------------------------------------

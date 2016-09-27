@@ -1,6 +1,4 @@
 require 'wrappers/timing'
-require 'swimmer_relatable'
-require 'timing_gettable'
 
 
 class MeetingEntry < ApplicationRecord

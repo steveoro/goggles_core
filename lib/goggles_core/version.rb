@@ -26,7 +26,7 @@ module GogglesCore
     MAJOR   = '6'
 
     # Minor version.
-    MINOR   = '001'
+    MINOR   = '002'
 
     # Current build version.
     BUILD   = '20160927'

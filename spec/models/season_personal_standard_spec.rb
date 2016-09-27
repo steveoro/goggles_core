@@ -20,14 +20,16 @@ describe SeasonPersonalStandard, :type => :model do
       :pool_type
     ])
     # Filtering scopes:
-    #it_behaves_like( "(the existance of a class method)", [
-    #  :sort_by_swimmer,
-    #  :sort_by_event_type,
-    #  :sort_by_pool_type
-    #])
+    it_behaves_like( "(the existance of a class method)", [
+      :for_season,
+      :for_swimmer,
+      :for_event_type,
+      :for_pool_type,
+      :for_event_and_pool
+    ])
 
     context "[general methods]" do
-      it_behaves_like( "(the existance of a method returning non-empty strings)", [ 
+      it_behaves_like( "(the existance of a method returning non-empty strings)", [
         :get_short_name,
         :get_full_name,
         :get_verbose_name,
@@ -36,7 +38,7 @@ describe SeasonPersonalStandard, :type => :model do
       ])
     end
   end
-  
+
   describe "#has_standard? method" do
     it "responds to #has_standard?" do
       expect( subject.class ).to respond_to( :has_standard? )

@@ -1,7 +1,4 @@
 require 'wrappers/timing'
-#require 'swimmer_relatable'
-#require 'timing_gettable'
-#require 'timing_validatable'
 
 
 #

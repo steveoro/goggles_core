@@ -1,6 +1,4 @@
 require 'wrappers/timing'
-require 'timing_gettable'
-require 'timing_validatable'
 
 
 class SeasonPersonalStandard < ApplicationRecord
@@ -16,7 +14,7 @@ class SeasonPersonalStandard < ApplicationRecord
   validates_associated :season
   validates_associated :event_type
   validates_associated :pool_type
-  
+
   scope :for_season,          ->(season)     { where(season_id: season.id) }
   scope :for_swimmer,         ->(swimmer)    { where(swimmer_id: swimmer.id) }
   scope :for_event_type,      ->(event_type) { where(event_type_id: event_type.id) }
@@ -63,9 +61,9 @@ class SeasonPersonalStandard < ApplicationRecord
   #
   def self.has_standard?( season_id, swimmer_id, pool_type_id, event_type_id )
     SeasonPersonalStandard.where([
-      'season_id = ? AND swimmer_id = ? AND pool_type_id = ? AND event_type_id = ?', 
+      'season_id = ? AND swimmer_id = ? AND pool_type_id = ? AND event_type_id = ?',
       season_id, swimmer_id, pool_type_id, event_type_id])
-      .count > 0  
+      .count > 0
   end
 
   # Returns standard time for a given season-swimmer-pool_typ-event_type
@@ -73,7 +71,7 @@ class SeasonPersonalStandard < ApplicationRecord
   #
   def self.get_standard( season_id, swimmer_id, pool_type_id, event_type_id )
     SeasonPersonalStandard.where([
-      'season_id = ? AND swimmer_id = ? AND pool_type_id = ? AND event_type_id = ?', 
+      'season_id = ? AND swimmer_id = ? AND pool_type_id = ? AND event_type_id = ?',
       season_id, swimmer_id, pool_type_id, event_type_id]).first
   end
   # ----------------------------------------------------------------------------
