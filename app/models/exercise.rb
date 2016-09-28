@@ -233,7 +233,8 @@ class Exercise < ApplicationRecord
         total_distance,
         :true,
         (er.first.training_mode_type_code != 'A2' && er.first.base_movement.movement_type_code != 'T'),
-        :true)
+        :true
+      )
     else
       # Check if same movement in all rows
       is_same_movement = ( base_movements.distinct.count == 1 )
@@ -246,7 +247,10 @@ class Exercise < ApplicationRecord
       is_same_mode = ( training_mode_types.distinct.count == 1 )
 
       # Check if same distance
-      is_same_distance = ( er.select(:percentage).distinct.map{ |row| row.percentage }.count == 1 && er.first.percentage > 0 )
+      is_same_distance = (
+        (er.select(:percentage).distinct.count == 1) &&
+        (er.first.percentage > 0)
+      )
 
       # If same movements or training mode open parenthesys
       natural_description += '(' if is_same_movement or is_same_mode
