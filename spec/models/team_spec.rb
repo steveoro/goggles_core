@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 
-describe Team, :type => :model do
+describe Team, type: :model do
+
   describe "[a non-valid instance]" do
     it_behaves_like( "(missing required values)", [
       :name, :editable_name
@@ -9,6 +10,55 @@ describe Team, :type => :model do
   end
   #-- -------------------------------------------------------------------------
   #++
+
+  it_behaves_like "DropDownListable"
+
+  it_behaves_like( "(the existance of a class method)", [
+    # Filtering scopes:
+    :has_results,
+    :has_many_results,
+    # Other class methods:
+    :get_label_symbol,
+    :get_swimmer_ids_for
+  ])
+  #-- -----------------------------------------------------------------------
+  #++
+
+  describe "self.get_swimmer_ids_for" do
+    context "with valid parameters," do
+      # TODO Randomize these fixtures (Choose a random meeting, select a random team among them, use their IDs)
+      subject { Team.get_swimmer_ids_for( 1, 15205 ) }
+      it "returns a list of IDs" do
+        expect( subject ).to be_an( Array )
+        expect( subject.size ).to be > 0
+        expect( subject ).to all be_a( Fixnum )
+      end
+    end
+
+    context "with a nil team_id," do
+      subject { Team.get_swimmer_ids_for( nil, 15205 ) }
+      it "returns an empty Array" do
+        expect( subject ).to eq( [] )
+      end
+    end
+
+    context "with a valid team_id and a nil meeting_id," do
+      subject { Team.get_swimmer_ids_for( 1, nil ) }
+      it "returns an empty Array" do
+        expect( subject ).to eq( [] )
+      end
+    end
+
+    context "with a valid team_id and a non-existing meeting_id," do
+      subject { Team.get_swimmer_ids_for( 1, 0 ) }
+      it "returns an empty Array" do
+        expect( subject ).to eq( [] )
+      end
+    end
+  end
+  #-- -----------------------------------------------------------------------
+  #++
+
 
   describe "[a well formed instance]" do
     subject { Team.find(1) }
@@ -52,7 +102,7 @@ describe Team, :type => :model do
         ]
       )
     end
-    # ---------------------------------------------------------------------------
+    #-- -----------------------------------------------------------------------
     #++
 
     describe "#has_goggle_cup_at?" do
@@ -73,7 +123,7 @@ describe Team, :type => :model do
         expect( subject.has_goggle_cup_at?( fix_date ) ).to be false
       end
     end
-    # ---------------------------------------------------------------------------
+    #-- -----------------------------------------------------------------------
     #++
 
     describe "#get_current_goggle_cup_at" do
@@ -104,7 +154,7 @@ describe Team, :type => :model do
         end
       end
     end
-    # ---------------------------------------------------------------------------
+    #-- -----------------------------------------------------------------------
     #++
 
     describe "#get_current_goggle_cup_name_at" do
@@ -131,7 +181,7 @@ describe Team, :type => :model do
         end
       end
     end
-    # ---------------------------------------------------------------------------
+    #-- -----------------------------------------------------------------------
     #++
 
     describe "#get_current_affiliation" do
@@ -155,7 +205,7 @@ describe Team, :type => :model do
           fix_season_type = SeasonType.find_by_code('MASFIN')
           # This is the range of months inside which we are actually expecting the
           # affiliation to be defined:
-          if Date.today.month.in?( 1..6 ) || Date.today.month.in?( 10..12 )
+          if Date.today.month.in?( 1..6 ) || Date.today.month.in?( 11..12 )
             expect( subject.get_current_affiliation( fix_season_type ) ).to be_an_instance_of( TeamAffiliation )
           end
 
@@ -167,7 +217,7 @@ describe Team, :type => :model do
         end
       end
     end
-    # ---------------------------------------------------------------------------
+    #-- -----------------------------------------------------------------------
     #++
   end
   #-- -------------------------------------------------------------------------

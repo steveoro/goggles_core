@@ -2,7 +2,6 @@ require 'rails_helper'
 
 
 describe Swimmer, :type => :model do
-  it_behaves_like "DropDownListable"
 
   describe "[a non-valid instance]" do
     it_behaves_like( "(missing required values)", [
@@ -10,6 +9,20 @@ describe Swimmer, :type => :model do
     ])
   end
   #-- -------------------------------------------------------------------------
+  #++
+
+  it_behaves_like "DropDownListable"
+
+  it_behaves_like( "(the existance of a class method)", [
+    # Filtering scopes:
+    :is_male,
+    :is_female,
+    :has_results,
+    # Other class methods:
+    :get_label_symbol,
+    :get_team_names
+  ])
+  #-- -----------------------------------------------------------------------
   #++
 
   describe "[a well formed instance]" do
@@ -101,9 +114,60 @@ describe Swimmer, :type => :model do
     end
     #-- -----------------------------------------------------------------------
     #++
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
+
+  describe "[a fixture w/ full, valid data]" do
+    subject { Swimmer.find( [23, 142].sort{ rand - 0.5 }[0] ) }
+
+    describe "#get_total_meters_swam" do
+      it "returns a number greater than 0" do
+        expect( subject.get_total_meters_swam ).to be > 0
+      end
+    end
+
+    describe "#get_total_time_swam" do
+      it "returns a Timing instance" do
+        expect( subject.get_total_time_swam ).to be_a( Timing )
+      end
+      it "returns a positive value (in hundreds)" do
+        expect( subject.get_total_time_swam.to_hundreds ).to be > 0
+      end
+    end
+    #-- -----------------------------------------------------------------------
+    #++
+
+    describe "#get_first_meeting" do
+      it "returns a Meeting" do
+        expect( subject.get_first_meeting ).to be_a( Meeting )
+      end
+    end
+
+    describe "#get_last_meeting" do
+      it "returns a Meeting" do
+        expect( subject.get_last_meeting ).to be_a( Meeting )
+      end
+    end
+    #-- -----------------------------------------------------------------------
+    #++
+
+    describe "#get_best_individual_result" do
+      it "returns a MeetingIndividualResult" do
+        expect( subject.get_best_individual_result ).to be_a( MeetingIndividualResult )
+      end
+    end
+
+    describe "#get_worst_individual_result" do
+      it "returns a MeetingIndividualResult" do
+        expect( subject.get_worst_individual_result ).to be_a( MeetingIndividualResult )
+      end
+    end
+    #-- -----------------------------------------------------------------------
+    #++
 
     # TODO Add more specs for all the other methods
-
   end
   #-- -------------------------------------------------------------------------
   #++

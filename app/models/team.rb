@@ -148,7 +148,15 @@ class Team < ApplicationRecord
   #
   def self.get_swimmer_ids_for( team_id, meeting_id )
     team = Team.find_by_id( team_id )
-    team ? team.meeting_individual_results.includes(:meeting).where(['meetings.id=?', meeting_id]).collect{|row| row.swimmer_id}.uniq : []
+    if team
+      team.meeting_individual_results
+        .joins(:meeting)
+        .includes(:meeting)
+        .where(['meetings.id=?', meeting_id])
+        .map{ |row| row.swimmer_id }.uniq
+    else
+      []
+    end
   end
   #-- -------------------------------------------------------------------------
   #++

@@ -2,7 +2,7 @@
 
 = Version module
 
-  - version:  6.00
+  - version:  6.003
   - author:   Steve A.
 
   Semantic Versioning implementation.
@@ -14,7 +14,7 @@ module GogglesCore
   #++
 
   # Actual Core versioning, used for Gem differentiation.
-  VERSION = "1.1.2"
+  VERSION = "1.1.3"
 
   module Version
     # Framework Core internal name.
@@ -26,10 +26,10 @@ module GogglesCore
     MAJOR   = '6'
 
     # Minor version.
-    MINOR   = '002'
+    MINOR   = '003'
 
     # Current build version.
-    BUILD   = '20160928'
+    BUILD   = '20161002'
 
     # Full versioning for the current release (Framework + Core).
     FULL    = "#{MAJOR}.#{MINOR}.#{BUILD} (#{CORE} v. #{VERSION})"
