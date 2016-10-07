@@ -1,5 +1,7 @@
 # goggles_core
 
+[![CodeFactor](https://www.codefactor.io/repository/github/steveoro/goggles_core/badge)](https://www.codefactor.io/repository/github/steveoro/goggles_core)
+
 Core engine and modules for Goggles 5.0+
 
 This _full_ engine should contain only:
