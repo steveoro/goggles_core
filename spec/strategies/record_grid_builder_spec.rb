@@ -74,4 +74,51 @@ describe RecordGridBuilder, type: :strategy do
   end
   #-- -------------------------------------------------------------------------
   #++
+
+
+  # This is testing an empty grid:
+  context "when building a grid for season with NO records," do
+    let( :fake_season_type )  { FactoryGirl.create(:season_type) }
+    let( :records )           { IndividualRecord.for_season_type( fake_season_type.id ) }
+    let( :collector )         { RecordCollector.new( list: records, record_type_code: 'FOR', season_type: fake_season_type ) }
+
+    subject { RecordGridBuilder.new( collector, 'FOR' ) }
+
+    describe "#initialize" do
+      it "receives 0 records" do
+        expect( records.count ).to eq(0)
+      end
+      it "receives a Collector instance" do
+        expect( collector ).to be_a( RecordCollector )
+      end
+      it "receives a Collector with a valid Collection" do
+        expect( collector.collection ).to be_a( RecordCollection )
+      end
+
+      it "builds the instance" do
+        expect( subject ).to be_a( RecordGridBuilder )
+      end
+      it "has a #count of 0 (records)" do
+        expect( subject.count ).to eq(0)
+      end
+      it "has a #collection that responds to :each and :count" do
+        expect( subject.collection ).to respond_to(:each)
+        expect( subject.collection ).to respond_to(:count)
+      end
+      it "has a 0 category_types" do
+        expect( subject.category_types.size ).to eq(0)
+      end
+      it "has all the event_types for pool_type #1 (25 mt.)" do
+        expect( subject.event_types(1).size ).to be > 0
+      end
+      it "has all the event_types for pool_type #2 (50 mt.)" do
+        expect( subject.event_types(2).size ).to be > 0
+      end
+      it "has always 2 gender_types" do
+        expect( subject.gender_types.size ).to eq(2)
+      end
+    end
+  end
+  #-- -------------------------------------------------------------------------
+  #++
 end

@@ -54,10 +54,13 @@ class RecordGridBuilder
     else
       @collector.get_collected_season_types.values
     end
-    # Get the list of Ids from all the most recent Season(s), by available SeasonType (uses Squeel DSL syntax):
+
+    # Get the list of Ids from all the most recent Season(s), by available SeasonType:
     season_ids = season_types.map do |st|
-      Season.where( ["season_type_id = ?", st.id] ).max.id
-    end
+      last_available_season = Season.where( ["season_type_id = ?", st.id] ).last
+      last_available_season.id if last_available_season
+    end.compact
+
     # Get the list of available CategoryType(s) filtered by Season#id (uses Squeel DSL syntax):
     category_types = CategoryType.is_valid.are_not_relays
       .is_divided.sort_by_age
@@ -79,6 +82,11 @@ class RecordGridBuilder
     else
       GenderType.where( ["code <> ?", 'X'] )
     end
+
+    # Remove from the list of categories all the ones that do not have any record
+    # in it (for every combination of pool, gender and event).
+    # This can only be invoked after all the @_types arrays have been defined above.
+    clean_up_unused_categories!
   end
   #-- --------------------------------------------------------------------------
   #++
@@ -132,7 +140,11 @@ class RecordGridBuilder
   # inside RecordCollector: these return an actual Enumerator for all the allowed
   # model instances (not just unique string codes).
   def event_types( pool_type_id )
-    @event_types_by_pool.has_key?(pool_type_id) ? @event_types_by_pool[pool_type_id].each : [].each
+    if @event_types_by_pool.has_key?(pool_type_id)
+      @event_types_by_pool[pool_type_id].each
+    else
+      [].each
+    end
   end
 
   # Returns the Enumerator of the allowed CategoryTypes.
@@ -155,11 +167,37 @@ class RecordGridBuilder
   #-- -------------------------------------------------------------------------
   #++
 
-  # Returns the record type the grif builder was initialized for
+  # Returns the record type the grid builder was initialized for
   #
   def get_record_type_code
     @record_type_code
   end
   #-- -------------------------------------------------------------------------
   #++
+
+
+  private
+
+
+  # Removes from the collection of categories only the ones that do not have any
+  # record in it for *every* possible combination of pool type, gender type and
+  # event type.
+  def clean_up_unused_categories!
+    empty_category_codes = []
+    @category_types.each do |category_type|
+      record_found = 0                              # Let's count how many records there are for this category:
+      @pool_types.each do |pool_type|
+        @gender_types.each do |gender_type|
+          if @event_types_by_pool.has_key?(pool_type.id)
+            @event_types_by_pool[pool_type.id].each do |event_type|
+              record_found += 1 if @collector.collection.has_record_for( @record_type_code, pool_type.code, event_type.code, category_type.code, gender_type.code )
+            end
+          end
+        end
+      end
+      empty_category_codes << category_type.code if record_found == 0
+    end
+    # Remove unused cateogories:
+    @category_types = @category_types.delete_if{ |category_type| empty_category_codes.include?(category_type.code) }
+  end
 end
