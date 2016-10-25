@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
 
-  mount GogglesCore::Engine => "/"
+  mount GogglesCore::Engine => "home#index"
 
   root to: 'home#index'
 

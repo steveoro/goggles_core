@@ -1,8 +1,9 @@
+require 'active_support'
 require 'wrappers/timing'
 
 
 =begin
-  
+
 = TimingGettable
 
 - version:  4.00.275.20140511

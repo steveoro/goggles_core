@@ -18,7 +18,7 @@ gem "amistad", git: "https://github.com/fasar-sw/amistad.git", branch: 'rails5' 
 # To use debugger
 # gem 'debugger'
 
-group :test do
+group :development, :test do
   gem 'zeus', require: false
   # FIXME Investigate this / find current best-practice:
 #  gem 'rails-controller-testing'

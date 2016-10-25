@@ -1,3 +1,4 @@
+require 'active_support'
 =begin
 
 == SwimmerRelatable
