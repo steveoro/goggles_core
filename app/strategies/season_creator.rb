@@ -108,7 +108,7 @@ class SeasonCreator
     add_sql_diff_comment( "Meetings" )
     @older_season.meetings.each do |meeting|
       sql_diff_text_log << "-- #{meeting.id}-#{meeting.code} #{meeting.description} #{meeting.header_date}\r\n"
-      newer_meeting = Meeting.new( meeting.attributes.reject{ |e| [''id, 'lock_version','created_at','updated_at'].include?(e) } )
+      newer_meeting = Meeting.new( meeting.attributes.reject{ |e| ['id', 'lock_version','created_at','updated_at'].include?(e) } )
       newer_meeting.id                   = meeting.id + 1000
       newer_meeting.season_id            = @new_id
       newer_meeting.header_date          = SeasonCreator.next_year_eq_day( newer_meeting.header_date ) 
