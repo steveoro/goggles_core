@@ -10,15 +10,18 @@ require 'extensions/roman_numeral'
 
 module GogglesCore
   class Engine < ::Rails::Engine
-    # Add a load path for this specific Engine
-    config.autoload_paths << File.expand_path("../lib/framework", __FILE__)
-    config.autoload_paths << File.expand_path("../lib/common", __FILE__)
-    config.autoload_paths << File.expand_path("../lib/wrappers", __FILE__)
-    config.autoload_paths << File.expand_path("../lib/extensions", __FILE__)
-    config.autoload_paths << File.expand_path("../app/dao", __FILE__)
-    config.autoload_paths << File.expand_path("../app/dao/enhance_individual_ranking_dao", __FILE__)
-    config.autoload_paths << File.expand_path("../app/strategies", __FILE__)
-    config.autoload_paths << File.expand_path("../app/concerns", __FILE__)
+    # Add load paths for this specific Engine
+    # [Steve A.] When in doubt, open the console and do a...
+    #   $> puts ActiveSupport::Dependencies.autoload_paths
+    # ...To check the actual resulting paths.
+    config.autoload_paths << File.expand_path("../../framework", __FILE__)
+    config.autoload_paths << File.expand_path("../../common", __FILE__)
+    config.autoload_paths << File.expand_path("../../wrappers", __FILE__)
+    config.autoload_paths << File.expand_path("../../extensions", __FILE__)
+    config.autoload_paths << File.expand_path("../../../app/dao", __FILE__)
+    config.autoload_paths << File.expand_path("../../../app/dao/enhance_individual_ranking_dao", __FILE__)
+    config.autoload_paths << File.expand_path("../../../app/strategies", __FILE__)
+    config.autoload_paths << File.expand_path("../../../app/concerns", __FILE__)
 
     config.generators do |g|
       g.test_framework :rspec, fixture: false
