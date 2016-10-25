@@ -1,5 +1,6 @@
+require 'active_support'
 =begin
-  
+
 = UserRelatable
 
   - version:  4.00.345.20140710

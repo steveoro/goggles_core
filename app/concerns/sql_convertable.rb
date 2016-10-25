@@ -1,11 +1,13 @@
+require 'active_support'
 require 'wrappers/timing'
+require 'strategies/sql_converter'
 
 
 =begin
 
 = SqlConvertable
 
-  - version:  4.00.843
+  - version:  5.006
   - author:   Leega, Steve A.
 
   Container module for interfacing common "sql_convertable" startegies

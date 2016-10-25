@@ -1,7 +1,8 @@
+require 'active_support'
 require 'wrappers/timing'
 
 =begin
-  
+
 = EventTypeRelatable
 
   - version:  4.00.345.20140710
