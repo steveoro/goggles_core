@@ -68,7 +68,7 @@ class SeasonCreator
   # 
   def renew_season
     sql_diff_text_log << "-- Season\r\n"
-    newer_season = Season.new( @older_season.attributes.reject{ |e| ['lock_version','created_at','updated_at'].include?(e) } )
+    newer_season = Season.new( @older_season.attributes.reject{ |e| ['id', 'lock_version','created_at','updated_at'].include?(e) } )
     newer_season.id          = @new_id
     newer_season.description = @description
     newer_season.begin_date  = @begin_date
@@ -90,7 +90,7 @@ class SeasonCreator
     newer_categories = []
     sql_diff_text_log << "-- Categories\r\n"
     @older_season.category_types.each do |category_type|
-      newer_category = CategoryType.new( category_type.attributes.reject{ |e| ['lock_version','created_at','updated_at'].include?(e) } )
+      newer_category = CategoryType.new( category_type.attributes.reject{ |e| ['id', 'lock_version','created_at','updated_at'].include?(e) } )
       newer_category.season_id = @new_id
       newer_category.save
       sql_diff_text_log << to_sql_insert( newer_category, false, "\r\n" ) # no additional comment
@@ -108,7 +108,7 @@ class SeasonCreator
     add_sql_diff_comment( "Meetings" )
     @older_season.meetings.each do |meeting|
       sql_diff_text_log << "-- #{meeting.id}-#{meeting.code} #{meeting.description} #{meeting.header_date}\r\n"
-      newer_meeting = Meeting.new( meeting.attributes.reject{ |e| ['lock_version','created_at','updated_at'].include?(e) } )
+      newer_meeting = Meeting.new( meeting.attributes.reject{ |e| [''id, 'lock_version','created_at','updated_at'].include?(e) } )
       newer_meeting.id                   = meeting.id + 1000
       newer_meeting.season_id            = @new_id
       newer_meeting.header_date          = SeasonCreator.next_year_eq_day( newer_meeting.header_date ) 

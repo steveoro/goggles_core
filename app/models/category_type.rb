@@ -42,7 +42,7 @@ class CategoryType < ActiveRecord::Base
   scope :for_season,      ->(season)      { where(['season_id = ?', season.id]) }
 
   attr_accessible :code, :federation_code, :description, :short_name, :group_name, :age_begin, :age_end,
-                  :season_id, :is_a_relay, :is_out_of_race  
+                  :season_id, :is_a_relay, :is_out_of_race, :is_undivided  
   # ----------------------------------------------------------------------------
 
 
