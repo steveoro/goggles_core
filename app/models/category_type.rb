@@ -43,7 +43,7 @@ class CategoryType < ApplicationRecord
 
 # FIXME for Rails 4+, move required/permitted check to the controller using the model
 #  attr_accessible :code, :federation_code, :description, :short_name, :group_name, :age_begin, :age_end,
-#                  :season_id, :is_a_relay, :is_out_of_race
+#                  :season_id, :is_a_relay, :is_out_of_race, :is_undivided
   # ----------------------------------------------------------------------------
 
 
