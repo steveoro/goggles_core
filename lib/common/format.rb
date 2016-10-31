@@ -30,19 +30,19 @@ module Format
 
 
   # RegExp used to search for Integer-like values in formatted strings.
-  INTEGER_STRING_SEARCH_REGEXP  = /(^|\s+)\-*\d+(\s+|$)/
+  INTEGER_STRING_SEARCH_REGEXP  = /(^|\s+)\-*\d+(\s+|$)/ unless defined? INTEGER_STRING_SEARCH_REGEXP
 
   # RegExp used to search for Float-like values in formatted strings.
-  FLOAT_STRING_SEARCH_REGEXP    = /(^|\s+)\-*\d+((\.|\,)\d+(e(\+|\-)\d+)?)?(\s+|$)/
+  FLOAT_STRING_SEARCH_REGEXP    = /(^|\s+)\-*\d+((\.|\,)\d+(e(\+|\-)\d+)?)?(\s+|$)/ unless defined? FLOAT_STRING_SEARCH_REGEXP
 
   # RegExp used to search for Date-like values in formatted strings.
-  DATE_STRING_SEARCH_REGEXP = /(^|\s+)(\d{1,4}(\-|\/|\.)\d{1,2}(\-|\/|\.)\d{1,4})\s*\w*\s*$/
+  DATE_STRING_SEARCH_REGEXP = /(^|\s+)(\d{1,4}(\-|\/|\.)\d{1,2}(\-|\/|\.)\d{1,4})\s*\w*\s*$/ unless defined? DATE_STRING_SEARCH_REGEXP
 
   # RegExp used to search for Time-like values in formatted strings.
-  TIME_STRING_SEARCH_REGEXP = /(^|\s+)\d+[\:\.]\d{1,2}([\:\.]\d{1,2})?(\s+|$)/
+  TIME_STRING_SEARCH_REGEXP = /(^|\s+)\d+[\:\.]\d{1,2}([\:\.]\d{1,2})?(\s+|$)/ unless defined? TIME_STRING_SEARCH_REGEXP
 
   # RegExp used to search for DateTime-like values in formatted strings.
-  DATETIME_STRING_SEARCH_REGEXP = /(^|\s+)(\d{1,4}(\-|\/|\.)\d{1,2}(\-|\/|\.)\d{1,4})\,?\s*\d+[\:\.]\d{1,2}([\:\.]\d{1,2})?(\s+|$)/
+  DATETIME_STRING_SEARCH_REGEXP = /(^|\s+)(\d{1,4}(\-|\/|\.)\d{1,2}(\-|\/|\.)\d{1,4})\,?\s*\d+[\:\.]\d{1,2}([\:\.]\d{1,2})?(\s+|$)/ unless defined? DATETIME_STRING_SEARCH_REGEXP
 
 
   # Checks if an object can be converted to a valid Integer instance.

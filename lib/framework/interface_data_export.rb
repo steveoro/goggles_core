@@ -52,15 +52,15 @@ module InterfaceDataExport
 
   # (Constant) Blank filler length of Floats converted to String values
   #
-  CONVERTED_FLOAT2STRING_FIXED_LENGTH = 0
+  CONVERTED_FLOAT2STRING_FIXED_LENGTH = 0 unless defined? CONVERTED_FLOAT2STRING_FIXED_LENGTH
 
   # (Constant) precision of Floats converted to String values
   #
-  CONVERTED_FLOAT2STRING_FIXED_PRECISION = 2
+  CONVERTED_FLOAT2STRING_FIXED_PRECISION = 2 unless defined? CONVERTED_FLOAT2STRING_FIXED_PRECISION
 
   # (Constant) Blank filler length of Floats converted to String percentages (including ' %')
   #
-  CONVERTED_PERCENT2STRING_FIXED_LENGTH = 3
+  CONVERTED_PERCENT2STRING_FIXED_LENGTH = 3 unless defined? CONVERTED_PERCENT2STRING_FIXED_LENGTH
 
 
   # Similarly to +to_a()+, this returns all +data_symbols+ values as an Array, but with each
@@ -68,11 +68,11 @@ module InterfaceDataExport
   #
   # Each attribute String value is formatted where possible to avoid conflicts
   # with all common CSV separators.(Mainly ';' for strings and '.' for floats.)
-  # 
+  #
   # Specifying a custom +export_syms+ Array allows to select a custom subset
   # of instance columns to be exported.
   #
-  # The date and time formats defaults used for this output are specified inside config/initializers/time_formats.rb 
+  # The date and time formats defaults used for this output are specified inside config/initializers/time_formats.rb
   #
   def to_a_s( export_syms     = self.class.data_symbols(),
               precision       = CONVERTED_FLOAT2STRING_FIXED_PRECISION,

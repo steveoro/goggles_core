@@ -33,14 +33,14 @@ class NamingTools
     :goggle_cups, :goggle_cup_standards,
     :swimming_pool, :swimming_pool_reviews,
     :data_import
-  ]
+  ] unless defined? PARAM_CTRL_SYMS
 
   # Hash for all custom app_parameters column names used to store default values for each
   # controller of the application. Not all controller names need to be enlisted (nor they need
   # to have custom default values stored inside app_parameters).
   #
   DEFAULT_VALUES_IN_APP_PARAMETERS = {
-  }
+  } unless defined? DEFAULT_VALUES_IN_APP_PARAMETERS
   # ---------------------------------------------------------------------------
 
 
