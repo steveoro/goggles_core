@@ -37,27 +37,31 @@ DESC
     max_backups     = ENV.include?("max_backup_kept") ? ENV["max_backup_kept"].to_i : MAX_BACKUP_KEPT
     backup_folder   = ENV.include?("output_dir") ? ENV["output_dir"] : LOG_BACKUP_DIR
 
-    if File.directory?(LOG_DIR)                     # Create a backup of each log, if the log directory exists:
-      Dir.chdir( LOG_DIR ) do |curr_path|
-        for log_filename in Dir.glob(File.join("#{curr_path}",'*.log'), File::FNM_PATHNAME)
-          puts "Processing #{log_filename}..."
-          Dir.chdir( backup_folder )
-          # Make first a copy on /tmp, so that we may archive it even if it's currently
-          # being modified:
-          temp_file = File.join('/tmp', "#{ File.basename(log_filename) }")
-          puts "Making a temp. copy on #{temp_file}..."
-          sh "cp #{log_filename} #{ temp_file }"
-          puts "Archiving contents..."
-          sh "tar --bzip2 -cf #{File.basename(log_filename, '.log') + time_signature + '.log.tar.bz2'} #{temp_file}"
-          puts "Removing temp. file..."
-          FileUtils.rm( temp_file )
-          # (We'll leave the tar file just created under the log dir, so that the #rotate_backups
-          #  will be able to treat it properly.)
-        end
+    # Create a backup of each log, if the log directory exists:
+    if File.directory?(LOG_DIR)
+      # Clean /tmp system dir from any residual log file:
+      puts "Cleaning /tmp from residual logs..."
+      FileUtils.rm_f( Dir.glob(File.join('/tmp','*.log')) )
+      # Make a copy of all the logs, since they can be updated while archiving:
+      puts "Making a temp. copy of all the logs..."
+      FileUtils.cp( Dir.glob(File.join(LOG_DIR,'*.log')), '/tmp' )
+
+      Dir.chdir('/tmp') do
+        puts "Archiving all copied logs..."
+        dest_archive_name = "goggles_logs_#{ time_signature }.log.tar.bz2"
+        sh "tar --bzip2 -cf #{ dest_archive_name } *.log"
+        puts "Moving log archive into backup folder..."
+        FileUtils.mv( dest_archive_name, backup_folder )
       end
-      Dir.chdir( Dir.pwd.to_s )
+
+      puts "Cleaning /tmp again..."
+      FileUtils.rm_f( Dir.glob(File.join('/tmp','*.log')) )
+
       puts "Truncating all current log files..."
+      # This will zero-len all environment log files only, leaving the others untouched:
       Rake::Task['log:clear'].invoke
+      # Remove all user-generated-content logs, already stored in back-up files:
+      FileUtils.rm_f( Dir.glob(File.join(LOG_DIR,'ugc*.log')) )
 
       # Rotate the backups leaving only the newest ones: (log files are 4x normal backups,
       # since these are the 'access', 'errors', 'braintree' and 'production' logs)
