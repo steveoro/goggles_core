@@ -152,7 +152,7 @@ class SwimmerBestFinder
   #
   def reset_personal_best( event_by_pool_type )
     sql_attributes = {}
-    @swimmer.meeting_individual_results.for_event_by_pool_type(event_by_pool_type).is_personal_best.select( :id ).each do |mir_id|
+    @swimmer.meeting_individual_results.for_event_by_pool_type(event_by_pool_type).is_personal_best.select( 'meeting_individual_results.id' ).each do |mir_id|
       mir = MeetingIndividualResult.find( mir_id )
       mir.is_personal_best = false
       mir.save
