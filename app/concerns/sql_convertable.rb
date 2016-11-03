@@ -1,6 +1,6 @@
 require 'active_support'
 require 'wrappers/timing'
-require 'sql_converter'
+require_relative '../strategies/sql_converter'
 
 
 =begin

@@ -15,3 +15,5 @@ This _full_ engine should contain only:
 - versioning info for the DB & core modules & overall framework release
 - only the basic Rake tasks for DB rebuild/backup using (externally supplied) data dumps
 
+
+Official framework Wiki, [here](https://github.com/steveoro/goggles_admin/wiki)
