@@ -12,7 +12,7 @@ require 'fileutils'
  Put here anything that should be re-used among more than one task.
 
   @author Steve A.
-  @build  2016.06.14
+  @build  2016.11.10
 
   (ASSUMES TO BE rakeD inside Rails.root)
  (p) FASAR Software 2007-2016
@@ -23,10 +23,16 @@ require 'fileutils'
 
 
 # Script revision number
-SCRIPT_VERSION = '1.0.0' unless defined? SCRIPT_VERSION
+SCRIPT_VERSION = '1.0.1' unless defined? SCRIPT_VERSION
 
+#The following 3 are assumed to be already existing directories:
 # Log dir
 LOG_DIR = File.join( Rails.root, 'log' ) unless defined? LOG_DIR
+# Output dir (PDF creation, ugc_XXX.log files creation, used by log management tasks)
+OUTPUT_DIR = File.join( Rails.root, 'public', 'output' ) unless defined? OUTPUT_DIR
+# Upload dir (user avatars & whatever - Not currently required by any rake task in the core engine)
+# UPLOADS_DIR = File.join( Rails.root, 'public', 'uploads' ) unless defined? UPLOADS_DIR
+
 
 # External base directory used for support files, backups and dumps for all the framework
 EXTERNAL_BASE_DIR =  File.join( File.absolute_path( File.join(Dir.pwd, '..') ), 'goggles.docs' ) unless defined? EXTERNAL_BASE_DIR

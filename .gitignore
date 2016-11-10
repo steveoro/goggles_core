@@ -17,11 +17,17 @@
 
 # Ignore the default SQLite database.
 /db/*.sqlite3
+
+# Ignore spec/dummy app-related files:
 spec/dummy/db/*.sqlite3
 spec/dummy/db/*.sqlite3
 spec/dummy/log/*.log
 spec/dummy/tmp/
 spec/dummy/.sass-cache
+spec/dummy/public/output/*
+spec/dummy/public/uploads/*
+!/spec/dummy/public/output/.gitkeep
+!/spec/dummy/public/uploads/.gitkeep
 
 config/database.yml
 spec/dummy/config/database.yml

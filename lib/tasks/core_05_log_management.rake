@@ -9,7 +9,7 @@ require 'fileutils'
  == Log-management Rake tasks.
 
   @author Steve A.
-  @build  2016.06.14
+  @build  2016.11.10
 
   (ASSUMES TO BE rakeD inside Rails.root)
  (p) FASAR Software 2007-2016
@@ -45,6 +45,9 @@ DESC
       # Make a copy of all the logs, since they can be updated while archiving:
       puts "Making a temp. copy of all the logs..."
       FileUtils.cp( Dir.glob(File.join(LOG_DIR,'*.log')), '/tmp' )
+      if File.directory?(OUTPUT_DIR)
+        FileUtils.cp( Dir.glob(File.join(OUTPUT_DIR,'*.log')), '/tmp' )
+      end
 
       Dir.chdir('/tmp') do
         puts "Archiving all copied logs..."
@@ -61,6 +64,10 @@ DESC
       # This will zero-len all environment log files only, leaving the others untouched:
       Rake::Task['log:clear'].invoke
       # Remove all user-generated-content logs, already stored in back-up files:
+      if File.directory?(OUTPUT_DIR)
+        FileUtils.rm_f( Dir.glob(File.join(OUTPUT_DIR,'ugc*.log')) )
+      end
+      # Remove any UCG log file created by any previous version (which used LOG_DIR instead of OUTPUT_DIR)
       FileUtils.rm_f( Dir.glob(File.join(LOG_DIR,'ugc*.log')) )
 
       # Rotate the backups leaving only the newest ones: (log files are 4x normal backups,
