@@ -7,7 +7,7 @@ require 'sql_converter'
 
 = UserContentLogger
 
-  - Goggles framework vers.:  4.00.573
+  - Goggles framework vers.:  6.010
   - author: Steve A.
 
   Generic strategy/service class dedicated to log each user-created
@@ -24,7 +24,18 @@ require 'sql_converter'
 
     end
 
-  Remember not to abuse the usage of this class, since it may slow
+  This is used to keep in synch remote and local database dumps.
+
+  Whenever the callback gets called, a custom log file will be created or appended
+  with the corresponding SQL statement of the executed change which triggered the
+  callback.
+  The destination folder is currently public/output.
+
+  Note that the process that will create this file will result in nobody:nogroup
+  ownership, thus the destination directory should be chown-ed to 0777 as
+  permission (which is not security-wise).
+
+  Remember also not to abuse the usage of this class, since it may slow
   down considerably the whole application.
 
 =end
@@ -34,6 +45,8 @@ class UserContentLogger
   # Each instance will append to a separate file, depending upon model name
   # (UGC => User Generated Content)
   LOG_BASENAME = 'ugc_'
+
+  LOG_DESTINATION = 'public/output'
 
   # These attribute getters are mainly used in specs and nothing more.
   attr_reader :table_name, :log_filename, :email_on_create, :email_on_destroy
@@ -58,7 +71,7 @@ class UserContentLogger
   def initialize( table_name, options = {} )
     raise ArgumentError.new("UserContentLogger requires at least a table name as a parameter!") unless table_name.instance_of?(String)
     @table_name = table_name
-    @log_filename = File.join( File.join(Rails.root, 'log'), "#{LOG_BASENAME}#{@table_name}.log" )
+    @log_filename = File.join( File.join(Rails.root, LOG_DESTINATION), "#{LOG_BASENAME}#{@table_name}.log" )
     @email_on_create  = ( options[:email_on_create] == true )
     @email_on_destroy = ( options[:email_on_destroy] == true )
   end
