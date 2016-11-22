@@ -55,8 +55,8 @@ class SwimmingPool < ApplicationRecord
   scope :sort_swimming_pool_by_locker_cabinet_type, ->(dir) { order("locker_cabinet_types.code #{dir.to_s}, swimming_pools.name #{dir.to_s}") }
 
 
-  delegate :name, to: :user, prefix: true
-  delegate :name, to: :city, prefix: true
+  delegate :name, to: :user, prefix: true, allow_nil: true
+  delegate :name, to: :city, prefix: true, allow_nil: true
 
 # FIXME for Rails 4+, move required/permitted check to the controller using the model
 #  attr_accessible :city_id, :pool_type_id, :shower_type_id, :hair_dryer_type_id,
@@ -87,8 +87,10 @@ class SwimmingPool < ApplicationRecord
 
   # Computes a verbose or formal description for the name associated with this data
   def get_city_and_attributes
-    "#{city_name} #{get_pool_attributes}"
+    "#{city ? city_name : '(?)'} #{get_pool_attributes}"
   end
+  #-- -------------------------------------------------------------------------
+  #++
 
   alias_method :i18n_short, :get_full_name
   alias_method :i18n_description, :get_verbose_name

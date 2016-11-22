@@ -3,7 +3,7 @@ require 'rails_helper'
 
 describe SwimmingPool, :type => :model do
   describe "[a non-valid instance]" do
-    it_behaves_like( "(missing required values)", [ 
+    it_behaves_like( "(missing required values)", [
       :name,
       :nick_name,
       :lanes_number
@@ -19,10 +19,10 @@ describe SwimmingPool, :type => :model do
       expect( subject ).to be_valid
     end
     # Validated relations:
-    it_behaves_like( "(belongs_to required models)", [ 
+    it_behaves_like( "(belongs_to required models)", [
       :city,
       :pool_type
-    ])    
+    ])
 
     it "has a valid city" do
       expect( subject.city ).to be_an_instance_of( City )
@@ -32,11 +32,24 @@ describe SwimmingPool, :type => :model do
     end
 
     context "[general methods]" do
-      it_behaves_like( "(the existance of a method returning non-empty strings)", [ 
+      it_behaves_like( "(the existance of a method returning non-empty strings)", [
         :get_full_name,
         :get_verbose_name,
         :user_name
       ])
+    end
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
+
+  describe "#get_city_and_attributes" do
+    context "when city is nil," do
+      let(:fixture_pool_with_no_city) { FactoryGirl.create(:swimming_pool, city_id: nil) }
+
+      it "returns a String" do
+        expect( fixture_pool_with_no_city.get_city_and_attributes ).to be_a( String )
+      end
     end
   end
   #-- -------------------------------------------------------------------------

@@ -70,7 +70,7 @@ class Swimmer < ApplicationRecord
   validates_length_of :nickname,      maximum: 25
 
 
-  delegate :name, to: :user, prefix: true
+  delegate :name, to: :user, prefix: true, allow_nil: true
 
 # FIXME for Rails 4+, move required/permitted check to the controller using the model
 #  attr_accessible :associated_user, :user, :user_id,

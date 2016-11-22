@@ -29,7 +29,7 @@ class SwimmingPoolReview < ApplicationRecord
   validates_presence_of :entry_text
 
 
-  delegate :name, to: :user, prefix: true
+  delegate :name, to: :user, prefix: true, allow_nil: true
 
 # FIXME for Rails 4+, move required/permitted check to the controller using the model
 #  attr_accessible :title, :entry_text, :user_id, :swimming_pool_id
