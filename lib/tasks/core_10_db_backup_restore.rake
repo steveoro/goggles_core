@@ -79,7 +79,7 @@ Invokes the following tasks in in one shot:
 
   - db:reset           ...to clear the current DB (default: development);
   - db:migrate         ...to run migrations;
-  - sql:exec           ...to import the base seed files (/db/seed/*.sql);
+  - db:seed            ...to run any scripted seed row in db/seeds.rb;
 
 Keep in mind that, when not in production, the test DB must then be updated
 using the db:clone_to_test dedicated task.
@@ -90,10 +90,9 @@ Options: [Rails.env=#{Rails.env}]
 
   DESC
   task :rebuild_from_scratch do
-    puts "*** Task: Compound DB RESET + MIGRATE + SQL:EXEC + DB:SEED ***"
+    puts "*** Task: Compound DB RESET + MIGRATE + DB:SEED ***"
     Rake::Task['db:reset'].invoke
     Rake::Task['db:migrate'].invoke
-    Rake::Task['sql:exec'].invoke
     Rake::Task['db:seed'].invoke
     puts "Done."
   end
