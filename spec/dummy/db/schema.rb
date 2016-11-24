@@ -113,7 +113,7 @@ ActiveRecord::Schema.define(version: 20160205143425) do
     t.index ["code"], name: "index_arm_aux_types_on_code", unique: true, using: :btree
   end
 
-  create_table "articles", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", comment: "News log" do |t|
+  create_table "articles", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "lock_version",               default: 0
     t.string   "title",        limit: 80
     t.text     "body",         limit: 65535
@@ -1552,7 +1552,7 @@ ActiveRecord::Schema.define(version: 20160205143425) do
     t.index ["timing_type_id"], name: "fk_seasons_timing_types", using: :btree
   end
 
-  create_table "sessions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", comment: "Sessioni" do |t|
+  create_table "sessions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "session_id"
     t.text     "data",       limit: 65535
     t.datetime "created_at"
@@ -1735,7 +1735,7 @@ ActiveRecord::Schema.define(version: 20160205143425) do
     t.index ["user_id"], name: "idx_team_passage_templates_user", using: :btree
   end
 
-  create_table "teams", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", comment: "Team / Gruppi operativi" do |t|
+  create_table "teams", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "lock_version",                  default: 0
     t.string   "name",            limit: 60
     t.string   "editable_name",   limit: 60
