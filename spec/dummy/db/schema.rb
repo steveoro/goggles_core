@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160205143425) do
+ActiveRecord::Schema.define(version: 20161126164243) do
 
   create_table "achievement_rows", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "lock_version",                   default: 0
@@ -1103,6 +1103,26 @@ ActiveRecord::Schema.define(version: 20160205143425) do
     t.index ["user_id"], name: "idx_meeting_entries_user", using: :btree
   end
 
+  create_table "meeting_event_reservations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+    t.integer  "meeting_id"
+    t.integer  "team_id"
+    t.integer  "swimmer_id"
+    t.integer  "badge_id"
+    t.integer  "meeting_event_id"
+    t.integer  "user_id"
+    t.integer  "suggested_minutes",  limit: 3
+    t.integer  "suggested_seconds",  limit: 2
+    t.integer  "suggested_hundreds", limit: 2
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.index ["badge_id"], name: "index_meeting_event_reservations_on_badge_id", using: :btree
+    t.index ["meeting_event_id"], name: "index_meeting_event_reservations_on_meeting_event_id", using: :btree
+    t.index ["meeting_id"], name: "index_meeting_event_reservations_on_meeting_id", using: :btree
+    t.index ["swimmer_id"], name: "index_meeting_event_reservations_on_swimmer_id", using: :btree
+    t.index ["team_id"], name: "index_meeting_event_reservations_on_team_id", using: :btree
+    t.index ["user_id"], name: "index_meeting_event_reservations_on_user_id", using: :btree
+  end
+
   create_table "meeting_events", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "lock_version",                                   default: 0
     t.datetime "created_at"
@@ -1235,21 +1255,18 @@ ActiveRecord::Schema.define(version: 20160205143425) do
     t.index ["user_id"], name: "idx_meeting_relay_swimmers_user", using: :btree
   end
 
-  create_table "meeting_reservations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+  create_table "meeting_reservations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "meeting_id"
+    t.integer  "user_id"
     t.integer  "team_id"
     t.integer  "swimmer_id"
     t.integer  "badge_id"
-    t.integer  "meeting_event_id"
-    t.integer  "user_id"
-    t.integer  "suggested_minutes",  limit: 3
-    t.integer  "suggested_seconds",  limit: 2
-    t.integer  "suggested_hundreds", limit: 2
-    t.text     "notes",              limit: 65535
-    t.datetime "created_at",                       null: false
-    t.datetime "updated_at",                       null: false
+    t.text     "notes",         limit: 65535
+    t.boolean  "is_not_coming"
+    t.boolean  "has_payed"
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
     t.index ["badge_id"], name: "index_meeting_reservations_on_badge_id", using: :btree
-    t.index ["meeting_event_id"], name: "index_meeting_reservations_on_meeting_event_id", using: :btree
     t.index ["meeting_id"], name: "index_meeting_reservations_on_meeting_id", using: :btree
     t.index ["swimmer_id"], name: "index_meeting_reservations_on_swimmer_id", using: :btree
     t.index ["team_id"], name: "index_meeting_reservations_on_team_id", using: :btree
@@ -2021,4 +2038,9 @@ ActiveRecord::Schema.define(version: 20160205143425) do
     t.index ["voter_id", "voter_type"], name: "index_votes_on_voter_id_and_voter_type", using: :btree
   end
 
+  add_foreign_key "meeting_reservations", "badges"
+  add_foreign_key "meeting_reservations", "meetings"
+  add_foreign_key "meeting_reservations", "swimmers"
+  add_foreign_key "meeting_reservations", "teams"
+  add_foreign_key "meeting_reservations", "users"
 end

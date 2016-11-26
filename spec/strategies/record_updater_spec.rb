@@ -249,6 +249,7 @@ describe RecordUpdater, type: :strategy do
       it "leaves the #updated_records counter to zero" do
         expect( test_subject.updated_records ).to eq(0)
       end
+# FIXME The following is failing randomly:
       it "sets the #added_records counter to the number of inserted rows" do
         expect( test_subject.added_records ).to eq( fixture_missing_list.size )
       end

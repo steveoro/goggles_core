@@ -1,13 +1,14 @@
 require 'rails_helper'
 
 
-RSpec.describe MeetingReservation, type: :model do
+RSpec.describe MeetingEventReservation, type: :model do
   it_behaves_like "SwimmerRelatable"
+  it_behaves_like "TimingGettable"
   #-- -------------------------------------------------------------------------
   #++
 
   context "[a well formed instance]" do
-    subject { create(:meeting_reservation) }
+    subject { create(:meeting_event_reservation) }
 
     it "is a valid istance" do
       expect( subject ).to be_valid
@@ -19,14 +20,14 @@ RSpec.describe MeetingReservation, type: :model do
       :team,
       :swimmer,
       :badge,
+      :meeting_event,
       :user
     ])
 
     context "[general methods]" do
       it_behaves_like( "(the existance of a method)", [
-        :notes,
-        :is_not_coming,
-        :has_payed
+        :suggested_minutes, :suggested_seconds, :suggested_hundreds,
+        :minutes, :seconds, :hundreds
       ])
     end
   end
