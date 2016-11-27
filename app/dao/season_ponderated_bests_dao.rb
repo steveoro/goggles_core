@@ -200,7 +200,7 @@ class SeasonPonderatedBestsDAO
     scan_for_gender_category_and_event if @single_events.count == 0
     @single_events.each do |event|
       # Check if time standard already exists and create or update
-      if TimeStandard.exists?( :season => @season, :gender_type => event.gender_type, :category_type => event.category_type, :pool_type => event.pool_type, :event_type => event.event_type )
+      if TimeStandard.exists?( :season_id => @season.id, :gender_type_id => event.gender_type_id, :category_type_id => event.category_type_id, :pool_type_id => event.pool_type_id, :event_type_id => event.event_type_id )
         # Exists. Needs update
         @update_events << event
       else
