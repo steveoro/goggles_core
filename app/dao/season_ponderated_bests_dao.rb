@@ -290,7 +290,7 @@ class SeasonPonderatedBestsDAO
     sql_fields = {}
     @update_events.each do |event|
       ponderated_time        = event.get_ponderated_best
-      time_standard          = TimeStandard.where( :season => @season, :gender_type => event.gender_type, :category_type => event.category_type, :pool_type => event.pool_type, :event_type => event.event_type ).first
+      time_standard          = TimeStandard.where( :season_id => @season.id, :gender_type_id => event.gender_type.id, :category_type_id => event.category_type.id, :pool_type_id => event.pool_type.id, :event_type_id => event.event_type.id ).first
       time_standard.minutes  = ponderated_time.minutes 
       time_standard.seconds  = ponderated_time.seconds 
       time_standard.hundreds = ponderated_time.hundreds
