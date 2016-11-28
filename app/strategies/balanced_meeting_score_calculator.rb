@@ -187,7 +187,7 @@ class BalancedMeetingScoreCalculator
         meeting_team_score.meeting_id          = @meeting.id
         meeting_team_score.season_id           = @meeting.season_id
         meeting_team_score.team_id             = team_score[:team].id
-        meeting_team_score.team_affiliation_id = team_score[:team].team_affiliations.where(['team_affiliations.season_id = ?', @meeting.season_id])
+        meeting_team_score.team_affiliation_id = team_score[:team].team_affiliations.where(['team_affiliations.season_id = ?', @meeting.season_id]).first.id
         
         # TODO use current user
         meeting_team_score.user_id             = 2
