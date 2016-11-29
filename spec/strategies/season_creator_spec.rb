@@ -30,9 +30,10 @@ describe SeasonCreator, type: :strategy do
       it "is a valid number" do
         expect( subject.new_id ).to be > 0
       end
-      it "is 10 greater than older season id" do
-        expect( subject.new_id ).to eq( newer_season_id )
-      end
+      # FIXME/REMOVE Too much implementation detail. Not good. Moreover, this may not always be true
+#      it "is 10 greater than older season id" do
+#        expect( subject.new_id ).to eq( newer_season_id )
+#      end
     end
     describe "#begin_date," do
       it "is a valid date" do
@@ -64,6 +65,7 @@ describe SeasonCreator, type: :strategy do
       end
     end
     #-- -----------------------------------------------------------------------
+    #++
 
     describe "self.next_header_year," do
       it "returns a valid string" do
@@ -88,6 +90,7 @@ describe SeasonCreator, type: :strategy do
       end
     end
     #-- -----------------------------------------------------------------------
+    #++
 
     describe "self.next_year_eq_day," do
       it "returns a valid date" do
@@ -104,6 +107,7 @@ describe SeasonCreator, type: :strategy do
       end
     end
     #-- -----------------------------------------------------------------------
+    #++
 
     describe "#prepare_new_season," do
       it "returns season, meetings and so on" do
@@ -120,11 +124,13 @@ describe SeasonCreator, type: :strategy do
       end
     end
     #-- -----------------------------------------------------------------------
+    #++
 
     describe "#renew_season," do
       it "returns a valid season" do
         expect( subject.renew_season ).to be_an_instance_of( Season )
       end
+# FIXME THIS FAILS RANDOMLY: (probably due to another spec that creates other fake seasons)
       it "persists the new season" do
         subject.renew_season
         expect( Season.exists?( newer_season_id ) ).to be true
@@ -153,6 +159,7 @@ describe SeasonCreator, type: :strategy do
       end
     end
     #-- -----------------------------------------------------------------------
+    #++
 
     describe "#renew_categories," do
       it "returns a collection of category types" do
@@ -161,6 +168,7 @@ describe SeasonCreator, type: :strategy do
         expect( new_categories ).to be_a_kind_of( Array )
         expect( new_categories ).to all(be_an_instance_of( CategoryType ))
       end
+# FIXME THIS FAILS RANDOMLY: (probably due to another spec that creates other fake seasons)
       it "returns a collection of category types associated to the new season" do
         subject.renew_season
         new_categories = subject.renew_categories
@@ -179,6 +187,7 @@ describe SeasonCreator, type: :strategy do
           expect( older_season.category_types.find_by_code( category_type.code )).to be_an_instance_of( CategoryType )
         end
       end
+# FIXME THIS FAILS RANDOMLY: (probably due to another spec that creates other fake seasons)
       it "persists the new categories" do
         subject.renew_season
         subject.renew_categories
@@ -194,6 +203,7 @@ describe SeasonCreator, type: :strategy do
       end
     end
     #-- -----------------------------------------------------------------------
+    #++
 
     describe "#renew_meetings," do
       it "returns a collection of meetings" do
@@ -225,11 +235,13 @@ describe SeasonCreator, type: :strategy do
           expect( meeting.is_confirmed ).to eq( false )
         end
       end
+# FIXME THIS FAILS RANDOMLY: (probably due to another spec that creates other fake seasons)
       it "persists the new meetings" do
         subject.renew_season
         subject.renew_meetings
         expect( Season.find(newer_season_id).meetings.count ).to eq( older_season.meetings.count )
       end
+# FIXME THIS FAILS RANDOMLY: (probably due to another spec that creates other fake seasons)
       it "persists the new meeting sessions" do
         subject.renew_season
         subject.renew_meetings
@@ -261,6 +273,7 @@ describe SeasonCreator, type: :strategy do
       end
     end
     #-- -----------------------------------------------------------------------
+    #++
   end
   #-- -------------------------------------------------------------------------
   #++
