@@ -22,10 +22,10 @@ class MeetingEventReservation < ApplicationRecord
   belongs_to :meeting_event
   belongs_to :user
 
-  has_one  :season,           through: :meeting
-  has_one  :season_type,      through: :meeting
-  has_one  :event_type,       through: :meeting_event
-  has_many :meeting_sessions, through: :meeting
+  has_one :season,          through: :meeting
+  has_one :season_type,     through: :meeting
+  has_one :event_type,      through: :meeting_event
+  has_one :meeting_session, through: :meeting_event
 
 # FIXME for Rails 4+, move required/permitted check to the controller using the model
 #  attr_accessible :suggested_minutes, :suggested_seconds, :suggested_hundreds
