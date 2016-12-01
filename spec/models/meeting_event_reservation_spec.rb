@@ -30,6 +30,33 @@ RSpec.describe MeetingEventReservation, type: :model do
         :minutes, :seconds, :hundreds
       ])
     end
+
+    describe "is_not_registered" do
+      context "for an instance with a nil timing," do
+        subject do
+          MeetingEventReservation.new
+        end
+        it "returns true" do
+          expect( subject.is_not_registered ).to be true
+        end
+      end
+      context "for an instance with a zero timing," do
+        subject do
+          MeetingEventReservation.new( suggested_minutes: 0, suggested_seconds: 0, suggested_hundreds: 0)
+        end
+        it "returns false" do
+          expect( subject.is_not_registered ).to be false
+        end
+      end
+      context "for an instance with a positive timing," do
+        subject do
+          build(:meeting_event_reservation)
+        end
+        it "returns false" do
+          expect( subject.is_not_registered ).to be false
+        end
+      end
+    end
   end
   #-- -------------------------------------------------------------------------
   #++

@@ -17,4 +17,8 @@ class MeetingReservation < ApplicationRecord
   belongs_to :team
   belongs_to :swimmer
   belongs_to :badge
+
+  has_one  :season,           through: :meeting
+  has_one  :season_type,      through: :meeting
+  has_many :meeting_sessions, through: :meeting
 end

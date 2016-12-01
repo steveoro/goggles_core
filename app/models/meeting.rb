@@ -46,6 +46,7 @@ class Meeting < ApplicationRecord
   has_many :meeting_sessions, dependent: :delete_all
   has_many :meeting_team_scores, dependent: :delete_all
   has_many :meeting_reservations, dependent: :delete_all
+  has_many :meeting_event_reservations, dependent: :delete_all
 
   has_many :meeting_events, through: :meeting_sessions, dependent: :delete_all
   has_many :meeting_programs, through: :meeting_events, dependent: :delete_all
