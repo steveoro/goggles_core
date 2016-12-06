@@ -28,12 +28,15 @@ class MeetingEvent < ApplicationRecord
   has_many :category_types, through: :meeting_programs
 
 
-# FIXME for Rails 4+, move required/permitted check to the controller using the model
+# For Rails 4+, move required/permitted check to the controller using the model
 #  attr_accessible :event_order, :begin_time, :is_out_of_race, :is_autofilled, :notes,
 #                  :meeting_session_id, :event_type_id, :heat_type_id, :has_separate_gender_start_list,
 #                  :has_separate_category_start_list, :user_id
 
   scope :sort_by_order,    ->(dir = 'ASC') { order("event_order #{dir.to_s}") }
+
+  scope :only_relays,      -> { includes(:event_type).where('event_types.is_a_relay' => true) }
+  scope :are_not_relays,   -> { includes(:event_type).where('event_types.is_a_relay' => false) }
 
   # ----------------------------------------------------------------------------
   # Base methods:

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161126164243) do
+ActiveRecord::Schema.define(version: 20161206101453) do
 
   create_table "achievement_rows", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "lock_version",                   default: 0
@@ -1113,8 +1113,9 @@ ActiveRecord::Schema.define(version: 20161126164243) do
     t.integer  "suggested_minutes",  limit: 3
     t.integer  "suggested_seconds",  limit: 2
     t.integer  "suggested_hundreds", limit: 2
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
+    t.datetime "created_at",                                   null: false
+    t.datetime "updated_at",                                   null: false
+    t.boolean  "is_doing_this",                default: false, null: false
     t.index ["badge_id"], name: "index_meeting_event_reservations_on_badge_id", using: :btree
     t.index ["meeting_event_id"], name: "index_meeting_event_reservations_on_meeting_event_id", using: :btree
     t.index ["meeting_id"], name: "index_meeting_event_reservations_on_meeting_id", using: :btree
@@ -1201,6 +1202,25 @@ ActiveRecord::Schema.define(version: 20161126164243) do
     t.index ["user_id"], name: "idx_meeting_programs_user", using: :btree
   end
 
+  create_table "meeting_relay_reservations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "meeting_id"
+    t.integer  "user_id"
+    t.integer  "team_id"
+    t.integer  "swimmer_id"
+    t.integer  "badge_id"
+    t.integer  "meeting_event_id"
+    t.string   "notes",            limit: 50
+    t.boolean  "is_doing_this"
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+    t.index ["badge_id"], name: "index_meeting_relay_reservations_on_badge_id", using: :btree
+    t.index ["meeting_event_id"], name: "index_meeting_relay_reservations_on_meeting_event_id", using: :btree
+    t.index ["meeting_id"], name: "index_meeting_relay_reservations_on_meeting_id", using: :btree
+    t.index ["swimmer_id"], name: "index_meeting_relay_reservations_on_swimmer_id", using: :btree
+    t.index ["team_id"], name: "index_meeting_relay_reservations_on_team_id", using: :btree
+    t.index ["user_id"], name: "index_meeting_relay_reservations_on_user_id", using: :btree
+  end
+
   create_table "meeting_relay_results", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "lock_version",                                                      default: 0
     t.datetime "created_at"
@@ -1263,7 +1283,7 @@ ActiveRecord::Schema.define(version: 20161126164243) do
     t.integer  "badge_id"
     t.text     "notes",         limit: 65535
     t.boolean  "is_not_coming"
-    t.boolean  "has_payed"
+    t.boolean  "has_confirmed"
     t.datetime "created_at",                  null: false
     t.datetime "updated_at",                  null: false
     t.index ["badge_id"], name: "index_meeting_reservations_on_badge_id", using: :btree
@@ -2038,6 +2058,18 @@ ActiveRecord::Schema.define(version: 20161126164243) do
     t.index ["voter_id", "voter_type"], name: "index_votes_on_voter_id_and_voter_type", using: :btree
   end
 
+  add_foreign_key "meeting_event_reservations", "badges"
+  add_foreign_key "meeting_event_reservations", "meeting_events"
+  add_foreign_key "meeting_event_reservations", "meetings"
+  add_foreign_key "meeting_event_reservations", "swimmers"
+  add_foreign_key "meeting_event_reservations", "teams"
+  add_foreign_key "meeting_event_reservations", "users"
+  add_foreign_key "meeting_relay_reservations", "badges"
+  add_foreign_key "meeting_relay_reservations", "meeting_events"
+  add_foreign_key "meeting_relay_reservations", "meetings"
+  add_foreign_key "meeting_relay_reservations", "swimmers"
+  add_foreign_key "meeting_relay_reservations", "teams"
+  add_foreign_key "meeting_relay_reservations", "users"
   add_foreign_key "meeting_reservations", "badges"
   add_foreign_key "meeting_reservations", "meetings"
   add_foreign_key "meeting_reservations", "swimmers"

@@ -5,7 +5,7 @@
 
 = MeetingReservation model
 
-  - version:  6.018
+  - version:  6.024
   - author:   Steve A.
 
 =end
@@ -22,11 +22,8 @@ class MeetingReservation < ApplicationRecord
   has_one  :season_type,      through: :meeting
   has_many :meeting_sessions, through: :meeting
 
-  # TODO
+  # Other available fields:
   # t.text :notes
   # t.boolean :is_not_coming
-  # t.boolean :has_payed      => :has_confirmed
-
-  # TODO new entity MeetingRelayReservation, similar to EventReservation but
-  #      only with a bool flag for the relay event and a small string note
+  # t.boolean :has_confirmed
 end

@@ -7,6 +7,6 @@ FactoryGirl.define do
     user
     notes                 { FFaker::Lorem.paragraph }
     is_not_coming         false
-    has_payed             false
+    has_confirmed         false
   end
 end

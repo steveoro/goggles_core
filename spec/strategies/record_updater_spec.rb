@@ -257,11 +257,12 @@ describe RecordUpdater, type: :strategy do
       it "updates the SQL executable log text with INSERT statements" do
         expect( test_subject.sql_executable_log ).to match(/INSERT\s/i)
 # DEBUG
-#        puts( "\r\nResulting SQL for inserts:\r\n----8<----\r\n" + test_subject.sql_executable_log + "\r\n----8<----\r\n")
+        puts( "\r\nResulting SQL for inserts:\r\n----8<----\r\n" + test_subject.sql_executable_log + "\r\n----8<----\r\n")
       end
+# FIXME The following is failing randomly:
       it "updates the SQL executable log text with no UPDATE statements" do
 # DEBUG
-#        puts( "\r\nResulting SQL for UPDATE:\r\n----8<----\r\n" + test_subject.sql_executable_log + "\r\n----8<----\r\n")
+        puts( "\r\nResulting SQL for UPDATE:\r\n----8<----\r\n" + test_subject.sql_executable_log + "\r\n----8<----\r\n")
         expect( test_subject.sql_executable_log ).not_to match(/UPDATE\s/i)
       end
     end

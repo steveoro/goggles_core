@@ -27,11 +27,14 @@ RSpec.describe MeetingEventReservation, type: :model do
     context "[general methods]" do
       it_behaves_like( "(the existance of a method)", [
         :suggested_minutes, :suggested_seconds, :suggested_hundreds,
-        :minutes, :seconds, :hundreds
+        :minutes, :seconds, :hundreds,
+        :is_doing_this
       ])
     end
+    #-- -----------------------------------------------------------------------
+    #++
 
-    describe "is_not_registered" do
+    describe "#is_not_registered" do
       context "for an instance with a nil timing," do
         subject do
           MeetingEventReservation.new

@@ -6,13 +6,12 @@ require 'wrappers/timing'
 
 = MeetingEventReservation model
 
-  - version:  6.018
+  - version:  6.024
   - author:   Steve A.
 
 =end
 class MeetingEventReservation < ApplicationRecord
   include SwimmerRelatable
-
   include EventTypeRelatable
 
   belongs_to :meeting
@@ -27,11 +26,11 @@ class MeetingEventReservation < ApplicationRecord
   has_one :event_type,      through: :meeting_event
   has_one :meeting_session, through: :meeting_event
 
-  # TODO
+  # Other available fields:
+  # t.integer :suggested_minutes
+  # t.integer :suggested_seconds
+  # t.integer :suggested_hundreds
   # t.boolean :is_doing_this
-
-# FIXME for Rails 4+, move required/permitted check to the controller using the model
-#  attr_accessible :suggested_minutes, :suggested_seconds, :suggested_hundreds
 
   # Low-level instance aliases to column dynamic fields to make TimingGettable work anyway:
   def minutes;  suggested_minutes; end
@@ -42,14 +41,19 @@ class MeetingEventReservation < ApplicationRecord
   include TimingValidatable
 
 
-  # Returns true if the current instance has not been currently "registered" by a Swimmer.
+  # Returns true if the current instance has not been currently "registered" by
+  # a Swimmer.
   #
   # When a Swimmer "registers" for an event, at least one of the suggested timing
-  # fields should be set to a non-nil value.
+  # fields should be set to a non-nil value (or the dedicated flag #is_doing_this
+  # is properly set to +true+ -- but this may not always be the case due to the
+  # current data-flow when entering data).
   #
-  # Note also that a timing having all zero values is used as "no-time" registration.
+  # Note also that a timing having all zero values is used as a typical "no-time"
+  # registration.
   #
   def is_not_registered
+    (!is_doing_this) &&
     suggested_minutes.nil? && suggested_seconds.nil? && suggested_hundreds.nil?
   end
   #-- -------------------------------------------------------------------------
