@@ -27,6 +27,9 @@ class MeetingEventReservation < ApplicationRecord
   has_one :event_type,      through: :meeting_event
   has_one :meeting_session, through: :meeting_event
 
+  # TODO
+  # t.boolean :is_doing_this
+
 # FIXME for Rails 4+, move required/permitted check to the controller using the model
 #  attr_accessible :suggested_minutes, :suggested_seconds, :suggested_hundreds
 
