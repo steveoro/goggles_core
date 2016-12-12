@@ -158,7 +158,7 @@ it:
   in_conflict: "In conflitto"
 
   meters: "metri"
-  meters_short: "mt."
+  meters_short: "m."
   athletes: "atleti"
   pool_type_des: "Vasca da {POOL_LENGTH} metri"
   females: "Femmine"
