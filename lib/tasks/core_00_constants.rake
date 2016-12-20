@@ -12,7 +12,7 @@ require 'fileutils'
  Put here anything that should be re-used among more than one task.
 
   @author Steve A.
-  @build  2016.11.10
+  @build  2016.12.20
 
   (ASSUMES TO BE rakeD inside Rails.root)
  (p) FASAR Software 2007-2016
@@ -23,7 +23,7 @@ require 'fileutils'
 
 
 # Script revision number
-SCRIPT_VERSION = '1.0.1' unless defined? SCRIPT_VERSION
+SCRIPT_VERSION = '1.1.1' unless defined? SCRIPT_VERSION
 
 #The following 3 are assumed to be already existing directories:
 # Log dir
@@ -84,6 +84,7 @@ end
 # oldest ones.
 #
 def rotate_backups( backup_folder, max_backups )
+    puts "Rotating backups (max: #{ max_backups })..."
     all_backups = Dir.glob(File.join(backup_folder, '*'), File::FNM_PATHNAME).sort.reverse
     unwanted_backups = all_backups[max_backups..-1] || []
                                                     # Remove the backups in excess:

@@ -9,7 +9,7 @@ require 'fileutils'
  == Log-management Rake tasks.
 
   @author Steve A.
-  @build  2016.11.10
+  @build  2016.12.20
 
   (ASSUMES TO BE rakeD inside Rails.root)
  (p) FASAR Software 2007-2016
@@ -43,7 +43,7 @@ DESC
       puts "Cleaning /tmp from residual logs..."
       FileUtils.rm_f( Dir.glob(File.join('/tmp','*.log')) )
       # Make a copy of all the logs, since they can be updated while archiving:
-      puts "Making a temp. copy of all the logs..."
+      puts "Making a temp. copy of all the logs and UGC output files..."
       FileUtils.cp( Dir.glob(File.join(LOG_DIR,'*.log')), '/tmp' )
       if File.directory?(OUTPUT_DIR)
         FileUtils.cp( Dir.glob(File.join(OUTPUT_DIR,'*.log')), '/tmp' )
@@ -52,7 +52,8 @@ DESC
       Dir.chdir('/tmp') do
         puts "Archiving all copied logs..."
         dest_archive_name = "goggles_logs_#{ time_signature }.log.tar.bz2"
-        sh "tar --bzip2 -cf #{ dest_archive_name } *.log"
+        result = `tar --bzip2 -cf #{ dest_archive_name } *.log`
+        puts "Command 'tar --bzip2 -cf #{ dest_archive_name } *.log' returned '#{ result }'"
         puts "Moving log archive into backup folder..."
         FileUtils.mv( dest_archive_name, backup_folder )
       end
@@ -60,10 +61,17 @@ DESC
       puts "Cleaning /tmp again..."
       FileUtils.rm_f( Dir.glob(File.join('/tmp','*.log')) )
 
+      # The following will zero-len all *.log files found in the log dir.
+      # Note that simply invoking Rake::Task['log:clear'].invoke will not clear
+      # non-environment log files, like access.log and error.log
       puts "Truncating all current log files..."
-      # This will zero-len all environment log files only, leaving the others untouched:
-      Rake::Task['log:clear'].invoke
+      Dir.chdir(LOG_DIR) do
+        result = `truncate *.log --size 0`
+        puts "Command 'truncate *.log --size ' returned '#{ result }'"
+      end
+
       # Remove all user-generated-content logs, already stored in back-up files:
+      puts "Cleaning any User-Generated content output (log) files..."
       if File.directory?(OUTPUT_DIR)
         FileUtils.rm_f( Dir.glob(File.join(OUTPUT_DIR,'ugc*.log')) )
       end
