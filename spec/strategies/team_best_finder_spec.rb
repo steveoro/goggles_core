@@ -175,14 +175,15 @@ describe TeamBestFinder, type: :strategy do
           expect( distinct_categories.count{ |e| e.code == category_type.code } ).to eq( 1 )
         end
       end
-      it "returns an array of category with at least OVER, SEN, M60, 50S for Ober Ferrari" do
+      it "returns an array of category with at least OVER, SEN, M60 for Ober Ferrari" do
         fix_cat  = fix_tbf.retrieve_distinct_categories
         expect( fix_cat.size ).to be >= 4
         expect( fix_cat.size ).to be <= 25
         expect( fix_cat.select{ |e| e.code == 'OVER' }.size ).to eq(1)
         expect( fix_cat.select{ |e| e.code == 'SEN' }.size ).to eq(1)
         expect( fix_cat.select{ |e| e.code == 'M60' }.size ).to eq(1)
-        expect( fix_cat.select{ |e| e.code == '50S' }.size ).to eq(1)
+        # XXX [Steve] Cannot check about '50S' since it was only a temporary category and not always exists:
+        # expect( fix_cat.select{ |e| e.code == '50S' }.size ).to eq(1)
       end
     end
 

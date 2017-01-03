@@ -16,8 +16,12 @@ log/*.log
 spec/dummy/db/*.sqlite3
 spec/dummy/db/*.sqlite3
 spec/dummy/log/*.log
+!spec/dummy/log/.gitkeep
 spec/dummy/tmp/
 spec/dummy/.sass-cache
+
+spec/dummy/public/output/*
+!spec/dummy/public/output/.gitkeep
 
 config/database.yml
 spec/dummy/config/database.yml
