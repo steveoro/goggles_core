@@ -3,7 +3,8 @@ require 'rails_helper'
 
 describe TimeStandard, type: :model do
   it_behaves_like "TimingGettable"
-  # ---------------------------------------------------------------------------
+  #-- -------------------------------------------------------------------------
+  #++
 
   describe "#has_standard? method" do
     it "responds to #has_standard?" do
@@ -18,7 +19,7 @@ describe TimeStandard, type: :model do
       expect( subject.class.has_standard?(154123, -560, 1230, 15, 0) ).to be false
     end
   end
-  # ---------------------------------------------------------------------------
+  #-- -------------------------------------------------------------------------
   #++
 
   describe "#get_standard method" do
@@ -34,7 +35,8 @@ describe TimeStandard, type: :model do
       expect( subject.class.get_standard(154123, -560, 1230, 15, 0) ).to be_nil
     end
   end
-  # ---------------------------------------------------------------------------
+  #-- -------------------------------------------------------------------------
   #++
-
 end
+#-- ---------------------------------------------------------------------------
+#++
