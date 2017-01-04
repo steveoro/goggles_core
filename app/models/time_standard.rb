@@ -77,4 +77,24 @@ class TimeStandard < ApplicationRecord
   end
   #-- -------------------------------------------------------------------------
   #++
+
+  # Checks if exists a standard time for a given season-pool_type-event_type-gender_type-category_type
+  #
+  def self.has_standard?( season_id, pool_type_id, event_type_id, gender_type_id, category_type_id )
+    TimeStandard.where([
+      'season_id = ? AND pool_type_id = ? AND event_type_id = ? AND gender_type_id = ? AND category_type_id = ?',
+      season_id, pool_type_id, event_type_id, gender_type_id, category_type_id])
+      .count > 0
+  end
+
+  # Returns standard time for a given season-pool_typ-event_type-gender_type-category_type
+  # or nil if not present
+  #
+  def self.get_standard( season_id, pool_type_id, event_type_id, gender_type_id, category_type_id )
+    TimeStandard.where([
+      'season_id = ? AND pool_type_id = ? AND event_type_id = ? AND gender_type_id = ? AND category_type_id = ?',
+      season_id, pool_type_id, event_type_id, gender_type_id, category_type_id]).first
+  end
+  #-- -------------------------------------------------------------------------
+  #++
 end
