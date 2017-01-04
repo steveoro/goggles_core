@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 
-describe TimeStandard, :type => :model do
+describe TimeStandard, type: :model do
   it_behaves_like "TimingGettable"
   # ---------------------------------------------------------------------------
 
@@ -13,7 +13,7 @@ describe TimeStandard, :type => :model do
     end
     it "returns true if standard present" do
     end
-    xit "returns false if standard not present" do
+    it "returns false if standard not present" do
       # Assumes id given doesn't exists
       expect( subject.class.has_standard?(154123, -560, 1230, 15, 0) ).to be false
     end
@@ -29,7 +29,7 @@ describe TimeStandard, :type => :model do
     end
     it "returns a SeasonPersonalStandard if standard present" do
     end
-    xit "returns nil if standard not present" do
+    it "returns nil if standard not present" do
       # Assumes id given doesn't exists
       expect( subject.class.get_standard(154123, -560, 1230, 15, 0) ).to be_nil
     end
