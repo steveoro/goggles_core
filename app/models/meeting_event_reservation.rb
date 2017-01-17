@@ -6,7 +6,7 @@ require 'wrappers/timing'
 
 = MeetingEventReservation model
 
-  - version:  6.024
+  - version:  6.053
   - author:   Steve A.
 
 =end
@@ -25,6 +25,8 @@ class MeetingEventReservation < ApplicationRecord
   has_one :season_type,     through: :meeting
   has_one :event_type,      through: :meeting_event
   has_one :meeting_session, through: :meeting_event
+  has_one :category_type,   through: :badge
+  has_one :gender_type,     through: :swimmer
 
   # Other available fields:
   # t.integer :suggested_minutes
@@ -55,6 +57,20 @@ class MeetingEventReservation < ApplicationRecord
   def is_not_registered
     (!is_doing_this) &&
     suggested_minutes.nil? && suggested_seconds.nil? && suggested_hundreds.nil?
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
+
+  # Retrieves the (first) MeetingProgram associated with this instance, whenever possible.
+  # Returns nil otherwise.
+  #
+  def meeting_program
+    MeetingProgram.where(
+      meeting_event_id: meeting_event.id,
+      category_type_id: category_type.id,
+      gender_type_id:   gender_type.id
+    ).first
   end
   #-- -------------------------------------------------------------------------
   #++

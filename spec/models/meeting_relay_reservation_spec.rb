@@ -23,12 +23,32 @@ RSpec.describe MeetingRelayReservation, type: :model do
       :meeting_event
     ])
 
+    it_behaves_like( "(it has_one of these required models)", [
+      :season,
+      :season_type,
+      :event_type,
+      :meeting_session,
+      :category_type,
+      :gender_type
+    ])
+
     context "[general methods]" do
       it_behaves_like( "(the existance of a method)", [
         :notes,
         :is_doing_this
       ])
     end
+    #-- -----------------------------------------------------------------------
+    #++
+
+
+    describe "#meeting_program" do
+      it "is a MeetingProgram" do
+        expect( subject.meeting_program ).to be_a( MeetingProgram )
+      end
+    end
+    #-- -----------------------------------------------------------------------
+    #++
   end
   #-- -------------------------------------------------------------------------
   #++

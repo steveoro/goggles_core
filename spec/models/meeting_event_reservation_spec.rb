@@ -24,6 +24,15 @@ RSpec.describe MeetingEventReservation, type: :model do
       :user
     ])
 
+    it_behaves_like( "(it has_one of these required models)", [
+      :season,
+      :season_type,
+      :event_type,
+      :meeting_session,
+      :category_type,
+      :gender_type
+    ])
+
     context "[general methods]" do
       it_behaves_like( "(the existance of a method)", [
         :suggested_minutes, :suggested_seconds, :suggested_hundreds,
@@ -60,6 +69,17 @@ RSpec.describe MeetingEventReservation, type: :model do
         end
       end
     end
+    #-- -----------------------------------------------------------------------
+    #++
+
+
+    describe "#meeting_program" do
+      it "is a MeetingProgram" do
+        expect( subject.meeting_program ).to be_a( MeetingProgram )
+      end
+    end
+    #-- -----------------------------------------------------------------------
+    #++
   end
   #-- -------------------------------------------------------------------------
   #++
