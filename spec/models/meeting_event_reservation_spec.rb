@@ -74,8 +74,13 @@ RSpec.describe MeetingEventReservation, type: :model do
 
 
     describe "#meeting_program" do
-      it "is a MeetingProgram" do
-        expect( subject.meeting_program ).to be_a( MeetingProgram )
+      context "for reservations of 'closed' meetings," do
+        # Use a well-defined, pre-existing fixture, with already imported results:
+        subject { MeetingEventReservation.order('id ASC').limit(100).select{|e| e.meeting_program != nil }.sort{rand - 0.5}.first }
+
+        it "returns a MeetingProgram" do
+          expect( subject.meeting_program ).to be_a( MeetingProgram )
+        end
       end
     end
     #-- -----------------------------------------------------------------------
