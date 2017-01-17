@@ -40,15 +40,6 @@ RSpec.describe MeetingRelayReservation, type: :model do
     end
     #-- -----------------------------------------------------------------------
     #++
-
-
-    describe "#meeting_program" do
-      it "is a MeetingProgram" do
-        expect( subject.meeting_program ).to be_a( MeetingProgram )
-      end
-    end
-    #-- -----------------------------------------------------------------------
-    #++
   end
   #-- -------------------------------------------------------------------------
   #++

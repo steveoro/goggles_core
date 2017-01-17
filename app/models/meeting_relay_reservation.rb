@@ -32,18 +32,4 @@ class MeetingRelayReservation < ApplicationRecord
   # t.boolean :is_doing_this
   #-- -------------------------------------------------------------------------
   #++
-
-
-  # Retrieves the (first) MeetingProgram associated with this instance, whenever possible.
-  # Returns nil otherwise.
-  #
-  def meeting_program
-    MeetingProgram.where(
-      meeting_event_id: meeting_event.id,
-      category_type_id: category_type.id,
-      gender_type_id:   gender_type.id
-    ).first
-  end
-  #-- -------------------------------------------------------------------------
-  #++
 end
