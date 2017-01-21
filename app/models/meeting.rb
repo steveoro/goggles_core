@@ -6,7 +6,7 @@ require 'drop_down_listable'
 
 = Season
 
-  - version:  4.00.399
+  - version:  6.00.035
   - author:   Steve A., Leega
 
 =end
@@ -22,7 +22,8 @@ class Meeting < ApplicationRecord
   validates_associated :edition_type
   validates_associated :timing_type
 
-  acts_as_taggable_on :bookings
+  acts_as_taggable_on :tags_by_users
+  acts_as_taggable_on :tags_by_teams
 
   belongs_to( :individual_score_computation_type,
               class_name: "ScoreComputationType",

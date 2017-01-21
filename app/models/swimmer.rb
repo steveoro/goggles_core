@@ -7,7 +7,7 @@ require 'wrappers/timing'
 
 = Swimmer model
 
-  - version:  4.00.529
+  - version:  6.00.035
   - author:   Steve A.
 
 =end
@@ -27,7 +27,8 @@ class Swimmer < ApplicationRecord
   belongs_to :associated_user, class_name: "User",
              foreign_key: "associated_user_id"
 
-  acts_as_taggable_on :followers
+  acts_as_taggable_on :tags_by_users
+  acts_as_taggable_on :tags_by_teams
 
   has_many :user_swimmer_confirmations
   has_many :confirmators, through: :user_swimmer_confirmations
