@@ -54,6 +54,9 @@ class SwimmingPool < ApplicationRecord
   scope :sort_swimming_pool_by_hair_dryer_type,     ->(dir) { order("hair_dryer_types.code #{dir.to_s}, swimming_pools.name #{dir.to_s}") }
   scope :sort_swimming_pool_by_locker_cabinet_type, ->(dir) { order("locker_cabinet_types.code #{dir.to_s}, swimming_pools.name #{dir.to_s}") }
 
+  acts_as_taggable_on :tags_by_users
+  acts_as_taggable_on :tags_by_teams
+
 
   delegate :name, to: :user, prefix: true, allow_nil: true
   delegate :name, to: :city, prefix: true, allow_nil: true
