@@ -178,6 +178,57 @@ describe User, :type => :model do
     end
     #-- -----------------------------------------------------------------------
     #++
+
+
+    describe "#find_team_affiliation_id_from_team_managers_for" do
+      let(:random_season) { Season.all.sort{0.5 - rand}.first }
+      let(:fixture_team_manager) { create(:team_manager) }
+      let(:random_team_manager) { TeamManager.all.sort{0.5 - rand}.first }
+
+      it "returns nil when no team_managers are associated to the user" do
+        expect( create(:user).find_team_affiliation_id_from_team_managers_for(random_season.id) ).to be_nil
+      end
+
+      it "returns the nil when the user/team_manager DOES NOT match the season" do
+        expect(
+          fixture_team_manager.user.find_team_affiliation_id_from_team_managers_for( fixture_team_manager.team_affiliation.season_id + 1 )
+        ).to be nil
+      end
+
+      it "returns the team_affiliation.id for the specified season/team_manager touple when the user/team_manager matches the season" do
+        expect(
+          random_team_manager.user.find_team_affiliation_id_from_team_managers_for( random_team_manager.team_affiliation.season_id )
+        ).to eq( random_team_manager.team_affiliation_id )
+      end
+    end
+
+
+    describe "#find_team_affiliation_id_from_badges_for" do
+      let(:random_season)             { Season.all.sort{0.5 - rand}.first }
+      let(:random_user_with_swimmer) { User.includes(:swimmer).joins(:swimmer).all.sort{0.5 - rand}.first }
+
+      it "returns nil when no swimmers are associated to the user" do
+        expect(
+          create(:user, swimmer_id: nil).find_team_affiliation_id_from_badges_for(random_season.id)
+        ).to be_nil
+      end
+
+      it "returns the nil when the user/team_manager DOES NOT match the season" do
+        fixture_team_affiliation = random_user_with_swimmer.swimmer.badges.last.team_affiliation
+        expect(
+          random_user_with_swimmer.find_team_affiliation_id_from_badges_for( fixture_team_affiliation.season_id + 1)
+        ).to be nil
+      end
+
+      it "returns the team_affiliation.id for the specified season/team_manager touple when the user/team_manager matches the season" do
+        fixture_team_affiliation = random_user_with_swimmer.swimmer.badges.last.team_affiliation
+        expect(
+          random_user_with_swimmer.find_team_affiliation_id_from_badges_for( fixture_team_affiliation.season_id )
+        ).to eq( fixture_team_affiliation.id )
+      end
+    end
+    #-- -----------------------------------------------------------------------
+    #++
   end
   #-- -------------------------------------------------------------------------
   #++

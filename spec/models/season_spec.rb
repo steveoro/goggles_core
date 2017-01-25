@@ -99,7 +99,7 @@ describe Season, type: :model do
       context "for a SeasonType with NO Seasons," do
 # FIXME RANDOM FAILURES HERE, don't know why yet:
         it "returns an empty list" do
-          season_type = create( :season_type, code: Time.now.to_i.to_s )
+          season_type = build( :season_type, code: (Time.now.to_i + 10000).to_s )
 # DEBUG
 #          puts "\r\n- Testing scope on Season for fake season_type: #{ season_type.inspect }"
 #          puts "count should be zero: #{ subject.class.for_season_type(season_type).count }"

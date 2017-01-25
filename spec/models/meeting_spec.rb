@@ -4,10 +4,10 @@ require 'date'
 describe Meeting, :type => :model do
 
   context "[a non-valid instance]" do
-    it_behaves_like( "(missing required values)", [ 
+    it_behaves_like( "(missing required values)", [
       :description,
       :code
-    ])    
+    ])
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -16,7 +16,7 @@ describe Meeting, :type => :model do
   # more of a functional test instead of normal unit test.
   context "[a valid, pre-existing seeded domain]" do
     # TODO It uses a just a single predetermined seed to verify the values => Use a factory, forcing how many detail rows will be created instead, and move to the section below.
-    subject { Meeting.find_by_id(13105) }
+    subject { Meeting.find_by_id( 13105 ) }
 
     it_behaves_like( "MeetingAccountable",
       # These values were hand-verified for Meeting #13105:
@@ -39,19 +39,30 @@ describe Meeting, :type => :model do
       expect( subject ).to be_valid
     end
     # Validated relations:
-    it_behaves_like( "(belongs_to required models)", [ 
+    it_behaves_like( "(belongs_to required models)", [
       :season,
       :edition_type,
       :timing_type
-    ])    
+    ])
+
+    it_behaves_like( "(the existance of a class method)", [
+      # Filtering scopes:
+      :has_only_invitation,
+      :has_only_start_list,
+      :has_results,
+      :has_not_results,
+      :is_not_closed
+    ])
+    #-- -----------------------------------------------------------------------
+    #++
 
     context "[general methods]" do
-      it_behaves_like( "(the existance of a method returning non-empty and non-? strings)", [ 
+      it_behaves_like( "(the existance of a method returning non-empty and non-? strings)", [
         :get_short_name,
         :get_full_name,
         :get_verbose_name
       ])
-      it_behaves_like( "(the existance of a method returning non-empty strings)", [ 
+      it_behaves_like( "(the existance of a method returning non-empty strings)", [
         :get_short_events,
         :get_complete_events,
         :get_city
@@ -102,7 +113,7 @@ describe Meeting, :type => :model do
         end
       end
 
-      describe "#get_meeting_date" do      
+      describe "#get_meeting_date" do
         it "has a method to find out meeting date" do
           expect( subject ).to respond_to( :get_meeting_date )
         end
@@ -110,8 +121,8 @@ describe Meeting, :type => :model do
           expect( subject.get_meeting_date ).to be_an_instance_of( String )
         end
       end
-      
-      describe "#meeting_date_to_iso" do      
+
+      describe "#meeting_date_to_iso" do
         it "has a method to find out meeting date in iso format" do
           expect( subject ).to respond_to( :meeting_date_to_iso )
         end
@@ -123,8 +134,8 @@ describe Meeting, :type => :model do
           expect( subject.meeting_date_to_iso ).to eq( str_date.to_date.strftime( '%Y%m%d' ) )
         end
       end
-      
-      describe "#get_data_import_file_name" do      
+
+      describe "#get_data_import_file_name" do
         it "has a method to find out meeting data import file name" do
           expect( subject ).to respond_to( :get_data_import_file_name )
         end
@@ -139,7 +150,7 @@ describe Meeting, :type => :model do
           expect( subject.get_data_import_file_name ).to include( subject.code )
         end
       end
-    end      
+    end
   end
   #-- -------------------------------------------------------------------------
   #++

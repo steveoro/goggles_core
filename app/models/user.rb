@@ -10,7 +10,7 @@ require 'i18n'
 
 = User model
 
-  - version:  4.00.815
+  - version:  6.036
   - author:   Steve A.
 
 =end
@@ -196,6 +196,7 @@ class User < ApplicationRecord
   #-- -------------------------------------------------------------------------
   #++
 
+
   # Label symbol corresponding to either a column name or a model method to be used
   # mainly in generating DropDown option lists.
   #
@@ -224,6 +225,30 @@ class User < ApplicationRecord
     else
       ''
     end
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
+
+  # Returns the team_affiliation.id (or nil) given a specified season_id, seeking
+  # inside the list of associated team_managers.
+  #
+  def find_team_affiliation_id_from_team_managers_for( season_id )
+    return nil if team_managers.nil?
+    team_manager = team_managers.includes(:team_affiliation).joins(:team_affiliation)
+      .select{|tm| tm.team_affiliation.season_id == season_id }.first
+    team_manager ? team_manager.team_affiliation_id : nil
+  end
+
+
+  # Returns the team_affiliation.id (or nil) given a specified season_id, seeking
+  # inside the list of associated swimmer badges.
+  #
+  def find_team_affiliation_id_from_badges_for( season_id )
+    return nil if swimmer.nil?
+    badge = swimmer.badges.includes(:team_affiliation).joins(:team_affiliation)
+      .where( season_id: season_id ).first
+    badge ? badge.team_affiliation_id : nil
   end
   #-- -------------------------------------------------------------------------
   #++
