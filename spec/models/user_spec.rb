@@ -191,7 +191,7 @@ describe User, :type => :model do
 
       it "returns the nil when the user/team_manager DOES NOT match the season" do
         expect(
-          fixture_team_manager.user.find_team_affiliation_id_from_team_managers_for( fixture_team_manager.team_affiliation.season_id + 1 )
+          fixture_team_manager.user.find_team_affiliation_id_from_team_managers_for( fixture_team_manager.team_affiliation.season_id + Season.count + 1 )
         ).to be nil
       end
 
@@ -216,7 +216,7 @@ describe User, :type => :model do
       it "returns the nil when the user/team_manager DOES NOT match the season" do
         fixture_team_affiliation = random_user_with_swimmer.swimmer.badges.last.team_affiliation
         expect(
-          random_user_with_swimmer.find_team_affiliation_id_from_badges_for( fixture_team_affiliation.season_id + 1)
+          random_user_with_swimmer.find_team_affiliation_id_from_badges_for( fixture_team_affiliation.season_id + Season.count + 1 )
         ).to be nil
       end
 
