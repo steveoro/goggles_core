@@ -5,14 +5,15 @@
 
 = SwimmingPoolReview model
 
-  - version:  4.00.523
+  - version:  6.069
   - author:   Steve A.
 
 =end
 class SwimmingPoolReview < ApplicationRecord
-  after_create    UserContentLogger.new('swimming_pool_reviews')
-  after_update    UserContentLogger.new('swimming_pool_reviews')
-  before_destroy  UserContentLogger.new('swimming_pool_reviews')
+  # XXX [Steve, 20170130] We don't care anymore (so much) about these updates: commented out
+#  after_create    UserContentLogger.new('swimming_pool_reviews')
+#  after_update    UserContentLogger.new('swimming_pool_reviews')
+#  before_destroy  UserContentLogger.new('swimming_pool_reviews')
 
   acts_as_votable
 

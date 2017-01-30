@@ -7,7 +7,7 @@ require 'wrappers/timing'
 
 = Swimmer model
 
-  - version:  6.00.035
+  - version:  6.069
   - author:   Steve A.
 
 =end
@@ -15,7 +15,8 @@ class Swimmer < ApplicationRecord
   # [Steve, 20140929] Here we just need to log the updates, since the users
   # can only add or remote UserSwimmerConfirmations, thus updating the only
   # related field on the table (:user_swimmer_confirmations).
-  after_update    UserContentLogger.new('swimmers')
+  # XXX [Steve, 20170130] We don't care anymore (so much) about these updates: commented out
+#  after_update    UserContentLogger.new('swimmers')
 
   include DropDownListable
 

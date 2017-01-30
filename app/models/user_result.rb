@@ -6,14 +6,15 @@ require 'wrappers/timing'
 
 = UserResult model
 
-  - version:  4.00.523
+  - version:  6.069
   - author:   Steve A.
 
 =end
 class UserResult < ApplicationRecord
-  after_create    UserContentLogger.new('user_results')
-  after_update    UserContentLogger.new('user_results')
-  before_destroy  UserContentLogger.new('user_results')
+  # XXX [Steve, 20170130] We don't care anymore (so much) about these updates: commented out
+#  after_create    UserContentLogger.new('user_results')
+#  after_update    UserContentLogger.new('user_results')
+#  before_destroy  UserContentLogger.new('user_results')
 
   include TimingGettable
   include TimingValidatable

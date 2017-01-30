@@ -5,7 +5,7 @@
 
 = UserSwimmerConfirmation model
 
-  - version:  4.00.531
+  - version:  6.069
   - author:   Steve A.
 
   Holds confirmations received by a user about its association with a
@@ -13,9 +13,10 @@
 
 =end
 class UserSwimmerConfirmation < ApplicationRecord
-  after_create    UserContentLogger.new('user_swimmer_confirmations')
-  after_update    UserContentLogger.new('user_swimmer_confirmations')
-  before_destroy  UserContentLogger.new('user_swimmer_confirmations')
+  # XXX [Steve, 20170130] We don't care anymore (so much) about these updates: commented out
+#  after_create    UserContentLogger.new('user_swimmer_confirmations')
+#  after_update    UserContentLogger.new('user_swimmer_confirmations')
+#  before_destroy  UserContentLogger.new('user_swimmer_confirmations')
 
   # [Steve, 20140930] We don't need to keep around NULL'ed UserSwimmerConfirmations if a user is deleted:
   belongs_to :user, dependent: :destroy

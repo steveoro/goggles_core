@@ -2,7 +2,7 @@
 
 = UserAchievement model
 
-  - version:  4.00.523
+  - version:  6.069
   - author:   Leega, Steve A.
 
   Mapper for achievements reached by users.
@@ -10,9 +10,10 @@
 
 =end
 class UserAchievement < ApplicationRecord
-  after_create    UserContentLogger.new('user_achievements')
-  after_update    UserContentLogger.new('user_achievements')
-  before_destroy  UserContentLogger.new('user_achievements')
+  # XXX [Steve, 20170130] We don't care anymore (so much) about these updates: commented out
+#  after_create    UserContentLogger.new('user_achievements')
+#  after_update    UserContentLogger.new('user_achievements')
+#  before_destroy  UserContentLogger.new('user_achievements')
 
   belongs_to :user
   belongs_to :achievement

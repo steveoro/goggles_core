@@ -10,14 +10,15 @@ require 'i18n'
 
 = User model
 
-  - version:  6.036
+  - version:  6.069
   - author:   Steve A.
 
 =end
 class User < ApplicationRecord
   after_create    UserContentLogger.new('users', email_on_create: true)
-  after_update    UserContentLogger.new('users')
-  before_destroy  UserContentLogger.new('users')
+  # XXX [Steve, 20170130] We don't care anymore (so much) about these updates: commented out
+#  after_update    UserContentLogger.new('users')
+  before_destroy  UserContentLogger.new('users', email_on_destroy: true)
 
   include Rails.application.routes.url_helpers
   include DropDownListable

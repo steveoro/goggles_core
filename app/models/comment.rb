@@ -2,14 +2,15 @@
 
 = Comment model
 
-  - version:  4.00.523
+  - version:  6.069
   - author:   Steve A.
 
 =end
 class Comment < ApplicationRecord
-  after_create    UserContentLogger.new('comments')
-  after_update    UserContentLogger.new('comments')
-  before_destroy  UserContentLogger.new('comments')
+  # XXX [Steve, 20170130] We don't care anymore (so much) about these updates: commented out
+#  after_create    UserContentLogger.new('comments')
+#  after_update    UserContentLogger.new('comments')
+#  before_destroy  UserContentLogger.new('comments')
 
   belongs_to :user                                  # [Steve, 20120212] Do not validate associated user!
   belongs_to :swimming_pool_review
