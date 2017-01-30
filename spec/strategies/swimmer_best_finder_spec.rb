@@ -25,6 +25,8 @@ describe SwimmerBestFinder, type: :strategy do
       end
     end
     #-- -----------------------------------------------------------------------
+    #++
+
 
     describe "#get_closed_seasons_involved_into, " do
       it "returns an array" do
@@ -61,6 +63,8 @@ describe SwimmerBestFinder, type: :strategy do
       end
     end
     #-- -----------------------------------------------------------------------
+    #++
+
 
     describe "#get_current_seasons_involved_into, " do
       it "returns an array" do
@@ -76,6 +80,8 @@ describe SwimmerBestFinder, type: :strategy do
       end
     end
     #-- -----------------------------------------------------------------------
+    #++
+
 
     describe "#get_contemporary_seasons_involved_into, " do
       it "returns an array" do
@@ -92,6 +98,8 @@ describe SwimmerBestFinder, type: :strategy do
       end
     end
     #-- -----------------------------------------------------------------------
+    #++
+
 
     describe "#get_involved_season_last_best_for_event," do
       it "returns a timing instance if event already swam" do
@@ -143,6 +151,8 @@ describe SwimmerBestFinder, type: :strategy do
       end
     end
     #-- -----------------------------------------------------------------------
+    #++
+
 
     describe "#get_involved_season_best_for_event," do
       it "returns a timing instance if event already swam" do
@@ -167,33 +177,42 @@ describe SwimmerBestFinder, type: :strategy do
         expect( fix_sbf.get_involved_season_best_for_event( fix_sbf.get_closed_seasons_involved_into( csi_season_type ), fix_event, fix_pool ) ).to be_nil
       end
 
-      # FIXME This yields random failures sometimes
-      it "returns a time swam if swam before or nil if not" do
-        event = EventsByPoolType.not_relays.order('RAND()').first
-        if active_swimmer.meeting_individual_results
-            .is_not_disqualified
-            .for_season( csi_season )
-            .for_pool_type( event.pool_type )
-            .for_event_type( event.event_type ).count > 0
-          expect(
-            subject.get_involved_season_best_for_event(
-              subject.get_contemporary_seasons_involved_into( csi_season ),
+      context "for a swimmer WITHOUT results," do
+        it "returns nil" do
+          event = EventsByPoolType.not_relays.order('RAND()').first
+          swimmer_w_o_results = create( :swimmer )
+          sbf = SwimmerBestFinder.new( swimmer_w_o_results )
+          expectation = sbf.get_involved_season_best_for_event(
+              sbf.get_contemporary_seasons_involved_into( csi_season ),
               event.event_type,
               event.pool_type
-            )
-          ).to be_an_instance_of( Timing )
-        else
-          expect(
-            subject.get_involved_season_best_for_event(
-              subject.get_contemporary_seasons_involved_into( csi_season ),
-              event.event_type,
-              event.pool_type
-            )
-          ).to be nil
+          )
+          expect( expectation ).to be nil
+        end
+      end
+
+      context "for a swimmer WITH results for the specified parameters," do
+        it "returns nil" do
+          # Get a random MIR from a couple of years ago, with  a range radius of 2 years:
+          rnd_mir = MeetingIndividualResult.joins(:meeting, :season, :meeting_session, :meeting_event, :pool_type)
+              .includes(:meeting, :season, :meeting_session, :meeting_event, :pool_type)
+              .where([ '(meetings.header_date > ?) AND (meetings.header_date > ?)',
+                       Date.today - 4.year, Date.today - 2.year ])
+              .limit(500).sort{ 0.5 - rand }
+              .first
+          sbf = SwimmerBestFinder.new( rnd_mir.swimmer )
+          expectation = sbf.get_involved_season_best_for_event(
+              sbf.get_contemporary_seasons_involved_into( rnd_mir.season ),
+              rnd_mir.meeting_event.event_type,
+              rnd_mir.pool_type
+          )
+          expect( expectation ).to be_a( Timing )
         end
       end
     end
     #-- -----------------------------------------------------------------------
+    #++
+
 
     describe "#get_involved_season_last_best_for_key," do
       it "returns a time swam if swam before or nil if not" do
@@ -206,6 +225,8 @@ describe SwimmerBestFinder, type: :strategy do
       end
     end
     #-- -----------------------------------------------------------------------
+    #++
+
 
     describe "#get_season_type_best_for_event," do
       it "returns a timing instance if event already swam" do
@@ -232,6 +253,8 @@ describe SwimmerBestFinder, type: :strategy do
       end
     end
     #-- -----------------------------------------------------------------------
+    #++
+
 
     describe "#get_best_for_event," do
       it "returns a timing instance if event already swam" do
@@ -258,6 +281,8 @@ describe SwimmerBestFinder, type: :strategy do
       end
     end
     #-- -----------------------------------------------------------------------
+    #++
+
 
     describe "#get_best_for_event_result," do
       it "returns a meeting individual result" do
@@ -269,6 +294,8 @@ describe SwimmerBestFinder, type: :strategy do
       end
     end
     #-- -----------------------------------------------------------------------
+    #++
+
 
     # Test this feature with real data for praticity
     # Sure that Leega swam 25FA more than two times in 25 pool
@@ -302,6 +329,8 @@ describe SwimmerBestFinder, type: :strategy do
       end
     end
     #-- -----------------------------------------------------------------------
+    #++
+
 
     describe "#get_best_for_meeting_event," do
       it "returns a timing instance if event already swam" do
@@ -331,6 +360,8 @@ describe SwimmerBestFinder, type: :strategy do
       end
     end
     #-- -----------------------------------------------------------------------
+    #++
+
 
     describe "#reset_personal_best," do
       it "clears personal best" do
@@ -351,6 +382,8 @@ describe SwimmerBestFinder, type: :strategy do
       end
     end
     #-- -----------------------------------------------------------------------
+    #++
+
 
     describe "#reset_all_personal_bests," do
       it "clears personal best already set" do
@@ -360,6 +393,8 @@ describe SwimmerBestFinder, type: :strategy do
       end
     end
     #-- -----------------------------------------------------------------------
+    #++
+
 
     describe "#set_personal_best," do
       it "returns a timing instance if event already swam" do
@@ -405,6 +440,8 @@ describe SwimmerBestFinder, type: :strategy do
       end
     end
     #-- -----------------------------------------------------------------------
+    #++
+
 
     describe "#scan_for_personal_bests," do
       it "sets at least 20 personal bests for Leega" do
@@ -433,6 +470,7 @@ describe SwimmerBestFinder, type: :strategy do
       end
     end
     #-- -----------------------------------------------------------------------
+    #++
   end
   #-- -------------------------------------------------------------------------
   #++

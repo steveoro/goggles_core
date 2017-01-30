@@ -10,7 +10,7 @@ require 'wrappers/timing'
 # - meetings (with sessions and events)
 #
 # @author   Leega, Steve
-# @version  6.00.00
+# @version  6.039
 #
 class SeasonCreator
   include SqlConvertable
@@ -133,7 +133,7 @@ class SeasonCreator
         meeting.meeting_sessions.each do |meeting_session|
           newer_session = MeetingSession.new( meeting_session.attributes.reject{ |e| ['id','lock_version','created_at','updated_at'].include?(e) } )
           newer_session.meeting_id     = newer_meeting.id
-          newer_session.scheduled_date = SeasonCreator.next_year_eq_day( newer_session.scheduled_date ) if newer_session.scheduled_date > Date.new()
+          newer_session.scheduled_date = SeasonCreator.next_year_eq_day( newer_session.scheduled_date ) if newer_session.scheduled_date && newer_session.scheduled_date > Date.new()
           newer_session.is_autofilled  = true
           if newer_session.save
             sql_diff_text_log << to_sql_insert( newer_session, false, "\r\n" ) # no additional comment

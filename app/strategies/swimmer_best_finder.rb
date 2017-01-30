@@ -95,8 +95,17 @@ class SwimmerBestFinder
   def get_involved_season_best_for_event( involved_seasons, event_type, pool_type )
     best = nil
     involved_seasons.each do |season|
-      if @swimmer.meeting_individual_results.for_season( season ).for_pool_type( pool_type ).for_event_type( event_type ).is_not_disqualified.count > 0
-        tmp_best = @swimmer.meeting_individual_results.for_season( season ).for_pool_type( pool_type ).for_event_type( event_type ).is_not_disqualified.sort_by_timing('ASC').first.get_timing_instance
+      if ( @swimmer.meeting_individual_results.for_season( season )
+             .for_pool_type( pool_type )
+             .for_event_type( event_type )
+             .is_not_disqualified.count > 0 )
+        tmp_best = @swimmer.meeting_individual_results.for_season( season )
+            .for_pool_type( pool_type )
+            .for_event_type( event_type )
+            .is_not_disqualified
+            .sort_by_timing('ASC')
+            .first
+            .get_timing_instance
         best = tmp_best if best == nil || best.to_hundreds > tmp_best.to_hundreds
       end
     end
