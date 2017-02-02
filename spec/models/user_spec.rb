@@ -182,7 +182,6 @@ describe User, :type => :model do
 
     describe "#find_team_affiliation_id_from_team_managers_for" do
       let(:random_season) { Season.all.sort{0.5 - rand}.first }
-      let(:fixture_team_manager) { create(:team_manager) }
       let(:random_team_manager) { TeamManager.all.sort{0.5 - rand}.first }
 
       it "returns nil when no team_managers are associated to the user" do
@@ -190,15 +189,26 @@ describe User, :type => :model do
       end
 
       it "returns the nil when the user/team_manager DOES NOT match the season" do
+        fixture_team_manager = create(:team_manager)
         expect(
           fixture_team_manager.user.find_team_affiliation_id_from_team_managers_for( fixture_team_manager.team_affiliation.season_id + Season.count + 1 )
         ).to be nil
       end
 
-      it "returns the team_affiliation.id for the specified season/team_manager touple when the user/team_manager matches the season" do
+      it "returns the FIRST team_affiliation.id for the specified season/team_manager touple when the user/team_manager matches the season" do
+        # Get the season_id associated to the random team manager:
+        rnd_season_id_from_tm = random_team_manager.team_affiliation.season_id
+        # Get the first TA found for the selected random user for the random team manager
+        # (It may be more than 1 for users managing more than 1 team)
+        first_ta_id_found = random_team_manager.user.team_managers
+            .includes(:team_affiliation).joins(:team_affiliation)
+            .select{|tm| tm.team_affiliation.season_id == rnd_season_id_from_tm }
+            .first
+            .team_affiliation_id
+        # Check the expectation:
         expect(
-          random_team_manager.user.find_team_affiliation_id_from_team_managers_for( random_team_manager.team_affiliation.season_id )
-        ).to eq( random_team_manager.team_affiliation_id )
+          random_team_manager.user.find_team_affiliation_id_from_team_managers_for( rnd_season_id_from_tm )
+        ).to eq( first_ta_id_found )
       end
     end
 
@@ -220,8 +230,8 @@ describe User, :type => :model do
         ).to be nil
       end
 
-      it "returns the team_affiliation.id for the specified season/team_manager touple when the user/team_manager matches the season" do
-        fixture_team_affiliation = random_user_with_swimmer.swimmer.badges.last.team_affiliation
+      it "returns the FIRST team_affiliation.id for the specified season/team_manager touple when the user/team_manager matches the season" do
+        fixture_team_affiliation = random_user_with_swimmer.swimmer.badges.first.team_affiliation
         expect(
           random_user_with_swimmer.find_team_affiliation_id_from_badges_for( fixture_team_affiliation.season_id )
         ).to eq( fixture_team_affiliation.id )
