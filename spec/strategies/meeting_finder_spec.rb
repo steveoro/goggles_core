@@ -55,28 +55,60 @@ describe MeetingFinder, type: :strategy do
   #-- -------------------------------------------------------------------------
   #++
 
-  context "when an existing search term is supplied," do
+
+  context "when an existing search term is supplied (RAVENNA, unlimited)," do
     subject { MeetingFinder.new("ravenna") }
 
     describe "#search_ids" do
-      it "returns some Meeting rows" do
+      it "returns more than 5 Meeting row IDs" do
         result_count = subject.search_ids.size
-        expect( result_count ).to be > 0
+        expect( result_count ).to be > 5
         expect( result_count ).to be < Meeting.count
       end
     end
     describe "#deep_search_ids" do
-      it "returns some Meeting rows not less than search_ids" do
+      it "returns more than 5 Meeting row IDs and not less than #search_ids" do
         result_count = subject.deep_search_ids.size
-        expect( result_count ).to be > 0
+        expect( result_count ).to be > 5
         expect( result_count ).to be < Meeting.count
         expect( result_count ).to be >= subject.search_ids.size
       end
     end
     describe "#search" do
-      it "returns more than 1 result with the existing seeds" do
+      it "returns more than 5 Meeting rows with the existing seeds" do
         result_count = subject.search.count
-        expect( result_count ).to be > 0
+        expect( result_count ).to be > 5
+        expect( result_count ).to be < Meeting.count
+      end
+      it "returns a list of Meeting instances" do
+        expect( subject.search ).to all be_an_instance_of( Meeting )
+      end
+    end
+  end
+
+
+  context "when an existing search term is supplied (RICCIONE, LIMIT:5)," do
+    subject { MeetingFinder.new("riccione", 5) }
+
+    describe "#search_ids" do
+      it "returns exactly 5 Meeting row IDs" do
+        result_count = subject.search_ids.size
+        expect( result_count ).to eq(5)
+        expect( result_count ).to be < Meeting.count
+      end
+    end
+    describe "#deep_search_ids" do
+      it "returns exactly 5 Meeting row IDs and same as #search_ids" do
+        result_count = subject.deep_search_ids.size
+        expect( result_count ).to eq(5)
+        expect( result_count ).to be < Meeting.count
+        expect( result_count ).to eq( subject.search_ids.size )
+      end
+    end
+    describe "#search" do
+      it "returns exactly 5 Meeting rows with the existing seeds" do
+        result_count = subject.search.count
+        expect( result_count ).to eq(5)
         expect( result_count ).to be < Meeting.count
       end
       it "returns a list of Meeting instances" do
@@ -86,6 +118,7 @@ describe MeetingFinder, type: :strategy do
   end
   #-- -------------------------------------------------------------------------
   #++
+
 
   context "when a non-existing search term is supplied," do
     subject { MeetingFinder.new("LARICIUMBALALLILLALLERO") }
@@ -109,7 +142,7 @@ describe MeetingFinder, type: :strategy do
   end
   #-- -------------------------------------------------------------------------
   #++
-  
+
   context "search methods," do
     # TODO Use some random values
     let( :meeting_name ) { 'RICCIONE' }
@@ -118,7 +151,7 @@ describe MeetingFinder, type: :strategy do
     let( :event_name )   { '1500' }
     let( :team_name )    { 'TIBIDABO' }
     let( :swimmer_name ) { 'MARCO LIGABUE' }
-    
+
     let( :on_meetings )  { MeetingFinder.new( meeting_name ) }
     let( :on_cities )    { MeetingFinder.new( city_name ) }
     let( :on_pools )     { MeetingFinder.new( pool_name ) }

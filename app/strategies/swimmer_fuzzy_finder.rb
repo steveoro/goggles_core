@@ -6,7 +6,7 @@ require 'conditions_generator_column_string_regexped' # Used to generate simple_
 
 = SwimmerFuzzyFinder
 
- - Goggles framework vers.:  5.00
+ - Goggles framework vers.:  6.071
  - author: Steve A.
 
  Fuzzy-finder class used to retrieve lists of Swimmer instances based
@@ -15,7 +15,8 @@ require 'conditions_generator_column_string_regexped' # Used to generate simple_
 =end
 class SwimmerFuzzyFinder
 
-  attr_reader :first_name, :last_name, :complete_name, :year_of_birth, :gender_code
+  attr_reader :first_name, :last_name, :complete_name, :year_of_birth, :gender_code,
+              :limit
 
   # Executes the search call.
   #
@@ -33,6 +34,7 @@ class SwimmerFuzzyFinder
   # - :year_of_birth (either as String or Fixnum),
   # - :gender_type_id (takes precedence over ;gender_code)
   # - :gender_code (specifying this will issue an additional query)
+  # - :limit for the results found
   #
   # == Returns:
   # A list of matching Swimmer instances; an empty array otherwise.
@@ -53,6 +55,7 @@ class SwimmerFuzzyFinder
     @year_of_birth  = params[ :year_of_birth ]
     @gender_type_id = params[ :gender_type_id ]
     @gender_code    = params[ :gender_code ]
+    @limit          = params[ :limit ]
     normalize_names
     normalize_gender
   end
@@ -113,14 +116,14 @@ class SwimmerFuzzyFinder
   #
   def search_by_name
     # 1) Simple query, searching for a name "as-is":
-    swimmers = Swimmer.where( complete_name: @complete_name )
+    swimmers = Swimmer.where( complete_name: @complete_name ).limit( @limit )
 
     # 2) RegExp query on name:
     if swimmers.count == 0 && @complete_name.to_s.size > 0
       # Search among Swimmers for an equal complete name:
       name_clause = ConditionsGeneratorColumnStringRegexped
         .generate_query_conditions( 'swimmers', 'complete_name', @complete_name )
-      swimmers = Swimmer.where( name_clause )
+      swimmers = Swimmer.where( name_clause ).limit( @limit )
     end
 
     # 3) Fuzzy search on a pre-filtered complete_name
@@ -142,7 +145,7 @@ class SwimmerFuzzyFinder
   #
   def prefilter_by_name_start()
     search_token = '%' + @complete_name[0..3] + '%'
-    Swimmer.where( "(complete_name LIKE ?)", search_token )
+    Swimmer.where( "(complete_name LIKE ?)", search_token ).limit( @limit )
   end
 
 

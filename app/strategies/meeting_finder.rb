@@ -6,7 +6,7 @@ require 'conditions_generator_column_string_regexped' # Used to generate simple_
 
 = MeetingFinder
 
- - Goggles framework vers.:  5.00
+ - Goggles framework vers.:  6.071
  - author: Steve A.
 
  Finder (strategy) class used to retrieve lists of Meeting instances based
@@ -25,10 +25,12 @@ class MeetingFinder
   #
   # == Params:
   # - query_term: the text to be searched; returns all Meetings when no term is supplied.
+  # - limit: limit for results of the query
   #
-  def initialize( query_term = nil )
+  def initialize( query_term = nil, limit = nil )
     query_term = nil if query_term.to_s == ''
     @query_term = query_term
+    @limit = limit
   end
   #-- --------------------------------------------------------------------------
   #++
@@ -47,11 +49,11 @@ class MeetingFinder
       ids += search_in_events if scan_events
       ids += search_in_teams if scan_teams
       ids += search_in_swimmers if scan_swimmers
-      
+
       # Return the results:
-      ids.uniq
+      ids.uniq[ 0..@limit.to_i-1 ]
     else                                            # No search term:
-      Meeting.select(:id).all.map{ |row| row.id }.flatten.uniq
+      Meeting.select(:id).all.limit( @limit ).map{ |row| row.id }.flatten.uniq
     end
   end
 
@@ -81,24 +83,27 @@ class MeetingFinder
           "(description LIKE ?) OR (header_year LIKE ?) OR (notes LIKE ?) OR (reference_name LIKE ?)",
           search_like_text, search_like_text, search_like_text, search_like_text
         ]
-      ).map{ |row| row.id }.flatten.uniq
+      ).limit( @limit ).map{ |row| row.id }.flatten.uniq
 
       # Search among linked Swimmers:
       ids += Meeting.select(:id)
           .joins( :swimmers )
           .includes( :swimmers )
-          .where( query_swimmers_condition ).map{ |row| row.id }.flatten.uniq
+          .where( query_swimmers_condition ).limit( @limit )
+          .map{ |row| row.id }.flatten.uniq
 
       # Search among linked Teams:
       ids += Meeting.select(:id)
           .joins( :teams )
           .includes( :teams )
-          .where( query_teams_condition ).map{ |row| row.id }.flatten.uniq
+          .where( query_teams_condition ).limit( @limit )
+          .map{ |row| row.id }.flatten.uniq
 
       # Search among linked EventTypes:
       event_type_ids = EventType
           .joins( :stroke_type )
           .includes( :stroke_type )
+          .limit( @limit )
           .find_all do |row|
         ( row.i18n_short =~ %r(#{@query_term})i ) ||
         ( row.i18n_description =~ %r(#{@query_term})i )
@@ -109,11 +114,12 @@ class MeetingFinder
           .joins( :meeting_events )
           .includes( :meeting_events )
           .where( :'meeting_events.event_type_id' => event_type_ids )
+          .limit( @limit )
           .map{ |row| row.id }.flatten.uniq
       # Return the results:
-      ids.uniq
+      ids.uniq[ 0..@limit.to_i-1 ]
     else                                            # No search term:
-      Meeting.select(:id).all.map{ |row| row.id }.flatten.uniq
+      Meeting.select(:id).all.limit( @limit ).map{ |row| row.id }.flatten.uniq
     end
   end
   #-- --------------------------------------------------------------------------
@@ -144,11 +150,11 @@ class MeetingFinder
           "(description LIKE ?) OR (notes LIKE ?)",
           search_like_text, search_like_text
         ]
-      ).map{ |row| row.id }.flatten.uniq
+      ).limit( @limit ).map{ |row| row.id }.flatten.uniq
     end
-    
+
     # Return the results:
-    ids
+    ids.uniq[ 0..@limit.to_i-1 ]
   end
   #-- --------------------------------------------------------------------------
   #++
@@ -169,7 +175,7 @@ class MeetingFinder
     if @query_term
       search_like_text = "%#{@query_term}%"
 
-      # Search among pool name and city 
+      # Search among pool name and city
       ids += Meeting.select(:id)
           .joins( swimming_pools: :city )
           .includes( swimming_pools: :city )
@@ -178,11 +184,11 @@ class MeetingFinder
           "(swimming_pools.name LIKE ?) OR (cities.name LIKE ?) OR (cities.area LIKE ?)",
           search_like_text, search_like_text, search_like_text
         ]
-      ).map{ |row| row.id }.flatten.uniq
+      ).limit( @limit ).map{ |row| row.id }.flatten.uniq
     end
 
     # Return the results:
-    ids
+    ids.uniq[ 0..@limit.to_i-1 ]
   end
   #-- --------------------------------------------------------------------------
   #++
@@ -193,7 +199,7 @@ class MeetingFinder
   #
   def find_event_types
     event_type_ids = []
-    
+
     # Avoid query build-up if no search text is given:
     if @query_term
       # TODO Suspect doesn't work properly with localization. Improve specs!
@@ -201,6 +207,7 @@ class MeetingFinder
       event_type_ids = EventType
           .joins( :stroke_type )
           .includes( :stroke_type )
+          .limit( @limit )
           .find_all do |row|
         ( row.i18n_short =~ %r(#{@query_term})i ) ||
         ( row.i18n_description =~ %r(#{@query_term})i )
@@ -208,7 +215,7 @@ class MeetingFinder
     end
 
     # Return the results:
-    event_type_ids
+    event_type_ids.uniq[ 0..@limit.to_i-1 ]
   end
   #-- --------------------------------------------------------------------------
   #++
@@ -237,12 +244,13 @@ class MeetingFinder
             .joins( :meeting_events )
             .includes( :meeting_events )
             .where( :'meeting_events.event_type_id' => event_type_ids )
+            .limit( @limit )
             .map{ |row| row.id }.flatten.uniq
       end
     end
 
     # Return the results:
-    ids
+    ids.uniq[ 0..@limit.to_i-1 ]
   end
   #-- --------------------------------------------------------------------------
   #++
@@ -270,11 +278,12 @@ class MeetingFinder
       ids += Meeting.select(:id)
           .joins( :teams )
           .includes( :teams )
-          .where( query_teams_condition ).map{ |row| row.id }.flatten.uniq
+          .where( query_teams_condition ).limit( @limit )
+          .map{ |row| row.id }.flatten.uniq
     end
-    
+
     # Return the results:
-    ids
+    ids.uniq[ 0..@limit.to_i-1 ]
   end
   #-- --------------------------------------------------------------------------
   #++
@@ -302,11 +311,12 @@ class MeetingFinder
       ids += Meeting.select(:id)
           .joins( :swimmers )
           .includes( :swimmers )
-          .where( query_swimmers_condition ).map{ |row| row.id }.flatten.uniq
+          .where( query_swimmers_condition ).limit( @limit )
+          .map{ |row| row.id }.flatten.uniq
     end
 
     # Return the results:
-    ids
+    ids.uniq[ 0..@limit.to_i-1 ]
   end
   #-- --------------------------------------------------------------------------
   #++
@@ -316,8 +326,8 @@ class MeetingFinder
   #
   def search
     # Avoid query build-up if no search text is given:
-    @query_term ? Meeting.where( id: search_ids() ) :
-                  Meeting.all
+    @query_term ? Meeting.where( id: search_ids() ).limit( @limit ) :
+                  Meeting.all.limit( @limit )
   end
   #-- --------------------------------------------------------------------------
   #++

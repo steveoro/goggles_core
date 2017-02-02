@@ -45,7 +45,8 @@ describe TeamFinder, type: :strategy do
   #-- -------------------------------------------------------------------------
   #++
 
-  context "when an existing search term is supplied," do
+
+  context "when an existing search term is supplied (OBER, unlimited)," do
     subject { TeamFinder.new("ober") }
 
     describe "#search_ids" do
@@ -61,6 +62,54 @@ describe TeamFinder, type: :strategy do
         result_count = subject.search.count
         expect( result_count ).to be > 0
         expect( result_count ).to be < Team.count
+      end
+      it "returns a list of Team instances" do
+        expect( subject.search ).to all be_an_instance_of( Team )
+      end
+    end
+  end
+
+
+  context "when an existing search term is supplied (AQUA, unlimited)," do
+    subject { TeamFinder.new("aqua") }
+
+    describe "#search_ids" do
+      it "returns more than 5 Team row IDs with the existing seeds" do
+        result_count = subject.search_ids.size
+        expect( result_count ).to be > 5
+        expect( result_count ).to be < Team.count
+      end
+    end
+
+    describe "#search" do
+      it "returns more than 5 Team rows with the existing seeds" do
+        result_count = subject.search.count
+        expect( result_count ).to be > 5
+        expect( result_count ).to be < Team.count
+      end
+      it "returns a list of Team instances" do
+        expect( subject.search ).to all be_an_instance_of( Team )
+      end
+    end
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
+
+  context "when an existing search term is supplied (AQUA, LIMIT: 5)," do
+    subject { TeamFinder.new("aqua", 5) }
+
+    describe "#search_ids" do
+      it "returns exactly 5 Team row IDs with the existing seeds" do
+        result_count = subject.search_ids.size
+        expect( result_count ).to eq(5)
+      end
+    end
+
+    describe "#search" do
+      it "returns exactly 5 Team rows with the existing seeds" do
+        result_count = subject.search.count
+        expect( result_count ).to eq(5)
       end
       it "returns a list of Team instances" do
         expect( subject.search ).to all be_an_instance_of( Team )

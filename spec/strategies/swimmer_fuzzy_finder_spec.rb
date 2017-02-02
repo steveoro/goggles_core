@@ -174,11 +174,9 @@ describe SwimmerFuzzyFinder, type: :strategy do
     end
   end
 
-  context "when a multi-matching 'partial' complete_name is supplied," do
+  context "when a multi-matching 'partial' complete_name is supplied (ALLORO, unlimited)," do
     subject do
-      SwimmerFuzzyFinder.call(
-        complete_name:  "Alloro"
-      )
+      SwimmerFuzzyFinder.call( complete_name:  "Alloro" )
     end
     describe "self.call" do
       it "returns a list of matching Swimmers" do
@@ -188,6 +186,42 @@ describe SwimmerFuzzyFinder, type: :strategy do
         expect( subject ).to all be_a( Swimmer )
         expect( subject.map{|s| s.last_name} )
           .to include( "Alloro".upcase, "Cavalloro".upcase )
+      end
+    end
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
+  context "when a multi-matching 'partial' complete_name is supplied (ROSSI, unlimited)," do
+    subject do
+      SwimmerFuzzyFinder.call( complete_name:  "rossi" )
+    end
+    describe "self.call" do
+      it "returns a list of matching Swimmers" do
+        expect( subject ).to respond_to(:each)
+        expect( subject ).to respond_to(:size)
+# DEBUG
+#        puts "\r\n- SwimmerFuzzyFinder.call('rossi') UNLIMITED results count: #{ subject.size }"
+        expect( subject.size ).to be > 5
+        expect( subject ).to all be_a( Swimmer )
+        expect( subject.map{|s| s.last_name} )
+          .to include( "rossi".upcase )
+      end
+    end
+  end
+
+  context "when a multi-matching 'partial' complete_name is supplied (ROSSI, LIMIT: 5)," do
+    subject do
+      SwimmerFuzzyFinder.call( complete_name:  "rossi", limit: 5 )
+    end
+    describe "self.call" do
+      it "returns a list of matching Swimmers" do
+        expect( subject ).to respond_to(:each)
+        expect( subject ).to respond_to(:size)
+        expect( subject.size ).to eq(5)
+        expect( subject ).to all be_a( Swimmer )
+        expect( subject.map{|s| s.last_name} )
+          .to include( "rossi".upcase )
       end
     end
   end

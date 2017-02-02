@@ -89,6 +89,52 @@ describe SwimmingPoolFinder, type: :strategy do
       end
     end
   end
+
+
+  context "when an existing search term ('comunale', UNLIMITED) is supplied," do
+    subject { SwimmingPoolFinder.new("comunale") }
+
+    describe "#search_ids" do
+      it "returns more than 5 SwimmingPool row IDs with the existing seeds" do
+        result_count = subject.search_ids.size
+        expect( result_count ).to be > 5
+        expect( result_count ).to be < SwimmingPool.count
+      end
+    end
+    describe "#search" do
+      it "returns more than 5 SwimmingPool rows with the existing seeds" do
+        result_count = subject.search.count
+        expect( result_count ).to be > 5
+        expect( result_count ).to be < SwimmingPool.count
+      end
+      it "returns a list of SwimmingPool instances" do
+        expect( subject.search ).to all be_an_instance_of( SwimmingPool )
+      end
+    end
+  end
+
+
+  context "when an existing search term ('comunale', LIMIT:5) is supplied," do
+    subject { SwimmingPoolFinder.new("comunale", 5) }
+
+    describe "#search_ids" do
+      it "returns exactly 5 SwimmingPool row IDs with the existing seeds" do
+        result_count = subject.search_ids.size
+        expect( result_count ).to eq(5)
+        expect( result_count ).to be < SwimmingPool.count
+      end
+    end
+    describe "#search" do
+      it "returns exactly 5 SwimmingPool rows with the existing seeds" do
+        result_count = subject.search.count
+        expect( result_count ).to eq(5)
+        expect( result_count ).to be < SwimmingPool.count
+      end
+      it "returns a list of SwimmingPool instances" do
+        expect( subject.search ).to all be_an_instance_of( SwimmingPool )
+      end
+    end
+  end
   #-- -------------------------------------------------------------------------
   #++
 

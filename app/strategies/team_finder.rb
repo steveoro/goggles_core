@@ -6,7 +6,7 @@ require 'conditions_generator_column_string_regexped' # Used to generate simple_
 
 = TeamFinder
 
- - Goggles framework vers.:  5.00
+ - Goggles framework vers.:  6.071
  - author: Steve A.
 
  Finder (strategy) class used to retrieve lists of Team instances based
@@ -24,10 +24,12 @@ class TeamFinder
   # == Params:
   # - query_term: the text to be searched; finder methods will return no matches for
   #               an empty or nil query term.
+  # - limit: limit for results of the query
   #
-  def initialize( query_term = nil )
+  def initialize( query_term = nil, limit = nil )
     query_term = nil if query_term.to_s == ''
     @query_term = query_term
+    @limit = limit
   end
   #-- --------------------------------------------------------------------------
   #++
@@ -47,7 +49,8 @@ class TeamFinder
         'editable_name',
         @query_term
       )
-      ids += Team.select(:id).where( query_condition ).map{ |row| row.id }.flatten.uniq
+      ids += Team.select(:id).where( query_condition ).limit( @limit )
+        .map{ |row| row.id }.flatten.uniq
 
       # Search among other most-used text columns in Team:
       search_like_text = "%#{@query_term}%"
@@ -56,10 +59,10 @@ class TeamFinder
           "(name LIKE ?) OR (name_variations LIKE ?) OR (contact_name LIKE ?) OR (notes LIKE ?)",
           search_like_text, search_like_text, search_like_text, search_like_text
         ]
-      ).map{ |row| row.id }.flatten.uniq
+      ).limit( @limit ).map{ |row| row.id }.flatten.uniq
     end
     # Return the results:
-    ids.uniq
+    ids.uniq[ 0..@limit.to_i-1 ]
   end
   #-- --------------------------------------------------------------------------
   #++
@@ -68,7 +71,7 @@ class TeamFinder
   # Executes the search, returning full row instances
   #
   def search
-    Team.where( id: search_ids() )
+    Team.where( id: search_ids() ).limit( @limit )
   end
   #-- --------------------------------------------------------------------------
   #++

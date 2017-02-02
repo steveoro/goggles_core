@@ -6,7 +6,7 @@ require 'conditions_generator_column_string_regexped' # Used to generate simple_
 
 = SwimmerFinder
 
- - Goggles framework vers.:  5.00
+ - Goggles framework vers.:  6.071
  - author: Steve A.
 
  Finder (strategy) class used to retrieve lists of Swimmer instances based
@@ -24,10 +24,12 @@ class SwimmerFinder
   # == Params:
   # - query_term: the text to be searched; finder methods will return no matches for
   #               an empty or nil query term.
+  # - limit: limit for results of the query
   #
-  def initialize( query_term = nil )
+  def initialize( query_term = nil, limit = nil )
     query_term = nil if query_term.to_s == ''
     @query_term = query_term
+    @limit = limit
   end
   #-- --------------------------------------------------------------------------
   #++
@@ -47,7 +49,8 @@ class SwimmerFinder
         'complete_name',
         @query_term
       )
-      ids += Swimmer.select(:id).where( query_condition ).map{ |row| row.id }.flatten.uniq
+      ids += Swimmer.select(:id).where( query_condition ).limit( @limit )
+        .map{ |row| row.id }.flatten.uniq
 
       # Search among other most-used text columns in Swimmer:
       search_like_text = "%#{@query_term}%"
@@ -56,10 +59,10 @@ class SwimmerFinder
           "(nickname LIKE ?) OR (e_mail LIKE ?)",
           search_like_text, search_like_text
         ]
-      ).map{ |row| row.id }.flatten.uniq
+      ).limit( @limit ).map{ |row| row.id }.flatten.uniq
     end
     # Return the results:
-    ids.uniq
+    ids.uniq[ 0..@limit.to_i-1 ]
   end
   #-- --------------------------------------------------------------------------
   #++
@@ -68,7 +71,7 @@ class SwimmerFinder
   # Executes the search, returning full row instances
   #
   def search
-    Swimmer.where( id: search_ids() )
+    Swimmer.where( id: search_ids() ).limit( @limit )
   end
   #-- --------------------------------------------------------------------------
   #++
