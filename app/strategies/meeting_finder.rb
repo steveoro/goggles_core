@@ -35,15 +35,16 @@ class MeetingFinder
 
   # Executes the search, returning just an array of row IDs, corresponding to the
   # Meeting rows satisfying the search term.
-  # Default search is set on header and swimming pool
+  # Default search is set on header, swimming pool and events
   #
-  def search_ids(scan_header = true, scan_swimming_pool = true, scan_teams = false, scan_swimmers = false)
+  def search_ids(scan_header = true, scan_swimming_pool = true, scan_events = true, scan_teams = false, scan_swimmers = false)
     ids = []
 
     # Avoid query build-up if no search text is given:
     if @query_term
       ids += search_in_header if scan_header
       ids += search_in_swimming_pool if scan_swimming_pool
+      ids += search_in_events if scan_events
       ids += search_in_teams if scan_teams
       ids += search_in_swimmers if scan_swimmers
       
@@ -178,6 +179,66 @@ class MeetingFinder
           search_like_text, search_like_text, search_like_text
         ]
       ).map{ |row| row.id }.flatten.uniq
+    end
+
+    # Return the results:
+    ids
+  end
+  #-- --------------------------------------------------------------------------
+  #++
+
+
+  # Find out event types id to use in search among meeting_events
+  # Returns Event types rows (just an array of row IDs) satisfying the search term.
+  #
+  def find_event_types
+    event_type_ids = []
+    
+    # Avoid query build-up if no search text is given:
+    if @query_term
+      # TODO Suspect doesn't work properly with localization. Improve specs!
+      # Search among linked EventTypes:
+      event_type_ids = EventType
+          .joins( :stroke_type )
+          .includes( :stroke_type )
+          .find_all do |row|
+        ( row.i18n_short =~ %r(#{@query_term})i ) ||
+        ( row.i18n_description =~ %r(#{@query_term})i )
+      end.map{ |row| row.id }.flatten.uniq
+    end
+
+    # Return the results:
+    event_type_ids
+  end
+  #-- --------------------------------------------------------------------------
+  #++
+
+
+  # Executes the search, using events
+  # Fileds considered are:
+  # - description
+  # - code
+  #
+  # Returns Meeting rows (just an array of row IDs) satisfying the search term.
+  #
+  def search_in_events
+    ids = []
+
+    # Avoid query build-up if no search text is given:
+    if @query_term
+      search_like_text = "%#{@query_term}%"
+
+      # Search among linked EventTypes:
+      event_type_ids = find_event_types
+
+      if event_type_ids.size > 0
+        # Complete the list of IDs to be retrieved:
+        ids += Meeting.select(:id)
+            .joins( :meeting_events )
+            .includes( :meeting_events )
+            .where( :'meeting_events.event_type_id' => event_type_ids )
+            .map{ |row| row.id }.flatten.uniq
+      end
     end
 
     # Return the results:
