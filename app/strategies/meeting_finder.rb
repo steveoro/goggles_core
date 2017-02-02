@@ -202,14 +202,13 @@ class MeetingFinder
 
     # Avoid query build-up if no search text is given:
     if @query_term
-      # TODO Suspect doesn't work properly with localization. Improve specs!
       # Search among linked EventTypes:
       event_type_ids = EventType
           .joins( :stroke_type )
           .includes( :stroke_type )
-          .limit( @limit )
           .find_all do |row|
         ( row.i18n_short =~ %r(#{@query_term})i ) ||
+        ( row.i18n_compact =~ %r(#{@query_term})i ) ||
         ( row.i18n_description =~ %r(#{@query_term})i )
       end.map{ |row| row.id }.flatten.uniq
     end

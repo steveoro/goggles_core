@@ -148,7 +148,7 @@ describe MeetingFinder, type: :strategy do
     let( :meeting_name ) { 'RICCIONE' }
     let( :city_name )    { 'RICCIONE' }
     let( :pool_name )    { 'STADIO DEL NUOTO' }
-    let( :event_name )   { '1500' }
+    let( :event_name )   { '200IM' }
     let( :team_name )    { 'TIBIDABO' }
     let( :swimmer_name ) { 'MARCO LIGABUE' }
 
