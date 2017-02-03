@@ -45,15 +45,15 @@ class MeetingFinder
     # Avoid query build-up if no search text is given:
     if @query_term
       ids += search_in_header if scan_header
-      ids += search_in_swimming_pool if scan_swimming_pool
-      ids += search_in_events if scan_events
-      ids += search_in_teams if scan_teams
-      ids += search_in_swimmers if scan_swimmers
+      ids += search_in_swimming_pool if scan_swimming_pool && (!@limit || ids.size < (@limit.to_i - 1))
+      ids += search_in_events if scan_events && (!@limit || ids.uniq.size < (@limit.to_i - 1))
+      ids += search_in_teams if scan_teams && (!@limit || ids.uniq.size < (@limit.to_i - 1))
+      ids += search_in_swimmers if scan_swimmers && (!@limit || ids.uniq.size < (@limit.to_i - 1))
 
       # Return the results:
       ids.uniq[ 0..@limit.to_i-1 ]
     else                                            # No search term:
-      Meeting.select(:id).all.order('meetings.id DESC').limit( @limit )
+      Meeting.select(:id).all.sort_by_date('DESC').limit( @limit )
         .map{ |row| row.id }.flatten.uniq
     end
   end
@@ -92,7 +92,8 @@ class MeetingFinder
           .joins( :swimmers )
           .includes( :swimmers )
           .where( query_swimmers_condition )
-          .order('meetings.id DESC').limit( @limit )
+          .sort_by_date('DESC')
+          .limit( @limit )
           .map{ |row| row.id }.flatten.uniq
 
       # Search among linked Teams:
@@ -100,30 +101,27 @@ class MeetingFinder
           .joins( :teams )
           .includes( :teams )
           .where( query_teams_condition )
-          .order('meetings.id DESC').limit( @limit )
+          .sort_by_date('DESC')
+          .limit( @limit )
           .map{ |row| row.id }.flatten.uniq
 
       # Search among linked EventTypes:
-      event_type_ids = EventType
-          .joins( :stroke_type )
-          .includes( :stroke_type )
-          .find_all do |row|
-        ( row.i18n_short =~ %r(#{@query_term})i ) ||
-        ( row.i18n_description =~ %r(#{@query_term})i )
-      end.map{ |row| row.id }.flatten.uniq
+      event_type_ids = find_event_types
 
       # Complete the list of IDs to be retrieved:
       ids += Meeting.select(:id)
           .joins( :meeting_events )
           .includes( :meeting_events )
           .where( :'meeting_events.event_type_id' => event_type_ids )
-          .order('meetings.id DESC')
+          .sort_by_date('DESC')
           .limit( @limit )
           .map{ |row| row.id }.flatten.uniq
       # Return the results:
       ids.uniq[ 0..@limit.to_i-1 ]
     else                                            # No search term:
-      Meeting.select(:id).all.order('meetings.id DESC').limit( @limit )
+      Meeting.select(:id).all
+        .sort_by_date('DESC')
+        .limit( @limit )
         .map{ |row| row.id }.flatten.uniq
     end
   end
@@ -150,13 +148,16 @@ class MeetingFinder
 
       # Search among most-used text columns in Meetings:
           #"(description LIKE ?) OR (header_year LIKE ?) OR (notes LIKE ?) OR (reference_name LIKE ?)",
-      ids += Meeting.select(:id).where(
-        [
-          "(description LIKE ?) OR (notes LIKE ?)",
-          search_like_text, search_like_text
-        ]
-      ).order('meetings.id DESC').limit( @limit )
-       .map{ |row| row.id }.flatten.uniq
+      ids += Meeting.select(:id)
+          .where(
+            [
+              "(description LIKE ?) OR (notes LIKE ?)",
+              search_like_text, search_like_text
+            ]
+          )
+          .sort_by_date('DESC')
+          .limit( @limit )
+          .map{ |row| row.id }.flatten.uniq
     end
 
     # Return the results:
@@ -186,11 +187,14 @@ class MeetingFinder
           .joins( swimming_pools: :city )
           .includes( swimming_pools: :city )
           .where(
-        [
-          "(swimming_pools.name LIKE ?) OR (cities.name LIKE ?) OR (cities.area LIKE ?)",
-          search_like_text, search_like_text, search_like_text
-        ]
-      ).order('meetings.id DESC').limit( @limit ).map{ |row| row.id }.flatten.uniq
+            [
+              "(swimming_pools.name LIKE ?) OR (cities.name LIKE ?) OR (cities.area LIKE ?)",
+              search_like_text, search_like_text, search_like_text
+            ]
+          )
+          .sort_by_date('DESC')
+          .limit( @limit )
+          .map{ |row| row.id }.flatten.uniq
     end
 
     # Return the results:
@@ -249,7 +253,7 @@ class MeetingFinder
             .joins( :meeting_events )
             .includes( :meeting_events )
             .where( :'meeting_events.event_type_id' => event_type_ids )
-            .order('meetings.id DESC')
+            .sort_by_date('DESC')
             .limit( @limit )
             .map{ |row| row.id }.flatten.uniq
       end
@@ -285,7 +289,8 @@ class MeetingFinder
           .joins( :teams )
           .includes( :teams )
           .where( query_teams_condition )
-          .order('meetings.id DESC').limit( @limit )
+          .sort_by_date('DESC')
+          .limit( @limit )
           .map{ |row| row.id }.flatten.uniq
     end
 
@@ -319,7 +324,8 @@ class MeetingFinder
           .joins( :swimmers )
           .includes( :swimmers )
           .where( query_swimmers_condition )
-          .order('meetings.id DESC').limit( @limit )
+          .sort_by_date('DESC')
+          .limit( @limit )
           .map{ |row| row.id }.flatten.uniq
     end
 

@@ -49,17 +49,19 @@ class SwimmerFinder
         'complete_name',
         @query_term
       )
-      ids += Swimmer.select(:id).where( query_condition ).limit( @limit )
+      ids += Swimmer.select(:id).sort_by_name.where( query_condition ).limit( @limit )
         .map{ |row| row.id }.flatten.uniq
 
-      # Search among other most-used text columns in Swimmer:
-      search_like_text = "%#{@query_term}%"
-      ids += Swimmer.select(:id).where(
-        [
-          "(nickname LIKE ?) OR (e_mail LIKE ?)",
-          search_like_text, search_like_text
-        ]
-      ).limit( @limit ).map{ |row| row.id }.flatten.uniq
+      if !@limit || ids.size < (@limit.to_i - 1)
+        # Search among other most-used text columns in Swimmer:
+        search_like_text = "%#{@query_term}%"
+        ids += Swimmer.select(:id).sort_by_name.where(
+          [
+            "(nickname LIKE ?) OR (e_mail LIKE ?)",
+            search_like_text, search_like_text
+          ]
+        ).limit( @limit ).map{ |row| row.id }.flatten.uniq
+      end
     end
     # Return the results:
     ids.uniq[ 0..@limit.to_i-1 ]

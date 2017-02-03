@@ -49,17 +49,30 @@ class TeamFinder
         'editable_name',
         @query_term
       )
-      ids += Team.select(:id).where( query_condition ).limit( @limit )
+      ids += Team.select(:id).sort_by_name('ASC').where( query_condition ).limit( @limit )
         .map{ |row| row.id }.flatten.uniq
 
-      # Search among other most-used text columns in Team:
-      search_like_text = "%#{@query_term}%"
-      ids += Team.select(:id).where(
-        [
-          "(name LIKE ?) OR (name_variations LIKE ?) OR (contact_name LIKE ?) OR (notes LIKE ?)",
-          search_like_text, search_like_text, search_like_text, search_like_text
-        ]
-      ).limit( @limit ).map{ |row| row.id }.flatten.uniq
+      if !@limit || ids.size < (@limit.to_i - 1)
+        # Search among other most-used text columns in Team:
+        search_like_text = "%#{@query_term}%"
+        ids += Team.select(:id).joins( :city ).includes( :city ).sort_by_name('ASC').where(
+          [
+            "cities.name LIKE ?",
+            search_like_text
+          ]
+        ).limit( @limit ).map{ |row| row.id }.flatten.uniq
+      end
+
+      if !@limit || ids.uniq.size < (@limit.to_i - 1)
+        # Search among other most-used text columns in Team:
+        search_like_text = "%#{@query_term}%"
+        ids += Team.select(:id).sort_by_name('ASC').where(
+          [
+            "(name LIKE ?) OR (name_variations LIKE ?) OR (contact_name LIKE ?) OR (notes LIKE ?)",
+            search_like_text, search_like_text, search_like_text, search_like_text
+          ]
+        ).limit( @limit ).map{ |row| row.id }.flatten.uniq
+      end
     end
     # Return the results:
     ids.uniq[ 0..@limit.to_i-1 ]
