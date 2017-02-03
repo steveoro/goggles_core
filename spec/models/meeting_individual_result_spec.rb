@@ -124,20 +124,20 @@ describe MeetingIndividualResult, :type => :model do
       it "returns the years between swimmer year of birth and meeting scheduled date" do
         year_of_birth = subject.swimmer.year_of_birth
         year_of_meeting = subject.get_scheduled_date.year
-        expect( year_of_birth ).to be > 1900 
+        expect( year_of_birth ).to be >= 1900
         expect( year_of_meeting ).to be > year_of_birth
-        expect( subject.get_swimmer_age ).to be >= ( year_of_meeting - year_of_birth ) 
-        expect( subject.get_swimmer_age ).to be <= ( year_of_meeting - year_of_birth ) + 1 
+        expect( subject.get_swimmer_age ).to be >= ( year_of_meeting - year_of_birth )
+        expect( subject.get_swimmer_age ).to be <= ( year_of_meeting - year_of_birth ) + 1
       end
       it "returns the years between swimmer year of birth and meeting scheduled date considering meeting month" do
         year_of_birth = subject.swimmer.year_of_birth
         year_of_meeting = subject.get_scheduled_date.year
         if subject.get_scheduled_date.month > 9
           expect( subject.get_swimmer_age ).to eq( ( year_of_meeting - year_of_birth ) + 1 )
-        else 
+        else
           expect( subject.get_swimmer_age ).to eq( year_of_meeting - year_of_birth )
         end
-      end 
+      end
     end
     #-- -----------------------------------------------------------------------
     #++
