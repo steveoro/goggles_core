@@ -7,7 +7,7 @@ require_relative '../strategies/sql_converter'
 
 = SqlConvertable
 
-  - version:  5.006
+  - version:  6.072
   - author:   Leega, Steve A.
 
   Container module for interfacing common "sql_convertable" startegies
@@ -68,6 +68,29 @@ module SqlConvertable
     sql_diff_text_log << "--"
     sql_diff_text_log << " #{comment}" if comment
     sql_diff_text_log << "\r\n"
+  end
+  # ----------------------------------------------------------------------------
+  #++
+
+  # Stores the current contents of the #sql_diff_text_log
+  # to the designated full_diff_pathname, adding a 'BEGIN TRANSACTION'
+  # at the beginning and a 'COMMIT' at the end.
+  #
+  def save_diff_file( full_diff_pathname )
+    File.open( full_diff_pathname, 'w' ) do |f|
+      f.puts "-- #{ full_diff_pathname }\r\n"
+      f.puts "SET SQL_MODE = \"NO_AUTO_VALUE_ON_ZERO\";"
+      f.puts "SET AUTOCOMMIT = 0;"
+      f.puts "START TRANSACTION;"
+      f.puts "SET time_zone = \"+00:00\";"
+      f.puts "/*!40101 SET NAMES utf8 */;"
+      f.puts "\r\n--\r\n"
+
+      f.puts sql_diff_text_log
+
+      f.puts "\r\n--\r\n"
+      f.puts "COMMIT;"
+    end
   end
   # ----------------------------------------------------------------------------
   #++

@@ -24,7 +24,8 @@ describe DummySqlConvertableIncludee do
         :reset_sql_diff_text_log,
         :create_sql_diff_header,
         :create_sql_diff_footer,
-        :add_sql_diff_comment
+        :add_sql_diff_comment,
+        :save_diff_file
       ]
     )
   end
@@ -99,6 +100,23 @@ describe DummySqlConvertableIncludee do
         subject.reset_sql_diff_text_log
         subject.add_sql_diff_comment( fix_text )
         expect( subject.sql_diff_text_log.include?( fix_text ) ).to be true
+      end
+    end
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
+  describe "#save_diff_file," do
+    context "with parameters" do
+      it "saves the specified file with a START TRANSACTION and a COMMIT" do
+        filename = '/tmp/spect_test_diff.sql'
+        subject.save_diff_file( filename )
+        expect( File.exists?( filename ) ).to be true
+        f = File.new( filename )
+        text = f.read
+        expect( text ).to include('START TRANSACTION;')
+        expect( text ).to include('COMMIT;')
+        File.delete( filename )
       end
     end
   end
