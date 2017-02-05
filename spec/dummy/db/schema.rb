@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170205110347) do
+ActiveRecord::Schema.define(version: 20170205123022) do
 
   create_table "achievement_rows", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "lock_version",                   default: 0
@@ -1509,6 +1509,7 @@ ActiveRecord::Schema.define(version: 20170205110347) do
     t.string   "code",         limit: 3
     t.datetime "created_at",                         null: false
     t.datetime "updated_at",                         null: false
+    t.string   "name"
     t.index ["code"], name: "index_region_types_on_code", using: :btree
   end
 
