@@ -13,14 +13,14 @@ describe City, :type => :model do
 
     # Validated relations:
     it_behaves_like( "(belongs_to required models)", [
-      :region_type
+      :area_type
     ])
 
     context "[general methods]" do
       it_behaves_like( "(the existance of a method returning non-empty strings)", [
         :get_full_name,
         :get_verbose_name,
-        :region_type_code
+        :area_type_code
       ])
     end
   end

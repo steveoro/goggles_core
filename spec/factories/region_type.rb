@@ -1,9 +1,10 @@
 require 'ffaker'
 
 FactoryGirl.define do
-  factory :area_type do
+  factory :region_type do
     code        { "@{FFaker::String}"[0..2] }
     name        { FFaker::Lorem.word }
-    region_type { create(:region_type) }
+
+    nation_type
   end
 end

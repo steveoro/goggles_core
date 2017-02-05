@@ -9,7 +9,8 @@ FactoryGirl.define do
     area                    { FFaker::AddressUS.state }
     country                 { FFaker::Address.country }
     country_code            { FFaker::Address.country_code }
-    region_type             { create(:region_type) }
+    
+    area_type
   end
 
   factory :city do

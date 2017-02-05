@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170205144332) do
+ActiveRecord::Schema.define(version: 20170205162132) do
 
   create_table "achievement_rows", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "lock_version",                   default: 0
@@ -216,18 +216,18 @@ ActiveRecord::Schema.define(version: 20170205144332) do
   end
 
   create_table "cities", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "lock_version",              default: 0
-    t.string   "name",           limit: 50
-    t.string   "zip",            limit: 6
-    t.string   "area",           limit: 50
-    t.string   "country",        limit: 50
-    t.string   "country_code",   limit: 10
+    t.integer  "lock_version",            default: 0
+    t.string   "name",         limit: 50
+    t.string   "zip",          limit: 6
+    t.string   "area",         limit: 50
+    t.string   "country",      limit: 50
+    t.string   "country_code", limit: 10
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"
-    t.integer  "region_type_id"
+    t.integer  "area_type_id"
+    t.index ["area_type_id"], name: "index_cities_on_area_type_id", using: :btree
     t.index ["name"], name: "index_cities_on_name", using: :btree
-    t.index ["region_type_id"], name: "index_cities_on_region_type_id", using: :btree
     t.index ["user_id"], name: "idx_cities_user", using: :btree
     t.index ["zip"], name: "index_cities_on_zip", using: :btree
   end
@@ -2111,7 +2111,7 @@ ActiveRecord::Schema.define(version: 20170205144332) do
   end
 
   add_foreign_key "area_types", "region_types"
-  add_foreign_key "cities", "region_types"
+  add_foreign_key "cities", "area_types"
   add_foreign_key "meeting_event_reservations", "badges"
   add_foreign_key "meeting_event_reservations", "meeting_events"
   add_foreign_key "meeting_event_reservations", "meetings"

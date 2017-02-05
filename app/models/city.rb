@@ -13,7 +13,7 @@ class City < ApplicationRecord
 
   belongs_to :user                                  # [Steve, 20120212] Do not validate associated user!
   
-  belongs_to :region_type
+  belongs_to :area_type
 
   validates_presence_of   :name, length: { within: 1..50 }, allow_nil: false
   validates_uniqueness_of :name, scope: :zip, message: :already_exists
@@ -22,7 +22,7 @@ class City < ApplicationRecord
   validates_presence_of   :country, length: { within: 1..50 }, allow_nil: false
   validates_presence_of   :country_code, length: { within: 1..10 }, allow_nil: false
 
-  delegate :code,       to: :region_type, prefix: true
+  delegate :code,       to: :area_type, prefix: true
 
 # FIXME for Rails 4+, move required/permitted check to the controller using the model
 #  attr_accessible :name, :zip, :area, :country, :country_code, :user_id
