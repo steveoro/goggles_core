@@ -11,7 +11,9 @@ FactoryGirl.define do
     meeting_session
     event_type_id do                                # This will include also relays
       EventsByPoolType.only_for_meetings
-        .for_pool_type_code( meeting_session.swimming_pool.pool_type.code ).order('RAND()').first.event_type_id
+        .for_pool_type_code( meeting_session.swimming_pool.pool_type.code )
+        .distance_more_than(50).distance_less_than(1500)
+        .order('RAND()').first.event_type_id
     end
     heat_type                 { HeatType.all.sample }
     user

@@ -25,7 +25,7 @@ FactoryGirl.define do
 
   factory :meeting_individual_result do
     common_meeting_individual_result_fields
-    badge                     { create(:badge) }
+    badge
     swimmer                   { badge.swimmer }
     team                      { badge.team }
     team_affiliation          { badge.team_affiliation }
