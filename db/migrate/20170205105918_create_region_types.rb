@@ -4,9 +4,11 @@ class CreateRegionTypes < ActiveRecord::Migration[5.0]
       t.integer :lock_version, :default => 0
 
       t.string :code, limit: 3
+      t.references :nation_type, foreign_key: true
 
       t.timestamps
     end
     add_index :region_types, :code
+    add_index :region_types, [:nation_type_id, :code], name: 'index_region_types_nation_code'
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170205123022) do
+ActiveRecord::Schema.define(version: 20170205144332) do
 
   create_table "achievement_rows", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "lock_version",                   default: 0
@@ -103,6 +103,18 @@ ActiveRecord::Schema.define(version: 20170205123022) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["code"], name: "index_app_parameters_on_code", unique: true, using: :btree
+  end
+
+  create_table "area_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "lock_version",              default: 0
+    t.string   "code",           limit: 10
+    t.string   "name"
+    t.integer  "region_type_id"
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
+    t.index ["code"], name: "index_area_types_on_code", using: :btree
+    t.index ["region_type_id", "code"], name: "index_area_types_region_code", using: :btree
+    t.index ["region_type_id"], name: "index_area_types_on_region_type_id", using: :btree
   end
 
   create_table "arm_aux_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -1406,6 +1418,16 @@ ActiveRecord::Schema.define(version: 20170205123022) do
     t.index ["code"], name: "index_movement_types_on_code", unique: true, using: :btree
   end
 
+  create_table "nation_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "lock_version",           default: 0
+    t.string   "code",         limit: 3
+    t.string   "numeric_code", limit: 3
+    t.string   "alpha2_code",  limit: 2
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
+    t.index ["code"], name: "index_nation_types_on_code", unique: true, using: :btree
+  end
+
   create_table "news_feeds", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "title",              limit: 150
     t.text     "body",               limit: 65535
@@ -1505,12 +1527,14 @@ ActiveRecord::Schema.define(version: 20170205123022) do
   end
 
   create_table "region_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "lock_version",           default: 0
-    t.string   "code",         limit: 3
-    t.datetime "created_at",                         null: false
-    t.datetime "updated_at",                         null: false
+    t.integer  "lock_version",             default: 0
+    t.string   "code",           limit: 3
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
     t.string   "name"
+    t.integer  "nation_type_id"
     t.index ["code"], name: "index_region_types_on_code", using: :btree
+    t.index ["nation_type_id"], name: "index_region_types_on_nation_type_id", using: :btree
   end
 
   create_table "score_computation_type_rows", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -2086,6 +2110,7 @@ ActiveRecord::Schema.define(version: 20170205123022) do
     t.index ["voter_id", "voter_type"], name: "index_votes_on_voter_id_and_voter_type", using: :btree
   end
 
+  add_foreign_key "area_types", "region_types"
   add_foreign_key "cities", "region_types"
   add_foreign_key "meeting_event_reservations", "badges"
   add_foreign_key "meeting_event_reservations", "meeting_events"
@@ -2104,6 +2129,7 @@ ActiveRecord::Schema.define(version: 20170205123022) do
   add_foreign_key "meeting_reservations", "swimmers"
   add_foreign_key "meeting_reservations", "teams"
   add_foreign_key "meeting_reservations", "users"
+  add_foreign_key "region_types", "nation_types"
   add_foreign_key "swimmer_season_scores", "badges"
   add_foreign_key "swimmer_season_scores", "event_types"
   add_foreign_key "swimmer_season_scores", "meeting_individual_results"

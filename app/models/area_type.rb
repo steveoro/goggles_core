@@ -1,11 +1,11 @@
-class RegionType < ApplicationRecord
+class AreaType < ApplicationRecord
 
   validates_presence_of   :code, length: { maximum: 3 }, allow_nil: false
   validates_uniqueness_of :code, message: :already_exists
 
   validates_presence_of   :name, allow_nil: false
 
-  belongs_to :nation_type
+  belongs_to :region_type
   
   # Compute a verbose name composed by code and name
   def get_name_with_code
