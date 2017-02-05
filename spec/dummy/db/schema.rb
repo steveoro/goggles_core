@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161206101453) do
+ActiveRecord::Schema.define(version: 20170205104912) do
 
   create_table "achievement_rows", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "lock_version",                   default: 0
@@ -1627,6 +1627,23 @@ ActiveRecord::Schema.define(version: 20161206101453) do
     t.index ["code"], name: "index_swimmer_level_types_on_code", unique: true, using: :btree
   end
 
+  create_table "swimmer_season_scores", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "lock_version",                                          default: 0
+    t.decimal  "score",                        precision: 10, scale: 2
+    t.integer  "badge_id"
+    t.integer  "meeting_individual_result_id"
+    t.integer  "event_type_id"
+    t.integer  "user_id"
+    t.datetime "created_at",                                                        null: false
+    t.datetime "updated_at",                                                        null: false
+    t.index ["badge_id", "event_type_id"], name: "swimmer_season_scores_badge_event", using: :btree
+    t.index ["badge_id", "score"], name: "swimmer_season_scores_badge_score", using: :btree
+    t.index ["badge_id"], name: "index_swimmer_season_scores_on_badge_id", using: :btree
+    t.index ["event_type_id"], name: "index_swimmer_season_scores_on_event_type_id", using: :btree
+    t.index ["meeting_individual_result_id"], name: "index_swimmer_season_scores_on_meeting_individual_result_id", using: :btree
+    t.index ["user_id"], name: "index_swimmer_season_scores_on_user_id", using: :btree
+  end
+
   create_table "swimmers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "lock_version",                   default: 0
     t.string   "last_name",          limit: 50
@@ -2075,4 +2092,8 @@ ActiveRecord::Schema.define(version: 20161206101453) do
   add_foreign_key "meeting_reservations", "swimmers"
   add_foreign_key "meeting_reservations", "teams"
   add_foreign_key "meeting_reservations", "users"
+  add_foreign_key "swimmer_season_scores", "badges"
+  add_foreign_key "swimmer_season_scores", "event_types"
+  add_foreign_key "swimmer_season_scores", "meeting_individual_results"
+  add_foreign_key "swimmer_season_scores", "users"
 end
