@@ -22,9 +22,6 @@ describe MeetingSession, :type => :model do
       it "returns a text formatted time for a valid #{member_name_sym} value" do
         expect( subject.send(method_name) ).to match( format_reg_expr )
       end
-      it "returns '#{text_msg_for_not_available}' for a missing #{member_name_sym} value" do
-        expect( create( :meeting_session, member_name_sym => nil ).send(method_name) ).to eq(text_msg_for_not_available)
-      end
     end
   end
   #-- -------------------------------------------------------------------------

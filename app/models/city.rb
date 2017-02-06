@@ -12,7 +12,7 @@ class City < ApplicationRecord
   include DropDownListable
 
   belongs_to :user                                  # [Steve, 20120212] Do not validate associated user!
-  
+
   belongs_to :area_type
 
   validates_presence_of   :name, length: { within: 1..50 }, allow_nil: false
