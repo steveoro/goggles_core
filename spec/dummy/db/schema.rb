@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170207182200) do
+ActiveRecord::Schema.define(version: 20170207222924) do
 
   create_table "achievement_rows", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "lock_version",                   default: 0
@@ -1389,6 +1389,10 @@ ActiveRecord::Schema.define(version: 20170207182200) do
     t.integer  "meeting_score_computation_type_id"
     t.text     "invitation",                           limit: 16777215
     t.boolean  "is_confirmed",                                          default: false, null: false
+    t.boolean  "is_tweeted",                                            default: false
+    t.boolean  "is_fb_posted",                                          default: false
+    t.boolean  "is_cancelled",                                          default: false
+    t.boolean  "is_pb_scanned",                                         default: false
     t.index ["code", "edition"], name: "idx_meetings_code", using: :btree
     t.index ["edition_type_id"], name: "fk_meetings_edition_types", using: :btree
     t.index ["entry_deadline"], name: "index_meetings_on_entry_deadline", using: :btree
