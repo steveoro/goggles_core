@@ -7,7 +7,7 @@ require_relative '../strategies/sql_converter'
 
 = SqlConvertable
 
-  - version:  6.072
+  - version:  6.078
   - author:   Leega, Steve A.
 
   Container module for interfacing common "sql_convertable" startegies
@@ -28,7 +28,7 @@ module SqlConvertable
   def sql_diff_text_log
     @sql_diff_text_log ||= ''
   end
-  # ----------------------------------------------------------------------------
+  #-- -------------------------------------------------------------------------
   #++
 
   # Reset diff sql file
@@ -36,7 +36,7 @@ module SqlConvertable
   def reset_sql_diff_text_log
     @sql_diff_text_log = ''
   end
-  # ----------------------------------------------------------------------------
+  #-- -------------------------------------------------------------------------
   #++
 
   # Create a diff sql file header
@@ -49,7 +49,7 @@ module SqlConvertable
     sql_diff_text_log << "--\r\n"
     sql_diff_text_log << "\r\n"
   end
-  # ----------------------------------------------------------------------------
+  #-- -------------------------------------------------------------------------
   #++
 
   # Create a diff sql file footer
@@ -59,7 +59,7 @@ module SqlConvertable
     sql_diff_text_log << "-- #{diff_footer}\r\n" if diff_footer
     sql_diff_text_log << "-- Script ended"
   end
-  # ----------------------------------------------------------------------------
+  #-- -------------------------------------------------------------------------
   #++
 
   # Add a diff sql file comment
@@ -69,15 +69,15 @@ module SqlConvertable
     sql_diff_text_log << " #{comment}" if comment
     sql_diff_text_log << "\r\n"
   end
-  # ----------------------------------------------------------------------------
+  #-- -------------------------------------------------------------------------
   #++
 
   # Stores the current contents of the #sql_diff_text_log
   # to the designated full_diff_pathname, adding a 'BEGIN TRANSACTION'
   # at the beginning and a 'COMMIT' at the end.
   #
-  def save_diff_file( full_diff_pathname )
-    File.open( full_diff_pathname, 'w' ) do |f|
+  def save_diff_file( full_diff_pathname, open_mode = 'a+' )
+    File.open( full_diff_pathname, open_mode ) do |f|
       f.puts "-- #{ full_diff_pathname }\r\n"
       f.puts "SET SQL_MODE = \"NO_AUTO_VALUE_ON_ZERO\";"
       f.puts "SET AUTOCOMMIT = 0;"
@@ -92,6 +92,6 @@ module SqlConvertable
       f.puts "COMMIT;"
     end
   end
-  # ----------------------------------------------------------------------------
+  #-- -------------------------------------------------------------------------
   #++
 end
