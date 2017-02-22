@@ -33,6 +33,11 @@ RSpec.describe MeetingEventReservation, type: :model do
       :gender_type
     ])
 
+    it_behaves_like( "(the existance of a class method)", [
+      # Filtering scopes:
+      :is_reserved
+    ])
+
     context "[general methods]" do
       it_behaves_like( "(the existance of a method)", [
         :suggested_minutes, :suggested_seconds, :suggested_hundreds,

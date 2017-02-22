@@ -34,6 +34,8 @@ class MeetingEventReservation < ApplicationRecord
   # t.integer :suggested_hundreds
   # t.boolean :is_doing_this
 
+  scope :is_reserved,            -> { where("is_doing_this") }
+
   # Low-level instance aliases to column dynamic fields to make TimingGettable work anyway:
   def minutes;  suggested_minutes; end
   def seconds;  suggested_seconds; end

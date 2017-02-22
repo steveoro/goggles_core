@@ -22,6 +22,11 @@ RSpec.describe MeetingReservation, type: :model do
       :user
     ])
 
+    it_behaves_like( "(the existance of a class method)", [
+      # Filtering scopes:
+      :is_coming
+    ])
+
     context "[general methods]" do
       it_behaves_like( "(the existance of a method)", [
         :notes,

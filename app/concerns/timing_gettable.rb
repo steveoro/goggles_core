@@ -26,7 +26,6 @@ module TimingGettable
     end
   end
 
-
   # Returns the formatted timing information in String format.
   #
   def get_timing( show_minutes_even_if_zero = false )
@@ -39,6 +38,14 @@ module TimingGettable
   #
   def get_timing_instance
     Timing.new( hundreds.to_i, seconds.to_i, minutes.to_i )
+  end
+
+  # Returns the formatted timing information in CSI csv format.
+  #
+  def get_timing_csi( show_minutes_even_if_zero = false, min_separator = '', sec_separator = '' )
+    ( show_minutes_even_if_zero || minutes.to_i > 0 ? "#{minutes.to_i}#{min_separator}" : '' ) +
+    sprintf("%02.0f", seconds.to_i) + sec_separator +
+    sprintf("%02.0f", hundreds.to_i)
   end
   #-----------------------------------------------------------------------------
 end

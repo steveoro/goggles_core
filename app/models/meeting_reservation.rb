@@ -26,4 +26,7 @@ class MeetingReservation < ApplicationRecord
   # t.text :notes
   # t.boolean :is_not_coming
   # t.boolean :has_confirmed
+
+  scope :is_coming,            -> { where("not is_not_coming") }
+
 end
