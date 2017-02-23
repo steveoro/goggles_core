@@ -28,6 +28,11 @@ module EventTypeRelatable
     event_type ? event_type.i18n_short : '?'
   end
 
+  # Retrieves the localized Event Type alternate
+  def get_event_type_alt
+    event_type ? event_type.i18n_alternate : '?'
+  end
+
   # Retrieves the localized Event Type code (full description)
   def get_event_type_description
     event_type ? event_type.i18n_description : '?'
@@ -42,6 +47,16 @@ module EventTypeRelatable
   def get_event_type_stroke
     event_type ? event_type.stroke_type.i18n_short : '?'
   end
+  
+  # Retrieves the Event Type with distance and stroke separeted
+  def get_event_type_separated( separator = ' ' )
+    event_type ? ( event_type.code + separator + event_type.stroke_type.i18n_short ) : '?'
+  end
+  
+  # Retrieves the Event Type with distance and stroke separeted
+  def get_event_type_for_csi_entry
+    event_type ? ( get_event_type_separated.gsub('MI', 'MX') ) : '?'
+  end 
   #-- -------------------------------------------------------------------------
   #++
 end

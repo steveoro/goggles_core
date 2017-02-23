@@ -26,6 +26,12 @@ module TimingGettable
     end
   end
 
+  # Returns a new Timing class instance initialized with the timing data from this row
+  #
+  def get_timing_instance
+    Timing.new( hundreds.to_i, seconds.to_i, minutes.to_i )
+  end
+
   # Returns the formatted timing information in String format.
   #
   def get_timing( show_minutes_even_if_zero = false )
@@ -34,15 +40,18 @@ module TimingGettable
     sprintf("%02.0f", hundreds.to_i)
   end
 
-  # Returns a new Timing class instance initialized with the timing data from this row
+  # Returns the formatted timing information in flat format.
+  # This is the format used in CSI entry files
   #
-  def get_timing_instance
-    Timing.new( hundreds.to_i, seconds.to_i, minutes.to_i )
+  def get_timing_flattened( show_minutes_even_if_zero = false )
+    ( show_minutes_even_if_zero || minutes.to_i > 0 ? "#{minutes.to_i}" : '' ) +
+    sprintf("%02.0f", seconds.to_i) + 
+    sprintf("%02.0f", hundreds.to_i)
   end
 
-  # Returns the formatted timing information in CSI csv format.
+  # Returns the formatted timing information in custom format.
   #
-  def get_timing_csi( show_minutes_even_if_zero = false, min_separator = '', sec_separator = '' )
+  def get_timing_custom( show_minutes_even_if_zero = false, min_separator = '', sec_separator = '' )
     ( show_minutes_even_if_zero || minutes.to_i > 0 ? "#{minutes.to_i}#{min_separator}" : '' ) +
     sprintf("%02.0f", seconds.to_i) + sec_separator +
     sprintf("%02.0f", hundreds.to_i)
