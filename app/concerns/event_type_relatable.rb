@@ -50,7 +50,7 @@ module EventTypeRelatable
   
   # Retrieves the Event Type with distance and stroke separeted
   def get_event_type_separated( separator = ' ' )
-    event_type ? ( event_type.code + separator + event_type.stroke_type.i18n_short ) : '?'
+    event_type ? ( event_type.length_in_meters.to_s + separator + event_type.stroke_type.i18n_short ) : '?'
   end
   
   # Retrieves the Event Type with distance and stroke separeted
