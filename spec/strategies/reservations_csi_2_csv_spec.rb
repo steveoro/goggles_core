@@ -29,6 +29,32 @@ describe ReservationsCsi2Csv, type: :strategy do
   #++
 
 
+  it_behaves_like( "(the existance of a class method)", [
+    :is_a_csi_meeting
+  ] )
+
+
+  describe "self.is_a_csi_meeting" do
+    it "returns false for a nil instance" do
+      expect( ReservationsCsi2Csv.is_a_csi_meeting(nil) ).to be false
+    end
+    it "returns false for a non-Meeting instance" do
+      expect( ReservationsCsi2Csv.is_a_csi_meeting("not a meeting!") ).to be false
+    end
+    it "returns false for a non-CSI Meeting instance" do
+      expect( ReservationsCsi2Csv.is_a_csi_meeting(meeting_not_csi) ).to be false
+    end
+    it "returns true for a CSI Meeting instance w/o reservations" do
+      expect( ReservationsCsi2Csv.is_a_csi_meeting(meeting_csi_w_o_res) ).to be true
+    end
+    it "returns true for a CSI Meeting instance w/ reservations" do
+      expect( ReservationsCsi2Csv.is_a_csi_meeting(meeting_csi_w_res) ).to be true
+    end
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
+
   context "with invalid constructor parameters," do
     it "raises an ArgumentError" do
       expect{ ReservationsCsi2Csv.new }.to raise_error( ArgumentError )

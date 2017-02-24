@@ -35,7 +35,7 @@ class ReservationsCsi2Csv
   # The Meeting must belong to a Season of the CSI federation.
   #
   def initialize( meeting, logger = ConsoleLogger.new )
-    unless meeting && meeting.instance_of?( Meeting ) && meeting.season_type.code == SeasonType::CODE_MAS_CSI
+    unless ReservationsCsi2Csv.is_a_csi_meeting( meeting )
       raise ArgumentError.new("The specified Meeting must be a valid instance of Meeting, belonging to the '#{ SeasonType::CODE_MAS_CSI }' SeasonType.")
     end
     @meeting = meeting
@@ -44,6 +44,18 @@ class ReservationsCsi2Csv
     @csi_data_rows = []
     @swimmers_reservations = 0
     @created_file_full_pathname = nil
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
+
+  # Returns true if the specified Meeting instance can be processed by this strategy
+  # (regardless the fact that the Meeting has or hasn't any associated reservations).
+  # Always false otherwise.
+  #
+  def self.is_a_csi_meeting( meeting )
+    return false if meeting.nil?
+    ( meeting && meeting.instance_of?( Meeting ) && meeting.season_type.code == SeasonType::CODE_MAS_CSI )
   end
   #-- -------------------------------------------------------------------------
   #++
