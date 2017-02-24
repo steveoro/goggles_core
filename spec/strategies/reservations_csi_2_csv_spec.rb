@@ -74,7 +74,7 @@ describe ReservationsCsi2Csv, type: :strategy do
 
     it_behaves_like( "(the existance of a method)", [
       :csi_data_rows, :created_file_full_pathname,
-      :collect, :save_to_file
+      :collect, :output_text, :save_to_file
     ] )
 
     it "presets #csi_data_rows to an empty array" do
@@ -106,6 +106,12 @@ describe ReservationsCsi2Csv, type: :strategy do
           expect( subject.save_to_file ).to be nil
         end
       end
+      describe "#output_text()" do
+        it "returns nil" do
+          subject.collect
+          expect( subject.output_text ).to be nil
+        end
+      end
     end
     #-- -----------------------------------------------------------------------
     #++
@@ -128,6 +134,13 @@ describe ReservationsCsi2Csv, type: :strategy do
           expect( created_filename).not_to be nil
           # Remove the useless created test output file:
           FileUtils.rm( created_filename )
+        end
+      end
+      describe "#output_text()" do
+        it "returns the collected text" do
+          subject.collect
+          expect( subject.output_text ).not_to be nil
+          expect( subject.output_text.length ).to be > 0
         end
       end
     end

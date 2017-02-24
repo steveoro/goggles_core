@@ -95,6 +95,18 @@ class ReservationsCsi2Csv
   end
 
 
+  # Composes the resulting text CSV output.
+  # Returns nil if no data rows were collected.
+  #
+  def output_text
+    if @csi_data_rows.size > 0
+      ( [ @header_titles.join(';') ] + @csi_data_rows ).join("\r\n")
+    else
+      nil
+    end
+  end
+
+
   # Exports the collected data to a custom CSV file format.
   # It returns the created file full pathname, or nil if case there wasn't any
   # data to be exported.
@@ -106,10 +118,7 @@ class ReservationsCsi2Csv
       # (Re-)Create the csv file:
       file_name = @meeting.get_data_import_file_name( 'isc', 'csv' )
       @created_file_full_pathname = File.join(output_dir, file_name)
-      File.open( @created_file_full_pathname, 'w' ) do |f|
-        f.puts @header_titles.join(';')
-        f.puts @csi_data_rows
-      end
+      File.open( @created_file_full_pathname, 'w' ) { |f| f.puts output_text }
       @logger.info( "\r\nEntry file " + file_name + " created\r\n" )
     else
       @logger.info( "\r\nNo reservations found. File creation skipped.\r\n" )
