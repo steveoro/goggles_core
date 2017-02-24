@@ -24,7 +24,7 @@ require 'framework/console_logger'
 =end
 class ReservationsCsi2Csv
 
-  DEFAULT_OUTPUT_DIR = File.join( Rails.root, 'public', 'output' )
+  DEFAULT_OUTPUT_DIR = File.join( Rails.root, 'public', 'output' ) unless defined? DEFAULT_OUTPUT_DIR
 
   attr_reader :csi_data_rows, :created_file_full_pathname
   #-- -------------------------------------------------------------------------
