@@ -29,12 +29,11 @@ describe ReservationsCsi2Csv, type: :strategy do
   #++
 
 
-  it_behaves_like( "(the existance of a class method)", [
-    :is_a_csi_meeting
-  ] )
+  describe "self.is_a_csi_meeting," do
+    it "responds to self.is_a_csi_meeting" do
+      expect( ReservationsCsi2Csv ).to respond_to( :is_a_csi_meeting )
+    end
 
-
-  describe "self.is_a_csi_meeting" do
     it "returns false for a nil instance" do
       expect( ReservationsCsi2Csv.is_a_csi_meeting(nil) ).to be false
     end
