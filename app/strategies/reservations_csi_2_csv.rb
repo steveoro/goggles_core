@@ -79,8 +79,8 @@ class ReservationsCsi2Csv
         swimmer_row << "#{ badge.category_type.code };"
         swimmer_row << "#{ swimmer.last_name };"
         swimmer_row << "#{ swimmer.first_name };"
-        swimmer_row << "#{ swimmer.gender_type.code };"
         swimmer_row << "#{ badge.number != '?' ? badge.number : '' };"
+        swimmer_row << "#{ swimmer.gender_type.code };"
         swimmer_row << "#{ swimmer.year_of_birth };"
 
         # Scan events
