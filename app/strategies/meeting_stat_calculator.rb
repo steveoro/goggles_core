@@ -3,7 +3,7 @@
 =begin
 
 = MeetingStatCalculator
-  - Goggles framework vers.:  4.00.857
+  - Goggles framework vers.:  6.085
   - author: Leega
 
  Utility class to calculate meeting stats from meeting results or entries.
@@ -461,7 +461,9 @@ class MeetingStatCalculator
   #
   def calculate_events( entries = true )
     @meeting_stats.events = []
-    @meeting.event_types.are_not_relays.distinct.each do |event_type|
+    @meeting.event_types.are_not_relays
+      .order('meeting_sessions.session_order, meeting_events.event_order')
+      .distinct.each do |event_type|
       event_stat = @meeting_stats.new_event( event_type )
 
       # Entry-based
