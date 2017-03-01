@@ -43,6 +43,32 @@ describe StrokeType, :type => :model do
       expect( result.id ).to eq( StrokeType::MIXED_ID )
     end
 
+    it "returns the StrokeType instance with FREESTYLE_ID for token 'S'" do
+      result = StrokeType.parse_stroke_type_from_import_text( 'S' )
+      expect( result ).to be_an_instance_of( StrokeType )
+      expect( result.id ).to eq( StrokeType::FREESTYLE_ID )
+    end
+    it "returns the StrokeType instance with BUTTERFLY_ID for token 'F'" do
+      result = StrokeType.parse_stroke_type_from_import_text( 'F' )
+      expect( result ).to be_an_instance_of( StrokeType )
+      expect( result.id ).to eq( StrokeType::BUTTERFLY_ID )
+    end
+    it "returns the StrokeType instance with BACKSTROKE_ID for token 'D'" do
+      result = StrokeType.parse_stroke_type_from_import_text( 'D' )
+      expect( result ).to be_an_instance_of( StrokeType )
+      expect( result.id ).to eq( StrokeType::BACKSTROKE_ID )
+    end
+    it "returns the StrokeType instance with BREASTSTROKE_ID for token 'R'" do
+      result = StrokeType.parse_stroke_type_from_import_text( 'R' )
+      expect( result ).to be_an_instance_of( StrokeType )
+      expect( result.id ).to eq( StrokeType::BREASTSTROKE_ID )
+    end
+    it "returns the StrokeType instance with MIXED_ID for token 'X'" do
+      result = StrokeType.parse_stroke_type_from_import_text( 'X' )
+      expect( result ).to be_an_instance_of( StrokeType )
+      expect( result.id ).to eq( StrokeType::MIXED_ID )
+    end
+
     it "returns nil for an unknown code" do
       result = StrokeType.parse_stroke_type_from_import_text( "#{(rand * 100).to_i} DummyStyle" )
       expect( result ).to be nil

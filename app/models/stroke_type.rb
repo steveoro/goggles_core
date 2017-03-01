@@ -84,15 +84,15 @@ class StrokeType < ApplicationRecord
   # *always* MIXED_RELAY_ID.
   #
   def self.parse_stroke_type_from_import_text( style_token )
-    if style_token =~ /(stile).*|SL/ui
+    if style_token.upcase == 'S' || style_token =~ /(stile).*|SL/ui
       StrokeType.find_by_id( FREESTYLE_ID )
-    elsif style_token =~ /(farf).*|FA/ui
+    elsif style_token.upcase == 'F' || style_token =~ /(farf).*|FA/ui
       StrokeType.find_by_id( BUTTERFLY_ID )
-    elsif style_token =~ /(dorso).*|DO/ui
+    elsif style_token.upcase == 'D' || style_token =~ /(dorso).*|DO/ui
       StrokeType.find_by_id( BACKSTROKE_ID )
-    elsif style_token =~ /(rana).*|RA/ui
+    elsif style_token.upcase == 'R' || style_token =~ /(rana).*|RA/ui
       StrokeType.find_by_id( BREASTSTROKE_ID )
-    elsif style_token =~ /(mist).*|MI/ui
+    elsif style_token.upcase == 'X' || style_token =~ /(mist).*|MI/ui
       StrokeType.find_by_id( MIXED_ID )
     else
       nil

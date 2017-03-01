@@ -57,9 +57,9 @@ class GenderType < ApplicationRecord
   # when unable to parse.
   #
   def self.parse_gender_type_from_import_text( gender_token )
-    if gender_token =~ /maschi/ui
+    if gender_token.upcase == 'M' || gender_token =~ /maschi/ui
       GenderType.find_by_code('M')
-    elsif gender_token =~ /femmi/ui
+    elsif gender_token.upcase == 'F' || gender_token =~ /femmi/ui
       GenderType.find_by_code('F')
     else
       GenderType.find_by_code('X')
