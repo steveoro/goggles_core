@@ -571,7 +571,7 @@ describe MeetingStatCalculator, :type => :model do
         fix_result.save
         if fix_result.gender_type.code == 'F'
           expect( subject.get_team_best_standard( fix_team, :is_female ) ).to eq( fix_result.standard_points )
-        else
+        elsif fix_result.gender_type.code == 'M'
           expect( subject.get_team_best_standard( fix_team, :is_male ) ).to eq( fix_result.standard_points )
         end
       end
@@ -598,7 +598,7 @@ describe MeetingStatCalculator, :type => :model do
         fix_result.save
         if fix_result.gender_type.code == 'F'
           expect( subject.get_team_worst_standard( fix_team, :is_female ) ).to eq( fix_result.standard_points )
-        else
+        elsif fix_result.gender_type.code == 'M'
           expect( subject.get_team_worst_standard( fix_team, :is_male ) ).to eq( fix_result.standard_points )
         end
       end
