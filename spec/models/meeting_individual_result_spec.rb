@@ -9,7 +9,8 @@ describe MeetingIndividualResult, :type => :model do
 
   context "[a well formed instance]" do
 
-    subject { create(:meeting_individual_result) }
+    # XXX Using pre-existing values to speed-up tests:
+    subject { MeetingIndividualResult.limit(1000).sort{0.5 - rand}.first }
 
     it "is a valid istance" do
       expect( subject ).to be_valid
