@@ -56,6 +56,8 @@ class Swimmer < ApplicationRecord
 
   has_many :goggle_cups,            through: :teams
   has_many :goggle_cup_standards
+  has_many :season_personal_standards
+  has_many :swimmer_season_scores,  through: :badges
 
   validates_presence_of :complete_name
   validates_length_of   :complete_name, within: 1..100, allow_nil: false
