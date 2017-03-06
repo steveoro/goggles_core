@@ -7,7 +7,7 @@ require 'date'
 
 = CategoryType model
 
-  - version:  4.00.719
+  - version:  6.088
   - author:   Steve A.
 
 =end
@@ -139,6 +139,12 @@ class CategoryType < ApplicationRecord
       idx = category_token =~ /\d\d/ui
       subtokens = category_token[ idx .. idx+1 ]
       result_code << subtokens if subtokens.size > 0
+
+    elsif category_token =~ /sen/ui
+      result_code = 'SEN'
+
+    elsif category_token =~ /u20/ui
+      result_code = 'U20'
 
     elsif category_token =~ /u/ui
       result_code = 'U25'
