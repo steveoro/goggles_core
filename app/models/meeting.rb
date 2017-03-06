@@ -95,6 +95,7 @@ class Meeting < ApplicationRecord
   scope :has_results,            -> { where("are_results_acquired") }
   scope :has_not_results,        -> { where("not are_results_acquired") }
   scope :is_not_closed,          -> { where('(not are_results_acquired) and (header_date >= curdate())') }
+  scope :is_not_cancelled,       -> { where('(not is_cancelled)') }
 
   scope :for_season_type,        ->(season_type) { joins(:season_type).where(['season_types.id = ?', season_type.id]) }
   scope :for_code,               ->(code)        { where(['code = ?', code]) }

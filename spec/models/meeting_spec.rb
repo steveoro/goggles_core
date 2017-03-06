@@ -51,7 +51,8 @@ describe Meeting, :type => :model do
       :has_only_start_list,
       :has_results,
       :has_not_results,
-      :is_not_closed
+      :is_not_closed,
+      :is_not_cancelled
     ])
     #-- -----------------------------------------------------------------------
     #++
