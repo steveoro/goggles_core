@@ -48,6 +48,11 @@ describe StrokeType, :type => :model do
       expect( result ).to be_an_instance_of( StrokeType )
       expect( result.id ).to eq( StrokeType::FREESTYLE_ID )
     end
+    it "returns the StrokeType instance with FREESTYLE_ID for token 'L'" do
+      result = StrokeType.parse_stroke_type_from_import_text( 'L' )
+      expect( result ).to be_an_instance_of( StrokeType )
+      expect( result.id ).to eq( StrokeType::FREESTYLE_ID )
+    end
     it "returns the StrokeType instance with BUTTERFLY_ID for token 'F'" do
       result = StrokeType.parse_stroke_type_from_import_text( 'F' )
       expect( result ).to be_an_instance_of( StrokeType )
@@ -67,6 +72,11 @@ describe StrokeType, :type => :model do
       result = StrokeType.parse_stroke_type_from_import_text( 'X' )
       expect( result ).to be_an_instance_of( StrokeType )
       expect( result.id ).to eq( StrokeType::MIXED_ID )
+    end
+    it "returns the StrokeType instance with MIXED_RELAY_ID for token 'M'" do
+      result = StrokeType.parse_stroke_type_from_import_text( 'M' )
+      expect( result ).to be_an_instance_of( StrokeType )
+      expect( result.id ).to eq( StrokeType::MIXED_RELAY_ID )
     end
 
     it "returns nil for an unknown code" do
