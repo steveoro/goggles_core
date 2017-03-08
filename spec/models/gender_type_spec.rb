@@ -55,4 +55,19 @@ describe GenderType, :type => :model do
       expect( result.is_male ).to be false
     end
   end
+
+  describe "#self.retrieve_description_by_uisp_code" do
+    it "returns a male GenderType instance for code 'M'" do
+      result = GenderType.retrieve_description_by_uisp_code( 'M' )
+      expect( result ).to eq( GenderType.find_by_code('M').i18n_description )
+    end
+    it "returns a female GenderType instance for code 'F'" do
+      result = GenderType.retrieve_description_by_uisp_code( 'F' )
+      expect( result ).to eq( GenderType.find_by_code('F').i18n_description )
+    end
+    it "returns a mixed GenderType instance for code 'X'" do
+      result = GenderType.retrieve_description_by_uisp_code( 'X' )
+      expect( result ).to eq( GenderType.find_by_code('X').i18n_description )
+    end
+  end
 end

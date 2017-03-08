@@ -66,4 +66,13 @@ class GenderType < ApplicationRecord
     end
   end
   # ----------------------------------------------------------------------------
+
+  # Give a verbose (localized) desription of gender by uisp code
+  # N.B. The UISP code is the same used as gender_type code
+  #
+  def self.retrieve_description_by_uisp_code( uisp_code )
+    gender_type = GenderType.find_by_code( uisp_code.upcase )
+    gender_type.i18n_description
+  end
+  # ----------------------------------------------------------------------------
 end
