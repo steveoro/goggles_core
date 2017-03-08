@@ -69,5 +69,10 @@ describe GenderType, :type => :model do
       result = GenderType.retrieve_description_by_uisp_code( 'X' )
       expect( result ).to eq( GenderType.find_by_code('X').i18n_description )
     end
+    it "returns a '?' for unknown codes (A, B, Z, ...)" do
+      expect( GenderType.retrieve_description_by_uisp_code( 'A' ) ).to eq( '?' )
+      expect( GenderType.retrieve_description_by_uisp_code( 'B' ) ).to eq( '?' )
+      expect( GenderType.retrieve_description_by_uisp_code( 'Z' ) ).to eq( '?' )
+    end
   end
 end
