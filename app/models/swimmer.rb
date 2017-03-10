@@ -43,7 +43,9 @@ class Swimmer < ApplicationRecord
   has_many :seasons,        through: :badges
   has_many :season_types,   through: :badges
 
+  has_many :meeting_entries
   has_many :meeting_individual_results
+  has_many :passages
   has_many :meeting_relay_swimmers
   has_many :meeting_relay_results,  through: :meeting_relay_swimmers
 
