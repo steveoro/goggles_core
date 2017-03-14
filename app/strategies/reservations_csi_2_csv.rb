@@ -69,9 +69,10 @@ class ReservationsCsi2Csv
     # Scan involved swimmers
     @meeting.meeting_reservations.is_coming.each do |meeting_reservation|
       swimmer = meeting_reservation.swimmer
-      if @meeting.meeting_event_reservations.where( ['swimmer_id = ?', swimmer.id] ).count > 0
-        badge = meeting_reservation.badge
+      reservations_count = @meeting.meeting_event_reservations.where( ['swimmer_id = ?', swimmer.id] ).is_reserved.count
 
+      if reservations_count > 0
+        badge = meeting_reservation.badge
         @logger.info( "Swimmer #{swimmer.get_full_name} (#{badge.category_type.code})" )
         @swimmers_reservations = @swimmers_reservations + 1
 
@@ -84,9 +85,13 @@ class ReservationsCsi2Csv
         swimmer_row << "#{ swimmer.year_of_birth };"
 
         # Scan events
-        @meeting.meeting_event_reservations.where( ['swimmer_id = ?', swimmer.id] ).each do |meeting_event_reservation|
+        @meeting.meeting_event_reservations.where( ['swimmer_id = ?', swimmer.id] ).is_reserved.each do |meeting_event_reservation|
           swimmer_row << "#{ meeting_event_reservation.get_event_type_for_csi_entry };"
           swimmer_row << "#{ meeting_event_reservation.get_timing_flattened };"
+        end
+        # Add empty columns if event reservations are less than expected output format:
+        ( @meeting.max_individual_events - reservations_count ).times do
+          swimmer_row << ";;"
         end
         swimmer_row << "#{ @meeting.header_date.year - swimmer.year_of_birth };"
         @csi_data_rows << swimmer_row
@@ -139,7 +144,7 @@ class ReservationsCsi2Csv
       "Cat", "Cognome", "Nome", "Tess", "Sesso", "Anno"
     ]
     # Event reservations:
-    for event_number in (1 .. @meeting.max_individual_events) do
+    (1 .. @meeting.max_individual_events).each do |event_number|
       @header_titles << "Gara#{ event_number }"
       @header_titles << "Tempo#{ event_number }"
     end

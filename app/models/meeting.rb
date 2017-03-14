@@ -267,7 +267,13 @@ class Meeting < ApplicationRecord
   # assuming the one of the first session swimming pool
   #
   def get_city
-    self.meeting_sessions.count > 0 ? self.meeting_sessions.sort_by_order.first.swimming_pool.city.name : '?'
+    if ( self.meeting_sessions.count > 0 &&
+         self.meeting_sessions.sort_by_order.first.swimming_pool &&
+         self.meeting_sessions.sort_by_order.first.swimming_pool.city )
+      self.meeting_sessions.sort_by_order.first.swimming_pool.city.name
+    else
+      '?'
+    end
   end
   # ----------------------------------------------------------------------------
 

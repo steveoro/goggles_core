@@ -128,7 +128,7 @@ describe ReservationsCsi2Csv, type: :strategy do
         end
       end
       describe "#save_to_file()" do
-        it "does not save the output file" do
+        it "saves the output file" do
           subject.collect
           created_filename = subject.save_to_file
           expect( created_filename).not_to be nil
@@ -136,11 +136,23 @@ describe ReservationsCsi2Csv, type: :strategy do
           FileUtils.rm( created_filename )
         end
       end
+
       describe "#output_text()" do
+        before(:each) { subject.collect }
         it "returns the collected text" do
-          subject.collect
           expect( subject.output_text ).not_to be nil
           expect( subject.output_text.length ).to be > 0
+# DEBUG
+#          puts "\r\n------8<--------[Output text]:"
+#          puts subject.output_text
+#          puts "------8<--------"
+        end
+        it "is composed of lines having the same number of columns (separated by ';')" do
+          lines_array = subject.output_text.split("\r\n").map{ |line| line.split(';') }
+          # Each line must have the same count of elements as the first one:
+          lines_array.each do |line|
+            expect( line.count ).to eq( lines_array.first.count )
+          end
         end
       end
     end
