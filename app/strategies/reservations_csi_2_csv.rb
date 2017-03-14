@@ -69,7 +69,7 @@ class ReservationsCsi2Csv
     # Scan involved swimmers
     @meeting.meeting_reservations.is_coming.each do |meeting_reservation|
       swimmer = meeting_reservation.swimmer
-      if @meeting.meeting_event_reservations.where( ['swimmer_id = ?', swimmer.id] ).is_reserved.count > 0
+      if @meeting.meeting_event_reservations.where( ['swimmer_id = ?', swimmer.id] ).count > 0
         badge = meeting_reservation.badge
 
         @logger.info( "Swimmer #{swimmer.get_full_name} (#{badge.category_type.code})" )
@@ -84,7 +84,7 @@ class ReservationsCsi2Csv
         swimmer_row << "#{ swimmer.year_of_birth };"
 
         # Scan events
-        @meeting.meeting_event_reservations.where( ['swimmer_id = ?', swimmer.id] ).is_reserved.each do |meeting_event_reservation|
+        @meeting.meeting_event_reservations.where( ['swimmer_id = ?', swimmer.id] ).each do |meeting_event_reservation|
           swimmer_row << "#{ meeting_event_reservation.get_event_type_for_csi_entry };"
           swimmer_row << "#{ meeting_event_reservation.get_timing_flattened };"
         end
