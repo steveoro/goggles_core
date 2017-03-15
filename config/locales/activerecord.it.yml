@@ -266,6 +266,10 @@ it:
             header_year:
               invalid: "non valido"
               blank: "non puo' essere vuoto"
+        meeting_relay_result:
+          attributes:
+            relay_header:
+              blank: "non puo' essere vuoto"
         training:
           attributes:
             title:
