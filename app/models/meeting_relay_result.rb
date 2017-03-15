@@ -39,8 +39,7 @@ class MeetingRelayResult < ApplicationRecord
 
   has_many :meeting_relay_swimmers, dependent: :delete_all
 
-  validates_presence_of     :relay_header
-  validates_length_of       :relay_header, within: 1..60, allow_nil: false
+  validates_presence_of     :relay_header, length: { maximum: 60 }, allow_nil: false
 
   validates_presence_of     :rank
   validates_length_of       :rank, within: 1..4, allow_nil: false
