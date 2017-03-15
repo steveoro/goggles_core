@@ -214,26 +214,36 @@ describe User, :type => :model do
 
 
     describe "#find_team_affiliation_id_from_badges_for" do
-      let(:random_season)             { Season.all.sort{0.5 - rand}.first }
-      let(:random_user_with_swimmer) { User.includes(:swimmer).joins(:swimmer).all.sort{0.5 - rand}.first }
+      let(:random_early_season_id ) { (1..4).sort{0.5 - rand}.first }
+      let(:swimmer_ids_in_season) do
+        Badge.where( season_id: random_early_season_id )
+          .map{ |b| b.swimmer_id }
+      end
+      let(:random_goggler_not_in_season)  do
+        User.where( '(swimmer_id IS NOT NULL) AND (swimmer_id NOT IN (?))', swimmer_ids_in_season )
+          .sort{0.5 - rand}
+          .first
+      end
 
       it "returns nil when no swimmers are associated to the user" do
         expect(
-          create(:user, swimmer_id: nil).find_team_affiliation_id_from_badges_for(random_season.id)
+          create(:user, swimmer_id: nil).find_team_affiliation_id_from_badges_for( random_early_season_id )
         ).to be_nil
       end
 
-      it "returns the nil when the user/team_manager DOES NOT match the season" do
-        fixture_team_affiliation = random_user_with_swimmer.swimmer.badges.last.team_affiliation
+      it "returns the nil when the user was NOT in the season" do
+        fixture_team_affiliation = random_goggler_not_in_season.swimmer.badges.last.team_affiliation
         expect(
-          random_user_with_swimmer.find_team_affiliation_id_from_badges_for( fixture_team_affiliation.season_id + Season.count + 1 )
+          random_goggler_not_in_season
+            .find_team_affiliation_id_from_badges_for( random_early_season_id )
         ).to be nil
       end
 
-      it "returns the FIRST team_affiliation.id for the specified season/team_manager touple when the user/team_manager matches the season" do
-        fixture_team_affiliation = random_user_with_swimmer.swimmer.badges.first.team_affiliation
+      it "returns the FIRST team_affiliation.id for the specified season/user couple when the user WAS in the season" do
+        fixture_team_affiliation = random_goggler_not_in_season.swimmer.badges.first.team_affiliation
         expect(
-          random_user_with_swimmer.find_team_affiliation_id_from_badges_for( fixture_team_affiliation.season_id )
+          random_goggler_not_in_season
+            .find_team_affiliation_id_from_badges_for( fixture_team_affiliation.season_id )
         ).to eq( fixture_team_affiliation.id )
       end
     end
