@@ -88,16 +88,34 @@ class SwimmerPersonalBestFinder
   #-- --------------------------------------------------------------------------
   #++
 
-  # Find personal best for given season type, event type and pool type
-  def get_season_type_best_for_event( season_type, event_type, pool_type )
+
+  # Finds the personal-best MIR for a given season type, event type and pool type.
+  # Returns +nil+ when not found.
+  #
+  def get_season_type_best_mir_for_event( season_type, event_type, pool_type )
     @swimmer.meeting_individual_results.for_season_type( season_type ).for_pool_type( pool_type ).for_event_type( event_type ).is_not_disqualified.count > 0 ?
-      @swimmer.meeting_individual_results.for_season_type( season_type ).for_pool_type( pool_type ).for_event_type( event_type ).is_not_disqualified.sort_by_timing('ASC').first.get_timing_instance :
+      @swimmer.meeting_individual_results.for_season_type( season_type ).for_pool_type( pool_type ).for_event_type( event_type ).is_not_disqualified.sort_by_timing('ASC').first :
       nil
+  end
+
+  # Finds the personal best Timing for a given season type, event type and pool type.
+  # Returns +nil+ when not found.
+  #
+  def get_season_type_best_for_event( season_type, event_type, pool_type )
+    # XXX [Steve] Previous implementation:
+#    @swimmer.meeting_individual_results.for_season_type( season_type ).for_pool_type( pool_type ).for_event_type( event_type ).is_not_disqualified.count > 0 ?
+#      @swimmer.meeting_individual_results.for_season_type( season_type ).for_pool_type( pool_type ).for_event_type( event_type ).is_not_disqualified.sort_by_timing('ASC').first.get_timing_instance :
+#      nil
+    season_type_best_mir = get_season_type_best_mir_for_event( season_type, event_type, pool_type )
+    season_type_best_mir ? season_type_best_mir.get_timing_instance : nil
   end
   #-- --------------------------------------------------------------------------
   #++
 
-  # Find personal best for given involved seasons, event type and pool type
+  # Finds the personal-best Timing searching amidst the specified involved seasons,
+  # event type and pool type.
+  # Returns +nil+ when not found.
+  #
   def get_involved_season_best_for_event( involved_seasons, event_type, pool_type )
     best = nil
     involved_seasons.each do |season|
@@ -116,6 +134,20 @@ class SwimmerPersonalBestFinder
       end
     end
     return best
+  end
+  #-- --------------------------------------------------------------------------
+  #++
+
+
+  # Finds the last MeetingIndividualResult row for a certain event and pool type.
+  #
+  # == Returns:
+  # The MeetingIndividualResultrow or +nil+ when not found.
+  #
+  def get_last_mir_for_event( event_type, pool_type )
+    @swimmer.meeting_individual_results.for_pool_type( pool_type ).for_event_type( event_type ).is_not_disqualified.count > 0 ?
+      @swimmer.meeting_individual_results.for_pool_type( pool_type ).for_event_type( event_type ).is_not_disqualified.sort_by_timing('ASC').first :
+      nil
   end
   #-- --------------------------------------------------------------------------
   #++
