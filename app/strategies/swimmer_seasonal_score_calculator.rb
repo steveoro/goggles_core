@@ -1,7 +1,7 @@
 require 'wrappers/timing'
 
 #
-# == SwimmerBestFinder
+# == SwimmerPersonalBestFinder
 #
 # Strategy Pattern implementation for swimmer best result retreiving
 #

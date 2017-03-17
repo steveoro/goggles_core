@@ -1,18 +1,21 @@
 require 'wrappers/timing'
 
-#
-# == SwimmerBestFinder
-#
-# Strategy Pattern implementation for swimmer best result retrieving
-#
-# @author   Leega
-# @version  4.00.837
-#
-class SwimmerBestFinder
+=begin
+
+= SwimmerPersonalBestFinder
+
+ - Goggles framework vers.:  6.093
+ - author: Leega, Steve A.
+
+ Finder class for swimmer personal-best timings results
+
+=end
+class SwimmerPersonalBestFinder
+
   include SqlConvertable
 
-  # These can be edited later on:
-  attr_accessor :swimmer
+  attr_reader :swimmer
+
 
   # Initialization
   #
@@ -111,20 +114,71 @@ class SwimmerBestFinder
     end
     return best
   end
+  #-- --------------------------------------------------------------------------
+  #++
 
-  # Find personal best for given event type and pool type
-  def get_best_for_event( event_type, pool_type )
-    @swimmer.meeting_individual_results.for_pool_type( pool_type ).for_event_type( event_type ).is_not_disqualified.count > 0 ?
-      @swimmer.meeting_individual_results.for_pool_type( pool_type ).for_event_type( event_type ).is_not_disqualified.sort_by_timing('ASC').first.get_timing_instance :
-      nil
-  end
 
-  # Find personal best for given event type and pool type
-  def get_best_for_event_result( event_type, pool_type )
+  # Finds the personal-best's MeetingIndividualResult instance associated with
+  # the given event and pool type.
+  #
+  # == Returns:
+  # The personal-best's MeetingIndividualResult instance or +nil+ when not found.
+  #
+  def get_best_mir_for_event( event_type, pool_type )
     @swimmer.meeting_individual_results.for_pool_type( pool_type ).for_event_type( event_type ).is_not_disqualified.count > 0 ?
       @swimmer.meeting_individual_results.for_pool_type( pool_type ).for_event_type( event_type ).is_personal_best.first :
       nil
   end
+
+  # Finds the personal-best's Timing instance associated with the given event and
+  # pool type.
+  #
+  # == Returns:
+  # The personal-best's Timing instance or +nil+ when not found.
+  #
+  def get_best_for_event( event_type, pool_type )
+    # XXX Old implementation:
+    #@swimmer.meeting_individual_results.for_pool_type( pool_type ).for_event_type( event_type ).is_not_disqualified.count > 0 ?
+    #  @swimmer.meeting_individual_results.for_pool_type( pool_type ).for_event_type( event_type ).is_not_disqualified.sort_by_timing('ASC').first.get_timing_instance :
+    #  nil
+    best_mir = get_best_mir_for_event( event_type, pool_type )
+    best_mir ? best_mir.get_timing_instance : nil
+  end
+  #-- --------------------------------------------------------------------------
+  #++
+
+
+  # Finds the personal-best's MeetingIndividualResult instance for the specified
+  # meeting, event and pool type.
+  #
+  # This will consider all the existing meeting editions.
+  #
+  # == Returns:
+  # The personal-best MeetingIndividualResult instance for the Meeting event, or
+  # +nil+ when not found.
+  #
+  def get_best_mir_for_meeting( meeting, event_type, pool_type )
+    @swimmer.meeting_individual_results.for_meeting_editions( meeting ).for_pool_type( pool_type ).for_event_type( event_type ).is_not_disqualified.count > 0 ?
+      @swimmer.meeting_individual_results.for_meeting_editions( meeting ).for_pool_type( pool_type ).for_event_type( event_type ).is_not_disqualified.sort_by_timing('ASC').first :
+      nil
+  end
+
+  # Finds the personal-best's Timing instance for the specified
+  # meeting, event and pool type.
+  #
+  # This will consider all the existing meeting editions.
+  #
+  # == Returns:
+  # The personal-best Timing instance for the Meeting event, or
+  # +nil+ when not found.
+  #
+  def get_best_timing_for_meeting( meeting, event_type, pool_type )
+    best_mir = get_best_mir_for_meeting( meeting, event_type, pool_type )
+    best_mir ? best_mir.get_timing_instance : nil
+  end
+  #-- --------------------------------------------------------------------------
+  #++
+
 
   # Check if the result is the personal best
   # without considering the apposite flag
@@ -140,90 +194,6 @@ class SwimmerBestFinder
       is_personal_best = best_result && best_result < meeting_individual_result.get_timing_instance ? false : true
     end
     is_personal_best
-  end
-  #-- --------------------------------------------------------------------------
-  #++
-
-  # Find personal best for given event in the meeting
-  # It will consider all the given meeting editions
-  def get_best_for_meeting_event( meeting, event_type, pool_type )
-    @swimmer.meeting_individual_results.for_meeting_editions( meeting ).for_pool_type( pool_type ).for_event_type( event_type ).is_not_disqualified.count > 0 ?
-      @swimmer.meeting_individual_results.for_meeting_editions( meeting ).for_pool_type( pool_type ).for_event_type( event_type ).is_not_disqualified.sort_by_timing('ASC').first.get_timing_instance :
-      nil
-  end
-  #-- --------------------------------------------------------------------------
-  #++
-
-  # Reset the personal best indicator (set to false)
-  # for the current swimmer, given the specified event by pool type
-  #
-  # == Parameters
-  # event by pool type
-  #
-  def reset_personal_best( event_by_pool_type )
-    sql_attributes = {}
-    @swimmer.meeting_individual_results.for_event_by_pool_type(event_by_pool_type).is_personal_best.select( 'meeting_individual_results.id' ).each do |mir_only_id|
-      mir = MeetingIndividualResult.find_by_id( mir_only_id.id )
-      mir.is_personal_best = false
-      mir.save
-      comment = "#{@swimmer.get_full_name}: Reset #{event_by_pool_type.i18n_description} (was #{mir.get_timing_instance})"
-      sql_attributes['is_personal_best'] = mir.is_personal_best
-      sql_diff_text_log << to_sql_update( mir, false, sql_attributes, "\r\n", comment )
-    end
-  end
-
-  # Reset all the personal best indicator (sets the new value to false)
-  # for the current swimmer.
-  #
-  def reset_all_personal_bests
-    @swimmer.meeting_individual_results
-      .where( is_personal_best: true )
-      .update_all( is_personal_best: false )
-    sql_diff_text_log << "update meeting_individual_results set is_personal_best = false where swimmer_id = #{@swimmer.id} and is_personal_best = true;\r\n"
-  end
-
-  # Set the personal best indicator to true
-  # for the current swimmer, given the event by pool type
-  #
-  # Parameters
-  # event by pool type
-  # reset previous results
-  # new personal best id
-  #
-  # == Returns
-  # Best timing or nil
-  #
-  def set_personal_best( event_by_pool_type, reset = true, mir_id = nil )
-    # TODO Handle multiple bests for same event... maybe
-    sql_attributes = {}
-    if @swimmer.meeting_individual_results.for_event_by_pool_type( event_by_pool_type ).is_not_disqualified.count > 0
-      self.reset_personal_best( event_by_pool_type ) if reset
-      mir_id = @swimmer.meeting_individual_results.for_event_by_pool_type( event_by_pool_type ).is_not_disqualified.sort_by_timing( :asc ).first.id if not mir_id
-      mir = MeetingIndividualResult.find( mir_id )
-      mir.is_personal_best = true
-      mir.save
-      comment = "#{@swimmer.get_full_name} #{event_by_pool_type.i18n_description}: #{mir.get_timing_instance}"
-      sql_attributes['is_personal_best'] = mir.is_personal_best
-      sql_diff_text_log << to_sql_update( mir, false, sql_attributes, "\r\n", comment )
-      mir.get_timing_instance
-    end
-  end
-
-  # Scan events by pool type for finding out the
-  # personal best timings for the current swimmer.
-  #
-  # == Returns
-  # Swimmer personal bests found number
-  #
-  def scan_for_personal_bests
-    create_sql_diff_header( "Scanning swimmer #{@swimmer.get_full_name} [#{@swimmer.id}] for personal bests" )
-    self.reset_all_personal_bests
-    EventsByPoolType.not_relays.each do |event_by_pool_type|
-      #self.reset_personal_best( event_by_pool_type ) # Better doing an unique update
-      self.set_personal_best( event_by_pool_type, false )
-    end
-    create_sql_diff_footer( "Swimmer #{@swimmer.get_full_name}: #{@swimmer.meeting_individual_results.is_personal_best.count} personal bests found" )
-    @swimmer.meeting_individual_results.is_personal_best.count
   end
   #-- --------------------------------------------------------------------------
   #++
