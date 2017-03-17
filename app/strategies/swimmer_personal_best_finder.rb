@@ -31,13 +31,18 @@ class SwimmerPersonalBestFinder
   #++
 
   # Collect closed seasons in which the swimmer was involved
-  # If season type given tha scan is limited to seasons
+  # If season type given the scan is limited to seasons
   # of given type
   # In no given season type it scans all seasons
-  def get_closed_seasons_involved_into( season_type = nil )
-    season_type ?
+  # If eneded_before date is given the scan is limted to seasons ended before given date
+  def get_closed_seasons_involved_into( season_type = nil, ended_before = nil )
+    seasons = season_type ?
      @swimmer.seasons.for_season_type(season_type).is_ended.sort_season_by_begin_date( 'DESC' ) :
      @swimmer.seasons.is_ended.sort_season_by_begin_date( 'DESC' )
+    if ended_before
+      seasons = seasons.reject{ |s| s.end_date > ended_before }
+    end
+    seasons
   end
   #-- --------------------------------------------------------------------------
   #++

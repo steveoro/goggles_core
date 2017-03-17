@@ -71,6 +71,19 @@ describe SwimmerPersonalBestFinder, type: :strategy do
         fix_sbf     = SwimmerPersonalBestFinder.new( fix_swimmer )
         expect( fix_sbf.get_closed_seasons_involved_into.map{ |s| s.season_type.code }.uniq.count ).to be > 1
       end
+      it "returns an array of seasons ended befaore a certain date if given" do
+        ended_before = '01-01-2015'.to_date
+        seasons = subject.get_closed_seasons_involved_into( nil, ended_before )
+        seasons.each do |season|
+          expect( season.end_date ).to be < ended_before
+        end
+      end
+      it "returns few seasons for Leega if a 2015 date given" do
+        ended_before = '01-01-2015'.to_date
+        fix_swimmer = Swimmer.find(23)
+        fix_sbf     = SwimmerPersonalBestFinder.new( fix_swimmer )
+        expect( fix_sbf.get_closed_seasons_involved_into( nil, ended_before ).count ).to be < ( fix_sbf.get_closed_seasons_involved_into().count )       
+      end
     end
     #-- -----------------------------------------------------------------------
     #++
