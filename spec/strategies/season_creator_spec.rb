@@ -28,8 +28,12 @@ describe SeasonCreator, type: :strategy do
       :description,
       :new_id, :begin_date, :end_date, :header_year, :edition,
       :categories, :meetings, :meeting_sessions, :meeting_events,
-      :renew_season, :renew_categories, :renew_meetings
+      :renew_season!, :renew_categories!, :renew_meetings!
     ] )
+
+    let(:record) { older_season } # it really doesn't matter (it's just a placeholder for the spec below)
+    it_behaves_like( "SqlConverter [param: let(:record)]" )
+    it_behaves_like( "SqlConvertable [subject: includee]" )
 
     describe "#parameters," do
       it "are the given parameters" do
@@ -126,7 +130,7 @@ describe SeasonCreator, type: :strategy do
   #++
 
 
-  describe "#prepare_new_season," do
+  describe "#prepare_new_season!," do
     # Needs a UNIQUE season
     let(:older_season)    { SeasonType.find_by_code('MASCSI').seasons.last }
     let(:older_season_id) { older_season.id }
@@ -139,7 +143,7 @@ describe SeasonCreator, type: :strategy do
       expect( subject.meetings.count ).to eq(0)
       expect( subject.meeting_sessions.count ).to eq(0)
       expect( subject.meeting_events.count ).to eq(0)
-      subject.prepare_new_season
+      subject.prepare_new_season!
       expect( subject.new_season ).to be_an_instance_of( Season )
       expect( subject.categories ).to all(be_an_instance_of( CategoryType ))
       expect( subject.meetings ).to all(be_an_instance_of( Meeting ))
@@ -151,13 +155,13 @@ describe SeasonCreator, type: :strategy do
   #++
 
 
-  describe "#renew_season," do
+  describe "#renew_season!," do
     # Needs a UNIQUE season
     let(:older_season)    { SeasonType.find_by_code('MASCSI').seasons.last }
     let(:older_season_id) { older_season.id }
     let(:description)     { "#{FFaker::Lorem.word}-maybe#{ older_season_id + rand * 100}" }
 
-    subject { SeasonCreator.new( older_season, description ).renew_season }
+    subject { SeasonCreator.new( older_season, description ).renew_season! }
 
     it "returns a valid season" do
       expect( subject ).to be_an_instance_of( Season )
@@ -180,23 +184,23 @@ describe SeasonCreator, type: :strategy do
     subject { SeasonCreator.new( older_season, description ) }
 
     it "is a valid season" do
-      new_season = subject.renew_season
+      new_season = subject.renew_season!
       expect( new_season ).to be_an_instance_of( Season )
     end
     it "has the calculated id" do
-      new_season = subject.renew_season
+      new_season = subject.renew_season!
       expect( new_season.id ).to eq( subject.new_id )
     end
     it "has the given description" do
-      new_season = subject.renew_season
+      new_season = subject.renew_season!
       expect( new_season.description ).to eq( subject.description )
     end
     it "has the calculated begin date" do
-      new_season = subject.renew_season
+      new_season = subject.renew_season!
       expect( new_season.begin_date ).to eq( subject.begin_date )
     end
     it "has the calculated end date" do
-      new_season = subject.renew_season
+      new_season = subject.renew_season!
       expect( new_season.end_date ).to eq( subject.end_date )
     end
   end
@@ -204,7 +208,7 @@ describe SeasonCreator, type: :strategy do
   #++
 
 
-  describe "#renew_categories," do
+  describe "#renew_categories!," do
     # Needs a UNIQUE season
     let(:older_season)    { SeasonType.find_by_code('MASCSI').seasons.last }
     let(:older_season_id) { older_season.id }
@@ -212,7 +216,7 @@ describe SeasonCreator, type: :strategy do
     let(:creator)         { SeasonCreator.new( older_season, description ) }
 
     subject do
-      creator.prepare_new_season
+      creator.prepare_new_season!
       creator.categories
     end
 
@@ -248,7 +252,7 @@ describe SeasonCreator, type: :strategy do
   #++
 
 
-  describe "#renew_meetings," do
+  describe "#renew_meetings!," do
     # Needs a UNIQUE season
     let(:older_season)    { SeasonType.find_by_code('MASCSI').seasons.last }
     let(:older_season_id) { older_season.id }
@@ -256,7 +260,7 @@ describe SeasonCreator, type: :strategy do
     let(:creator)         { SeasonCreator.new( older_season, description ) }
 
     subject do
-      creator.prepare_new_season
+      creator.prepare_new_season!
       creator.meetings
     end
 

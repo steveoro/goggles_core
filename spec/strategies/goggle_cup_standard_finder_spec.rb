@@ -3,7 +3,6 @@ require 'wrappers/timing'
 
 
 describe GoggleCupStandardFinder, type: :strategy, tag: :slow do
-
   context "with requested parameters" do
     # Leega
     # Use existing team and swimmer with results to test those features
@@ -38,7 +37,7 @@ describe GoggleCupStandardFinder, type: :strategy, tag: :slow do
 
     [
       :goggle_cup,
-      :swimmers, :create_goggle_cup_standards, :delete_goggle_cup_standards,
+      :swimmers, :create_goggle_cup_standards!, :delete_goggle_cup_standards!,
       :sql_diff_text_log
     ].each do |method_name|
       it "responds to ##{method_name}" do
@@ -151,25 +150,25 @@ describe GoggleCupStandardFinder, type: :strategy, tag: :slow do
     end
     #-- -----------------------------------------------------------------------
 
-    describe "#delete_goggle_cup_standards_for_swimmer," do
+    describe "#delete_goggle_cup_standards_for_swimmer!," do
       it "appends text to sql diff" do
         previous_size = @subject.sql_diff_text_log.size
-        @subject.delete_goggle_cup_standards_for_swimmer( @active_swimmer )
+        @subject.delete_goggle_cup_standards_for_swimmer!( @active_swimmer )
         expect( @subject.sql_diff_text_log.size ).to be > previous_size
       end
       it "deletes all goggle cup standard times presents for the given swimmer" do
         expect( @goggle_cup.goggle_cup_standards.for_swimmer( @active_swimmer ).count ).to be > 0
-        @subject.delete_goggle_cup_standards_for_swimmer( @active_swimmer )
+        @subject.delete_goggle_cup_standards_for_swimmer!( @active_swimmer )
         expect( @goggle_cup.goggle_cup_standards.for_swimmer( @active_swimmer ).count ).to eq( 0 )
         expect( @goggle_cup.goggle_cup_standards.count ).to be > 0
       end
     end
     #-- -----------------------------------------------------------------------
 
-    describe "#delete_goggle_cup_standards," do
+    describe "#delete_goggle_cup_standards!," do
       it "appends text to sql diff" do
         previous_size = @subject.sql_diff_text_log.size
-        @subject.delete_goggle_cup_standards
+        @subject.delete_goggle_cup_standards!
         expect( @subject.sql_diff_text_log.size ).to be > previous_size
       end
       # FAILS even though the records are actually deleted -- (tested by hand
@@ -178,7 +177,7 @@ describe GoggleCupStandardFinder, type: :strategy, tag: :slow do
         expect( @subject.goggle_cup.goggle_cup_standards.count ).to be > 0
         expect( @goggle_cup.goggle_cup_standards.count ).to be > 0
         expect{
-          @subject.delete_goggle_cup_standards
+          @subject.delete_goggle_cup_standards!
         }.to change{
           @subject.goggle_cup.goggle_cup_standards.count
         }.to(0)
@@ -190,29 +189,29 @@ describe GoggleCupStandardFinder, type: :strategy, tag: :slow do
     end
     #-- -----------------------------------------------------------------------
 
-    describe "#create_goggle_cup_standards_for_swimmer," do
+    describe "#create_goggle_cup_standards_for_swimmer!," do
       it "appends text to sql diff" do
         previous_size = @subject.sql_diff_text_log.size
-        @subject.create_goggle_cup_standards_for_swimmer( @active_swimmer )
+        @subject.create_goggle_cup_standards_for_swimmer!( @active_swimmer )
         expect( @subject.sql_diff_text_log.size ).to be > previous_size
       end
       it "creates standard times found for the swimmer" do
-        @subject.delete_goggle_cup_standards_for_swimmer( @active_swimmer )
-        @subject.create_goggle_cup_standards_for_swimmer( @active_swimmer )
+        @subject.delete_goggle_cup_standards_for_swimmer!( @active_swimmer )
+        @subject.create_goggle_cup_standards_for_swimmer!( @active_swimmer )
         expect( @subject.find_swimmer_goggle_cup_standard( @active_swimmer ).size ).to eq( @goggle_cup.goggle_cup_standards.for_swimmer( @active_swimmer ).count )
       end
     end
     #-- -----------------------------------------------------------------------
 
-    describe "#create_goggle_cup_standards," do
+    describe "#create_goggle_cup_standards!," do
       it "appends text to sql diff" do
         previous_size = @subject.sql_diff_text_log.size
-        @subject.create_goggle_cup_standards
+        @subject.create_goggle_cup_standards!
         expect( @subject.sql_diff_text_log.size ).to be > previous_size
       end
       it "creates at least one goggle_cup_standard for each swimmer involved" do
-        @subject.delete_goggle_cup_standards
-        @subject.create_goggle_cup_standards
+        @subject.delete_goggle_cup_standards!
+        @subject.create_goggle_cup_standards!
         expect( @goggle_cup.goggle_cup_standards.count ).to be >= @subject.swimmers.count
       end
     end

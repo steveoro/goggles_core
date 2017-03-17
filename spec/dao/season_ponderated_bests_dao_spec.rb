@@ -8,7 +8,7 @@ describe SeasonPonderatedBestsDAO, type: :model do
   let(:category_type)       { season.category_types[ ((rand * season.category_types.count) % season.category_types.count).to_i ] }
   let(:event_type)          { season.event_types[ ((rand * season.event_types.count) % season.event_types.count).to_i ] }
   let(:pool_type)           { PoolType.find_by_code('25') }  # FIXME Randomize
-  
+
   let(:sure_event_type)     { EventType.find_by_code('50SL') }
   let(:sure_pool_type)      { PoolType.find_by_code('25') }
   let(:sure_category_type)  { season.category_types.find_by_code('M25') }
@@ -16,7 +16,7 @@ describe SeasonPonderatedBestsDAO, type: :model do
   let(:empty_event_type)    { EventType.find_by_code('100MI') }
   let(:empty_pool_type)     { PoolType.find_by_code('50') }
   let(:empty_category_type) { season.category_types.find_by_code('M50') }
-  
+
   let(:max_results)         { ((rand * 3) % 3).to_i + 3 }
   let(:bests_to_be_ignored) { 1 }
 
@@ -25,8 +25,8 @@ describe SeasonPonderatedBestsDAO, type: :model do
     subject { SeasonPonderatedBestsDAO::EventPonderatedBestDAO.new( season, gender_type, category_type, event_type, pool_type, max_results, bests_to_be_ignored ) }
 
     it_behaves_like( "(the existance of a method)", [
-      :season, :season_type, :gender_type, :category_type, :event_type, :pool_type, 
-      :best_results, :total_results, 
+      :season, :season_type, :gender_type, :category_type, :event_type, :pool_type,
+      :best_results, :total_results,
       :get_max_results, :get_bests_to_be_ignored,
       :collect_event_bests, :set_ponderated_best, :get_ponderated_best
     ] )
@@ -63,7 +63,7 @@ describe SeasonPonderatedBestsDAO, type: :model do
     end
     #-- -------------------------------------------------------------------------
     #++
-    
+
     describe "#best_results" do
       it "is a collection of best meeting individal results to considered for the event" do
         expect( subject.best_results ).to be_a_kind_of( ActiveRecord::Relation )
@@ -133,8 +133,8 @@ describe SeasonPonderatedBestsDAO, type: :model do
       end
       #-- -------------------------------------------------------------------------
       #++
-    end    
-    
+    end
+
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -144,8 +144,12 @@ describe SeasonPonderatedBestsDAO, type: :model do
 
     subject { SeasonPonderatedBestsDAO.new( season, max_results, bests_to_be_ignored ) }
 
+    let(:record) { season }
+    it_behaves_like( "SqlConverter [param: let(:record)]" )
+    it_behaves_like( "SqlConvertable [subject: includee]" )
+
     it_behaves_like( "(the existance of a method)", [
-      :season, :single_events, :insert_events, :update_events, :max_results, :bests_to_be_ignored, :event_types, :categories, 
+      :season, :single_events, :insert_events, :update_events, :max_results, :bests_to_be_ignored, :event_types, :categories,
       :find_season_type_events, :find_season_type_category_codes, :scan_for_gender_category_and_event
     ] )
 
@@ -193,7 +197,7 @@ describe SeasonPonderatedBestsDAO, type: :model do
         found_cat = subject.categories
         expect( found_cat ).to be_a_kind_of( Enumerable )
         found_cat.each do |category_code|
-          expect( CategoryType.find_by_code(category_code) ).to be_an_instance_of( CategoryType )  
+          expect( CategoryType.find_by_code(category_code) ).to be_an_instance_of( CategoryType )
         end
       end
     end
@@ -210,7 +214,7 @@ describe SeasonPonderatedBestsDAO, type: :model do
         found_cat = subject.find_season_type_category_codes
         expect( found_cat.size ).to be > 0
         found_cat.each do |category_code|
-          expect( CategoryType.find_by_code(category_code) ).to be_an_instance_of( CategoryType )  
+          expect( CategoryType.find_by_code(category_code) ).to be_an_instance_of( CategoryType )
         end
       end
     end
@@ -236,9 +240,9 @@ describe SeasonPonderatedBestsDAO, type: :model do
       end
     end
 
-    describe "#to_db" do
+    describe "#to_db!" do
       it "stores on DB each single event" do
-        subject.to_db
+        subject.to_db!
         subject.single_events.each do |event|
           expect( TimeStandard.exists?( :season => season, :gender_type => event.gender_type, :category_type => event.category_type, :pool_type => event.pool_type, :event_type => event.event_type ) ).to be true
         end

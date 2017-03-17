@@ -6,7 +6,7 @@ require 'wrappers/timing'
 # Strategy Pattern implementation for Goggle Cup standard times retreiving
 #
 # @author   Leega
-# @version  4.00.835
+# @version  6.093
 #
 class GoggleCupStandardFinder
   include SqlConvertable
@@ -101,7 +101,7 @@ class GoggleCupStandardFinder
   # is_limited_to_season_types_defined == false
   # Otherwise consider only those who have results for meetings
   # in the season types to be considered according to Goggle cup definition
-  def create_goggle_cup_standards
+  def create_goggle_cup_standards!
     sql_diff_text_log << "--\r\n"
     sql_diff_text_log << "-- Creating time standards for #{@goggle_cup.get_verbose_name}\r\n"
     sql_diff_text_log << "--\r\n"
@@ -110,12 +110,12 @@ class GoggleCupStandardFinder
     # Necessary beacuse a time swam during the Goggle cup year should became
     # new standard time if not present, but should be not considerd
     # during time standard creation to ricreate clear situation
-    delete_goggle_cup_standards
+    delete_goggle_cup_standards!
 
     sql_diff_text_log << "\r\n-- Found #{@swimmers.count} swimmers\r\n"
     @swimmers.each do |swimmer|
       sql_diff_text_log << "\r\n"
-      create_goggle_cup_standards_for_swimmer( swimmer )
+      create_goggle_cup_standards_for_swimmer!( swimmer )
     end
     sql_diff_text_log
   end
@@ -127,12 +127,12 @@ class GoggleCupStandardFinder
   # is_limited_to_season_types_defined == false
   # Otherwise consider only those who have results for meetings
   # in the season types to be considered according to Goggle cup definition
-  def create_goggle_cup_standards_for_swimmer( swimmer )
+  def create_goggle_cup_standards_for_swimmer!( swimmer )
     # Clear data to avoid incorrect standards
     # Necessary beacuse a time swam during the Goggle cup year should became
     # new standard time if not present, but should be not considerd
     # during time standard creation to ricreate clear situation
-    delete_goggle_cup_standards_for_swimmer( swimmer ) if @goggle_cup.goggle_cup_standards.for_swimmer( swimmer ).count > 0
+    delete_goggle_cup_standards_for_swimmer!( swimmer ) if @goggle_cup.goggle_cup_standards.for_swimmer( swimmer ).count > 0
 
     sql_diff_text_log << "-- Creating time standards for #{swimmer.get_full_name}\r\n"
     find_swimmer_goggle_cup_standard( swimmer ).each_pair do |event_key, standard_time|
@@ -157,7 +157,7 @@ class GoggleCupStandardFinder
 
   # Deletes entire Goggle cup standard times, returning the SQL script for the
   # whole operation.
-  def delete_goggle_cup_standards
+  def delete_goggle_cup_standards!
     sql_diff_text_log << "--\r\n"
     sql_diff_text_log << "-- Deleting time standards for #{@goggle_cup.get_verbose_name}\r\n"
     sql_diff_text_log << "--\r\n"
@@ -172,7 +172,7 @@ class GoggleCupStandardFinder
   #++
 
   # Deletes Goggle cup standard times for a given swimmer
-  def delete_goggle_cup_standards_for_swimmer( swimmer )
+  def delete_goggle_cup_standards_for_swimmer!( swimmer )
     sql_diff_text_log << "--\r\n"
     sql_diff_text_log << "-- Deleting time standards for #{swimmer.get_full_name}\r\n"
     sql_diff_text_log << "--\r\n"

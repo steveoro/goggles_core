@@ -29,6 +29,10 @@ describe SwimmerPersonalBestUpdater, type: :strategy do
       :swimmer
     ] )
 
+    let(:record) { subject.swimmer }
+    it_behaves_like( "SqlConverter [param: let(:record)]" )
+    it_behaves_like( "SqlConvertable [subject: includee]" )
+
     describe "#parameters," do
       it "are the given parameters" do
         expect( subject.swimmer ).to eq( subject_swimmer )

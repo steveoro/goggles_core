@@ -6,14 +6,14 @@ require 'wrappers/timing'
 # Strategy Pattern implementation for team best result retrieving
 # Best team results should considered for categories and gender
 #
+# @version  6.093
 # @author   Leega
-# @version  4.00.837
 #
 class TeamBestFinder
-  include SqlConvertable
 
   # These can be edited later on:
   attr_accessor :team, :distinct_categories, :gender_types, :pool_types, :event_types
+
 
   # Initialization
   #
@@ -27,7 +27,6 @@ class TeamBestFinder
     unless team.meeting_individual_results.count > 0
       raise ArgumentError.new("Team #{team.get_full_name} hasn't results")
     end
-
     @team                = team
     @gender_types        = GenderType.individual_only
     @pool_types          = PoolType.only_for_meetings

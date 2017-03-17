@@ -10,19 +10,19 @@ require 'wrappers/timing'
 # - calendar days to move on
 #
 # @author   Leega
-# @version  4.00.833
+# @version  6.093
 #
 class MeetingDateChanger
   include SqlConvertable
 
   # These can be edited later on:
-  attr_accessor :meeting, :days_to_move_on, :confirm 
+  attr_accessor :meeting, :days_to_move_on, :confirm
 
   # Initialization
   #
   # == Params:
   # An instance of meeting
-  # an amount of days to move meeting header and scheduled date 
+  # an amount of days to move meeting header and scheduled date
   #
   def initialize( meeting, days_to_move_on, confirm = false )
     unless meeting && meeting.instance_of?( Meeting )
@@ -43,8 +43,8 @@ class MeetingDateChanger
   #++
 
   # Set the meeting header date according to the days to move on
-  # 
-  def move_meeting_date
+  #
+  def move_meeting_date!
     sql_attributes = {}
     @meeting.header_date = @meeting.header_date + @days_to_move_on
     @meeting.is_confirmed = true if @confirm
@@ -56,8 +56,8 @@ class MeetingDateChanger
   end
 
   # Set the meeting session scheduled date according to the days to move on
-  # 
-  def move_meeting_session_date( meeting_session )
+  #
+  def move_meeting_session_date!( meeting_session )
     sql_attributes = {}
     if meeting_session.scheduled_date
       meeting_session.scheduled_date = meeting_session.scheduled_date + @days_to_move_on
@@ -69,12 +69,12 @@ class MeetingDateChanger
   end
 
   # Set the meeting header date according to the days to move on
-  # 
-  def change_dates
+  #
+  def change_dates!
     create_sql_diff_header( "Changing meeting #{@meeting.id}-#{@meeting.code} from #{@meeting.header_date} to #{@meeting.header_date + @days_to_move_on}" )
-    move_meeting_date
+    move_meeting_date!
     @meeting.meeting_sessions.each do |meeting_session|
-      move_meeting_session_date( meeting_session )
+      move_meeting_session_date!( meeting_session )
     end
     create_sql_diff_footer( "#{@meeting.id}-#{@meeting.code} date change done" )
   end

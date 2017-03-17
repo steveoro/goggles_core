@@ -12,10 +12,14 @@ describe PassagesBatchUpdater, type: :strategy do
     :edited_passages, :new_passages, :destroyed_passages,
     :total_errors,
     :sql_diff_text_log,
-    :edit_existing_passage,
-    :create_new_passage,
+    :edit_existing_passage!,
+    :create_new_passage!,
     :is_delta?
   ] )
+
+  let(:record) { Passage.last } # it really doesn't matter (it's just a placeholder for the spec below)
+  it_behaves_like( "SqlConverter [param: let(:record)]" )
+  it_behaves_like( "SqlConvertable [subject: includee]" )
   #-- -------------------------------------------------------------------------
   #++
 
@@ -32,15 +36,15 @@ describe PassagesBatchUpdater, type: :strategy do
   #-- -------------------------------------------------------------------------
   #++
 
-  describe "#edit_existing_passage" do
+  describe "#edit_existing_passage!" do
     context "when editing an existing row with valid parameters," do
       it "updates the row successfully" do
         expect(
-          subject.edit_existing_passage( passage.id, fixture_value )
+          subject.edit_existing_passage!( passage.id, fixture_value )
         ).to be true
       end
       it "updates the existing row with the correct source timings parameters" do
-        subject.edit_existing_passage( passage.id, fixture_value )
+        subject.edit_existing_passage!( passage.id, fixture_value )
         result_row = Passage.find( passage.id )
         expect( result_row.meeting_individual_result_id ).to eq( passage.meeting_individual_result_id )
         expect( result_row.passage_type_id ).to eq( passage.passage_type_id )
@@ -52,12 +56,12 @@ describe PassagesBatchUpdater, type: :strategy do
       end
       it "changes the resulting SQL diff log" do
         expect{
-          subject.edit_existing_passage( passage.id, fixture_value )
+          subject.edit_existing_passage!( passage.id, fixture_value )
         }.to change{ subject.sql_diff_text_log }
       end
       it "increases the number of edited rows" do
         expect{
-          subject.edit_existing_passage( passage.id, fixture_value )
+          subject.edit_existing_passage!( passage.id, fixture_value )
         }.to change{ subject.edited_passages }.by(1)
       end
     end
@@ -65,17 +69,17 @@ describe PassagesBatchUpdater, type: :strategy do
     context "when editing an existing row with valid parameters but an empty value," do
       it "deletes the row successfully, returning the deleted instance" do
         expect(
-          subject.edit_existing_passage( passage.id, '' )
+          subject.edit_existing_passage!( passage.id, '' )
         ).to be_a( Passage )
       end
       it "changes the resulting SQL diff log" do
         expect{
-          subject.edit_existing_passage( passage.id, '' )
+          subject.edit_existing_passage!( passage.id, '' )
         }.to change{ subject.sql_diff_text_log }
       end
       it "increases the number of deleted rows" do
         expect{
-          subject.edit_existing_passage( passage.id, '' )
+          subject.edit_existing_passage!( passage.id, '' )
         }.to change{ subject.destroyed_passages }.by(1)
       end
     end
@@ -83,15 +87,15 @@ describe PassagesBatchUpdater, type: :strategy do
   #-- -------------------------------------------------------------------------
   #++
 
-  describe "#create_new_passage" do
+  describe "#create_new_passage!" do
     context "when creating a new row with valid parameters," do
       it "creates the row" do
         expect(
-          subject.create_new_passage( passage.meeting_individual_result_id, passage.passage_type_id, fixture_value )
+          subject.create_new_passage!( passage.meeting_individual_result_id, passage.passage_type_id, fixture_value )
         ).to be true
       end
       it "sets the new row with the correct source parameters (MIR, passage type, ...)" do
-        subject.create_new_passage( passage.meeting_individual_result_id, passage.passage_type_id, fixture_value )
+        subject.create_new_passage!( passage.meeting_individual_result_id, passage.passage_type_id, fixture_value )
         result_row = Passage.last
         expect( result_row.meeting_individual_result_id ).to eq( passage.meeting_individual_result_id )
         expect( result_row.passage_type_id ).to eq( passage.passage_type_id )
@@ -103,12 +107,12 @@ describe PassagesBatchUpdater, type: :strategy do
       end
       it "changes the resulting SQL diff log" do
         expect{
-          subject.create_new_passage( passage.meeting_individual_result_id, passage.passage_type_id, fixture_value )
+          subject.create_new_passage!( passage.meeting_individual_result_id, passage.passage_type_id, fixture_value )
         }.to change{ subject.sql_diff_text_log }
       end
       it "increases the number of created rows" do
         expect{
-          subject.create_new_passage( passage.meeting_individual_result_id, passage.passage_type_id, fixture_value )
+          subject.create_new_passage!( passage.meeting_individual_result_id, passage.passage_type_id, fixture_value )
         }.to change{ subject.new_passages }.by(1)
       end
     end
@@ -129,8 +133,8 @@ describe PassagesBatchUpdater, type: :strategy do
       expect( subject.is_delta?( passage ) ).to eq( true )
     end
     it "returns false if time swam equals to total time swam" do
-      last_passage.minutes  = last_passage.meeting_individual_result.minutes 
-      last_passage.seconds  = last_passage.meeting_individual_result.seconds 
+      last_passage.minutes  = last_passage.meeting_individual_result.minutes
+      last_passage.seconds  = last_passage.meeting_individual_result.seconds
       last_passage.hundreds = last_passage.meeting_individual_result.hundreds
       expect( last_passage.get_timing_instance ).to eq( last_passage.get_final_time )
       expect( subject.is_delta?( last_passage ) ).to eq( false )
@@ -145,8 +149,8 @@ describe PassagesBatchUpdater, type: :strategy do
         total_distance = mir_with_pass.event_type.length_in_meters
         total_timing   = mir_with_pass.get_timing_instance.to_hundreds
         mir_with_pass.get_passages.each do |delta_passage|
-          #passage.minutes  = passage.minutes 
-          #passage.seconds  = passage.seconds 
+          #passage.minutes  = passage.minutes
+          #passage.seconds  = passage.seconds
           #passage.hundreds = passage.hundreds
           expect( delta_passage.get_timing_instance.to_hundreds / delta_passage.compute_distance_swam ).to be <= ( total_timing / total_distance * 1.5 )
           expect( subject.is_delta?( delta_passage ) ).to eq( true )
@@ -161,8 +165,8 @@ describe PassagesBatchUpdater, type: :strategy do
           if index > 0
             incremental_time = incremental_passage.compute_incremental_time
             if incremental_passage.get_timing_instance.to_hundreds < incremental_time.to_hundreds
-              incremental_passage.minutes  = incremental_time.minutes 
-              incremental_passage.seconds  = incremental_time.seconds 
+              incremental_passage.minutes  = incremental_time.minutes
+              incremental_passage.seconds  = incremental_time.seconds
               incremental_passage.hundreds = incremental_time.hundreds
               expect( incremental_passage.get_timing_instance.to_hundreds ).to eq( incremental_time.to_hundreds )
               expect( incremental_passage.get_timing_instance.to_hundreds / incremental_passage.compute_distance_swam ).to be >= ( total_timing / total_distance * 1.5 )

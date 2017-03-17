@@ -15,8 +15,12 @@ describe BalancedMeetingScoreCalculator, type: :strategy do
     subject { BalancedMeetingScoreCalculator.new( meeting ) }
 
     it_behaves_like( "(the existance of a method)", [
-      :get_teams, :get_meeting_team_scores, :save_computed_score
+      :get_teams, :get_meeting_team_scores, :save_computed_score!
     ] )
+
+    let(:record) { meeting }
+    it_behaves_like( "SqlConverter [param: let(:record)]" )
+    it_behaves_like( "SqlConvertable [subject: includee]" )
 
     describe "#get_teams," do
       it "returns an enumerable" do
@@ -62,10 +66,10 @@ describe BalancedMeetingScoreCalculator, type: :strategy do
     end
     #-- -----------------------------------------------------------------------
 
-    describe "#save_computed_score," do
+    describe "#save_computed_score!," do
       it "saves the number of scores" do
         meeting_team_scores = subject.get_meeting_team_scores
-        expect( subject.save_computed_score ).to be == meeting_team_scores.count
+        expect( subject.save_computed_score! ).to be == meeting_team_scores.count
       end
     end
     #-- -----------------------------------------------------------------------

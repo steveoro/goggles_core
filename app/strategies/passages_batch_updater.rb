@@ -3,18 +3,15 @@ require 'timing_parser'
 require 'common/validation_error_tools'
 
 
-#
-# == MeetingDateChanger
-#
-# Utility for meeting data changing
-# Allows to move scheduled date
-# reflecting changes on the meeting sessions
-# - meeting
-# - calendar days to move on
-#
-# @author   Leega
-# @version  4.00.833
-#
+=begin
+
+= PassagesBatchUpdater
+  - Goggles framework vers.:  6.093
+  - author: Leega, Steve A.
+
+ Strategy dedicated to the single task of updating or creating Passage rows.
+
+=end
 class PassagesBatchUpdater
   include SqlConvertable
 
@@ -52,7 +49,7 @@ class PassagesBatchUpdater
   # +true+ if successful, +false+ in case of errors, a deleted row instance in
   # case of row deletion.
   #
-  def edit_existing_passage( passage_id, incremental_timing_text_value )
+  def edit_existing_passage!( passage_id, incremental_timing_text_value )
     passage = Passage.find_by_id( passage_id )
     timing = TimingParser.parse( incremental_timing_text_value )
     is_ok = true
@@ -105,7 +102,7 @@ class PassagesBatchUpdater
   # == Returns:
   # +true+ if successful, +false+ otherwise
   #
-  def create_new_passage( mir_id, passage_type_id, incremental_timing_text_value )
+  def create_new_passage!( mir_id, passage_type_id, incremental_timing_text_value )
     timing = TimingParser.parse( incremental_timing_text_value )
     is_ok = true
     if timing                                       # Create the new row:
@@ -129,7 +126,7 @@ class PassagesBatchUpdater
   #-- -------------------------------------------------------------------------
   #++
 
-  
+
   # Estabilsh if a pasage is a delta
   # A passage is a delta if passage timing is the time swam in the passage distance
   # First passage is always a delta
@@ -149,7 +146,7 @@ class PassagesBatchUpdater
   #
   def is_delta?( passage )
     is_delta = false
-    
+
     # Is incremental (not delta) if passage time swam equal to mir time swam
     if passage.get_timing_instance == passage.get_final_time
       is_delta = false
@@ -174,6 +171,7 @@ class PassagesBatchUpdater
     end
     is_delta
   end
+
 
   private
 

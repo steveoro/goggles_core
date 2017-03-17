@@ -1,18 +1,22 @@
 require 'wrappers/timing'
 
-#
-# == SeasonCreator
-#
-# Collection of functions used for ceating a new season based on an older one
-# When creating new season should consider:
-# - season
-# - category_types
-# - meetings (with sessions and events)
-#
-# @author   Leega, Steve
-# @version  6.039
-#
+
+=begin
+
+== SeasonCreator
+
+  - Goggles framework vers.:  6.093
+  - author: Leega, Steve A.
+
+ Collection of functions used for ceating a new season based on an older one
+ When creating new season should consider:
+ - season
+ - category_types
+ - meetings (with sessions and events)
+
+=end
 class SeasonCreator
+
   include SqlConvertable
 
   # These can be edited later on:
@@ -59,18 +63,18 @@ class SeasonCreator
 
   # Prepare data for duplication
   #
-  def prepare_new_season
+  def prepare_new_season!
     create_sql_diff_header( "Duplicating season #{@older_season.id}-#{@older_season.description} into #{@new_id}-#{@description}" )
-    @new_season = renew_season
-    @categories = renew_categories
-    @meetings   = renew_meetings
+    @new_season = renew_season!
+    @categories = renew_categories!
+    @meetings   = renew_meetings!
     create_sql_diff_footer( "#{@new_id}-#{@description} duplication done" )
   end
 
   # Retreive older season categories and prepare them
   # for the new season
   #
-  def renew_season
+  def renew_season!
     sql_diff_text_log << "-- Season\r\n"
     newer_season = Season.new( @older_season.attributes.reject{ |e| ['id','lock_version','created_at','updated_at'].include?(e) } )
     newer_season.id          = @new_id
@@ -90,7 +94,7 @@ class SeasonCreator
   # No particular change required to category types data
   # just associate with new season
   #
-  def renew_categories
+  def renew_categories!
     newer_categories = []
     sql_diff_text_log << "-- Categories\r\n"
     @older_season.category_types.each do |category_type|
@@ -107,7 +111,7 @@ class SeasonCreator
   # Retreive older season meetings and prepare them
   # for the new season
   #
-  def renew_meetings
+  def renew_meetings!
     newer_meetings = []
     add_sql_diff_comment( "Meetings" )
     @older_season.meetings.each do |meeting|

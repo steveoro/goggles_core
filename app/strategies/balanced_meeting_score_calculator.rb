@@ -17,7 +17,7 @@ require 'wrappers/timing'
 #   to the maximum number of relays considered for a team
 #
 # @author   Leega
-# @version  4.00.787
+# @version  6.093
 #
 class BalancedMeetingScoreCalculator
   include SqlConvertable
@@ -62,7 +62,7 @@ class BalancedMeetingScoreCalculator
   # Parameters
   # rank_position => Number of rank positions to save (default first 3)
   #
-  def save_computed_score
+  def save_computed_score!
     persisted_ok = 0
     sql_fields = {}
     @meeting_team_scores = get_meeting_team_scores if not @meeting_team_scores

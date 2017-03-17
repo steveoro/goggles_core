@@ -43,6 +43,9 @@ describe TeamBestFinder, type: :strategy do
     fs
   end
   let(:fix_mir)         { active_team.meeting_individual_results.is_not_disqualified.order('RAND()').first }
+  #-- -------------------------------------------------------------------------
+  #++
+
 
   subject { TeamBestFinder.new( active_team ) }
 

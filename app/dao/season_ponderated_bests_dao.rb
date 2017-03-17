@@ -4,7 +4,7 @@
 
 = SeasonPonderatedBestsDAO
 
-  - Goggles framework vers.:  4.00.827
+  - Goggles framework vers.:  6.093
   - author: Leega
 
  DAO class containing the structure for managing the overall event bests
@@ -272,7 +272,7 @@ class SeasonPonderatedBestsDAO
 
   # Store collected data to the db structure of standard time
   #
-  def to_db()
+  def to_db!()
     # Check if data already collected and collect if needed
     prepare_to_store if @insert_events.count == 0 && @update_events.count == 0
 
