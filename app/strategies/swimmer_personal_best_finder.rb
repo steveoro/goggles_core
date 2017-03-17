@@ -12,8 +12,6 @@ require 'wrappers/timing'
 =end
 class SwimmerPersonalBestFinder
 
-  include SqlConvertable
-
   attr_reader :swimmer
 
 
