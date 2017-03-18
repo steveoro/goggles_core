@@ -54,9 +54,9 @@ class Swimmer < ApplicationRecord
   has_many :meeting_sessions,       through: :meeting_individual_results
   has_many :meetings,               through: :meeting_individual_results
 
-  has_many :meeting_reservation
-  has_many :meeting_event_reservation
-  has_many :meeting_relay_reservation
+  has_many :meeting_reservations
+  has_many :meeting_event_reservations
+  has_many :meeting_relay_reservations
 
   has_many :user_results
 
