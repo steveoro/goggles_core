@@ -112,7 +112,30 @@ class SwimmerPersonalBestFinder
   #-- --------------------------------------------------------------------------
   #++
 
-  # Finds the personal-best Timing searching amidst the specified involved seasons,
+  # Finds the personal-best *MIR* searching amidst the specified involved seasons,
+  # event type and pool type.
+  # Returns +nil+ when not found.
+  #
+  def get_involved_season_best_mir_for_event( involved_seasons, event_type, pool_type )
+    best = nil
+    involved_seasons.each do |season|
+      if ( @swimmer.meeting_individual_results.for_season( season )
+             .for_pool_type( pool_type )
+             .for_event_type( event_type )
+             .is_not_disqualified.count > 0 )
+        tmp_best = @swimmer.meeting_individual_results.for_season( season )
+            .for_pool_type( pool_type )
+            .for_event_type( event_type )
+            .is_not_disqualified
+            .sort_by_timing('ASC')
+            .first
+        best = tmp_best if best == nil || best.get_timing_instance.to_hundreds > tmp_best.get_timing_instance.to_hundreds
+      end
+    end
+    return best
+  end
+
+  # Finds the personal-best *Timing* searching amidst the specified involved seasons,
   # event type and pool type.
   # Returns +nil+ when not found.
   #
@@ -146,7 +169,7 @@ class SwimmerPersonalBestFinder
   #
   def get_last_mir_for_event( event_type, pool_type )
     @swimmer.meeting_individual_results.for_pool_type( pool_type ).for_event_type( event_type ).is_not_disqualified.count > 0 ?
-      @swimmer.meeting_individual_results.for_pool_type( pool_type ).for_event_type( event_type ).is_not_disqualified.sort_by_timing('ASC').first :
+      @swimmer.meeting_individual_results.for_pool_type( pool_type ).for_event_type( event_type ).is_not_disqualified.sort_by_updated_at('ASC').last :
       nil
   end
   #-- --------------------------------------------------------------------------

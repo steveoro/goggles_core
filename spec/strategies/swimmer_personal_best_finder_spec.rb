@@ -82,7 +82,7 @@ describe SwimmerPersonalBestFinder, type: :strategy do
         ended_before = '01-01-2015'.to_date
         fix_swimmer = Swimmer.find(23)
         fix_sbf     = SwimmerPersonalBestFinder.new( fix_swimmer )
-        expect( fix_sbf.get_closed_seasons_involved_into( nil, ended_before ).count ).to be < ( fix_sbf.get_closed_seasons_involved_into().count )       
+        expect( fix_sbf.get_closed_seasons_involved_into( nil, ended_before ).count ).to be < ( fix_sbf.get_closed_seasons_involved_into().count )
       end
     end
     #-- -----------------------------------------------------------------------
