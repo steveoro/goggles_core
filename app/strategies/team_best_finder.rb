@@ -6,13 +6,13 @@ require 'wrappers/timing'
 # Strategy Pattern implementation for team best result retrieving
 # Best team results should considered for categories and gender
 #
-# @version  6.093
-# @author   Leega
+# @version  6.094
+# @author   Leega, Steve A.
 #
 class TeamBestFinder
 
   # These can be edited later on:
-  attr_accessor :team, :distinct_categories, :gender_types, :pool_types, :event_types
+  attr_reader :team, :distinct_categories, :gender_types, :pool_types, :event_types
 
 
   # Initialization
@@ -36,40 +36,41 @@ class TeamBestFinder
   #-- --------------------------------------------------------------------------
   #++
 
-  # Sets the gender types to search for
+  # (Re-)Sets the gender types to search for.
   # Default is male and female
   #
   def set_genders( gender_types = GenderType.individual_only )
     @gender_types = gender_types
   end
 
-  # Sets the pool types to search for
-  # Default is 25 and 50
+  # (Re-)Sets the pool types to search for
+  # Defaults to 25 and 50 mt.
   #
   def set_pools( pool_types = PoolType.only_for_meetings )
     @pool_types = pool_types
   end
 
-  # Sets the event types to search for
-  # Default is FIN individual events
+  # (Re-)Sets the event types to search for.
+  # Defaults to "FIN" individual events.
   #
   def set_events( event_types = EventType.are_not_relays.for_fin_calculation )
     @event_types = event_types
   end
 
-  # Find out the category in the distinct_category array
-  # using the category code
-  # Return nil if category code not present
+  # Finds out the category in the distinct_category array,
+  # using the category code.
+  # Returns +nil+ if the category code is not present.
   #
   def find_category_by_code( category_code )
     element = @distinct_categories.rindex{ |e| e.code == category_code }
     @distinct_categories[element] if element
   end
 
-  # Find out the categories for which to retrieve the "team best".
-  # Only individual categories will be considered.
-  # Different season types have different categories.
-  # It will merge them whenever different season type categories are mergable.
+
+  # Finds out the categories for which to retrieve the "team best".
+  # Only the individual categories will be considered.
+  # Note that different season types have different categories.
+  # This will merge the categories whenever different season type categories are mergable.
   #
   def retrieve_distinct_categories
     if @distinct_categories
@@ -88,14 +89,18 @@ class TeamBestFinder
     categories
   end
 
-  # Checks if a category has to be splitted
-  # Some categories are undivided and have to be splitted for definition
-  # Some categories have different age definition in different season types
-  # and need to be compared.
+
+  # Checks if a category has to be split.
   #
-  # Returns a default false value for a nil category_type.
+  # Some categories are undivided according to some Federations' Championships,
+  # and are in need to be split in order to have displayable matching age ranges.
   #
-  # FIXME (by Steve) This description isn't clear for me and thus needs improvement!
+  # Some categories have also a different age definition among different season
+  # types and nevertheless need always to be made "comparable".
+  #
+  # === Returns:
+  # +true+ if the category needs to be split among others; false otherwise.
+  # Defaults to +false+ for a +nil+ category_type.
   #
   def category_needs_split?( category_type )
     return false if category_type.nil?
@@ -119,12 +124,14 @@ class TeamBestFinder
     needs_split
   end
 
-  # Find out the category to split in the actual one
-  # The category to split in is the one, not splitted
-  # with correct age range considering the swimmer age
-  # at the moment of individual result
+
+  # Finds out the category in which a "splittable category" needs to be split into.
   #
-  # If no matching category found return the result one
+  # The category to split in is the one, not splitted, having correct age range
+  # while considering the swimmer age at the moment in which the swimmer achieved
+  # the individual result specified.
+  #
+  # If no matching category is found, it will return the resulting one.
   #
   def get_category_to_split_into( meeting_individual_result )
     category_type = meeting_individual_result.category_type
@@ -136,9 +143,11 @@ class TeamBestFinder
     element ? @distinct_categories[element] : find_category_by_code( category_type.code )
   end
 
-  # Verify if exists results for given gender, pool, event and category
-  # for the selected team.
-  # Disqualified results not considered
+
+  # Verifies if there are any individual results for the given gender, pool,
+  # event and category, for the currently set team (specified in the constructor).
+  #
+  # Disqualified results won't be considered.
   #
   def has_individual_result?( gender_type, pool_type, event_type, category_code )
     team.meeting_individual_results
@@ -150,10 +159,12 @@ class TeamBestFinder
       .sort_by_timing.count > 0
   end
 
-  # Find best for given gender, pool, event and category code
-  # Note it uses category code instaed of id
-  # Returns nil if no results for given parameters
-  # Disqualified results not considered
+
+  # Finds the best MIR for the given gender, pool, event and category code.
+  # Disqualified results won't be considered.
+  # Note that this uses the category code instead of the ID.
+  #
+  # Returns +nil+ when no results are found for the given parameters.
   #
   def get_team_best_individual_result( gender_type, pool_type, event_type, category_code )
     if has_individual_result?( gender_type, pool_type, event_type, category_code )
@@ -168,16 +179,19 @@ class TeamBestFinder
       nil
     end
   end
+  #-- --------------------------------------------------------------------------
+  #++
 
-  # Cycle between distinct categories to find out team bests
-  # Team best timings found should be rearranged for category split&merge operation
-  # Returns a RecordX4dDAO with a RecordElement for each
-  # pool type, gender type, event type and distinct category
-  # with at least one not disqualified result
+
+  # Cycles among distinct categories to seek out team best results.
+  #
+  # Team best timings found should be rearranged by the category split&merge procedure.
+  #
+  # Returns a RecordX4dDAO with a RecordElement for each pool type, gender type,
+  # event type and distinct category, with at least one not disqualified result.
   #
   def scan_for_distinct_bests
     team_distinct_best = RecordX4dDAO.new( @team, RecordType.find_by_code( 'TTB' ) )
-
     # Cycle between set genders, pools, events and distinct categories
     @gender_types.each do |gender_type|
       @pool_types.each do |pool_type|
@@ -191,9 +205,11 @@ class TeamBestFinder
         end
       end
     end
-
     team_distinct_best
   end
+  #-- --------------------------------------------------------------------------
+  #++
+
 
   # Category split definition
   # Check out categories which needs to be splitted
@@ -210,6 +226,9 @@ class TeamBestFinder
     end
     categories_to_split
   end
+  #-- --------------------------------------------------------------------------
+  #++
+
 
   # Split category records for grouped category
   # Cycle beetween distinct categories and suppress category
@@ -248,9 +267,10 @@ class TeamBestFinder
         end
       end
     end
-
     team_distinct_best
   end
+  #-- --------------------------------------------------------------------------
+  #++
 
 
   # TODO Consider to populate next 2 array during best scan to avoid multiple array scan
@@ -266,6 +286,9 @@ class TeamBestFinder
     end
     valid_categories.sort{ |n,p| n.age_begin <=> p.age_begin }
   end
+  #-- --------------------------------------------------------------------------
+  #++
+
 
   # Retrieve events with records for given pool and gender types
   #
@@ -278,4 +301,6 @@ class TeamBestFinder
     end
     valid_events.sort{ |n,p| n.style_order <=> p.style_order }
   end
+  #-- --------------------------------------------------------------------------
+  #++
 end
