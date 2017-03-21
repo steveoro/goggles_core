@@ -11,7 +11,6 @@ require 'wrappers/timing'
 #
 class TeamBestFinder
 
-  # These can be edited later on:
   attr_reader :team, :distinct_categories, :gender_types, :pool_types, :event_types
 
 
