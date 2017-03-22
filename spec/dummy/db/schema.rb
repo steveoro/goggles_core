@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170209000000) do
+ActiveRecord::Schema.define(version: 20170322105927) do
 
   create_table "achievement_rows", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "lock_version",                   default: 0
@@ -949,6 +949,24 @@ ActiveRecord::Schema.define(version: 20170209000000) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["code"], name: "index_federation_types_on_code", unique: true, using: :btree
+  end
+
+  create_table "fin_calendars", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "lock_version",         default: 0
+    t.string   "column_date"
+    t.string   "column_name"
+    t.string   "column_place"
+    t.string   "fin_invitation_code"
+    t.string   "fin_startlist_code"
+    t.string   "fin_result_code"
+    t.string   "goggles_meeting_code"
+    t.integer  "season_id"
+    t.integer  "user_id"
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
+    t.index ["goggles_meeting_code"], name: "index_fin_calendars_on_goggles_meeting_code", using: :btree
+    t.index ["season_id"], name: "index_fin_calendars_on_season_id", using: :btree
+    t.index ["user_id"], name: "index_fin_calendars_on_user_id", using: :btree
   end
 
   create_table "friendships", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
