@@ -229,6 +229,62 @@ DESC
   end
   #-- -------------------------------------------------------------------------
   #++
+
+
+  desc <<-DESC
+Find meetings scheduled on next given day number 
+
+Presents an header date ordered list
+of meetings with scheduled_date between
+system date and the date obtained adding given day number
+Default day number is 7
+
+Options: [days=7]
+
+- 'days'     number of days to scan 
+
+DESC
+  task :meetings_on_next_days do |t|
+    puts "*** ut:meetings_on_next_days ***"
+    days            = ENV.include?("days")  ? ENV["days"].to_i : 7
+    rails_config    = Rails.configuration             # Prepare & check configuration:
+    db_name         = rails_config.database_configuration[Rails.env]['database']
+    db_user         = rails_config.database_configuration[Rails.env]['username']
+    db_pwd          = rails_config.database_configuration[Rails.env]['password']
+
+    # Display some info:
+    puts "DB name:          #{db_name}"
+    puts "DB user:          #{db_user}"
+    puts "\r\n"
+    logger = ConsoleLogger.new
+
+    puts "Requiring Rails environment to allow usage of any Model..."
+    require 'rails/all'
+    require File.join( Rails.root.to_s, 'config/environment' )
+
+    begin_date = Date.today
+    end_date = begin_date + days
+
+    # Search meetings
+    meeting_found = 0
+    logger.info( "\r\nSearch meetings with header date between #{begin_date} and #{end_date}" )
+    logger.info( "\r\n<------------------------------------------------------------>\r\n" )
+    Meeting.where(['header_date between ? and ?', begin_date, end_date]).sort_by_date.each do |meeting|
+      meeting_found += 1
+      pool_type = meeting.get_pool_type
+      logger.info( "\r\n#{meeting.id} - #{meeting.get_meeting_date} #{meeting.get_full_name} (#{meeting.code}) #{pool_type.code if pool_type} #{meeting.meeting_individual_results.count if meeting.meeting_individual_results.count > 0} -> #{meeting.get_data_import_file_name} #{'- ANNULLATO' if meeting.is_cancelled}\r\n" )
+    end
+
+    # If no meetings found log warning
+    if meeting_found == 0
+      logger.info( "\r\nNo meetings with header date between #{begin_date} and #{end_date}\r\n" )
+    else
+      logger.info( "\r\nFound #{meeting_found} meetings with header date between #{begin_date} and #{end_date}\r\n" )
+    end
+    logger.info( "\r\n\r\n" )
+  end
+  #-- -------------------------------------------------------------------------
+  #++
 end
 # =============================================================================
 
