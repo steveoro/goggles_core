@@ -23,17 +23,17 @@ class FinCalendar < ApplicationRecord
 
   # Computes the shortest possible description for the name associated with this data
   def get_short_name
-    column_name
+    calendar_name
   end
 
   # Computes a shorter description for the name associated with this data
   def get_full_name
-    "#{column_date} #{column_name} #{column_place}"
+    "#{calendar_date} #{calendar_name} #{calendar_place}"
   end
 
   # Computes a verbose or formal description for the name associated with this data
   def get_verbose_name
-    "#{column_date} #{column_name} #{column_place} - #{goggles_meeting_code}"
+    "#{calendar_date} #{calendar_name} #{calendar_place} - #{goggles_meeting_code}"
   end
   # ----------------------------------------------------------------------------
 

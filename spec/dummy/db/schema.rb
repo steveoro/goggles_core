@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170322120700) do
+ActiveRecord::Schema.define(version: 20170322122633) do
 
   create_table "achievement_rows", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "lock_version",                   default: 0
@@ -953,9 +953,9 @@ ActiveRecord::Schema.define(version: 20170322120700) do
 
   create_table "fin_calendars", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "lock_version",         default: 0
-    t.string   "column_date"
-    t.string   "column_name"
-    t.string   "column_place"
+    t.string   "calendar_date"
+    t.string   "calendar_name"
+    t.string   "calendar_place"
     t.string   "fin_invitation_code"
     t.string   "fin_startlist_code"
     t.string   "fin_result_code"
