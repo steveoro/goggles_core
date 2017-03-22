@@ -43,12 +43,7 @@ class FinCalendar < ApplicationRecord
   def get_month_from_code
     month_from_code = 0
     if fin_startlist_code || fin_result_code
-      codice = ""
-      if fin_startlist_code
-        codice = fin_startlist_code
-      else if fin_result_code
-        codice = fin_result_code
-      end
+      codice = fin_startlist_code ? fin_startlist_code : fin_result_code    
       months = {}
       months['A'] = 10  # October
       months['B'] = 11  # November
@@ -59,7 +54,7 @@ class FinCalendar < ApplicationRecord
       months['G'] = 4   # April
       months['H'] = 5   # May
       months['I'] = 6   # June
-      month_from_code = months[codice.left(1).upcase]
+      month_from_code = months[codice.left(1)]
     end
     month_from_code
   end
