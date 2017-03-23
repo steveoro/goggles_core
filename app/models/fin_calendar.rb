@@ -5,7 +5,7 @@
 
 = fin_calendar
 
-  - version:  6.00.035
+  - version:  6.095
   - author:   Steve A., Leega
 
 =end
@@ -43,7 +43,7 @@ class FinCalendar < ApplicationRecord
   def get_month_from_code
     month_from_code = 0
     if fin_startlist_code || fin_result_code
-      codice = fin_startlist_code ? fin_startlist_code : fin_result_code    
+      codice = fin_startlist_code ? fin_startlist_code : fin_result_code
       months = {}
       months['A'] = 10  # October
       months['B'] = 11  # November
@@ -58,5 +58,5 @@ class FinCalendar < ApplicationRecord
     end
     month_from_code
   end
-  
+
 end
