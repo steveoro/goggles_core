@@ -49,13 +49,21 @@ class FinCalendar < ApplicationRecord
 
 
   # Computes a pseudo-unique key for the current calendar row, using only the date
-  # and place information.
+  # and place information specified as parameters.
   #
-  def calendar_unique_key
+  def self.calendar_unique_key( calendar_year, calendar_month, calendar_date, calendar_place )
     # Compact the month name into a number:
     month_index = STANDARD_MONTH_NAMES.index( calendar_month.to_s.downcase.camelcase )
     # Compose a pseudo-unique key for the current calendar row among this season:
     "#{ calendar_year }/#{ month_index ? month_index+1 : nil }/#{ calendar_date }:#{ calendar_place.gsub(/[\s\,\:\-\_\']/,'').downcase }"
+  end
+
+
+  # Computes a pseudo-unique key for the current calendar row, using only the date
+  # and place information from the calendar row members.
+  #
+  def calendar_unique_key
+    FinCalendar.calendar_unique_key( calendar_year, calendar_month, calendar_date, calendar_place )
   end
   #-- -------------------------------------------------------------------------
   #++

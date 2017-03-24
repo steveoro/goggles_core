@@ -16,12 +16,16 @@ describe FinCalendar, type: :model do
 
       it_behaves_like( "(belongs_to required models)", [
         :season,
-        :user,
-        :meeting
+        :user
+        # meeting => can be nil most of the times
       ])
     end
 
     context "[general methods]" do
+      it_behaves_like( "(the existance of a class method)", [
+        :calendar_unique_key
+      ])
+
       it_behaves_like( "(the existance of a method)", [
         :calendar_year,
         :calendar_month,
@@ -44,6 +48,30 @@ describe FinCalendar, type: :model do
         :calendar_unique_key,
         :get_month_from_fin_code
       ])
+    end
+
+
+    describe "self.calendar_unique_key" do
+      let(:year)    { ( 2012 .. 2017 ).to_a.sample }
+      let(:rnd_day) { ( 1 .. 30 ).to_a.sample }
+      let(:month)   { ['Ottobre','Novembre','Dicembre','Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno'].sample }
+      let(:dates)   { ["#{ rnd_day }", "#{ rnd_day }-#{ rnd_day + 1 }"].sample }
+      let(:place)   { City.all.sample.name }
+
+      it "returns a String" do
+        expect(
+          FinCalendar.calendar_unique_key( year, month, dates, place )
+        ).to be_a(String)
+      end
+      it "contains the key tokens" do
+        result = FinCalendar.calendar_unique_key( year, month, dates, place )
+        expect( result ).to include( year.to_s )
+        normalized_month = FinCalendar::STANDARD_MONTH_NAMES.index( month.to_s.downcase.camelcase )
+        expect( result ).to include( normalized_month.to_s )
+        expect( result ).to include( dates.to_s )
+        normalized_place = place.gsub(/[\s\,\:\-\_\']/,'').downcase
+        expect( result ).to match( normalized_place )
+      end
     end
 
 
