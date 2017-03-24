@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170322122633) do
+ActiveRecord::Schema.define(version: 20170324110129) do
 
   create_table "achievement_rows", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "lock_version",                   default: 0
@@ -952,19 +952,32 @@ ActiveRecord::Schema.define(version: 20170322122633) do
   end
 
   create_table "fin_calendars", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "lock_version",         default: 0
+    t.integer  "lock_version",                           default: 0
     t.string   "calendar_date"
     t.string   "calendar_name"
     t.string   "calendar_place"
-    t.string   "fin_invitation_code"
+    t.string   "fin_manifest_code"
     t.string   "fin_startlist_code"
-    t.string   "fin_result_code"
+    t.string   "fin_results_code"
     t.string   "goggles_meeting_code"
     t.integer  "season_id"
     t.integer  "user_id"
-    t.datetime "created_at",                       null: false
-    t.datetime "updated_at",                       null: false
+    t.datetime "created_at",                                         null: false
+    t.datetime "updated_at",                                         null: false
+    t.string   "calendar_year",            limit: 4
+    t.string   "calendar_month",           limit: 20
+    t.string   "results_link"
+    t.string   "startlist_link"
+    t.string   "manifest_link"
+    t.text     "manifest",                 limit: 65535
+    t.text     "name_import_text",         limit: 65535
+    t.text     "organization_import_text", limit: 65535
+    t.text     "place_import_text",        limit: 65535
+    t.text     "dates_import_text",        limit: 65535
+    t.text     "program_import_text",      limit: 65535
+    t.integer  "meeting_id"
     t.index ["goggles_meeting_code"], name: "index_fin_calendars_on_goggles_meeting_code", using: :btree
+    t.index ["meeting_id"], name: "index_fin_calendars_on_meeting_id", using: :btree
     t.index ["season_id"], name: "index_fin_calendars_on_season_id", using: :btree
     t.index ["user_id"], name: "index_fin_calendars_on_user_id", using: :btree
   end

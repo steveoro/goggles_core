@@ -1,6 +1,7 @@
 require 'rails_helper'
 
-describe FederationType, :type => :model do
+
+describe FederationType, type: :model do
 
   subject { create( :federation_type ) }
 

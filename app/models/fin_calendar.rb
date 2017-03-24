@@ -10,11 +10,20 @@
 
 =end
 class FinCalendar < ApplicationRecord
+
+  # String names used to detect months:
+  STANDARD_MONTH_NAMES = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre']
+  #-- -------------------------------------------------------------------------
+  #++
+
   belongs_to :user                                  # [Steve, 20120212] Do not validate associated user!
   belongs_to :season
+  belongs_to :meeting
+
   validates_associated :season
 
   validates_presence_of :goggles_meeting_code, allow_nil: false
+
 
   # ----------------------------------------------------------------------------
   # Base methods:
@@ -28,22 +37,39 @@ class FinCalendar < ApplicationRecord
 
   # Computes a shorter description for the name associated with this data
   def get_full_name
-    "#{calendar_date} #{calendar_name} #{calendar_place}"
+    "#{calendar_date} #{calendar_month} #{calendar_year}, #{calendar_name} #{calendar_place}"
   end
 
   # Computes a verbose or formal description for the name associated with this data
   def get_verbose_name
-    "#{calendar_date} #{calendar_name} #{calendar_place} - #{goggles_meeting_code}"
+    "#{calendar_date} #{calendar_month} #{calendar_year}, #{calendar_name} #{calendar_place} - #{goggles_meeting_code}"
   end
-  # ----------------------------------------------------------------------------
+  #-- -------------------------------------------------------------------------
+  #++
 
-  # Retrieve month (number) from start-list or result fin code
-  # Return 0 if nor codes present
+
+  # Computes a pseudo-unique key for the current calendar row, using only the date
+  # and place information.
   #
-  def get_month_from_code
+  def calendar_unique_key
+    # Compact the month name into a number:
+    month_index = STANDARD_MONTH_NAMES.index( calendar_month.to_s.downcase.camelcase )
+    # Compose a pseudo-unique key for the current calendar row among this season:
+    "#{ calendar_year }/#{ month_index ? month_index+1 : nil }/#{ calendar_date }:#{ calendar_place.gsub(/[\s\,\:\-\_\']/,'').downcase }"
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
+
+  # Retrieves the month (number) either from the start-list or the result FIN code
+  # (used in the corresponding link field but filled separately during data acquisition).
+  #
+  # Returns 0 if none of codes are present
+  #
+  def get_month_from_fin_code
     month_from_code = 0
-    if fin_startlist_code || fin_result_code
-      codice = fin_startlist_code ? fin_startlist_code : fin_result_code
+    if fin_startlist_code || fin_results_code
+      codice = fin_startlist_code ? fin_startlist_code : fin_results_code
       months = {}
       months['A'] = 10  # October
       months['B'] = 11  # November
@@ -58,5 +84,6 @@ class FinCalendar < ApplicationRecord
     end
     month_from_code
   end
-
+  #-- -------------------------------------------------------------------------
+  #++
 end
