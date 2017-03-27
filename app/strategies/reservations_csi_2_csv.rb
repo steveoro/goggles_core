@@ -6,7 +6,7 @@ require 'framework/console_logger'
 
 = ReservationsCsi2Csv
 
-  - Goggles framework vers.:  6.084
+  - Goggles framework vers.:  6.098
   - author: Steve A.
 
  Strategy class used to output a specific CSV text format for the C.S.I. Regional
@@ -34,11 +34,15 @@ class ReservationsCsi2Csv
   # Creates a new instance by specifying a valid Meeting instance.
   # The Meeting must belong to a Season of the CSI federation.
   #
-  def initialize( meeting, logger = ConsoleLogger.new )
+  # If no filtering_team is specified, all the reservations for the meeting will
+  # be collected.
+  #
+  def initialize( meeting, filtering_team = nil, logger = ConsoleLogger.new )
     unless ReservationsCsi2Csv.is_a_csi_meeting( meeting )
       raise ArgumentError.new("The specified Meeting must be a valid instance of Meeting, belonging to the '#{ SeasonType::CODE_MAS_CSI }' SeasonType.")
     end
     @meeting = meeting
+    @filtering_team = filtering_team
     @logger  = logger
     prepare_header_titles()
     @csi_data_rows = []
@@ -65,9 +69,15 @@ class ReservationsCsi2Csv
   #
   def collect()
     @logger.info( "Extracting reservation data for CSI2CSV data export..." )
+    reservations = if @filtering_team.instance_of?( Team )
+      @logger.info( "(Filtering for #{ @filtering_team.get_full_name } swimmers)" )
+      MeetingReservation.where( meeting_id: @meeting.id, team_id: @filtering_team.id ).is_coming
+    else
+      MeetingReservation.where( meeting_id: @meeting.id ).is_coming
+    end
 
     # Scan involved swimmers
-    @meeting.meeting_reservations.is_coming.each do |meeting_reservation|
+    reservations.each do |meeting_reservation|
       swimmer = meeting_reservation.swimmer
       reservations_count = @meeting.meeting_event_reservations.where( ['swimmer_id = ?', swimmer.id] ).is_reserved.count
 
@@ -78,8 +88,21 @@ class ReservationsCsi2Csv
 
         swimmer_row = ""
         swimmer_row << "#{ badge.category_type.code };"
-        swimmer_row << "#{ swimmer.last_name };"
-        swimmer_row << "#{ swimmer.first_name };"
+        # If we have the last name, this means that the name has already been correctly split:
+        if swimmer.last_name.present?
+          swimmer_row << "#{ swimmer.last_name };"
+          swimmer_row << "#{ swimmer.first_name };"
+        # Otherwise, we have to guess the first & last name part from the complete_name.
+        # Typically, this is not possible. So we stick using the last item in the
+        # array of split elements as the first name (the sequence in complete_name
+        # is to use the last_name as first). The rest of the sequence is joined together.
+        else
+          name_parts = swimmer.get_full_name.split(/\s/)
+          first_name = name_parts.last
+          last_name  = name_parts[ 0 .. name_parts.size-2 ].join(' ')
+          swimmer_row << "#{ last_name };"
+          swimmer_row << "#{ first_name };"
+        end
         swimmer_row << "#{ badge.number != '?' ? badge.number : '' };"
         swimmer_row << "#{ swimmer.gender_type.code };"
         swimmer_row << "#{ swimmer.year_of_birth };"
@@ -119,9 +142,15 @@ class ReservationsCsi2Csv
   def save_to_file( output_dir = DEFAULT_OUTPUT_DIR )
     if @swimmers_reservations > 0
       @logger.info( "\r\nExtracted data for #{ @swimmers_reservations } swimmers reservations." )
+      extension = if @filtering_team.instance_of?( Team )
+        @logger.info( "(While filtering for #{ @filtering_team.get_full_name } swimmers, team ID: #{ @filtering_team.id })" )
+        "#{ @filtering_team.id }.csv"
+      else
+        "csv"
+      end
 
       # (Re-)Create the csv file:
-      file_name = @meeting.get_data_import_file_name( 'isc', 'csv' )
+      file_name = @meeting.get_data_import_file_name( "isc", extension )
       @created_file_full_pathname = File.join(output_dir, file_name)
       File.open( @created_file_full_pathname, 'w' ) { |f| f.puts output_text }
       @logger.info( "\r\nEntry file " + file_name + " created\r\n" )
