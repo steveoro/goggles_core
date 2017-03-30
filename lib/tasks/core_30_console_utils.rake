@@ -232,20 +232,23 @@ DESC
 
 
   desc <<-DESC
-Find meetings scheduled on next given day number 
+Find meetings scheduled on next given day number
+from systema date (eventually offset)
 
 Presents an header date ordered list
 of meetings with scheduled_date between
 system date and the date obtained adding given day number
 Default day number is 7
 
-Options: [days=7]
+Options: [from=0 days=7]
 
+- 'from'     number of days to add to system date 
 - 'days'     number of days to scan 
 
 DESC
   task :meetings_on_next_days do |t|
     puts "*** ut:meetings_on_next_days ***"
+    from            = ENV.include?("from")  ? ENV["from"].to_i : 0
     days            = ENV.include?("days")  ? ENV["days"].to_i : 7
     rails_config    = Rails.configuration             # Prepare & check configuration:
     db_name         = rails_config.database_configuration[Rails.env]['database']
@@ -262,7 +265,7 @@ DESC
     require 'rails/all'
     require File.join( Rails.root.to_s, 'config/environment' )
 
-    begin_date = Date.today
+    begin_date = Date.today + from
     end_date = begin_date + days
 
     # Search meetings
