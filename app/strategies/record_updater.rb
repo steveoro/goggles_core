@@ -3,7 +3,7 @@
 =begin
 
 = RecordUpdater
-  - Goggles framework vers.:  4.00.807
+  - Goggles framework vers.:  6.100
   - author: Steve A.
 
  Strategy dedicated to the single task of updating or creating IndividualRecord rows
@@ -13,7 +13,7 @@
 
 =end
 class RecordUpdater
-  include SqlConverter
+  include SqlConvertable
 
   # If the logger has been specified, this will be the step of the logging process
   # (tipically, a single dot printed on the console)

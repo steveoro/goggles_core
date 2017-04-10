@@ -11,6 +11,8 @@ describe RecordUpdater, type: :strategy do
 
   subject { RecordUpdater.new() }
 
+  it_behaves_like( "SqlConvertable [subject: includee]" )
+
 
   context "[implemented methods]" do
     it_behaves_like( "(the existance of a method)",
