@@ -152,7 +152,7 @@ class RecordUpdater
   #
   def force_update_for_team_records( recordX4d_dao )
     return unless recordX4d_dao.instance_of?( RecordX4dDAO )
-    record_type = 'TTB'
+    record_type = RecordType.find_by_code('TTB')
     index = 0
 
     recordX4d_dao.records.each do |record_dao|
