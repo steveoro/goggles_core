@@ -182,7 +182,7 @@ class RecordUpdater
 
       else                                          # Record missing? => Insert record!
         new_record = IndividualRecord.new.from_individual_result( mir, record_type )
-        new_record.is_team_record = must_be_a_team_record
+        new_record.is_team_record = true
         begin
           is_ok = new_record.save!
         rescue
