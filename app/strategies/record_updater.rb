@@ -48,27 +48,30 @@ class RecordUpdater
   #
   def find_existing_record_for( result_row, must_be_a_team_record )
     record_type = RecordType.find_by_code( must_be_a_team_record ? 'TTB' : 'FOR' )
-    where_attribute_values = must_be_a_team_record ? {
-      pool_type_id:     result_row.pool_type.id,
-      event_type_id:    result_row.event_type.id,
-      category_type_id: result_row.category_type.id,
-      gender_type_id:   result_row.gender_type.id,
-      record_type_id:   record_type.id,
-      team_id:          result_row.team_id,
-      is_team_record:   true
-    } :
-    {
-      pool_type_id:     result_row.pool_type.id,
-      event_type_id:    result_row.event_type.id,
-      category_type_id: result_row.category_type.id,
-      gender_type_id:   result_row.gender_type.id,
-      record_type_id:   record_type.id,
-      # [Steve, 20150602] If it's not a "team record", then it must be a federation
-      # record (a season_type_id-governed record):
-      'season_types.id' => result_row.season_type.id,
-      is_team_record:   false
-    }
-    IndividualRecord.includes(:season_type).where( where_attribute_values ).first
+    if must_be_a_team_record
+      IndividualRecord.where(
+        pool_type_id:     result_row.pool_type.id,
+        event_type_id:    result_row.event_type.id,
+        category_type_id: result_row.category_type.id,
+        gender_type_id:   result_row.gender_type.id,
+        record_type_id:   record_type.id,
+        team_id:          result_row.team_id,
+        is_team_record:   true
+      ).first
+    else
+      IndividualRecord.includes(:season_type)
+        .where(
+          pool_type_id:     result_row.pool_type.id,
+          event_type_id:    result_row.event_type.id,
+          category_type_id: result_row.category_type.id,
+          gender_type_id:   result_row.gender_type.id,
+          record_type_id:   record_type.id,
+          # [Steve, 20150602] If it's not a "team record", then it must be a federation
+          # record (a season_type_id-governed record):
+          'season_types.id' => result_row.season_type.id,
+          is_team_record:   false
+        ).first
+    end
   end
 
 
@@ -134,6 +137,70 @@ class RecordUpdater
   #
   def scan_results_for_team_records( meeting_individual_result_list )
     scan_records_with( meeting_individual_result_list, true )
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
+
+  # Performs a low-level forced update of all the individual records enlisted in
+  # the specified recordX4d_dao.
+  #
+  # This method can be used update *only* the 'TTB'-type records if the personal-best
+  # have already been retrieved.
+  #
+  # The recordX4d_dao can be obtained using the dedicated TeamPersonalBestFinder strategy.
+  #
+  def force_update_for_team_records( recordX4d_dao )
+    return unless recordX4d_dao.instance_of?( RecordX4dDAO )
+    record_type = 'TTB'
+    index = 0
+
+    recordX4d_dao.records.each do |record_dao|
+      is_ok = true
+      mir   = record_dao.record
+      existing_record = find_existing_record_for( mir, true )
+
+      if existing_record                            # Existing record slot found?
+        if is_better( mir, existing_record )        # Better result? => Update record!
+          new_attribute_values = {
+            minutes:                      mir.minutes,
+            seconds:                      mir.seconds,
+            hundreds:                     mir.hundreds,
+            swimmer_id:                   mir.swimmer_id,
+            team_id:                      mir.team_id,
+            season_id:                    mir.season.id,
+            federation_type_id:           mir.federation_type.id,
+            meeting_individual_result_id: mir.id,
+            is_team_record:               true
+          }
+          is_ok = existing_record.update_attributes( new_attribute_values )
+          if is_ok                                  # Update the SQL diff:
+            @sql_executable_log << to_sql_update( existing_record, false, new_attribute_values, "\r\n" ) # (false: no comment)
+            @updated_records += 1
+          end
+        end
+
+      else                                          # Record missing? => Insert record!
+        new_record = IndividualRecord.new.from_individual_result( mir, record_type )
+        new_record.is_team_record = must_be_a_team_record
+        begin
+          is_ok = new_record.save!
+        rescue
+          puts "\r\nError while saving #{new_record.inspect}"
+          puts "Exception: #{ $!.to_s }" if $!
+          @sql_executable_log << "-- save statement failed! Row ID: #{new_record.id}\r\n"
+        end
+        if is_ok                                    # Update the SQL diff:
+          @sql_executable_log << to_sql_insert( new_record, false, "\r\n" ) # (false: no comment)
+          @added_records += 1
+        end
+      end
+                                                    # Log current progress in big steps:
+      index += 1
+      if ((index % LOG_PROGRESS_STEP) == 0) && @logger
+        @logger.infoc('.')
+      end
+    end
   end
   #-- -------------------------------------------------------------------------
   #++
