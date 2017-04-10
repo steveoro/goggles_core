@@ -66,7 +66,7 @@ describe FinCalendar, type: :model do
       it "contains the key tokens" do
         result = FinCalendar.calendar_unique_key( year, month, dates, place )
         expect( result ).to include( year.to_s )
-        normalized_month = FinCalendar::STANDARD_MONTH_NAMES.index( month.to_s.downcase.camelcase )
+        normalized_month = FinCalendar::STANDARD_MONTH_NAMES.index( month.to_s.downcase.camelcase ) + 1
         expect( result ).to include( normalized_month.to_s )
         expect( result ).to include( dates.to_s )
         normalized_place = place.gsub(/[\s\,\:\-\_\']/,'').downcase

@@ -20,7 +20,7 @@ class RecordUpdater
   LOG_PROGRESS_STEP = 10
 
   attr_writer :logger
-  attr_reader :sql_executable_log, :updated_records, :added_records
+  attr_reader :updated_records, :added_records
   #-- -------------------------------------------------------------------------
   #++
 
@@ -28,7 +28,7 @@ class RecordUpdater
   # Creates a new instance.
   #
   def initialize()
-    @sql_executable_log = ''                        # SQL diff log
+    sql_diff_text_log = ''                          # SQL diff log
     @updated_records = 0
     @added_records = 0
   end
@@ -175,7 +175,7 @@ class RecordUpdater
           }
           is_ok = existing_record.update_attributes( new_attribute_values )
           if is_ok                                  # Update the SQL diff:
-            @sql_executable_log << to_sql_update( existing_record, false, new_attribute_values, "\r\n" ) # (false: no comment)
+            sql_diff_text_log << to_sql_update( existing_record, false, new_attribute_values, "\r\n" ) # (false: no comment)
             @updated_records += 1
           end
         end
@@ -188,10 +188,10 @@ class RecordUpdater
         rescue
           puts "\r\nError while saving #{new_record.inspect}"
           puts "Exception: #{ $!.to_s }" if $!
-          @sql_executable_log << "-- save statement failed! Row ID: #{new_record.id}\r\n"
+          sql_diff_text_log << "-- save statement failed! Row ID: #{new_record.id}\r\n"
         end
         if is_ok                                    # Update the SQL diff:
-          @sql_executable_log << to_sql_insert( new_record, false, "\r\n" ) # (false: no comment)
+          sql_diff_text_log << to_sql_insert( new_record, false, "\r\n" ) # (false: no comment)
           @added_records += 1
         end
       end
@@ -233,7 +233,7 @@ class RecordUpdater
           }
           is_ok = existing_record.update_attributes( new_attribute_values )
           if is_ok                                  # Update the SQL diff:
-            @sql_executable_log << to_sql_update( existing_record, false, new_attribute_values, "\r\n" ) # (false: no comment)
+            sql_diff_text_log << to_sql_update( existing_record, false, new_attribute_values, "\r\n" ) # (false: no comment)
             @updated_records += 1
           end
         end
@@ -245,10 +245,10 @@ class RecordUpdater
         rescue
           puts "\r\nError while saving #{new_record.inspect}"
           puts "Exception: #{ $!.to_s }" if $!
-          @sql_executable_log << "-- save statement failed! Row ID: #{new_record.id}\r\n"
+          sql_diff_text_log << "-- save statement failed! Row ID: #{new_record.id}\r\n"
         end
         if is_ok                                    # Update the SQL diff:
-          @sql_executable_log << to_sql_insert( new_record, false, "\r\n" ) # (false: no comment)
+          sql_diff_text_log << to_sql_insert( new_record, false, "\r\n" ) # (false: no comment)
           @added_records += 1
         end
       end

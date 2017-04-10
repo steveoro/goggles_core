@@ -21,8 +21,7 @@ describe RecordUpdater, type: :strategy do
         :is_better,
         :scan_results_for_season_type_records,
         :scan_results_for_team_records,
-
-        :sql_executable_log,
+        :force_update_for_team_records,
         :updated_records, :added_records
       ]
     )
@@ -32,8 +31,8 @@ describe RecordUpdater, type: :strategy do
 
 
   describe "#initialize" do
-    it "clears the sql_executable_log" do
-      expect( subject.sql_executable_log ).to eq("")
+    it "clears the sql_diff_text_log" do
+      expect( subject.sql_diff_text_log ).to eq("")
     end
     it "clears the updated_records counter" do
       expect( subject.updated_records ).to eq(0)
@@ -183,10 +182,10 @@ describe RecordUpdater, type: :strategy do
       end
 
       it "updates the SQL executable log text with no INSERT statements" do
-        expect( test_subject.sql_executable_log ).not_to match(/INSERT\s/i)
+        expect( test_subject.sql_diff_text_log ).not_to match(/INSERT\s/i)
       end
       it "updates the SQL executable log text with no UPDATE statements" do
-        expect( test_subject.sql_executable_log ).not_to match(/UPDATE\s/i)
+        expect( test_subject.sql_diff_text_log ).not_to match(/UPDATE\s/i)
       end
     end
 
@@ -204,10 +203,10 @@ describe RecordUpdater, type: :strategy do
       end
 
       it "updates the SQL executable log text with no INSERT statements" do
-        expect( test_subject.sql_executable_log ).not_to match(/INSERT\s/i)
+        expect( test_subject.sql_diff_text_log ).not_to match(/INSERT\s/i)
       end
       it "updates the SQL executable log text with no UPDATE statements" do
-        expect( test_subject.sql_executable_log ).not_to match(/UPDATE\s/i)
+        expect( test_subject.sql_diff_text_log ).not_to match(/UPDATE\s/i)
       end
     end
 
@@ -227,12 +226,12 @@ describe RecordUpdater, type: :strategy do
       end
 
       it "updates the SQL executable log text with no INSERT statements" do
-        expect( test_subject.sql_executable_log ).not_to match(/INSERT\s/i)
+        expect( test_subject.sql_diff_text_log ).not_to match(/INSERT\s/i)
       end
       it "updates the SQL executable log text with UPDATE statements" do
-        expect( test_subject.sql_executable_log ).to match(/UPDATE\s/i)
+        expect( test_subject.sql_diff_text_log ).to match(/UPDATE\s/i)
 # DEBUG
-#        puts( "\r\nResulting SQL for updates:\r\n----8<----\r\n" + test_subject.sql_executable_log + "\r\n----8<----\r\n")
+#        puts( "\r\nResulting SQL for updates:\r\n----8<----\r\n" + test_subject.sql_diff_text_log + "\r\n----8<----\r\n")
       end
     end
 
@@ -257,15 +256,15 @@ describe RecordUpdater, type: :strategy do
       end
 
       it "updates the SQL executable log text with INSERT statements" do
-        expect( test_subject.sql_executable_log ).to match(/INSERT\s/i)
+        expect( test_subject.sql_diff_text_log ).to match(/INSERT\s/i)
 # DEBUG
-        puts( "\r\nResulting SQL for inserts:\r\n----8<----\r\n" + test_subject.sql_executable_log + "\r\n----8<----\r\n")
+        puts( "\r\nResulting SQL for inserts:\r\n----8<----\r\n" + test_subject.sql_diff_text_log + "\r\n----8<----\r\n")
       end
 # FIXME The following is failing randomly:
       it "updates the SQL executable log text with NO UPDATE statements" do
 # DEBUG
-        puts( "\r\nResulting SQL for UPDATE:\r\n----8<----\r\n" + test_subject.sql_executable_log + "\r\n----8<----\r\n")
-        expect( test_subject.sql_executable_log ).not_to match(/UPDATE\s/i)
+        puts( "\r\nResulting SQL for UPDATE:\r\n----8<----\r\n" + test_subject.sql_diff_text_log + "\r\n----8<----\r\n")
+        expect( test_subject.sql_diff_text_log ).not_to match(/UPDATE\s/i)
       end
     end
   end
@@ -296,10 +295,10 @@ describe RecordUpdater, type: :strategy do
       end
 
       it "updates the SQL executable log text with no INSERT statements" do
-        expect( test_subject.sql_executable_log ).not_to match(/INSERT\s/i)
+        expect( test_subject.sql_diff_text_log ).not_to match(/INSERT\s/i)
       end
       it "updates the SQL executable log text with no UPDATE statements" do
-        expect( test_subject.sql_executable_log ).not_to match(/UPDATE\s/i)
+        expect( test_subject.sql_diff_text_log ).not_to match(/UPDATE\s/i)
       end
     end
 
@@ -317,10 +316,10 @@ describe RecordUpdater, type: :strategy do
       end
 
       it "updates the SQL executable log text with no INSERT statements" do
-        expect( test_subject.sql_executable_log ).not_to match(/INSERT\s/i)
+        expect( test_subject.sql_diff_text_log ).not_to match(/INSERT\s/i)
       end
       it "updates the SQL executable log text with no UPDATE statements" do
-        expect( test_subject.sql_executable_log ).not_to match(/UPDATE\s/i)
+        expect( test_subject.sql_diff_text_log ).not_to match(/UPDATE\s/i)
       end
     end
 
@@ -340,12 +339,12 @@ describe RecordUpdater, type: :strategy do
       end
 
       it "updates the SQL executable log text with no INSERT statements" do
-        expect( test_subject.sql_executable_log ).not_to match(/INSERT\s/i)
+        expect( test_subject.sql_diff_text_log ).not_to match(/INSERT\s/i)
       end
       it "updates the SQL executable log text with UPDATE statements" do
-        expect( test_subject.sql_executable_log ).to match(/UPDATE\s/i)
+        expect( test_subject.sql_diff_text_log ).to match(/UPDATE\s/i)
 # DEBUG
-#        puts( "\r\nResulting SQL for updates:\r\n----8<----\r\n" + test_subject.sql_executable_log + "\r\n----8<----\r\n")
+#        puts( "\r\nResulting SQL for updates:\r\n----8<----\r\n" + test_subject.sql_diff_text_log + "\r\n----8<----\r\n")
       end
     end
 
@@ -377,12 +376,12 @@ describe RecordUpdater, type: :strategy do
       end
 
       it "updates the SQL executable log text with INSERT statements" do
-        expect( test_subject.sql_executable_log ).to match(/INSERT\s/i)
+        expect( test_subject.sql_diff_text_log ).to match(/INSERT\s/i)
 # DEBUG
-#        puts( "\r\nResulting SQL for inserts:\r\n----8<----\r\n" + test_subject.sql_executable_log + "\r\n----8<----\r\n")
+#        puts( "\r\nResulting SQL for inserts:\r\n----8<----\r\n" + test_subject.sql_diff_text_log + "\r\n----8<----\r\n")
       end
       it "updates the SQL executable log text with no UPDATE statements" do
-        expect( test_subject.sql_executable_log ).not_to match(/UPDATE\s/i)
+        expect( test_subject.sql_diff_text_log ).not_to match(/UPDATE\s/i)
       end
     end
   end
