@@ -72,4 +72,11 @@ class Badge < ApplicationRecord
   end
   #-- -------------------------------------------------------------------------
   #++
+
+  # Computes a verbose or formal description for the name associated with this data
+  def get_entry_time_type_code
+    entry_time_type ? entry_time_type.code : nil
+  end
+  #-- -------------------------------------------------------------------------
+  #++
 end

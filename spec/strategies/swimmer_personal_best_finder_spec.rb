@@ -326,10 +326,10 @@ describe SwimmerPersonalBestFinder, type: :strategy do
     # Test this feature with real data for praticity
     # Sure that Leega swam 25FA more than two times in 25 pool
     # and has been disqualified at least one time in 100MI (huncle dog)
-    describe "#is_personal_best," do
+    describe "#is_personal_best?," do
       it "returns a boolean" do
         result = active_swimmer.meeting_individual_results.order('RAND()').first
-        expect( subject.is_personal_best( result ) ).to eq( true ).or( eq( false ) )
+        expect( subject.is_personal_best?( result ) ).to eq( true ).or( eq( false ) )
       end
       it "returns true if personal best" do
         fix_swimmer = Swimmer.find(23)
@@ -338,21 +338,21 @@ describe SwimmerPersonalBestFinder, type: :strategy do
         fix_event_by_pool_type = EventsByPoolType.find_by_pool_and_event_codes('25', '50FA')
         updater.set_personal_best!( fix_event_by_pool_type )
         best_result = fix_sbf.get_best_mir_for_event( fix_event_by_pool_type.event_type, fix_event_by_pool_type.pool_type )
-        expect( fix_sbf.is_personal_best( best_result ) ).to eq( true )
+        expect( fix_sbf.is_personal_best?( best_result ) ).to eq( true )
       end
       it "returns false if not personal best" do
         fix_swimmer = Swimmer.find(23)
         fix_sbf     = SwimmerPersonalBestFinder.new( fix_swimmer )
         fix_event_by_pool_type = EventsByPoolType.find_by_pool_and_event_codes('25', '50FA')
         worst_result = fix_swimmer.meeting_individual_results.for_event_by_pool_type( fix_event_by_pool_type ).sort_by_timing('DESC').first
-        expect( fix_sbf.is_personal_best( worst_result ) ).to eq( false )
+        expect( fix_sbf.is_personal_best?( worst_result ) ).to eq( false )
       end
       it "returns false if disqualified" do
         fix_swimmer = Swimmer.find(23)
         fix_sbf     = SwimmerPersonalBestFinder.new( fix_swimmer )
         fix_event_by_pool_type = EventsByPoolType.find_by_pool_and_event_codes('25', '100MI')
         disqualified_result = fix_swimmer.meeting_individual_results.for_event_by_pool_type( fix_event_by_pool_type ).is_disqualified.first
-        expect( fix_sbf.is_personal_best( disqualified_result ) ).to eq( false )
+        expect( fix_sbf.is_personal_best?( disqualified_result ) ).to eq( false )
       end
     end
     #-- -----------------------------------------------------------------------
@@ -384,6 +384,39 @@ describe SwimmerPersonalBestFinder, type: :strategy do
         else
           expect( subject.get_best_timing_for_meeting( meeting, event.event_type, event.pool_type ) ).to be nil
         end
+      end
+    end
+    #-- -----------------------------------------------------------------------
+    #++
+
+
+    describe "#get_entry_best_timing," do
+      it "returns a timing instance if event already swam" do
+        fix_swimmer = Swimmer.find(23)
+        fix_sbf     = SwimmerPersonalBestFinder.new( fix_swimmer )
+        fix_meeting = Meeting.find(14201)
+        fix_event   = EventType.find_by_code('50FA')
+        fix_pool    = PoolType.find_by_code('25')
+        fix_badge   = create( :badge, entry_time_type: EntryTimeType.find_by_code( 'P' ) ) 
+        expect( fix_sbf.get_entry_best_timing( fix_badge, fix_meeting, fix_event, fix_pool ) ).to be_an_instance_of( Timing )
+      end
+      it "returns nil if event not already swam" do
+        fix_swimmer = Swimmer.find(23)
+        fix_sbf     = SwimmerPersonalBestFinder.new( fix_swimmer )
+        fix_meeting = Meeting.find(14201)
+        fix_event   = EventType.find_by_code('100MI')
+        fix_pool    = PoolType.find_by_code('50')
+        fix_badge   = fix_swimmer.badges.where( :season => 142 ).first 
+        expect( fix_sbf.get_entry_best_timing( fix_badge, fix_meeting, fix_event, fix_pool ) ).to be_nil
+      end
+      it "returns nil if manual mode" do
+        fix_swimmer = Swimmer.find(23)
+        fix_sbf     = SwimmerPersonalBestFinder.new( fix_swimmer )
+        fix_meeting = Meeting.find(14201)
+        fix_event   = EventType.find_by_code('100MI')
+        fix_pool    = PoolType.find_by_code('50')
+        fix_badge   = create( :badge, entry_time_type: EntryTimeType.find_by_code( 'M' ) ) 
+        expect( fix_sbf.get_entry_best_timing( fix_badge, fix_meeting, fix_event, fix_pool ) ).to be_nil
       end
     end
     #-- -----------------------------------------------------------------------
