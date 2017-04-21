@@ -269,7 +269,7 @@ class SwimmerPersonalBestFinder
     best_mir = nil
     found_timing = nil
 
-    # Perform check only if not in maual mode and swimmer already swam event type    
+    # Perform check only if not in manual mode and swimmer already swam event type    
     if badge && badge.get_entry_time_type_code != 'M' && @swimmer.meeting_individual_results.for_event_type( event_type ) 
       # Use badge setting to determiinate what kind of best to use
       case badge.get_entry_time_type_code
@@ -285,10 +285,28 @@ class SwimmerPersonalBestFinder
       else       # Personal best
         best_mir = get_best_mir_for_event( event_type, pool_type )
       end
-    end
     
-    # TODO
-    # If not found and convert_pool_type set check for other pool_type
+      # TODO
+      # If not found and convert_pool_type set check for other pool_type
+      if best_mir == nil && convert_pool_type
+        pool_type = pool_type.code = '25' ? PoolType.find_by_code('50') : PoolType.find_by_code('25')
+        case badge.get_entry_time_type_code
+        when 'U'   # Last swam
+          best_mir = get_last_mir_for_event( event_type, pool_type ) 
+        when 'G'   # Goggle Cup or last swam
+          best_mir = nil # TODO
+          best_mir = get_last_mir_for_event( event_type, pool_type ) if !best_mir 
+        when 'A'   # Previous meeting edition (or Goggle Cup or last swam)
+          best_mir = get_best_mir_for_meeting( meeting, event_type, pool_type )
+          # TODO goggle cup if nil
+          best_mir = get_last_mir_for_event( event_type, pool_type ) if !best_mir 
+        else       # Personal best
+          best_mir = get_best_mir_for_event( event_type, pool_type )
+        end
+        
+        #TODO Convert timing
+      end
+    end
     
     best_mir ? best_mir.get_timing_instance : nil
   end
