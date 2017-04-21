@@ -101,7 +101,8 @@ describe SwimmerPersonalBestUpdater, type: :strategy do
         event = EventsByPoolType.not_relays.order('RAND()').first
         if subject_swimmer.meeting_individual_results.for_event_by_pool_type( event ).is_not_disqualified.count > 0
           expect( subject.set_personal_best!( event ) ).to eq(
-            subject.get_best_for_event( event.event_type, event.pool_type )
+            SwimmerPersonalBestFinder.new( subject_swimmer )
+              .get_best_for_event( event.event_type, event.pool_type )
           )
           expect( subject.set_personal_best!( event ) ).to eq(
             subject_swimmer.meeting_individual_results.for_event_by_pool_type( event ).is_not_disqualified.sort_by_timing( :asc ).first.get_timing_instance
