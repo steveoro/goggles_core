@@ -30,7 +30,6 @@ class Badge < ApplicationRecord
 
   has_many :meeting_individual_results
   has_many :passages
-  has_many :goggle_cup_standards
   has_many :meetings,    through: :meeting_individual_results
 
   validates_presence_of   :number, length: { within: 1..40 }, allow_nil: false
@@ -73,9 +72,10 @@ class Badge < ApplicationRecord
   #-- -------------------------------------------------------------------------
   #++
 
-  # Computes a verbose or formal description for the name associated with this data
+  # Get entry time type.
+  # Return 'M' (manual) if not set
   def get_entry_time_type_code
-    entry_time_type ? entry_time_type.code : nil
+    entry_time_type ? entry_time_type.code : 'M'
   end
   #-- -------------------------------------------------------------------------
   #++

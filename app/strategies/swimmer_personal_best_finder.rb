@@ -267,17 +267,18 @@ class SwimmerPersonalBestFinder
   #
   def get_entry_best_timing( badge, meeting, event_type, pool_type, convert_pool_type = false )
     best_mir = nil
+    found_timing = nil
 
     # Perform check only if not in maual mode and swimmer already swam event type    
-    if badge && @swimmer.meeting_individual_results.for_event_type( event_type ) 
-     # Use badge setting to determiinate what kind of best to use
+    if badge && badge.get_entry_time_type_code != 'M' && @swimmer.meeting_individual_results.for_event_type( event_type ) 
+      # Use badge setting to determiinate what kind of best to use
       case badge.get_entry_time_type_code
       when 'U'   # Last swam
         best_mir = get_last_mir_for_event( event_type, pool_type ) 
       when 'G'   # Goggle Cup or last swam
         best_mir = nil # TODO
         best_mir = get_last_mir_for_event( event_type, pool_type ) if !best_mir 
-      when 'M'   # Previous meeting edition (or Goggle Cup or last swam)
+      when 'A'   # Previous meeting edition (or Goggle Cup or last swam)
         best_mir = get_best_mir_for_meeting( meeting, event_type, pool_type )
         # TODO goggle cup if nil
         best_mir = get_last_mir_for_event( event_type, pool_type ) if !best_mir 

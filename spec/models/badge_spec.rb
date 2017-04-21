@@ -46,7 +46,8 @@ describe Badge, :type => :model do
     context "[general methods]" do
       it_behaves_like( "(the existance of a method returning non-empty strings)", [
         :get_full_name,
-        :get_verbose_name
+        :get_verbose_name,
+        :get_entry_time_type_code
       ])
     end
   end
