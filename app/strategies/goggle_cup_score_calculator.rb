@@ -60,7 +60,7 @@ class GoggleCupScoreCalculator
     else
       # Create e new goggle cup standard
       @current_goggle_cup_standard = new_goggle_cup_standard( time_swam )
-      @current_goggle_cup_standard? true : false
+      @current_goggle_cup_standard ? true : false
     end    
   end
   #-- --------------------------------------------------------------------------
