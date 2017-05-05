@@ -267,7 +267,7 @@ class SwimmerPersonalBestFinder
   #
   def get_entry_best_timing( badge, meeting, event_type, pool_type, convert_pool_type = false )
     best_mir = nil
-    found_timing = nil
+    time_converted = nil
 
     # Perform check only if not in manual mode and swimmer already swam event type    
     if badge && badge.get_entry_time_type_code != 'M' && @swimmer.meeting_individual_results.for_event_type( event_type ) 
@@ -304,11 +304,18 @@ class SwimmerPersonalBestFinder
           best_mir = get_best_mir_for_event( event_type, pool_type )
         end
         
-        #TODO Convert timing
+        # Convert timing
+        timing_converter = TimingCourseConverter.new( meeting.season )
+        if timing_converter.is_conversion_possible?( best_mir.gender_type, best_mir.event_type )
+          time_converted = pool_type.code = '25' ? 
+           timing_converter.convert_time_to_long( best_mir.get_timing_instance, best_mir.gender_type, best_mir.event_type ) :
+           timing_converter.convert_time_to_short( best_mir.get_timing_instance, best_mir.gender_type, best_mir.event_type )
+        end
       end
     end
-    
-    best_mir ? best_mir.get_timing_instance : nil
+
+    time_converted ? time_converted :     
+     best_mir ? best_mir.get_timing_instance : nil
   end
   #-- --------------------------------------------------------------------------
   #++

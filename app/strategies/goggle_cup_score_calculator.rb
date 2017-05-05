@@ -9,6 +9,7 @@ require 'wrappers/timing'
 # @version  4.00.444
 #
 class GoggleCupScoreCalculator
+  include SqlConvertable
 
   # Initialization
   #
@@ -106,6 +107,8 @@ class GoggleCupScoreCalculator
   # Assumes the goggle cup standard doesn't exists
   #
   def new_goggle_cup_standard( time_swam )
+    sql_diff_text_log << "-- Creating time standards for #{@swimmer.get_full_name}\r\n"
+
     goggle_cup_standard = GoggleCupStandard.new()
     goggle_cup_standard.goggle_cup_id = @goggle_cup.id
     goggle_cup_standard.swimmer_id    = @swimmer.id
@@ -115,6 +118,10 @@ class GoggleCupScoreCalculator
     goggle_cup_standard.seconds       = time_swam.seconds
     goggle_cup_standard.hundreds      = time_swam.hundreds
     goggle_cup_standard.save
+
+    comment = "#{@event_type.code}-#{@pool_type.code}: #{time_swam.to_s}"
+    sql_diff_text_log << to_sql_insert( goggle_cup_standard, false, "\r\n", comment )
+
     goggle_cup_standard
   end
 
@@ -122,9 +129,19 @@ class GoggleCupScoreCalculator
   # Assumes the goggle cup standard exists
   #
   def update_goggle_cup_standard( time_swam )
+    sql_attributes = {}
+    sql_diff_text_log << "-- Updating time standards for #{@swimmer.get_full_name}\r\n"
+
     @current_goggle_cup_standard.minutes  = time_swam.minutes
     @current_goggle_cup_standard.seconds  = time_swam.seconds
     @current_goggle_cup_standard.hundreds = time_swam.hundreds
+
+    sql_attributes['minutes']   = time_swam.minutes
+    sql_attributes['seconds']   = time_swam.seconds
+    sql_attributes['hundreds']  = time_swam.hundreds
+    comment = "#{@event_type.code}-#{@pool_type.code}: #{time_swam.to_s}"
+    sql_diff_text_log << to_sql_update( @current_goggle_cup_standard, false, sql_attributes, "\r\n", comment )   
+
     @current_goggle_cup_standard.save
   end
   #-- --------------------------------------------------------------------------
