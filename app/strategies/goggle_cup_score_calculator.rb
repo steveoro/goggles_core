@@ -38,6 +38,7 @@ class GoggleCupScoreCalculator
     @swimmer = swimmer
     @pool_type = pool_type
     @event_type = event_type
+    @standards_updated = false
   end
   #-- --------------------------------------------------------------------------
   #++
@@ -48,6 +49,13 @@ class GoggleCupScoreCalculator
 
   def get_goggle_cup_score( time_swam )
     @goggle_cup_score ||= compute_goggle_cup_score( time_swam )
+  end
+  #-- --------------------------------------------------------------------------
+  #++
+
+  # Return true if calculation has determinated the standard time update
+  def are_goggle_cup_standards_updated?
+    @standards_updated
   end
   #-- --------------------------------------------------------------------------
   #++
@@ -107,7 +115,7 @@ class GoggleCupScoreCalculator
   # Assumes the goggle cup standard doesn't exists
   #
   def new_goggle_cup_standard( time_swam )
-    sql_diff_text_log << "-- Creating time standards for #{@swimmer.get_full_name}\r\n"
+    sql_diff_text_log << "-- Creating time standard for #{@swimmer.get_full_name}\r\n"
 
     goggle_cup_standard = GoggleCupStandard.new()
     goggle_cup_standard.goggle_cup_id = @goggle_cup.id
@@ -121,6 +129,7 @@ class GoggleCupScoreCalculator
 
     comment = "#{@event_type.code}-#{@pool_type.code}: #{time_swam.to_s}"
     sql_diff_text_log << to_sql_insert( goggle_cup_standard, false, "\r\n", comment )
+    @standards_updated = true
 
     goggle_cup_standard
   end
@@ -130,7 +139,7 @@ class GoggleCupScoreCalculator
   #
   def update_goggle_cup_standard( time_swam )
     sql_attributes = {}
-    sql_diff_text_log << "-- Updating time standards for #{@swimmer.get_full_name}\r\n"
+    sql_diff_text_log << "-- Updating time standard for #{@swimmer.get_full_name}\r\n"
 
     @current_goggle_cup_standard.minutes  = time_swam.minutes
     @current_goggle_cup_standard.seconds  = time_swam.seconds
@@ -141,6 +150,7 @@ class GoggleCupScoreCalculator
     sql_attributes['hundreds']  = time_swam.hundreds
     comment = "#{@event_type.code}-#{@pool_type.code}: #{time_swam.to_s}"
     sql_diff_text_log << to_sql_update( @current_goggle_cup_standard, false, sql_attributes, "\r\n", comment )   
+    @standards_updated = true
 
     @current_goggle_cup_standard.save
   end

@@ -138,6 +138,14 @@ describe GoggleCupScoreCalculator, type: :strategy do
           fix_new_standard.set_goggle_cup_standard( fix_time_swam )
           expect( fix_new_standard.get_goggle_cup_standard.get_timing_instance.to_hundreds ).to eq( fix_time_swam.to_hundreds )
         end
+        it "sets true are_goggle_cup_standards_updated?" do
+          fix_new_standard.set_goggle_cup_standard( fix_time_swam )
+          expect( fix_new_standard.are_goggle_cup_standards_updated? ).to be( true )
+        end
+        it "creates sql diff for insertion" do
+          subject.set_goggle_cup_standard( fix_time_swam )
+          expect( subject.sql_diff_text_log ).to include( 'Creating time standard for' )
+        end
       end
 
       context "goggle cup standard already exists" do
@@ -160,6 +168,25 @@ describe GoggleCupScoreCalculator, type: :strategy do
           subject.set_goggle_cup_standard( fix_time_swam )
           expect( subject.get_goggle_cup_standard.get_timing_instance.to_hundreds ).to eq( fix_time_swam.to_hundreds )
         end
+        it "sets true are_goggle_cup_standards_updated?" do
+          subject.set_goggle_cup_standard( fix_time_swam )
+          expect( subject.are_goggle_cup_standards_updated? ).to be( true )
+        end
+        it "creates sql diff for update" do
+          subject.set_goggle_cup_standard( fix_time_swam )
+          expect( subject.sql_diff_text_log ).to include( 'Updating time standard for' )
+        end
+      end
+    end
+    #-- -----------------------------------------------------------------------
+    #++
+
+    describe "#are_goggle_cup_standards_updated?," do
+      it "responds to are_goggle_cup_standards_updated? methods" do
+        expect(subject).to respond_to(:are_goggle_cup_standards_updated?)
+      end
+      it "returns false if no calculation done" do
+        expect( subject.are_goggle_cup_standards_updated? ).to be( false )
       end
     end
     #-- -----------------------------------------------------------------------

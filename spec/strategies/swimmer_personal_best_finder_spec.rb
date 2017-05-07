@@ -418,6 +418,31 @@ describe SwimmerPersonalBestFinder, type: :strategy do
         fix_badge   = create( :badge, entry_time_type: EntryTimeType.find_by_code( 'M' ) ) 
         expect( fix_sbf.get_entry_best_timing( fix_badge, fix_meeting, fix_event, fix_pool ) ).to be_nil
       end
+      it "returns converted time if event not already swam in given pool type, but in other pool_type" do
+        fix_swimmer = Swimmer.find(23)
+        fix_sbf     = SwimmerPersonalBestFinder.new( fix_swimmer )
+        fix_meeting = Meeting.find(15101)
+        fix_event   = EventType.find_by_code('100MI')
+        fix_pool    = PoolType.find_by_code('50')
+        other_pool  = PoolType.find_by_code('25')
+        fix_badge   = fix_swimmer.badges.where( :season => 151 ).first 
+        expect( fix_sbf.get_entry_best_timing( fix_badge, fix_meeting, fix_event, other_pool ) ).to be_an_instance_of( Timing )
+        expect( fix_sbf.get_entry_best_timing( fix_badge, fix_meeting, fix_event, fix_pool, true ) ).to be_an_instance_of( Timing )
+      end
+      # Use Leega with FIN events
+      it "returns a time if swimmer swam event type in any pool type" do
+        fix_swimmer = Swimmer.find(23)
+        fix_sbf     = SwimmerPersonalBestFinder.new( fix_swimmer )
+        fix_meeting = Meeting.find(15101)
+        fix_badge   = fix_swimmer.badges.where( :season => 151 ).first
+        PoolType.only_for_meetings.each do |fix_pool|
+          EventType.are_not_relays.for_fin_calculation.each do |fix_event|
+            # debug
+            #puts fix_pool.code + '-' + fix_event.code  
+            expect( fix_sbf.get_entry_best_timing( fix_badge, fix_meeting, fix_event, fix_pool, true ) ).to be_an_instance_of( Timing )
+          end
+        end
+      end
     end
     #-- -----------------------------------------------------------------------
     #++

@@ -270,52 +270,63 @@ class SwimmerPersonalBestFinder
     time_converted = nil
 
     # Perform check only if not in manual mode and swimmer already swam event type    
-    if badge && badge.get_entry_time_type_code != 'M' && @swimmer.meeting_individual_results.for_event_type( event_type ) 
-      # Use badge setting to determiinate what kind of best to use
-      case badge.get_entry_time_type_code
-      when 'U'   # Last swam
-        best_mir = get_last_mir_for_event( event_type, pool_type ) 
-      when 'G'   # Goggle Cup or last swam
-        best_mir = nil # TODO
-        best_mir = get_last_mir_for_event( event_type, pool_type ) if !best_mir 
-      when 'A'   # Previous meeting edition (or Goggle Cup or last swam)
-        best_mir = get_best_mir_for_meeting( meeting, event_type, pool_type )
-        # TODO goggle cup if nil
-        best_mir = get_last_mir_for_event( event_type, pool_type ) if !best_mir 
-      else       # Personal best
-        best_mir = get_best_mir_for_event( event_type, pool_type )
-      end
+    if badge && badge.get_entry_time_type_code != 'M' && @swimmer.meeting_individual_results.for_event_type( event_type )
+      best_mir = retrieve_entry_time_by_type( badge.get_entry_time_type_code, meeting, event_type, pool_type ) 
     
-      # TODO
       # If not found and convert_pool_type set check for other pool_type
       if best_mir == nil && convert_pool_type
-        pool_type = pool_type.code = '25' ? PoolType.find_by_code('50') : PoolType.find_by_code('25')
-        case badge.get_entry_time_type_code
-        when 'U'   # Last swam
-          best_mir = get_last_mir_for_event( event_type, pool_type ) 
-        when 'G'   # Goggle Cup or last swam
-          best_mir = nil # TODO
-          best_mir = get_last_mir_for_event( event_type, pool_type ) if !best_mir 
-        when 'A'   # Previous meeting edition (or Goggle Cup or last swam)
-          best_mir = get_best_mir_for_meeting( meeting, event_type, pool_type )
-          # TODO goggle cup if nil
-          best_mir = get_last_mir_for_event( event_type, pool_type ) if !best_mir 
-        else       # Personal best
-          best_mir = get_best_mir_for_event( event_type, pool_type )
-        end
+        pool_type = pool_type.code == '25' ? PoolType.find_by_code('50') : PoolType.find_by_code('25')
+        best_mir = retrieve_entry_time_by_type( badge.get_entry_time_type_code, meeting, event_type, pool_type )
         
         # Convert timing
-        timing_converter = TimingCourseConverter.new( meeting.season )
-        if timing_converter.is_conversion_possible?( best_mir.gender_type, best_mir.event_type )
-          time_converted = pool_type.code = '25' ? 
-           timing_converter.convert_time_to_long( best_mir.get_timing_instance, best_mir.gender_type, best_mir.event_type ) :
-           timing_converter.convert_time_to_short( best_mir.get_timing_instance, best_mir.gender_type, best_mir.event_type )
+        if best_mir
+          timing_converter = TimingCourseConverter.new( meeting.season )
+          if timing_converter.is_conversion_possible?( best_mir.gender_type, best_mir.event_type )
+            time_converted = pool_type.code == '25' ? 
+             timing_converter.convert_time_to_long( best_mir.get_timing_instance, best_mir.gender_type, best_mir.event_type ) :
+             timing_converter.convert_time_to_short( best_mir.get_timing_instance, best_mir.gender_type, best_mir.event_type )
+          end
         end
       end
     end
 
     time_converted ? time_converted :     
      best_mir ? best_mir.get_timing_instance : nil
+  end
+  
+  # Retrieve the appropriate entry time
+  # according to the given entry type
+  # Assuming that algorithm having those entry time types:
+  #  M->Manual (Nothing to do)
+  #  P->Personal best
+  #  U->Last result
+  #  G->GoggleCup standard time (current GoggleCup)
+  #  A->Previous edition of same meeting
+  #  
+  #  In a first approach could be the reverse order of the types shown above.
+  #  So if "A" but not present, use "G"
+  #  If "G" but not present, use "U"
+  #  If "U" but not present, use "P" (that's surely not present, so use "M")
+  #  If "P" but not present, use "M"
+  #  If "M" step out of my balls
+  def retrieve_entry_time_by_type( entry_time_type_code, meeting, event_type, pool_type )
+    best_mir = nil
+    
+    case entry_time_type_code
+    when 'U'   # Last swam
+      best_mir = get_last_mir_for_event( event_type, pool_type ) 
+    when 'G'   # Goggle Cup or last swam
+      best_mir = nil # TODO - Use Google cup standard
+      best_mir = get_last_mir_for_event( event_type, pool_type ) if !best_mir 
+    when 'A'   # Previous meeting edition (or Goggle Cup or last swam)
+      best_mir = get_best_mir_for_meeting( meeting, event_type, pool_type )
+      # TODO goggle cup if nil
+      best_mir = get_last_mir_for_event( event_type, pool_type ) if !best_mir 
+    else       # Personal best
+      best_mir = get_best_mir_for_event( event_type, pool_type )
+    end
+    
+    best_mir
   end
   #-- --------------------------------------------------------------------------
   #++
