@@ -167,6 +167,31 @@ describe Swimmer, :type => :model do
     #-- -----------------------------------------------------------------------
     #++
 
+    describe "#get_swimmer_age" do
+      it "returns a number" do
+        expect( subject.get_swimmer_age ).to be > 0
+      end
+      it "returns the years between swimmer year of birth and current date" do
+        year_of_birth = subject.year_of_birth
+        today = Date.today
+        year_of_date = today.year
+        expect( year_of_birth ).to be >= 1900
+        expect( year_of_date ).to be > year_of_birth
+        #expect( subject.get_swimmer_age( today ) ).to be_equal( year_of_date - year_of_birth )
+        expect( subject.get_swimmer_age ).to be_equal( year_of_date - year_of_birth )
+      end
+      it "returns the years between swimmer year of birth and given date" do
+        year_of_birth = subject.year_of_birth
+        given_date = Date.parse("#{ 2010 + ((rand * 100) % 15).to_i }-09-01")
+        year_of_date = given_date.year
+        expect( year_of_birth ).to be >= 1900
+        expect( year_of_date ).to be > year_of_birth
+        expect( subject.get_swimmer_age( given_date ) ).to be_equal( year_of_date - year_of_birth )
+      end
+    end
+    #-- -----------------------------------------------------------------------
+    #++
+
     # TODO Add more specs for all the other methods
   end
   #-- -------------------------------------------------------------------------

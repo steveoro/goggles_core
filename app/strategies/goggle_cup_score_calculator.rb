@@ -75,6 +75,24 @@ class GoggleCupScoreCalculator
   #-- --------------------------------------------------------------------------
   #++
 
+  # Determinates swimmer modifiers
+  # The modifiers should be applied to goggle cup scores
+  # If swimmer age is less tha 20 modifier = -10
+  # If swimmer age is more than 60 modifier = +5
+  # The swimemr age is calculated at the end year of goggle_cup
+  def get_swimmer_modifier
+    modifier = 0.0
+    age = @swimmer.get_swimmer_age( @goggle_cup.get_end_date )
+    if age < 20
+      modifier = -10.0
+    else
+      if age > 60
+        modifier = 5.0
+      end
+    end
+    modifier
+  end
+
   private
 
   # Retrieves the standard goggle cup time for a given swimmer, pool_type and event_type
@@ -98,14 +116,22 @@ class GoggleCupScoreCalculator
       # Retrieves the time standard
       get_goggle_cup_standard
       if @current_goggle_cup_standard && @current_goggle_cup_standard.get_timing_instance.to_hundreds > 0
-        # Calculate the score with 2 decimals fixed
+        # Calculate the score
         goggle_cup_score = @current_goggle_cup_standard.get_timing_instance.to_hundreds.to_f * @goggle_cup.max_points / time_swam.to_hundreds.to_f
+        
+        # Check if modifiers should be applied
+        modifier = get_swimmer_modifier
+        if modifier != 0.0
+          #goggle_cup_score = goggle_cup_score * (modifier / 100)
+        end
       else
         # Without time standard the score is always GoggleCupMaxPoints
         goggle_cup_score = @goggle_cup.max_points
         @current_goggle_cup_standard = new_goggle_cup_standard( time_swam )
       end
     end
+    
+    # The score is always with 2 decimals fixed
     goggle_cup_score.round( 2 )
   end
   #-- --------------------------------------------------------------------------

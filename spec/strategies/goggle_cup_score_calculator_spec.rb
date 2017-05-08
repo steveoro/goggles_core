@@ -182,11 +182,48 @@ describe GoggleCupScoreCalculator, type: :strategy do
     #++
 
     describe "#are_goggle_cup_standards_updated?," do
-      it "responds to are_goggle_cup_standards_updated? methods" do
+      it "responds to are_goggle_cup_standards_updated? method" do
         expect(subject).to respond_to(:are_goggle_cup_standards_updated?)
       end
       it "returns false if no calculation done" do
         expect( subject.are_goggle_cup_standards_updated? ).to be( false )
+      end
+    end
+    #-- -----------------------------------------------------------------------
+    #++
+
+    describe "#get_swimmer_modifier," do
+      it "responds to get_swimmer_modifier method" do
+        expect(subject).to respond_to(:get_swimmer_modifier)
+      end
+      it "returns a number" do
+        expect( subject.get_swimmer_modifier ).to be_a_kind_of( Float )
+      end
+      it "returns 0.0 if swimmer age between 20 and 60" do
+        age = (21 + ((rand * 39) % 39).to_i) 
+        expect( age ).to be > 20
+        expect( age ).to be < 60
+        normal_swimmer = create(:swimmer, year_of_birth: ( fix_goggle_cup.end_date.year - age ) )
+        expect( normal_swimmer.get_swimmer_age(fix_goggle_cup.end_date) ).to be > 20
+        expect( normal_swimmer.get_swimmer_age(fix_goggle_cup.end_date) ).to be < 60
+        fix_gc = GoggleCupScoreCalculator.new( fix_goggle_cup, normal_swimmer, fix_pool_type, fix_event_type )
+        expect( fix_gc.get_swimmer_modifier ).to be_equal( 0.0 )
+      end
+      it "returns 5.0 if swimmer age more than 60" do
+        age = (61 + ((rand * 30) % 30).to_i) 
+        expect( age ).to be > 60
+        old_swimmer = create(:swimmer, year_of_birth: ( fix_goggle_cup.end_date.year - age ) )
+        expect( old_swimmer.get_swimmer_age(fix_goggle_cup.end_date) ).to be > 60
+        fix_gc = GoggleCupScoreCalculator.new( fix_goggle_cup, old_swimmer, fix_pool_type, fix_event_type )
+        expect( fix_gc.get_swimmer_modifier ).to be_equal( 5.0 )
+      end
+      it "returns -10.0 if swimmer age less than 20" do
+        age = (10 + ((rand * 10) % 10).to_i) 
+        expect( age ).to be < 20
+        young_swimmer = create(:swimmer, year_of_birth: ( fix_goggle_cup.end_date.year - age ) )
+        expect( young_swimmer.get_swimmer_age(fix_goggle_cup.end_date) ).to be < 20
+        fix_gc = GoggleCupScoreCalculator.new( fix_goggle_cup, young_swimmer, fix_pool_type, fix_event_type )
+        expect( fix_gc.get_swimmer_modifier ).to be_equal( -10.0 )
       end
     end
     #-- -----------------------------------------------------------------------

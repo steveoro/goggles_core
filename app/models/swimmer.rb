@@ -146,6 +146,13 @@ class Swimmer < ApplicationRecord
   #-- -------------------------------------------------------------------------
   #++
 
+  # Calculate the swimemr age at a given date year
+  def get_swimmer_age( date = Date.today )
+    date.year - year_of_birth
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
   # Returns the array of distinct team names associated to the specified swimmer_id.
   # An empty array when not found.
   #
