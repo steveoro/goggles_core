@@ -39,6 +39,15 @@ class GoggleCupScoreCalculator
     @pool_type = pool_type
     @event_type = event_type
     @standards_updated = false
+    
+    # TODO
+    # Store that values on DB
+    @age_for_negative_modifier = 20
+    @negative_modifier = -10.0
+    @age_for_positive_modifier = 60
+    @positive_modifier = 5.0
+    @has_to_create_standards = true
+    @has_to_update_standards = false
   end
   #-- --------------------------------------------------------------------------
   #++
@@ -83,11 +92,11 @@ class GoggleCupScoreCalculator
   def get_swimmer_modifier
     modifier = 0.0
     age = @swimmer.get_swimmer_age( @goggle_cup.get_end_date )
-    if age < 20
-      modifier = -10.0
+    if age < @age_for_negative_modifier
+      modifier = @negative_modifier
     else
-      if age > 60
-        modifier = 5.0
+      if age > @age_for_positive_modifier
+        modifier = @positive_modifier
       end
     end
     modifier
@@ -127,7 +136,7 @@ class GoggleCupScoreCalculator
       else
         # Without time standard the score is always GoggleCupMaxPoints
         goggle_cup_score = @goggle_cup.max_points
-        @current_goggle_cup_standard = new_goggle_cup_standard( time_swam )
+        @current_goggle_cup_standard = new_goggle_cup_standard( time_swam ) if @has_to_create_standards
       end
     end
     
