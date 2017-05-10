@@ -2,15 +2,23 @@ require 'rails_helper'
 
 
 describe GoggleCupScoreCalculator, type: :strategy do
-  let( :fix_goggle_cup )    { create(:goggle_cup) }
-  let( :fix_swimmer )       { create(:swimmer) }
-  let( :fix_pool_type )     { PoolType.only_for_meetings.sample }
-  let( :fix_event_type )    { EventType.are_not_relays.order('RAND()').first }
+  let( :fix_goggle_cup )     { create(:goggle_cup) }
+
+  let( :regular_age_range )  { fix_goggle_cup.age_for_positive_modifier - fix_goggle_cup.age_for_negative_modifier } 
+  let( :regular_age )        { fix_goggle_cup.age_for_negative_modifier + (rand * (regular_age_range - 1)).to_i + 1 } 
+  let( :old_age )            { fix_goggle_cup.age_for_positive_modifier + ((rand * 30) % 30).to_i + 1 } 
+  let( :young_age )          { fix_goggle_cup.age_for_negative_modifier - ((rand * 10) % 10).to_i - 1 } 
+
+  let( :fix_swimmer )        { create(:swimmer, year_of_birth: fix_goggle_cup.get_end_date.year - regular_age ) }
+  let( :old_aged_swimmer )   { create(:swimmer, year_of_birth: ( fix_goggle_cup.end_date.year - old_age ) ) }
+  let( :young_aged_swimmer ) { create(:swimmer, year_of_birth: ( fix_goggle_cup.end_date.year - young_age ) ) }
+
+  let( :fix_pool_type )      { PoolType.only_for_meetings.sample }
+  let( :fix_event_type )     { EventType.are_not_relays.sample }
 
   subject do
     GoggleCupScoreCalculator.new( fix_goggle_cup, fix_swimmer, fix_pool_type, fix_event_type )
   end
-
 
   context "with wrong parameters" do
     it "raises an error (with wrong goggle_cup)" do
@@ -30,6 +38,21 @@ describe GoggleCupScoreCalculator, type: :strategy do
   #++
 
   context "with requested parameters" do
+    describe "let parameter verify," do
+      it "be values in expectd range" do
+        expect( regular_age ).to be > fix_goggle_cup.age_for_negative_modifier
+        expect( regular_age ).to be < fix_goggle_cup.age_for_positive_modifier
+        expect( fix_swimmer.get_swimmer_age(fix_goggle_cup.end_date) ).to be > fix_goggle_cup.age_for_negative_modifier
+        expect( fix_swimmer.get_swimmer_age(fix_goggle_cup.end_date) ).to be < fix_goggle_cup.age_for_positive_modifier
+
+        expect( old_age ).to be > fix_goggle_cup.age_for_positive_modifier
+        expect( old_aged_swimmer.get_swimmer_age(fix_goggle_cup.end_date) ).to be > fix_goggle_cup.age_for_positive_modifier
+
+        expect( young_age ).to be < fix_goggle_cup.age_for_positive_modifier
+        expect( young_aged_swimmer.get_swimmer_age(fix_goggle_cup.end_date) ).to be < fix_goggle_cup.age_for_positive_modifier
+      end
+    end
+    
     describe "#get_goggle_cup_standard," do
       it "responds to get_goggle_cup_standard methods" do
         expect(subject).to respond_to(:get_goggle_cup_standard)
@@ -54,14 +77,6 @@ describe GoggleCupScoreCalculator, type: :strategy do
 
     describe "#get_goggle_cup_score," do
       let( :fix_time_swam )  { Timing.new(((rand * 99) % 99).to_i + 1, ((rand * 59) % 59).to_i + 1, ((rand * 10) % 10).to_i) }
-      before(:each) do
-        create(:goggle_cup_standard,
-          goggle_cup_id: fix_goggle_cup.id,
-          swimmer_id:    fix_swimmer.id,
-          event_type_id: fix_event_type.id,
-          pool_type_id:  fix_pool_type.id
-        ) if subject.get_goggle_cup_standard.nil?
-      end
       it "responds to #get_goggle_cup_score" do
         expect(subject).to respond_to(:get_goggle_cup_score)
       end
@@ -72,17 +87,28 @@ describe GoggleCupScoreCalculator, type: :strategy do
       #++
 
       context "goggle cup standard present" do
-        it "checks for correct calculation for goggle cup standard present better than time swam" do
-          worst_time_swam = Timing.new( subject.get_goggle_cup_standard.get_timing_instance.to_hundreds + 150 )
-          expect( subject.get_goggle_cup_score(worst_time_swam) ).to be < fix_goggle_cup.max_points
-        end
-        it "checks for correct calculation for goggle cup standard present worst than time swam" do
-          better_time_swam = Timing.new( subject.get_goggle_cup_standard.get_timing_instance.to_hundreds - 150 )
-          expect( subject.get_goggle_cup_score(better_time_swam) ).to be > fix_goggle_cup.max_points
-        end
-        it "checks for correct calculation for goggle cup standard present equal to time swam" do
-          same_time_swam = Timing.new( subject.get_goggle_cup_standard.get_timing_instance.to_hundreds )
-          expect( subject.get_goggle_cup_score(same_time_swam) ).to eq( fix_goggle_cup.max_points )
+        context "for regular aged swimmer" do
+          before(:each) do
+            create(:goggle_cup_standard,
+              goggle_cup_id: fix_goggle_cup.id,
+              swimmer_id:    fix_swimmer.id,
+              event_type_id: fix_event_type.id,
+              pool_type_id:  fix_pool_type.id
+            ) if subject.get_goggle_cup_standard.nil?
+          end
+          
+          it "checks for correct calculation for goggle cup standard present better than time swam" do
+            worst_time_swam = Timing.new( subject.get_goggle_cup_standard.get_timing_instance.to_hundreds + 150 )
+            expect( subject.get_goggle_cup_score(worst_time_swam) ).to be < fix_goggle_cup.max_points
+          end
+          it "checks for correct calculation for goggle cup standard present worst than time swam" do
+            better_time_swam = Timing.new( subject.get_goggle_cup_standard.get_timing_instance.to_hundreds - 150 )
+            expect( subject.get_goggle_cup_score(better_time_swam) ).to be > fix_goggle_cup.max_points
+          end
+          it "checks for correct calculation for goggle cup standard present equal to time swam" do
+            same_time_swam = Timing.new( subject.get_goggle_cup_standard.get_timing_instance.to_hundreds )
+            expect( subject.get_goggle_cup_score(same_time_swam) ).to eq( fix_goggle_cup.max_points )
+          end
         end
       end
       #-- -----------------------------------------------------------------------
@@ -92,6 +118,10 @@ describe GoggleCupScoreCalculator, type: :strategy do
         it "checks for correct calculation for no goggle cup standard present" do
           wrong_pool_type = PoolType.where( is_suitable_for_meetings: false ).first
           score_1000 = GoggleCupScoreCalculator.new( fix_goggle_cup, fix_swimmer, wrong_pool_type, fix_event_type )
+          expect( score_1000.get_goggle_cup_score( fix_time_swam ) ).to eq(fix_goggle_cup.max_points)
+          score_1000 = GoggleCupScoreCalculator.new( fix_goggle_cup, old_aged_swimmer, wrong_pool_type, fix_event_type )
+          expect( score_1000.get_goggle_cup_score( fix_time_swam ) ).to eq(fix_goggle_cup.max_points)
+          score_1000 = GoggleCupScoreCalculator.new( fix_goggle_cup, young_aged_swimmer, wrong_pool_type, fix_event_type )
           expect( score_1000.get_goggle_cup_score( fix_time_swam ) ).to eq(fix_goggle_cup.max_points)
         end
         it "creates a new goggle cup standard" do
@@ -199,31 +229,16 @@ describe GoggleCupScoreCalculator, type: :strategy do
       it "returns a number" do
         expect( subject.get_swimmer_modifier ).to be_a_kind_of( Float )
       end
-      it "returns 0.0 if swimmer age between 20 and 60" do
-        age = (21 + ((rand * 39) % 39).to_i) 
-        expect( age ).to be > 20
-        expect( age ).to be < 60
-        normal_swimmer = create(:swimmer, year_of_birth: ( fix_goggle_cup.end_date.year - age ) )
-        expect( normal_swimmer.get_swimmer_age(fix_goggle_cup.end_date) ).to be > 20
-        expect( normal_swimmer.get_swimmer_age(fix_goggle_cup.end_date) ).to be < 60
-        fix_gc = GoggleCupScoreCalculator.new( fix_goggle_cup, normal_swimmer, fix_pool_type, fix_event_type )
-        expect( fix_gc.get_swimmer_modifier ).to be_equal( 0.0 )
+      it "returns 0.0 if swimmer age is in standard range" do
+        expect( subject.get_swimmer_modifier ).to be_equal( 0.0 )
       end
-      it "returns 5.0 if swimmer age more than 60" do
-        age = (61 + ((rand * 30) % 30).to_i) 
-        expect( age ).to be > 60
-        old_swimmer = create(:swimmer, year_of_birth: ( fix_goggle_cup.end_date.year - age ) )
-        expect( old_swimmer.get_swimmer_age(fix_goggle_cup.end_date) ).to be > 60
-        fix_gc = GoggleCupScoreCalculator.new( fix_goggle_cup, old_swimmer, fix_pool_type, fix_event_type )
-        expect( fix_gc.get_swimmer_modifier ).to be_equal( 5.0 )
+      it "returns positive modifier if swimmer is old aged" do
+        fix_gc = GoggleCupScoreCalculator.new( fix_goggle_cup, old_aged_swimmer, fix_pool_type, fix_event_type )
+        expect( fix_gc.get_swimmer_modifier ).to be_equal( fix_goggle_cup.positive_modifier )
       end
-      it "returns -10.0 if swimmer age less than 20" do
-        age = (10 + ((rand * 10) % 10).to_i) 
-        expect( age ).to be < 20
-        young_swimmer = create(:swimmer, year_of_birth: ( fix_goggle_cup.end_date.year - age ) )
-        expect( young_swimmer.get_swimmer_age(fix_goggle_cup.end_date) ).to be < 20
-        fix_gc = GoggleCupScoreCalculator.new( fix_goggle_cup, young_swimmer, fix_pool_type, fix_event_type )
-        expect( fix_gc.get_swimmer_modifier ).to be_equal( -10.0 )
+      it "returns negative modifier if swimmer is young aged" do
+        fix_gc = GoggleCupScoreCalculator.new( fix_goggle_cup, young_aged_swimmer, fix_pool_type, fix_event_type )
+        expect( fix_gc.get_swimmer_modifier ).to be_equal( fix_goggle_cup.negative_modifier )
       end
     end
     #-- -----------------------------------------------------------------------

@@ -173,4 +173,26 @@ class GoggleCup < ApplicationRecord
     goggle_cup_rank
   end
   # ----------------------------------------------------------------------------
+
+  # TODO
+  # Store that values on DB
+  def age_for_negative_modifier
+    20
+  end
+  def negative_modifier
+    -10.0
+  end
+  def age_for_positive_modifier
+    60
+  end
+  def positive_modifier
+    5.0
+  end
+  def has_to_create_standards
+    true
+  end
+  def has_to_update_standards
+    false
+  end
+  # ----------------------------------------------------------------------------   
 end

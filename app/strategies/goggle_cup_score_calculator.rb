@@ -39,15 +39,6 @@ class GoggleCupScoreCalculator
     @pool_type = pool_type
     @event_type = event_type
     @standards_updated = false
-    
-    # TODO
-    # Store that values on DB
-    @age_for_negative_modifier = 20
-    @negative_modifier = -10.0
-    @age_for_positive_modifier = 60
-    @positive_modifier = 5.0
-    @has_to_create_standards = true
-    @has_to_update_standards = false
   end
   #-- --------------------------------------------------------------------------
   #++
@@ -92,11 +83,11 @@ class GoggleCupScoreCalculator
   def get_swimmer_modifier
     modifier = 0.0
     age = @swimmer.get_swimmer_age( @goggle_cup.get_end_date )
-    if age < @age_for_negative_modifier
-      modifier = @negative_modifier
+    if age < @goggle_cup.age_for_negative_modifier
+      modifier = @goggle_cup.negative_modifier
     else
-      if age > @age_for_positive_modifier
-        modifier = @positive_modifier
+      if age > @goggle_cup.age_for_positive_modifier
+        modifier = @goggle_cup.positive_modifier
       end
     end
     modifier
@@ -127,16 +118,17 @@ class GoggleCupScoreCalculator
       if @current_goggle_cup_standard && @current_goggle_cup_standard.get_timing_instance.to_hundreds > 0
         # Calculate the score
         goggle_cup_score = @current_goggle_cup_standard.get_timing_instance.to_hundreds.to_f * @goggle_cup.max_points / time_swam.to_hundreds.to_f
+        update_goggle_cup_standard( time_swam ) if goggle_cup_score > @goggle_cup.max_points && @goggle_cup.has_to_update_standards
         
         # Check if modifiers should be applied
         modifier = get_swimmer_modifier
         if modifier != 0.0
-          #goggle_cup_score = goggle_cup_score * (modifier / 100)
+          goggle_cup_score = goggle_cup_score + ( goggle_cup_score * (modifier / 100) )
         end
       else
         # Without time standard the score is always GoggleCupMaxPoints
         goggle_cup_score = @goggle_cup.max_points
-        @current_goggle_cup_standard = new_goggle_cup_standard( time_swam ) if @has_to_create_standards
+        @current_goggle_cup_standard = new_goggle_cup_standard( time_swam ) if @goggle_cup.has_to_create_standards
       end
     end
     
