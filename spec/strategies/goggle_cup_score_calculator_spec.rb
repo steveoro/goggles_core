@@ -110,6 +110,58 @@ describe GoggleCupScoreCalculator, type: :strategy do
             expect( subject.get_goggle_cup_score(same_time_swam) ).to eq( fix_goggle_cup.max_points )
           end
         end
+
+        context "for old aged swimmer" do
+          let( :fix_gc )       { GoggleCupScoreCalculator.new( fix_goggle_cup, old_aged_swimmer, fix_pool_type, fix_event_type ) }
+          let( :old_aged_max ) { fix_goggle_cup.max_points + ( fix_goggle_cup.max_points * fix_goggle_cup.positive_modifier / 100) }
+          before(:each) do
+            create(:goggle_cup_standard,
+              goggle_cup_id: fix_goggle_cup.id,
+              swimmer_id:    old_aged_swimmer.id,
+              event_type_id: fix_event_type.id,
+              pool_type_id:  fix_pool_type.id
+            ) if fix_gc.get_goggle_cup_standard.nil?
+          end
+          
+          it "checks for correct calculation for goggle cup standard present better than time swam" do
+            worst_time_swam = Timing.new( fix_gc.get_goggle_cup_standard.get_timing_instance.to_hundreds + 150 )
+            expect( fix_gc.get_goggle_cup_score(worst_time_swam) ).to be < old_aged_max
+          end
+          it "checks for correct calculation for goggle cup standard present worst than time swam" do
+            better_time_swam = Timing.new( fix_gc.get_goggle_cup_standard.get_timing_instance.to_hundreds - 150 )
+            expect( fix_gc.get_goggle_cup_score(better_time_swam) ).to be > old_aged_max
+          end
+          it "checks for correct calculation for goggle cup standard present equal to time swam" do
+            same_time_swam = Timing.new( fix_gc.get_goggle_cup_standard.get_timing_instance.to_hundreds )
+            expect( fix_gc.get_goggle_cup_score(same_time_swam) ).to eq( old_aged_max )
+          end
+        end
+
+        context "for young aged swimmer" do
+          let( :fix_gc )       { GoggleCupScoreCalculator.new( fix_goggle_cup, young_aged_swimmer, fix_pool_type, fix_event_type ) }
+          let( :young_aged_max ) { fix_goggle_cup.max_points + ( fix_goggle_cup.max_points * fix_goggle_cup.negative_modifier / 100) }
+          before(:each) do
+            create(:goggle_cup_standard,
+              goggle_cup_id: fix_goggle_cup.id,
+              swimmer_id:    young_aged_swimmer.id,
+              event_type_id: fix_event_type.id,
+              pool_type_id:  fix_pool_type.id
+            ) if fix_gc.get_goggle_cup_standard.nil?
+          end
+          
+          it "checks for correct calculation for goggle cup standard present better than time swam" do
+            worst_time_swam = Timing.new( fix_gc.get_goggle_cup_standard.get_timing_instance.to_hundreds + 150 )
+            expect( fix_gc.get_goggle_cup_score(worst_time_swam) ).to be < young_aged_max
+          end
+          it "checks for correct calculation for goggle cup standard present worst than time swam" do
+            better_time_swam = Timing.new( fix_gc.get_goggle_cup_standard.get_timing_instance.to_hundreds - 150 )
+            expect( fix_gc.get_goggle_cup_score(better_time_swam) ).to be > young_aged_max
+          end
+          it "checks for correct calculation for goggle cup standard present equal to time swam" do
+            same_time_swam = Timing.new( fix_gc.get_goggle_cup_standard.get_timing_instance.to_hundreds )
+            expect( fix_gc.get_goggle_cup_score(same_time_swam) ).to eq( young_aged_max )
+          end
+        end
       end
       #-- -----------------------------------------------------------------------
       #++
