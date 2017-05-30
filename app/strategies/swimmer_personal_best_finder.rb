@@ -202,6 +202,18 @@ class SwimmerPersonalBestFinder
     best_mir = get_best_mir_for_event( event_type, pool_type )
     best_mir ? best_mir.get_timing_instance : nil
   end
+
+  # Finds the personal-best's Timing instance for the given event and
+  # pool type.
+  #
+  # == Returns:
+  # The personal-best's Timing instance or +nil+ when not found.
+  #
+  def find_best_for_event( event_type, pool_type )
+    @swimmer.meeting_individual_results.for_pool_type( pool_type ).for_event_type( event_type ).is_not_disqualified.count > 0 ?
+      @swimmer.meeting_individual_results.for_pool_type( pool_type ).for_event_type( event_type ).is_not_disqualified.sort_by_timing('ASC').first.get_timing_instance :
+      nil
+  end
   #-- --------------------------------------------------------------------------
   #++
 
@@ -243,12 +255,12 @@ class SwimmerPersonalBestFinder
   # This is intended for new results or to handle
   # best results with same timing.
   # == Returns
-  # true if the result ise the personal best
+  # true if the result is the personal best
   # false in any other cases
   def is_personal_best?( meeting_individual_result )
     is_personal_best = false
     unless meeting_individual_result.nil? || (meeting_individual_result && meeting_individual_result.is_disqualified)
-      best_result = get_best_for_event( meeting_individual_result.event_type, meeting_individual_result.pool_type )
+      best_result = find_best_for_event( meeting_individual_result.event_type, meeting_individual_result.pool_type )
       is_personal_best = best_result && best_result < meeting_individual_result.get_timing_instance ? false : true
     end
     is_personal_best
