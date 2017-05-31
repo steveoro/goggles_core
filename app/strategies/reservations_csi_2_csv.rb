@@ -6,7 +6,7 @@ require 'framework/console_logger'
 
 = ReservationsCsi2Csv
 
-  - Goggles framework vers.:  6.098
+  - Goggles framework vers.:  6.109
   - author: Steve A.
 
  Strategy class used to output a specific CSV text format for the C.S.I. Regional
@@ -113,7 +113,7 @@ class ReservationsCsi2Csv
           swimmer_row << "#{ meeting_event_reservation.get_timing_flattened };"
         end
         # Add empty columns if event reservations are less than expected output format:
-        ( @meeting.max_individual_events - reservations_count ).times do
+        ( get_actual_total_reservable_events(@meeting) - reservations_count ).times do
           swimmer_row << ";;"
         end
         swimmer_row << "#{ @meeting.header_date.year - swimmer.year_of_birth };"
@@ -166,14 +166,25 @@ class ReservationsCsi2Csv
   private
 
 
+  # Computes the actual total number of possibile reservations for this meeting
+  #
+  def get_actual_total_reservable_events( meeting )
+    # Include also "out-of-race" events, which are usually not counted among the
+    # max_individual_events value:
+    meeting.max_individual_events + meeting.meeting_events.where( is_out_of_race: true ).count
+  end
+
+
   # Prepares the header
   #
   def prepare_header_titles()
     @header_titles = [
       "Cat", "Cognome", "Nome", "Tess", "Sesso", "Anno"
     ]
-    # Event reservations:
-    (1 .. @meeting.max_individual_events).each do |event_number|
+    # Get the total number of possibile reservations:
+    total_reservable_events =
+    # Event reservations for each possible event:
+    ( 1 .. get_actual_total_reservable_events(@meeting) ).each do |event_number|
       @header_titles << "Gara#{ event_number }"
       @header_titles << "Tempo#{ event_number }"
     end
