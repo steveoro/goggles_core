@@ -1,4 +1,6 @@
 
+# Adds support for roman numeral parsing and decoding
+#
 class Fixnum
   ROMAN_NUMBERS = {
     1000 => "M",
@@ -15,6 +17,8 @@ class Fixnum
         4 => "IV",
         1 => "I",
   } unless defined? ROMAN_NUMBERS
+  #-- -------------------------------------------------------------------------
+  #++
 
   # Converts the value to a Roman numeral
   def to_roman
@@ -26,4 +30,16 @@ class Fixnum
     end
     return roman
   end
+  #-- -------------------------------------------------------------------------
+  #++
+
+  # Parses a Roman numeral to Fixnum
+  def self.from_roman( roman )
+    r = roman.upcase
+    n = 0
+    ROMAN_NUMBERS.each { |num, sym| n += num while r.sub!(/^#{ sym }/, "") }
+    n
+  end
+  #-- -------------------------------------------------------------------------
+  #++
 end
