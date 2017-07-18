@@ -1,11 +1,10 @@
 # encoding: utf-8
 
-
 =begin
 
 = MeetingSession
 
-  - version:  5.00
+  - version:  6.111
   - author:   Steve A., Leega
 
 =end
@@ -28,9 +27,11 @@ class MeetingSession < ApplicationRecord
   has_one  :season_type, through: :meeting
 
   has_many :meeting_events, dependent: :delete_all
-  has_many :meeting_programs, through: :meeting_events, dependent: :delete_all
-  has_many :meeting_entries, through: :meeting_events, dependent: :delete_all
-  has_many :meeting_individual_results, through: :meeting_programs, dependent: :delete_all
+
+  has_many :event_types,                through: :meeting_events
+  has_many :meeting_programs,           through: :meeting_events
+  has_many :meeting_entries,            through: :meeting_events
+  has_many :meeting_individual_results, through: :meeting_programs
 
   validates_presence_of :session_order
   validates_length_of   :session_order, within: 1..2, allow_nil: false
@@ -38,7 +39,7 @@ class MeetingSession < ApplicationRecord
   validates_presence_of :scheduled_date
 
   validates_presence_of :description
-  validates_length_of :description, maximum: 100, allow_nil: false
+  validates_length_of   :description, maximum: 100, allow_nil: false
 
 
 # FIXME for Rails 4+, move required/permitted check to the controller using the model

@@ -7,7 +7,7 @@ require 'drop_down_listable'
 
 = Season
 
-  - version:  4.00.409
+  - version:  6.111
   - author:   Steve A., Leega
 
 =end
@@ -34,8 +34,19 @@ class Season < ApplicationRecord
   has_many :meeting_individual_results, through: :meetings
   has_many :computed_season_ranking
   has_many :category_types
-  has_many :event_types, through: :meetings
   has_many :time_standard
+
+  has_many :meeting_sessions, through: :meetings
+  has_many :meeting_events, through: :meeting_sessions
+
+  # Returns the list of all EventType rows for all this Season's Meetings.
+  # [Steve, 20170718] Hand-made has_many :event_types, through: :meetings (which can't work correctly)
+  #
+  def event_types
+    self.meeting_events.map do |me|
+      me.event_type
+    end
+  end
 
   validates_presence_of :header_year
   validates_length_of   :header_year, within: 1..9, allow_nil: false

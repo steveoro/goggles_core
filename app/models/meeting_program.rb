@@ -4,7 +4,7 @@
 # Model class
 #
 # @author   Steve A.
-# @version  4.00.797
+# @version  6.111
 #
 class MeetingProgram < ApplicationRecord
   include MeetingAccountable
@@ -22,17 +22,18 @@ class MeetingProgram < ApplicationRecord
   validates_associated :category_type
   validates_associated :gender_type
 
-  has_many :meeting_entries, dependent: :delete_all
+  has_many :meeting_entries,            dependent: :delete_all
   has_many :meeting_individual_results, dependent: :delete_all
-  has_many :meeting_relay_results, dependent: :delete_all
-  has_many :meeting_relay_swimmers, through: :meeting_relay_results, dependent: :delete_all
+  has_many :meeting_relay_results,      dependent: :delete_all
+  has_many :meeting_relay_swimmers, through: :meeting_relay_results
 
-  has_one  :meeting,          through: :meeting_event
   has_one  :meeting_session,  through: :meeting_event
-  has_one  :season,           through: :meeting_event
-  has_one  :season_type,      through: :meeting_event
   has_one  :event_type,       through: :meeting_event
   has_one  :stroke_type,      through: :event_type
+
+  has_one  :meeting,          through: :meeting_session
+  has_one  :season,           through: :meeting_session
+  has_one  :season_type,      through: :meeting_session
 
   validates_presence_of :event_order
   validates_length_of   :event_order, within: 1..3, allow_nil: false

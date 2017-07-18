@@ -1,3 +1,11 @@
+#
+# == MeetingEvent
+#
+# Model class
+#
+# @author   Steve A.
+# @version  6.111
+#
 class MeetingEvent < ApplicationRecord
   include MeetingAccountable
 
@@ -15,15 +23,18 @@ class MeetingEvent < ApplicationRecord
   validates_presence_of :event_order
   validates_length_of   :event_order, within: 1..3, allow_nil: false
 
-  has_one  :meeting,      through: :meeting_session
+# [Steve, 20170718] The has_one association w/ meeting breaks the reflection chain
+# in ActiveRecord, invalidating actions like "meeting.destroy" due to the fallback
+# failure, so it should be avoided at all cost:
+#  has_one  :meeting,      through: :meeting_session
   has_one  :season,       through: :meeting_session
   has_one  :season_type,  through: :meeting_session
   has_one  :stroke_type,  through: :event_type
 
   has_many :meeting_programs, dependent: :delete_all
-  has_many :meeting_entries, through: :meeting_programs, dependent: :delete_all
-  has_many :meeting_individual_results, through: :meeting_programs, dependent: :delete_all
-  has_many :meeting_relay_results, through: :meeting_programs, dependent: :delete_all
+  has_many :meeting_entries,            through: :meeting_programs
+  has_many :meeting_individual_results, through: :meeting_programs
+  has_many :meeting_relay_results,      through: :meeting_programs
 
   has_many :category_types, through: :meeting_programs
 

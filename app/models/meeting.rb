@@ -6,7 +6,7 @@ require 'drop_down_listable'
 
 = Season
 
-  - version:  6.00.035
+  - version:  6.111
   - author:   Steve A., Leega
 
 =end
@@ -44,23 +44,25 @@ class Meeting < ApplicationRecord
 
   has_one  :season_type, through: :season
 
-  has_many :meeting_sessions, dependent: :delete_all
-  has_many :meeting_team_scores, dependent: :delete_all
-  has_many :meeting_reservations, dependent: :delete_all
+  # First-level children: (they "belongs_to" meeting)
+  has_many :meeting_sessions,           dependent: :delete_all
+  has_many :meeting_team_scores,        dependent: :delete_all
+  has_many :meeting_reservations,       dependent: :delete_all
   has_many :meeting_event_reservations, dependent: :delete_all
 
-  has_many :meeting_events, through: :meeting_sessions, dependent: :delete_all
-  has_many :meeting_programs, through: :meeting_events, dependent: :delete_all
-  has_many :meeting_entries, through: :meeting_programs, dependent: :delete_all
-  has_many :meeting_individual_results, through: :meeting_programs, dependent: :delete_all
-  has_many :meeting_relay_results, through: :meeting_programs, dependent: :delete_all
+  # Nth-level children: (through-association with meeting)
+  has_many :meeting_events,             through: :meeting_sessions
+  has_many :meeting_programs,           through: :meeting_events
+  has_many :meeting_entries,            through: :meeting_programs
+  has_many :meeting_individual_results, through: :meeting_programs
+  has_many :meeting_relay_results,      through: :meeting_programs
 
-  has_many :swimming_pools, through: :meeting_sessions
-  has_many :pool_types,     through: :meeting_sessions
-  has_many :swimmers,       through: :meeting_individual_results
-  has_many :teams,          through: :meeting_individual_results
-  has_many :event_types,    through: :meeting_events
-  has_many :category_types, through: :meeting_programs
+  has_many :swimming_pools,             through: :meeting_sessions
+  has_many :pool_types,                 through: :meeting_sessions
+  has_many :swimmers,                   through: :meeting_individual_results
+  has_many :teams,                      through: :meeting_individual_results
+  has_many :event_types,                through: :meeting_sessions
+  has_many :category_types,             through: :meeting_programs
 
   validates_presence_of :code,        length: { within: 1..50 }, allow_nil: false
   validates_presence_of :header_year, length: { within: 1..9 }, allow_nil: false

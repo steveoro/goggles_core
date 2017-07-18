@@ -7,7 +7,7 @@ require 'wrappers/timing'
 # Model class
 #
 # @author   Steve A., Leega
-# @version  4.00.797
+# @version  6.111
 #
 class MeetingIndividualResult < ApplicationRecord
   include SwimmerRelatable
@@ -25,10 +25,10 @@ class MeetingIndividualResult < ApplicationRecord
   has_one  :meeting_session,  through: :meeting_program
   has_one  :meeting,          through: :meeting_program
   has_one  :season,           through: :meeting_program
+  has_one  :season_type,      through: :season
 
   has_one  :pool_type,        through: :meeting_program
-  has_one  :season_type,      through: :meeting_program
-  has_one  :event_type,       through: :meeting_program
+  has_one  :event_type,       through: :meeting_event
   has_one  :category_type,    through: :meeting_program
   has_one  :gender_type,      through: :meeting_program
   has_one  :federation_type,  through: :season_type

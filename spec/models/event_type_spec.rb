@@ -23,7 +23,9 @@ describe EventType, :type => :model do
     :only_relays,
     :are_not_relays,
     :for_fin_calculation,
-    :sort_by_style
+    :sort_by_style,
+    :for_season,
+    :for_season_type
   ])
 
   it_behaves_like( "(the existance of a method returning non-empty strings)", [

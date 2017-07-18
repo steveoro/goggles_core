@@ -4,9 +4,9 @@ require 'rails_helper'
 
 describe SeasonalEventBestDAO, type: :model do
   let(:season)        { Season.find(141) }
-  let(:gender_type)   { GenderType.individual_only[ ((rand * GenderType.individual_only.count) % GenderType.individual_only.count).to_i ] }
-  let(:category_type) { season.category_types[ ((rand * season.category_types.count) % season.category_types.count).to_i ] }
-  let(:event_type)    { season.event_types[ ((rand * season.event_types.count) % season.event_types.count).to_i ] }
+  let(:gender_type)   { GenderType.individual_only.sample }
+  let(:category_type) { season.category_types.sample }
+  let(:event_type)    { season.event_types.sample }
   let(:is_converted)  { (rand * 0.5).to_i }
   let(:total_events)  { ((rand * 2) % 2).to_i + 1 }
   let(:events_swam)   { ((rand * total_events) % total_events).to_i + 1 }

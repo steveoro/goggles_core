@@ -4,7 +4,7 @@ require 'drop_down_listable'
 
 = EventType model
 
-  - version:  4.00.605
+  - version:  6.111
   - author:   Steve A.
 
 =end
@@ -31,8 +31,11 @@ class EventType < ApplicationRecord
   validates_numericality_of :style_order
 
   has_many :meeting_events
-  has_many :meetings,         through: :meeting_events
-  has_many :season_types,     through: :meetings
+  has_many :meeting_sessions, through: :meeting_events
+  has_many :meetings,         through: :meeting_sessions
+  has_many :seasons,          through: :meetings
+  has_many :season_types,     through: :seasons
+
   has_many :events_by_pool_types
   has_many :pool_types,       through: :events_by_pool_types
 
@@ -42,6 +45,7 @@ class EventType < ApplicationRecord
 
   scope :sort_by_style,       ->{ order('style_order') }
 
+  scope :for_season,          ->(season_id)   { joins(:seasons).where(['season_id = ?', season_id]) }
   scope :for_season_type,     ->(season_type) { joins(:season_types).where(['season_types.id = ?', season_type.id]) }
   #-- -------------------------------------------------------------------------
   #++

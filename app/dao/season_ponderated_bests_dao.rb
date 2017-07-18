@@ -4,7 +4,7 @@
 
 = SeasonPonderatedBestsDAO
 
-  - Goggles framework vers.:  6.093
+  - Goggles framework vers.:  6.111
   - author: Leega
 
  DAO class containing the structure for managing the overall event bests
@@ -19,7 +19,7 @@ class SeasonPonderatedBestsDAO
     attr_reader :season, :gender_type, :category_type, :event_type, :pool_type, :max_results, :bests_to_be_ignored
 
     # These can be edited later on:
-    attr_accessor :season, :season_type, :gender_type, :category_type, :event_type, :pool_type, :best_results, :total_results
+    attr_accessor :season_type, :best_results, :total_results
     #-- -------------------------------------------------------------------------
     #++
 
@@ -131,7 +131,7 @@ class SeasonPonderatedBestsDAO
   attr_reader :season, :max_results, :bests_to_be_ignored
 
   # These can be edited later on:
-  attr_accessor :season, :max_results, :bests_to_be_ignored, :event_types, :categories, :single_events, :insert_events, :update_events
+  attr_accessor :event_types, :categories, :single_events, :insert_events, :update_events
   #-- -------------------------------------------------------------------------
   #++
 
@@ -237,7 +237,7 @@ class SeasonPonderatedBestsDAO
   # in a meeting of the season type
   #
   def find_season_type_events()
-    EventType.are_not_relays.for_season_type(@season.season_type)
+    EventType.are_not_relays.for_season_type( @season.season_type )
       .sort_by_style.distinct
   end
   #-- -------------------------------------------------------------------------

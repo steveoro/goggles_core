@@ -4,7 +4,7 @@
 
 = SeasonalEventBestDAO
 
-  - Goggles framework vers.:  4.00.777
+  - Goggles framework vers.:  6.111
   - author: Leega
 
  DAO class containing the structure for managing the event seasonal best
@@ -18,7 +18,7 @@ class SeasonalEventBestDAO
     attr_reader :gender_type, :category_type, :event_type
 
     # These can be edited later on:
-    attr_accessor :gender_type, :category_type, :event_type, :time_swam, :is_converted, :total_events, :events_swam
+    attr_accessor :time_swam, :is_converted, :total_events, :events_swam
     #-- -------------------------------------------------------------------------
     #++
 
@@ -41,7 +41,7 @@ class SeasonalEventBestDAO
   attr_reader :season
 
   # These can be edited later on:
-  attr_accessor :season, :event_bests, :timing_converter
+  attr_accessor :event_bests, :timing_converter
   #-- -------------------------------------------------------------------------
   #++
 
@@ -138,13 +138,16 @@ class SeasonalEventBestDAO
   # [FIXME, Steve] WHAT DOES IT RETURN? WHAT'S ITS DEFAULT?
   #
   def scan_for_gender_category_and_event
-    @season.event_types.are_not_relays.distinct.sort_by_style.each do |event_type|
-      event_total = @season.event_types.where(['event_types.code = ?', event_type.code]).count
-      event_swam  = @season.event_types.where(['event_types.code = ? and meetings.are_results_acquired', event_type.code]).count
+    EventType.are_not_relays.for_season( @season.id ).distinct.sort_by_style.each do |event_type|
+      event_total = EventType.for_season( @season.id ).where( code: event_type.code ).count
+      event_swam  = EventType.for_season( @season.id ).where( code: "50SL", :"meetings.are_results_acquired" => true ).count
       if event_swam > 0
         GenderType.individual_only.sort_by_courtesy.each do |gender_type|
           @season.category_types.are_not_relays.sort_by_age.each do |category_type|
-            if @season.meeting_individual_results.is_valid.for_gender_type(gender_type).for_category_type(category_type).for_event_type(event_type).count > 0
+            if @season.meeting_individual_results.is_valid
+                .for_gender_type(gender_type)
+                .for_category_type(category_type)
+                .for_event_type(event_type).count > 0
               set_best_for_gender_category_and_event( gender_type, category_type, event_type, event_total, event_swam )
             end
           end
