@@ -7,7 +7,7 @@ require 'common/validation_error_tools'
 FactoryGirl.define do
 
   factory :meeting do
-    sequence( :code )         { |n| "meeting#(n)" }
+    sequence( :code )         { |n| "meeting-#{n}" }
     description               { "#{FFaker::Name.suffix} #{FFaker::Address.city} Meeting" }
     edition                   { ((rand * 100) % 40).to_i }
     season                    { Season.is_ended.order('RAND()').first }
