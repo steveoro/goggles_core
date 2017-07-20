@@ -5,7 +5,7 @@
 
 = SqlConverter
 
-  - Goggles framework vers.:  6.00.00
+  - Goggles framework vers.:  6.112
   - author: Steve A.
 
   Container module for methods or strategies to obtain complete SQL statements from
@@ -69,6 +69,59 @@ module SqlConverter
     sql_text << "DELETE FROM #{ con.quote_column_name( record.class.table_name ) } "
     sql_text << "WHERE (#{ con.quote_column_name('id') }=#{ record.id });#{ eoln }"
     sql_text
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
+
+  # Starts the capturing the SQL text of every DELETE statement before execution
+  # them on the connection used by the specified +record+.
+  #
+  # This method also initializes/resets the instance variable used by
+  # +captured_sql_text+.
+  #
+  # Please use +end_capture_sql_delete+ afterwards to restore normal behaviour.
+  #
+  # *** WARNING: *** DO NOT INVOKE 2 SUBSEQUENT CALLS TO THIS METHOD AS IT WILL
+  # ALIAS THE OLD IMPLEMENTATION OF Connection.execute.
+  #
+  def begin_capture_sql_delete( record )
+    record.class.connection.class.class_eval do
+      attr_reader :captured_sql_delete_text
+
+      # Alias the adapter's execute for later use
+      alias_method :old_execute, :execute
+
+      # Re-define the execute method:
+      def execute(sql, name = nil)
+        @captured_sql_delete_text ||= ""
+        # Intercept/log only the statement that we want and log it to the internal text:
+# DEBUG
+#        puts "\r\n---- SQL ----"
+#        puts sql
+#        puts "-------------"
+        ( @captured_sql_delete_text << "#{ sql };\r\n" ) if /^(delete)/i.match( sql )
+        # Always execute the SQL statement afterwards:
+        old_execute( sql, name )
+      end
+    end
+  end
+
+
+  # Ends the capturing the SQL text of every DELETE statement by restoring the
+  # alias previously set with +begin_capture_sql_delete+.
+  #
+  # Do not call this method unless capturing was started with a call to
+  # +begin_capture_sql_delete+.
+  #
+  # *** WARNING: *** DO NOT INVOKE 2 SUBSEQUENT CALLS TO THIS METHOD AS IT WILL
+  # ALIAS THE OLD IMPLEMENTATION OF Connection.execute.
+  #
+  def end_capture_sql_delete( record )
+    record.class.connection.class.class_eval do
+      # Restore original implementation of execute:
+      alias_method :execute, :old_execute
+    end
   end
   #-- -------------------------------------------------------------------------
   #++

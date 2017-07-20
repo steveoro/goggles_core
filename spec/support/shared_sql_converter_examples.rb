@@ -4,7 +4,8 @@ require 'rails_helper'
 shared_examples_for "SqlConverter [param: let(:record)]" do
 
   it_behaves_like( "(the existance of a method)", [
-    :to_sql_insert, :to_sql_update, :to_sql_delete
+    :to_sql_insert, :to_sql_update, :to_sql_delete,
+    :begin_capture_sql_delete, :end_capture_sql_delete
   ] )
 
   describe "#to_sql_insert" do
@@ -54,6 +55,8 @@ shared_examples_for "SqlConverter [param: let(:record)]" do
       expect( sql_text ).to include( record.id.to_s )
     end
   end
+  #-- -------------------------------------------------------------------------
+  #++
 end
 #-- ---------------------------------------------------------------------------
 #++
