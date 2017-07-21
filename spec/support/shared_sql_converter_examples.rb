@@ -5,7 +5,7 @@ shared_examples_for "SqlConverter [param: let(:record)]" do
 
   it_behaves_like( "(the existance of a method)", [
     :to_sql_insert, :to_sql_update, :to_sql_delete,
-    :begin_capture_sql_delete, :end_capture_sql_delete
+    :destroy_with_sql_capture
   ] )
 
   describe "#to_sql_insert" do

@@ -74,24 +74,24 @@ module SqlConverter
   #++
 
 
-  # Starts the capturing the SQL text of every DELETE statement before execution
-  # them on the connection used by the specified +record+.
+  # Destroys the specified record (assuming is a valid instance of an).
+  # ActiveRecord::Base sibling class), while capturing and returning the
+  # associated SQL *DELETE* (only) statements.
   #
-  # This method also initializes/resets the instance variable used by
-  # +captured_sql_text+.
+  # Since destroy will respects _dependent_ callback invocations, this will
+  # automatically log any DELETE for any foreign key related entity specified
+  # in the source Model.
   #
-  # Please use +end_capture_sql_delete+ afterwards to restore normal behaviour.
+  # === Returns:
   #
-  # *** WARNING: *** DO NOT INVOKE 2 SUBSEQUENT CALLS TO THIS METHOD AS IT WILL
-  # ALIAS THE OLD IMPLEMENTATION OF Connection.execute.
+  # The captured SQL DELETE text log
   #
-  def begin_capture_sql_delete( record )
+  def destroy_with_sql_capture( record )
+    # Monkey-patch the Connection class to intercept what we need:
     record.class.connection.class.class_eval do
-      attr_reader :captured_sql_delete_text
-
+      attr_accessor :captured_sql_delete_text
       # Alias the adapter's execute for later use
       alias_method :old_execute, :execute
-
       # Re-define the execute method:
       def execute(sql, name = nil)
         @captured_sql_delete_text ||= ""
@@ -105,23 +105,20 @@ module SqlConverter
         old_execute( sql, name )
       end
     end
-  end
 
+    # Issue the destroy upon the record:
+    record.destroy
+    result_log = record.class.connection.captured_sql_delete_text
+    record.class.connection.captured_sql_delete_text = ""
 
-  # Ends the capturing the SQL text of every DELETE statement by restoring the
-  # alias previously set with +begin_capture_sql_delete+.
-  #
-  # Do not call this method unless capturing was started with a call to
-  # +begin_capture_sql_delete+.
-  #
-  # *** WARNING: *** DO NOT INVOKE 2 SUBSEQUENT CALLS TO THIS METHOD AS IT WILL
-  # ALIAS THE OLD IMPLEMENTATION OF Connection.execute.
-  #
-  def end_capture_sql_delete( record )
+    # Double Monkey-patch to stop the interception and restore original behaviour
+    # (since it's almost safe)
     record.class.connection.class.class_eval do
       # Restore original implementation of execute:
       alias_method :execute, :old_execute
     end
+
+    result_log
   end
   #-- -------------------------------------------------------------------------
   #++

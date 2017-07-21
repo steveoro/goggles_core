@@ -24,44 +24,35 @@ describe SqlConverter, type: :strategy do
   #++
 
 
-  describe "#begin_capture_sql_delete" do
-    it "logs the DELETE statement into #captured_sql_text" do
-      # Create a deletable fixture, with some children rows:
-      meeting = FactoryGirl.create( :meeting_with_sessions )
+  # This test is here (instead of being inside the shared examples file) since
+  # it refers to a specific use case for a record entity with some secondary
+  # entities attached by a _"dependent: :delete"_ definition inside the source Model.
+  #
+  describe "#destroy_with_sql_capture" do
+    # Create a deletable fixture, with some children rows:
+    let(:meeting) { FactoryGirl.create( :meeting_with_sessions ) }
 
-      subject.begin_capture_sql_delete( meeting )   # BEGIN Capture
-      expect( meeting.class.connection.captured_sql_delete_text ).to be nil
-      # Perform the destroy:
-      expect( meeting.destroy ).to be_a( Meeting )
+    it "destroys the record" do
+      subject.destroy_with_sql_capture( meeting )
       expect( meeting.destroyed? ).to be true
-      # Test the dedicated member log:
-      expect( meeting.class.connection.captured_sql_delete_text ).to include("DELETE")
-      expect( meeting.class.connection.captured_sql_delete_text ).to include( meeting.class.table_name )
-      expect( meeting.class.connection.captured_sql_delete_text ).to include( meeting.id.to_s )
+    end
+
+    it "returns the text log of the captured SQL DELETE statements issued" do
+      result_log = subject.destroy_with_sql_capture( meeting )
+      expect( result_log ).to be_a( String )
+
+      # Test the log:
+      expect( result_log ).to include("DELETE")
+      expect( result_log ).to include( Meeting.table_name )
+      expect( result_log ).to include( meeting.id.to_s )
+      expect( result_log ).to include( MeetingSession.table_name )
+      expect( result_log ).to include( MeetingTeamScore.table_name )
+      expect( result_log ).to include( MeetingReservation.table_name )
+      expect( result_log ).to include( MeetingEventReservation.table_name )
 # DEBUG
 #      puts "\r\n---- CAPTURED SQL ----"
-#      puts meeting.class.connection.captured_sql_delete_text
+#      puts result_log
 #      puts "----------------------"
-      subject.end_capture_sql_delete( meeting )     # END Capture
-    end
-  end
-
-  # FIXME CANNOT EXECUTE MORE THAN 1 TEST ON THIS Monkey-patching method, since
-  # tests are parallelized and may rise a Stack-level-too-deep error!
-
-  describe "#end_capture_sql_delete" do
-    xit "prevents the logging of the DELETE statement" do
-      # Create a deletable fixture, with some children rows:
-      meeting = FactoryGirl.create( :meeting_with_sessions )
-
-      subject.begin_capture_sql_delete( meeting )   # BEGIN Capture
-      expect( meeting.class.connection.captured_sql_delete_text ).to be nil
-      subject.end_capture_sql_delete( meeting )     # END Capture
-
-      # Perform the destroy:
-      expect( meeting.destroy ).to be_a( Meeting )
-      # Test the dedicated member log:
-      expect( meeting.class.connection.captured_sql_delete_text ).to eq("")
     end
   end
   #-- -------------------------------------------------------------------------
