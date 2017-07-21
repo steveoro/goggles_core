@@ -32,15 +32,23 @@ describe SqlConverter, type: :strategy do
     # Create a deletable fixture, with some children rows:
     let(:meeting) { FactoryGirl.create( :meeting_with_sessions ) }
 
-    it "destroys the record" do
+    it "returns nil for an invalid parameter" do
+      expect( subject.destroy_with_sql_capture( nil ) ).to be nil
+    end
+
+    it "returns nil in case of deletion error" do
+      unsaved_meeting = FactoryGirl.build( :meeting )
+      expect( subject.destroy_with_sql_capture( unsaved_meeting ) ).to be nil
+    end
+
+    it "destroys the record (for a valid parameter)" do
       subject.destroy_with_sql_capture( meeting )
       expect( meeting.destroyed? ).to be true
     end
 
-    it "returns the text log of the captured SQL DELETE statements issued" do
+    it "returns the text log of the captured SQL DELETE statements issued (for a valid parameter)" do
       result_log = subject.destroy_with_sql_capture( meeting )
       expect( result_log ).to be_a( String )
-
       # Test the log:
       expect( result_log ).to include("DELETE")
       expect( result_log ).to include( Meeting.table_name )
