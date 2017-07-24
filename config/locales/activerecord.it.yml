@@ -255,12 +255,27 @@ it:
               already_exists: "esiste gia'"
         city:
           attributes:
+            id:
+              blank: "non puo' essere vuoto"
             name:
+              blank: "non puo' essere vuoto"
               already_exists: "esiste gia'"
+            area:
+              blank: "non puo' essere vuoto"
+            country:
+              blank: "non puo' essere vuoto"
+            country_code:
+              blank: "non puo' essere vuoto"
         data_import_city:
           attributes:
             name:
               already_exists: "esiste gia'"
+        event_type:
+          attributes:
+            code:
+              blank: "non puo' essere vuoto"
+              too_short: "e' troppo corto"
+              too_long: "e' troppo lungo"
         meeting:
           attributes:
             header_year:
