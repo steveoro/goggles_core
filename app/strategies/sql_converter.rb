@@ -5,7 +5,7 @@
 
 = SqlConverter
 
-  - Goggles framework vers.:  6.114
+  - Goggles framework vers.:  6.135
   - author: Steve A.
 
   Container module for methods or strategies to obtain complete SQL statements from
@@ -87,6 +87,7 @@ module SqlConverter
   # The captured SQL DELETE text log in case of success, +nil+ in case of errors.
   #
   def destroy_with_sql_capture( record )
+    return nil if record.nil?
     # Monkey-patch the Connection class to intercept what we need:
     record.class.connection.class.class_eval do
       attr_accessor :captured_sql_delete_text
@@ -109,7 +110,7 @@ module SqlConverter
     # Issue the destroy upon the record:
     record.destroy
     result_log = record.class.connection.captured_sql_delete_text
-    record.class.connection.captured_sql_delete_text = ""
+    record.class.connection.captured_sql_delete_text = nil
 
     # Double Monkey-patch to stop the interception and restore original behaviour
     # (since it's almost safe)
@@ -118,7 +119,7 @@ module SqlConverter
       alias_method :execute, :old_execute
     end
 
-    record.destroyed? ? result_log : nil
+    ( record.destroyed? && !result_log.empty? ) ? result_log : nil
   end
   #-- -------------------------------------------------------------------------
   #++
