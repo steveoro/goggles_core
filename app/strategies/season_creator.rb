@@ -63,11 +63,11 @@ class SeasonCreator
 
   # Prepare data for duplication
   #
-  def prepare_new_season!
+  def prepare_new_season!( prepare_meetings = true )
     create_sql_diff_header( "Duplicating season #{@older_season.id}-#{@older_season.description} into #{@new_id}-#{@description}" )
     @new_season = renew_season!
     @categories = renew_categories!
-    @meetings   = renew_meetings!
+    @meetings   = renew_meetings! if prepare_meetings
     create_sql_diff_footer( "#{@new_id}-#{@description} duplication done" )
   end
 

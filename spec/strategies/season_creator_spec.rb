@@ -138,17 +138,29 @@ describe SeasonCreator, type: :strategy do
 
     subject { SeasonCreator.new( older_season, description ) }
 
-    it "returns season, meetings and so on" do
+    it "contains empty structures after init" do
       expect( subject.new_season ).to be_nil
       expect( subject.meetings.count ).to eq(0)
       expect( subject.meeting_sessions.count ).to eq(0)
       expect( subject.meeting_events.count ).to eq(0)
+    end
+
+    it "returns season, meetings and so on" do
       subject.prepare_new_season!
       expect( subject.new_season ).to be_an_instance_of( Season )
       expect( subject.categories ).to all(be_an_instance_of( CategoryType ))
       expect( subject.meetings ).to all(be_an_instance_of( Meeting ))
       expect( subject.meeting_sessions ).to all(be_an_instance_of( MeetingSession ))
       expect( subject.meeting_events ).to all(be_an_instance_of( MeetingEvent ))
+    end
+
+    it "returns season, categories, but not meetings if disabled" do
+      subject.prepare_new_season!( false )
+      expect( subject.new_season ).to be_an_instance_of( Season )
+      expect( subject.categories ).to all(be_an_instance_of( CategoryType ))
+      expect( subject.meetings.count ).to eq(0) 
+      expect( subject.meeting_sessions.count ).to eq(0)
+      expect( subject.meeting_events.count ).to eq(0)
     end
   end
   #-- -------------------------------------------------------------------------
