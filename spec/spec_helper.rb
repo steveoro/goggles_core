@@ -98,13 +98,16 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 
-  # Test suite speed-up - Defer-garbage collection during all tests
-  # check-out specs/support/deferred_garbage_collector.rb
-  config.before(:all) do
-    DeferredGarbageCollector.start
-  end
+  # Test suite speed-up - Disable garbage collection during individual tests
+  config.before(:each) { GC.disable }
+  config.after(:each)  { GC.enable }
 
-  config.after(:all) do
-    DeferredGarbageCollector.reconsider
-  end
+  # Test suite speed-up (NOT working w/ Rails 5+!) - Defer-garbage collection during all tests
+  # check-out specs/support/deferred_garbage_collector.rb in core project
+#  config.before(:all) do
+#    DeferredGarbageCollector.start
+#  end
+#  config.after(:all) do
+#    DeferredGarbageCollector.reconsider
+#  end
 end
