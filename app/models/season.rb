@@ -154,7 +154,7 @@ class Season < ApplicationRecord
   #
   def self.build_header_year_from_date( evaluation_date = Date.today )
     raise ArgumentError.new( "evaluation_date must be of a Date kind." ) unless evaluation_date.kind_of?( Date )
-    year = evaluation_date.month < 9 ? evaluation_date.year - 1 : evaluation_date.year
+    year = evaluation_date.month < 10 ? evaluation_date.year - 1 : evaluation_date.year
     "#{year}/#{year+1}"
   end
 
