@@ -6,7 +6,7 @@ require 'drop_down_listable'
 
 = Season
 
-  - version:  6.111
+  - version:  6.139
   - author:   Steve A., Leega
 
 =end
@@ -119,26 +119,34 @@ class Meeting < ApplicationRecord
     end
   end
 
-  # Computes a shorter description for the name associated with this data
+  # Returns the instance description
   def get_full_name
-    case edition_type_id
-    when EditionType::ORDINAL_ID
-      "#{edition} #{description}"
-    when EditionType::ROMAN_ID
-      "#{edition.to_roman} #{description}"
-    when EditionType::SEASON_ID
-      #"#{description} #{season.get_full_name}"
-      "#{description} #{header_year}"
-    when EditionType::YEAR_ID
-      "#{description} #{header_year}"
-    else
-      description
-    end
+    description
   end
 
   # Computes a verbose or formal description for the name associated with this data
   def get_verbose_name
     "#{get_full_name} (#{get_season_type}, #{header_year})"
+  end
+
+  # Returns the verbose edition description, based on current edition & edition_type_id
+  # values.
+  # Returns a safe empty string in case the edition_type is not defined or recognized.
+  #
+  def get_edition
+    case edition_type_id
+    when EditionType::ORDINAL_ID
+      edition.to_s
+    when EditionType::ROMAN_ID
+      edition.to_roman
+    when EditionType::SEASON_ID
+      #"#{description} #{season.get_full_name}"
+      header_year
+    when EditionType::YEAR_ID
+      header_year
+    else
+      ''
+    end
   end
   # ----------------------------------------------------------------------------
 
