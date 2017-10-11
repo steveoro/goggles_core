@@ -8,11 +8,11 @@ it:
     phone_mobile2: "Tel. alt."
     e_mail: "e-mail"
     nickname: "Nickname"
-    affiliated_in_teams: "Società"
+    affiliated_in_teams: "Società attuale"
     current_category: "Categoria attuale"
     last_registered_category: "Ultima Categoria registrata"
-    meeting_presence: "Presenze in Squadra"
-    events_attended: "Eventi/Gare disputate"
+    meeting_presence: "Manifestazioni"
+    events_attended: "Gare disputate"
     total_metres_swam: "Metri di gara percorsi"
     total_time_swam: "Tempo totale di gara"
     first_attended_meeting: "Prima gara disputata"
@@ -26,6 +26,7 @@ it:
     swimmers: "Nuotatori"
     search_swimmers: "Cerca Nuotatori"
     age_current: "Età al 31/12"
+    all_teams: "Società in cui ha nuotato"
 
   swimmer:
     unable_to_retrieve_row_data: "Errore durante il reperimento dei dati pre-esistenti sui Nuotatori! (tab: 'swimmers')"

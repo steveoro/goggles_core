@@ -26,6 +26,7 @@ en:
     swimmers: "Swimmers"
     search_swimmers: "Search Swimmers"
     age_current: "Age at 31/12"
-
+    all_teams: "Swam in Teams"
+    
   swimmer:
     unable_to_retrieve_row_data: "Error during the retrieval of the pre-existing data from table 'swimmers'!"
