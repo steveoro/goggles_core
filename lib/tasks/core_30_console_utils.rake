@@ -131,10 +131,10 @@ DESC
 
     # Log teams found and affiliations
     teams_found.sort{ |a,b| a.name <=> b.name }.each do |team|
-      logger.info( "\r\n#{team.id} - #{team.get_verbose_name} (#{team.name})" )
+      logger.info( "\r\n#{team.id} - #{team.get_verbose_name} (#{team.name} / #{team.editable_name})" )
       logger.info( "<------------------------------------------------------------>" )
-      team.team_affiliations.select(:name).distinct.each do |team_affiliation|
-        logger.info( " - #{team_affiliation.name}" )
+      team.team_affiliations.sort_team_affiliation_by_season('ASC').each do |team_affiliation|
+        logger.info( " - #{team_affiliation.season_id}: #{team_affiliation.name}" )
       end
       logger.info( "\r\n\r\n" )
     end
