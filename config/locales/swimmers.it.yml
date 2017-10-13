@@ -27,6 +27,7 @@ it:
     search_swimmers: "Cerca Nuotatori"
     age_current: "Età al 31/12"
     all_teams: "Società in cui ha nuotato"
+    ironmaster: "Ironmaster completati"
 
   swimmer:
     unable_to_retrieve_row_data: "Errore durante il reperimento dei dati pre-esistenti sui Nuotatori! (tab: 'swimmers')"
