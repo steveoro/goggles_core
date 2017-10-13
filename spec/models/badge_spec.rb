@@ -119,4 +119,21 @@ describe Badge, :type => :model do
   end
   # ---------------------------------------------------------------------------
   #++
+  
+  describe "#has_ironmaster?" do
+    it "returns a boolean" do
+      expect( subject.has_ironmaster? ).to be( true ).or( be( false ))
+    end
+    it "returns false for an empty badge" do
+      badge = create( :badge )
+      expect( badge.has_ironmaster? ).to be( false )
+    end
+    it "returns false for Leega 152" do
+      leega = Swimmer.find(23)
+      ironbadge = leega.badges.where( :season => 152 ).first
+      expect( ironbadge.has_ironmaster? ).to be( true )
+    end
+  end
+  # ---------------------------------------------------------------------------
+  #++
 end

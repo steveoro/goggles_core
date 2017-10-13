@@ -42,6 +42,7 @@ class EventType < ApplicationRecord
   scope :only_relays,         ->{ where(is_a_relay: true) }
   scope :are_not_relays,      ->{ where(is_a_relay: false) }
   scope :for_fin_calculation, ->{ where('((length_in_meters % 50) = 0) AND (length_in_meters <= 1500)') }
+  scope :for_ironmaster,      ->{ where('(not is_a_relay and length_in_meters between 50 and 1500)') }
 
   scope :sort_by_style,       ->{ order('style_order') }
 

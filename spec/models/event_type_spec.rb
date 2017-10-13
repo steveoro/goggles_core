@@ -25,7 +25,8 @@ describe EventType, :type => :model do
     :for_fin_calculation,
     :sort_by_style,
     :for_season,
-    :for_season_type
+    :for_season_type,
+    :for_ironmaster
   ])
 
   it_behaves_like( "(the existance of a method returning non-empty strings)", [
@@ -107,6 +108,14 @@ describe EventType, :type => :model do
             expect( result ).to be_an_instance_of( EventType )
           end
         end
+      end
+    end
+    #-- -----------------------------------------------------------------------
+    #++
+    
+    describe "scope for_ironmaster" do
+      it "returns 18 elements" do
+        expect( EventType.for_ironmaster.count ).to eq( 18 )
       end
     end
     #-- -----------------------------------------------------------------------

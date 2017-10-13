@@ -79,4 +79,17 @@ class Badge < ApplicationRecord
   end
   #-- -------------------------------------------------------------------------
   #++
+
+
+  # Get entry time type.
+  # Return 'M' (manual) if not set
+  def has_ironmaster?
+    events = []
+    meeting_individual_results.each do |mir|
+      events << mir.event_type.code
+    end
+    events.uniq.count == EventType.for_ironmaster.count
+  end
+  #-- -------------------------------------------------------------------------
+  #++
 end
