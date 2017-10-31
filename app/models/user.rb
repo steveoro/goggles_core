@@ -111,7 +111,7 @@ class User < ApplicationRecord
 
   # to_s() override for debugging purposes:
   def to_s
-    "[User: #{get_full_name} ID: #{id}]"
+    "[User: #{get_full_name} - #(email} ID: #{id}]"
   end
   #-- -------------------------------------------------------------------------
   #++
