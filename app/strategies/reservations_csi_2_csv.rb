@@ -6,7 +6,7 @@ require 'framework/console_logger'
 
 = ReservationsCsi2Csv
 
-  - Goggles framework vers.:  6.109
+  - Goggles framework vers.:  6.149
   - author: Steve A.
 
  Strategy class used to output a specific CSV text format for the C.S.I. Regional
@@ -44,9 +44,11 @@ class ReservationsCsi2Csv
     @meeting = meeting
     @filtering_team = filtering_team
     @logger  = logger
-    prepare_header_titles()
-    @csi_data_rows = []
-    @swimmers_reservations = 0
+    @csi_data_rows = []                             # Actual data rows to be exported
+    @swimmers_reservations = 0                      # Simply counts the reservation found
+    # This will be used to extract a valid team/affiliation reference from the swimmer badge:
+    @first_swimmer_reservation = nil
+    @pre_header_lines = []
     @created_file_full_pathname = nil
   end
   #-- -------------------------------------------------------------------------
@@ -85,6 +87,8 @@ class ReservationsCsi2Csv
         badge = meeting_reservation.badge
         @logger.info( "Swimmer #{swimmer.get_full_name} (#{badge.category_type.code})" )
         @swimmers_reservations = @swimmers_reservations + 1
+        # Store the first reservation in order to extract useful team data for the headers later on:
+        @first_swimmer_reservation = meeting_reservation if @swimmers_reservations == 1
 
         swimmer_row = ""
         swimmer_row << "#{ badge.category_type.code };"
@@ -120,6 +124,8 @@ class ReservationsCsi2Csv
         @csi_data_rows << swimmer_row
       end
     end
+    # After we have collected the reservations, we can prepare the headers:
+    prepare_header_titles()
   end
 
 
@@ -128,6 +134,7 @@ class ReservationsCsi2Csv
   #
   def output_text
     if @csi_data_rows.size > 0
+      @pre_header_lines.join("\r\n") + "\r\n" +
       ( [ @header_titles.join(';') ] + @csi_data_rows ).join("\r\n")
     else
       nil
@@ -178,6 +185,35 @@ class ReservationsCsi2Csv
   # Prepares the header
   #
   def prepare_header_titles()
+    if @first_swimmer_reservation
+      team = @first_swimmer_reservation.team
+      affiliation = @first_swimmer_reservation.badge.team_affiliation
+      team_manager = TeamManager.where( team_affiliation_id: affiliation.id ).first
+      meeting_session = @meeting.meeting_sessions.first
+
+      place   = meeting_session.swimming_pool.city.name
+      date    = meeting_session.get_scheduled_date
+      events  = meeting_session.get_short_name.gsub(';', ',')
+      address = team && team.address ? team.address.gsub(';', ',') : ""
+      phone   = team && team.phone_number ? team.phone_number : ""
+      mobile  = team && team.phone_mobile ? team.phone_mobile : ""
+      email   = team && team.e_mail ? team.e_mail : team_manager.user.email
+      manager_name = team && team.contact_name ? team.contact_name : "#{ team_manager.user.first_name } #{ team_manager.user.last_name }"
+
+      @pre_header_lines = [
+        "data e località manifestazione;;;;#{ date } #{ @meeting.description } #{ place };;;;;",
+        "Società;;;;;;;;;",
+        "#{ affiliation.name };;;;;;;;;",
+        "Indirizzo (Via, CAP, località, provincia);;;;;;;;;",
+        "#{ address };;;;;;;;;",
+        "Responsabile e recapito telefonico;;;;;;;;;",
+        "#{ manager_name } #{ phone || mobile };;;;;;;;;",
+        "Email;;;;;;;;;",
+        "#{ email };;;;;;;;;",
+        ";;;;;;;;;"
+      ]
+    end
+
     @header_titles = [
       "Cat", "Cognome", "Nome", "Tess", "Sesso", "Anno"
     ]

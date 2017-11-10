@@ -162,15 +162,18 @@ describe ReservationsCsi2Csv, type: :strategy do
 #            puts subject.output_text
 #            puts "------8<--------[output lines: #{ subject.output_text.split("\r\n").count }]"
           end
-          it "is composed of lines having the same number of columns (separated by ';')" do
+          it "is composed of lines having the same number of columns (separated by ';' and after the headers)" do
             lines_array = subject.output_text.split("\r\n").map{ |line| line.split(';') }
 # DEBUG
-            puts "\r\n------8<--------[lines_array]:"
-            lines_array.each{|line_array| puts "Columns: #{ line_array.count } => #{ line_array.inspect }" }
-            puts "------8<--------[lines_array count: #{ lines_array.count }]"
+#            puts "\r\n------8<--------[lines_array]:"
+#            lines_array.each{|line_array| puts "Columns: #{ line_array.count } => #{ line_array.inspect }" }
+#            puts "------8<--------[lines_array count: #{ lines_array.count }]"
             # Each line must have the same count of elements as the first one:
-            lines_array.each do |line|
-              expect( line.count ).to eq( lines_array.first.count )
+            lines_array.each_with_index do |line, index|
+              # Skip the pre-header with team & meeting info:
+              if index > 10
+                expect( line.count ).to eq( lines_array.last.count )
+              end
             end
           end
         end
