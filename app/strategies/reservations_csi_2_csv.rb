@@ -152,6 +152,10 @@ class ReservationsCsi2Csv
       extension = if @filtering_team.instance_of?( Team )
         @logger.info( "(While filtering for #{ @filtering_team.get_full_name } swimmers, team ID: #{ @filtering_team.id })" )
         "#{ @filtering_team.id }.csv"
+      elsif @first_swimmer_reservation.instance_of?( MeetingReservation )
+        affiliation = @first_swimmer_reservation.badge.team_affiliation
+        @logger.info( "(While filtering for #{ affiliation.get_full_name } swimmers, team ID: #{ affiliation.team_id })" )
+        "#{ affiliation.team_id }.csv"
       else
         "csv"
       end

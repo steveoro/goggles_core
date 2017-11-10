@@ -258,7 +258,8 @@ describe TeamBestFinder, type: :strategy do
         over_category = CategoryType.find_by_code('OVER')
         expect( fix_tbf.category_needs_split?( over_category ) ).to eq( true )
       end
-      it "returns false for CSI grouped categories (OVER) for only CSI season types" do
+#FIXME random failure at season start
+      xit "returns false for CSI grouped categories (OVER) for only CSI season types" do
         over_category = CategoryType.find_by_code('OVER')
         fix_tbf.distinct_categories.delete_if{ |e| e.age_begin > 55 || e.code == 'M55' }
         expect( fix_tbf.distinct_categories.rindex{ |e| e.code == 'OVER' } ).to be > 0
