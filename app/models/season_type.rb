@@ -23,7 +23,7 @@ class SeasonType < ApplicationRecord
   has_many :seasons
   has_many :swimmers,     through: :seasons
   has_many :teams,        through: :seasons
-  has_many :event_types,  through: :seasons
+  has_many :event_types,  through: :seasons  # FIXME This one doesn't work
 
   scope :is_master,   -> { where("code like 'MAS%'") }
   # ----------------------------------------------------------------------------
