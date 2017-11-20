@@ -6,7 +6,7 @@ require 'wrappers/timing'
 
 = MeetingEventReservation model
 
-  - version:  6.053
+  - version:  6.157
   - author:   Steve A.
 
 =end
@@ -59,6 +59,18 @@ class MeetingEventReservation < ApplicationRecord
   def is_not_registered
     (!is_doing_this) &&
     suggested_minutes.nil? && suggested_seconds.nil? && suggested_hundreds.nil?
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
+
+  # Returns true if the current instance refers to a no-time registration.
+  #
+  def is_no_time
+    (is_doing_this) &&
+    (suggested_minutes.to_i == 0) &&
+    (suggested_seconds.to_i == 0) &&
+    (suggested_hundreds.to_i == 0)
   end
   #-- -------------------------------------------------------------------------
   #++

@@ -6,7 +6,7 @@ require 'framework/console_logger'
 
 = ReservationsCsi2Csv
 
-  - Goggles framework vers.:  6.149
+  - Goggles framework vers.:  6.156
   - author: Steve A.
 
  Strategy class used to output a specific CSV text format for the C.S.I. Regional
@@ -114,7 +114,11 @@ class ReservationsCsi2Csv
         # Scan events
         @meeting.meeting_event_reservations.where( ['swimmer_id = ?', swimmer.id] ).is_reserved.each do |meeting_event_reservation|
           swimmer_row << "#{ meeting_event_reservation.get_event_type_for_csi_entry };"
-          swimmer_row << "#{ meeting_event_reservation.get_timing_flattened };"
+          if meeting_event_reservation.is_no_time
+            swimmer_row << "ST;"
+          else
+            swimmer_row << "#{ meeting_event_reservation.get_timing_flattened };"
+          end
         end
         # Add empty columns if event reservations are less than expected output format:
         ( get_actual_total_reservable_events(@meeting) - reservations_count ).times do

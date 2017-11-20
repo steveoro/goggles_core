@@ -42,7 +42,9 @@ RSpec.describe MeetingEventReservation, type: :model do
       it_behaves_like( "(the existance of a method)", [
         :suggested_minutes, :suggested_seconds, :suggested_hundreds,
         :minutes, :seconds, :hundreds,
-        :is_doing_this
+        :is_doing_this,
+        :is_not_registered,
+        :is_no_time
       ])
     end
     #-- -----------------------------------------------------------------------
@@ -71,6 +73,35 @@ RSpec.describe MeetingEventReservation, type: :model do
         end
         it "returns false" do
           expect( subject.is_not_registered ).to be false
+        end
+      end
+    end
+    #-- -----------------------------------------------------------------------
+    #++
+
+    describe "#is_no_time" do
+      context "for a 'registered' row with a nil timing," do
+        subject do
+          MeetingEventReservation.new( is_doing_this: true )
+        end
+        it "returns true" do
+          expect( subject.is_no_time ).to be true
+        end
+      end
+      context "for a 'registered' row with a zero timing," do
+        subject do
+          MeetingEventReservation.new( is_doing_this: true, suggested_minutes: 0, suggested_seconds: 0, suggested_hundreds: 0)
+        end
+        it "returns true" do
+          expect( subject.is_no_time ).to be true
+        end
+      end
+      context "for a 'registered' row with a positive timing," do
+        subject do
+          build(:meeting_event_reservation, is_doing_this: true)
+        end
+        it "returns false" do
+          expect( subject.is_no_time ).to be false
         end
       end
     end
