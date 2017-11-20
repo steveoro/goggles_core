@@ -35,6 +35,26 @@ describe User, :type => :model do
     #-- -----------------------------------------------------------------------
     #++
 
+    describe "#to_s" do
+      let(:user) { build(:user) }
+      subject { user.to_s }
+
+      it "returns a string" do
+        expect( subject ).to be_a( String )
+      end
+      it "includes the user full name" do
+        expect( subject ).to include( user.get_full_name )
+      end
+      it "includes the user ID" do
+        expect( subject ).to include( user.id.to_s )
+      end
+      it "includes the user email" do
+        expect( subject ).to include( user.email )
+      end
+    end
+    #-- -----------------------------------------------------------------------
+    #++
+
     describe "#get_first_and_last_name" do
       it "returns an array with 2 elements" do
         result = subject.get_first_and_last_name
