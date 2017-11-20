@@ -6,7 +6,7 @@ require 'framework/console_logger'
 
 = ReservationsCsi2Csv
 
-  - Goggles framework vers.:  6.156
+  - Goggles framework vers.:  6.157
   - author: Steve A.
 
  Strategy class used to output a specific CSV text format for the C.S.I. Regional
@@ -50,6 +50,8 @@ class ReservationsCsi2Csv
     @first_swimmer_reservation = nil
     @pre_header_lines = []
     @created_file_full_pathname = nil
+    # Enforce locale needed by this strategy:
+    I18n.locale = :it
   end
   #-- -------------------------------------------------------------------------
   #++
