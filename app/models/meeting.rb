@@ -6,7 +6,7 @@ require 'drop_down_listable'
 
 = Season
 
-  - version:  6.139
+  - version:  6.177
   - author:   Steve A., Leega
 
 =end
@@ -56,6 +56,7 @@ class Meeting < ApplicationRecord
   has_many :meeting_entries,            through: :meeting_programs
   has_many :meeting_individual_results, through: :meeting_programs
   has_many :meeting_relay_results,      through: :meeting_programs
+  has_many :passages,                   through: :meeting_programs
 
   has_many :swimming_pools,             through: :meeting_sessions
   has_many :pool_types,                 through: :meeting_sessions
@@ -63,6 +64,7 @@ class Meeting < ApplicationRecord
   has_many :teams,                      through: :meeting_individual_results
   has_many :event_types,                through: :meeting_sessions
   has_many :category_types,             through: :meeting_programs
+  has_many :meeting_relay_swimmers,     through: :meeting_relay_results
 
   validates_presence_of :code,        length: { within: 1..50 }, allow_nil: false
   validates_presence_of :header_year, length: { within: 1..9 }, allow_nil: false
