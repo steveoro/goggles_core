@@ -101,4 +101,24 @@ class StrokeType < ApplicationRecord
     end
   end
   # ----------------------------------------------------------------------------
+
+  # Give the CSI reservations and results stroke numeric code
+  # TODO Use federation code or map corrispondence on DB
+  #
+  def get_csi_code
+    csi_code = '0'
+    if code == 'SL'
+      csi_code = '1'
+    elsif code == 'DO'
+      csi_code = '2'
+    elsif code == 'RA'
+      csi_code = '3'
+    elsif code == 'FA'
+      csi_code = '4'
+    elsif code == 'MI'
+      csi_code = '5'
+    end
+    csi_code  
+  end
+  # ----------------------------------------------------------------------------
 end

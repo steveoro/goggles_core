@@ -155,4 +155,11 @@ class CategoryType < ApplicationRecord
     category_type
   end
   # ----------------------------------------------------------------------------
+
+  # Give the CSI reservations and results category numeric code
+  #
+  def get_csi_code
+    federation_code  
+  end
+  # ----------------------------------------------------------------------------
 end

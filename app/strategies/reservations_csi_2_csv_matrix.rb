@@ -4,19 +4,10 @@ require 'framework/console_logger'
 
 =begin
 
-= ReservationsCsi2Csv
+= ReservationsCsi2CsvMatrix
 
   - Goggles framework vers.:  6.157
   - author: Steve A.
-  - revised by Leega with new Negrini's requests
-  
- The file will contains:
- Atleta  -> swimmer complete_name
- Anno    -> swimmer year_of_birth
- Squadra -> team_affiliation name
- Tempo   -> reservation time
- Codice  -> 5 caratters code created with gender, category and event
- Tessera -> Optional badge number  
 
  Strategy class used to output a specific CSV text format for the C.S.I. Regional
  Championship (used to exchange reservation data in between organizations).
@@ -31,7 +22,7 @@ require 'framework/console_logger'
  The extracted data can be serialized on file at will with a dedicated method.
 
 =end
-class ReservationsCsi2Csv
+class ReservationsCsi2CsvMatrix
 
   DEFAULT_OUTPUT_DIR = File.join( Rails.root, 'public', 'output' ) unless defined? DEFAULT_OUTPUT_DIR
 
@@ -57,7 +48,10 @@ class ReservationsCsi2Csv
     @swimmers_reservations = 0                      # Simply counts the reservation found
     # This will be used to extract a valid team/affiliation reference from the swimmer badge:
     @first_swimmer_reservation = nil
+    @pre_header_lines = []
     @created_file_full_pathname = nil
+    # Enforce locale needed by this strategy:
+    I18n.locale = :it
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -89,37 +83,51 @@ class ReservationsCsi2Csv
     # Scan involved swimmers
     reservations.each do |meeting_reservation|
       swimmer = meeting_reservation.swimmer
-      if @meeting.meeting_event_reservations.where( ['swimmer_id = ?', swimmer.id] ).is_reserved.count > 0
-        badge = meeting_reservation.badge
-        gender_type = swimmer.gender_type
-        category_type = badge.category_type
+      reservations_count = @meeting.meeting_event_reservations.where( ['swimmer_id = ?', swimmer.id] ).is_reserved.count
 
+      if reservations_count > 0
+        badge = meeting_reservation.badge
         @logger.info( "Swimmer #{swimmer.get_full_name} (#{badge.category_type.code})" )
         @swimmers_reservations = @swimmers_reservations + 1
-        
         # Store the first reservation in order to extract useful team data for the headers later on:
         @first_swimmer_reservation = meeting_reservation if @swimmers_reservations == 1
 
-        # Scan reserved events
-        @meeting.meeting_event_reservations.where( ['swimmer_id = ?', swimmer.id] ).is_reserved.each do |meeting_event_reservation|
-          swimmer_row = ""
-          swimmer_row << "#{ swimmer.complete_name };"
-          swimmer_row << "#{ swimmer.year_of_birth };"
-          swimmer_row << "#{ badge.team_affiliation.name };"  
+        swimmer_row = ""
+        swimmer_row << "#{ badge.category_type.code };"
+        # If we have the last name, this means that the name has already been correctly split:
+        if swimmer.last_name.present?
+          swimmer_row << "#{ swimmer.last_name };"
+          swimmer_row << "#{ swimmer.first_name };"
+        # Otherwise, we have to guess the first & last name part from the complete_name.
+        # Typically, this is not possible. So we stick using the last item in the
+        # array of split elements as the first name (the sequence in complete_name
+        # is to use the last_name as first). The rest of the sequence is joined together.
+        else
+          name_parts = swimmer.get_full_name.split(/\s/)
+          first_name = name_parts.last
+          last_name  = name_parts[ 0 .. name_parts.size-2 ].join(' ')
+          swimmer_row << "#{ last_name };"
+          swimmer_row << "#{ first_name };"
+        end
+        swimmer_row << "#{ badge.number != '?' ? badge.number : '' };"
+        swimmer_row << "#{ swimmer.gender_type.code };"
+        swimmer_row << "#{ swimmer.year_of_birth };"
 
-          # Find out csi gender-category-event code
-          swimmer_row << "#{ get_csi_reservation_code( gender_type, category_type, meeting_event_reservation.event_type ) };"
-          
-          # Check for no time to set correct notation        
+        # Scan events
+        @meeting.meeting_event_reservations.where( ['swimmer_id = ?', swimmer.id] ).is_reserved.each do |meeting_event_reservation|
+          swimmer_row << "#{ meeting_event_reservation.get_event_type_for_csi_entry };"
           if meeting_event_reservation.is_no_time
             swimmer_row << "ST;"
           else
             swimmer_row << "#{ meeting_event_reservation.get_timing_flattened };"
           end
-
-          swimmer_row << "#{ badge.number != '?' ? badge.number : '' }"
-          @csi_data_rows << swimmer_row
         end
+        # Add empty columns if event reservations are less than expected output format:
+        ( get_actual_total_reservable_events(@meeting) - reservations_count ).times do
+          swimmer_row << ";;"
+        end
+        swimmer_row << "#{ @meeting.header_date.year - swimmer.year_of_birth };"
+        @csi_data_rows << swimmer_row
       end
     end
     # After we have collected the reservations, we can prepare the headers:
@@ -132,6 +140,7 @@ class ReservationsCsi2Csv
   #
   def output_text
     if @csi_data_rows.size > 0
+      @pre_header_lines.join("\r\n") + "\r\n" +
       ( [ @header_titles.join(';') ] + @csi_data_rows ).join("\r\n")
     else
       nil
@@ -171,26 +180,61 @@ class ReservationsCsi2Csv
   #++
 
 
-  # Find out the CSI reservation (and result) code for gender, category and event
-  # The CSI code is a 5 digit numerical value with positional significant
-  # <gender><category_2_digits><stroke_type><distance>
-  def get_csi_reservation_code( gender_type, category_type, event_type )
-    gender_code   = gender_type.get_csi_code.to_i * 10000
-    category_code = category_type.get_csi_code.to_i * 100  # 2 digits
-    stroke_code   = event_type.stroke_type.get_csi_code.to_i * 10
-    distance_code = event_type.get_csi_distance_code.to_i
-    (gender_code + category_code + stroke_code + distance_code).to_s 
-  end
-  
-
   private
+
+
+  # Computes the actual total number of possibile reservations for this meeting
+  #
+  def get_actual_total_reservable_events( meeting )
+    # Include also "out-of-race" events, which are usually not counted among the
+    # max_individual_events value:
+    meeting.max_individual_events + meeting.meeting_events.where( is_out_of_race: true ).count
+  end
+
 
   # Prepares the header
   #
   def prepare_header_titles()
+    if @first_swimmer_reservation
+      team = @first_swimmer_reservation.team
+      affiliation = @first_swimmer_reservation.badge.team_affiliation
+      team_manager = TeamManager.where( team_affiliation_id: affiliation.id ).first
+      meeting_session = @meeting.meeting_sessions.first
+
+      place   = meeting_session.swimming_pool.city.name
+      date    = meeting_session.get_scheduled_date
+      events  = meeting_session.get_short_name.gsub(';', ',')
+      address = team && team.address ? team.address.gsub(';', ',') : ""
+      phone   = team && team.phone_number ? team.phone_number : ""
+      mobile  = team && team.phone_mobile ? team.phone_mobile : ""
+      email   = team && team.e_mail ? team.e_mail : team_manager.user.email
+      manager_name = team && team.contact_name ? team.contact_name : "#{ team_manager.user.first_name } #{ team_manager.user.last_name }"
+
+      @pre_header_lines = [
+        "data e località manifestazione;;;;#{ date } #{ @meeting.description } #{ place };;;;;",
+        "Società;;;;;;;;;",
+        "#{ affiliation.name };;;;;;;;;",
+        "Indirizzo (Via, CAP, località, provincia);;;;;;;;;",
+        "#{ address };;;;;;;;;",
+        "Responsabile e recapito telefonico;;;;;;;;;",
+        "#{ manager_name } #{ phone || mobile };;;;;;;;;",
+        "Email;;;;;;;;;",
+        "#{ email };;;;;;;;;",
+        ";;;;;;;;;"
+      ]
+    end
+
     @header_titles = [
-      "Atleta", "Anno", "Squadra", "Tempo", "Codice", "Tessera"
+      "Cat", "Cognome", "Nome", "Tess", "Sesso", "Anno"
     ]
+    # Get the total number of possibile reservations:
+    total_reservable_events =
+    # Event reservations for each possible event:
+    ( 1 .. get_actual_total_reservable_events(@meeting) ).each do |event_number|
+      @header_titles << "Gara#{ event_number }"
+      @header_titles << "Tempo#{ event_number }"
+    end
+    @header_titles << "Età"
     @header_titles
   end
   #-- -------------------------------------------------------------------------

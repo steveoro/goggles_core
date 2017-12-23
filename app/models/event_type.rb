@@ -138,4 +138,28 @@ class EventType < ApplicationRecord
   end
   #-- -------------------------------------------------------------------------
   #++
+
+  # Give the CSI reservations and results event distance numeric code
+  # TODO Use federation code or map corrispondence on DB
+  #
+  def get_csi_distance_code
+    csi_code = '0'
+    if length_in_meters == 25
+      csi_code = '1'
+    elsif length_in_meters == 50
+      csi_code = '2'
+    elsif length_in_meters == 100
+      csi_code = '3'
+    elsif length_in_meters == 200
+      csi_code = '4'
+    elsif length_in_meters == 400
+      csi_code = '5'
+    elsif length_in_meters == 800
+      csi_code = '6'
+    elsif length_in_meters == 1500
+      csi_code = '7'
+    end
+    csi_code  
+  end
+  # ----------------------------------------------------------------------------
 end

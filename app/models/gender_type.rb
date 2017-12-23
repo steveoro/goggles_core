@@ -81,4 +81,18 @@ class GenderType < ApplicationRecord
     gender_type_desc  
   end
   # ----------------------------------------------------------------------------
+
+  # Give the CSI reservations and results gender numeric code
+  # TODO Use federation code or map corrispondence on DB
+  #
+  def get_csi_code
+    csi_code = '-1'
+    if code == 'M'
+      csi_code = '1'
+    elsif code == 'F'
+      csi_code = '0'
+    end
+    csi_code  
+  end
+  # ----------------------------------------------------------------------------
 end

@@ -12,7 +12,8 @@ describe GenderType, :type => :model do
 
   it_behaves_like( "(the existance of a method)", [
     :is_male,
-    :is_female
+    :is_female,
+    :get_csi_code
   ])
 
 
@@ -73,6 +74,15 @@ describe GenderType, :type => :model do
       expect( GenderType.retrieve_description_by_uisp_code( 'A' ) ).to eq( '?' )
       expect( GenderType.retrieve_description_by_uisp_code( 'B' ) ).to eq( '?' )
       expect( GenderType.retrieve_description_by_uisp_code( 'Z' ) ).to eq( '?' )
+    end
+  end
+
+  describe "#get_csi_code" do
+    it "returns '1' for a male GenderType" do
+      expect( GenderType.find_by_code('M').get_csi_code ).to eq( '1' )
+    end
+    it "returns '0' for a female GenderType" do
+      expect( GenderType.find_by_code('F').get_csi_code ).to eq( '0' )
     end
   end
 end
