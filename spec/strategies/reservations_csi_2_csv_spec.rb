@@ -162,15 +162,15 @@ describe ReservationsCsi2Csv, type: :strategy do
 #            puts subject.output_text
 #            puts "------8<--------[output lines: #{ subject.output_text.split("\r\n").count }]"
           end
-          it "is composed of lines having the same number of columns (separated by ';' and after the headers)" do
+          it "is composed of lines having the same number of columns (separated by ';')" do
             lines_array = subject.output_text.split("\r\n").map{ |line| line.split(';') }
 # DEBUG
-#            puts "\r\n------8<--------[lines_array]:"
-#            lines_array.each{|line_array| puts "Columns: #{ line_array.count } => #{ line_array.inspect }" }
-#            puts "------8<--------[lines_array count: #{ lines_array.count }]"
+            puts "\r\n------8<--------[lines_array]:"
+            lines_array.each{|line_array| puts "Columns: #{ line_array.count } => #{ line_array.inspect }" }
+            puts "------8<--------[lines_array count: #{ lines_array.count }]"
             # Each line must have the same count of elements as the first one:
             lines_array.each_with_index do |line, index|
-              expect( line.count ).to eq( lines_array.last.count )
+              expect( line.count ).to eq( lines_array.first.count )
             end
           end
         end
@@ -202,8 +202,7 @@ describe ReservationsCsi2Csv, type: :strategy do
               meeting_id: meeting_csi_w_res.id,
               team_id: team_for_meeting_csi_w_res.id,
               is_doing_this: true
-            ).select( :swimmer_id )
-              .distinct.count
+            ).count
 
             expect( subject.csi_data_rows.size ).to eq( total_swimmer_reservations )
           end

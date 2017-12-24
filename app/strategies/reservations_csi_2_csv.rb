@@ -106,9 +106,6 @@ class ReservationsCsi2Csv
           swimmer_row << "#{ swimmer.complete_name };"
           swimmer_row << "#{ swimmer.year_of_birth };"
           swimmer_row << "#{ badge.team_affiliation.name };"  
-
-          # Find out csi gender-category-event code
-          swimmer_row << "#{ get_csi_reservation_code( gender_type, category_type, meeting_event_reservation.event_type ) };"
           
           # Check for no time to set correct notation        
           if meeting_event_reservation.is_no_time
@@ -117,7 +114,10 @@ class ReservationsCsi2Csv
             swimmer_row << "#{ meeting_event_reservation.get_timing_flattened };"
           end
 
-          swimmer_row << "#{ badge.number != '?' ? badge.number : '' }"
+          # Find out csi gender-category-event code
+          swimmer_row << "#{ get_csi_reservation_code( gender_type, category_type, meeting_event_reservation.event_type ) };"
+
+          swimmer_row << "#{ badge.number != '?' ? badge.number : ' ' };"
           @csi_data_rows << swimmer_row
         end
       end
