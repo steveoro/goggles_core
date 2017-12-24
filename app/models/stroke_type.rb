@@ -107,13 +107,13 @@ class StrokeType < ApplicationRecord
   #
   def get_csi_code
     csi_code = '0'
-    if code == 'SL'
+    if code == 'FA'
       csi_code = '1'
     elsif code == 'DO'
       csi_code = '2'
     elsif code == 'RA'
       csi_code = '3'
-    elsif code == 'FA'
+    elsif code == 'SL'
       csi_code = '4'
     elsif code == 'MI'
       csi_code = '5'
