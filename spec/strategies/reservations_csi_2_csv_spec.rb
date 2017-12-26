@@ -157,6 +157,7 @@ describe ReservationsCsi2Csv, type: :strategy do
           it "returns the collected text" do
             expect( subject.output_text ).not_to be nil
             expect( subject.output_text.length ).to be > 0
+            expect( subject.output_text.length ).to be >= 400
 # DEBUG
 #            puts "\r\n------8<--------[Output text]:"
 #            puts subject.output_text

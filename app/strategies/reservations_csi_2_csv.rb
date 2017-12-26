@@ -109,21 +109,26 @@ class ReservationsCsi2Csv
           
           # Check for no time to set correct notation        
           if meeting_event_reservation.is_no_time
-            swimmer_row << "ST;"
+            swimmer_row << "999998;"
           else
             swimmer_row << "#{ meeting_event_reservation.get_timing_flattened };"
           end
+          
+          # Badge number if present or single space if not
+          swimmer_row << "#{ badge.number != '?' ? badge.number : ' ' };"
 
           # Find out csi gender-category-event code
           swimmer_row << "#{ get_csi_reservation_code( gender_type, category_type, meeting_event_reservation.event_type ) };"
 
-          swimmer_row << "#{ badge.number != '?' ? badge.number : ' ' };"
+          # Enod of line character sequence ";"
+          swimmer_row << '";"'
           @csi_data_rows << swimmer_row
         end
       end
     end
-    # After we have collected the reservations, we can prepare the headers:
-    prepare_header_titles()
+    # After we have collected the reservations, we can prepare the headers and footer if needed:
+    #prepare_header_titles()
+    prepare_footer_filler()
   end
 
 
@@ -132,7 +137,11 @@ class ReservationsCsi2Csv
   #
   def output_text
     if @csi_data_rows.size > 0
-      ( [ @header_titles.join(';') ] + @csi_data_rows ).join("\r\n")
+      while @csi_data_rows.size < 400 do
+        @csi_data_rows << @footer_filler.join(';')
+      end
+      #( [ @header_titles.join(';') ] + @csi_data_rows ).join("\r\n")
+      ( @csi_data_rows ).join("\r\n")
     else
       nil
     end
@@ -189,9 +198,20 @@ class ReservationsCsi2Csv
   #
   def prepare_header_titles()
     @header_titles = [
-      "Atleta", "Anno", "Squadra", "Tempo", "Codice", "Tessera"
+      "Atleta", "Anno", "Squadra", "Tempo", "Tessera", "Codice", "EOL"
     ]
     @header_titles
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
+  # Prepares filler footer
+  #
+  def prepare_footer_filler()
+    @footer_filler = [
+      "GOGGLES", "2018", "PLUTO", "999998", " ", "12142", '";"'
+    ]
+    @footer_filler
   end
   #-- -------------------------------------------------------------------------
   #++
