@@ -37,11 +37,11 @@ Gem::Specification.new do |s|
   s.add_dependency "execjs"
   s.add_dependency "therubyracer"
 
-  s.add_dependency "acts_as_votable", "~> 0.10"
-  s.add_dependency "acts-as-taggable-on", "~> 4"
+  s.add_dependency "acts_as_votable" #, "~> 0.10"
+  s.add_dependency "acts-as-taggable-on" #, "~> 4"
   s.add_dependency "fuzzy-string-match_pure"        # [Steve, 20131106] Used for Team/Swimmer names comparison & existence checking
 
-  s.add_dependency 'draper', '3.0.0.pre1'           # [Steve] For Decorator pattern support
+  s.add_dependency 'draper' #, '3.0.0.pre1'           # [Steve] For Decorator pattern support
 # Draper usage: "rails generate decorator Article" for existing models,
 # or "rails generate resource Article" to scaffold a new resource;
 #   Single instance => Article.first.decorate
@@ -49,7 +49,7 @@ Gem::Specification.new do |s|
 #   Collection      => ArticleDecorator.decorate_collection( Article.all )
 
   # [Steve, 201600915] Used in new API/v3 namespace: (Requires Rails >= 4)
-  s.add_dependency 'active_model_serializers', '~> 0.10.0'
+  s.add_dependency 'active_model_serializers' #, '~> 0.10.0'
   s.add_dependency 'active_hash_relation'
   s.add_dependency 'activemodel-serializers-xml' # Required by Draper
 

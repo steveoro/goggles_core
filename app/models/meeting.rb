@@ -22,15 +22,8 @@ class Meeting < ApplicationRecord
   validates_associated :edition_type
   validates_associated :timing_type
 
-  # [Steve, 20180106] Upgrading to Rails 5.1 creates some incompability w/ acts_as_taggable_on
-  # Previous version:
-  #  acts_as_taggable_on :tags_by_users
-  #  acts_as_taggable_on :tags_by_teams
-  # Current vesion:
-  has_many :tags_by_user_taggings,  class_name: 'ActsAsTaggableOn::Tagging'
-  has_many :tags_by_users,          class_name: 'ActsAsTaggableOn::Tag'
-  has_many :tags_by_team_taggings,  class_name: 'ActsAsTaggableOn::Tagging'
-  has_many :tags_by_teams,          class_name: 'ActsAsTaggableOn::Tag'
+  acts_as_taggable_on :tags_by_users
+  acts_as_taggable_on :tags_by_teams
 
   belongs_to( :individual_score_computation_type,
               class_name: "ScoreComputationType",
