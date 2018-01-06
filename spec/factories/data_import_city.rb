@@ -1,7 +1,7 @@
 require 'ffaker'
 
 
-FactoryGirl.define do
+FactoryBot.define do
 
   factory :data_import_city do
     data_import_session

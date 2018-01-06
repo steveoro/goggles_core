@@ -1,6 +1,6 @@
 require 'ffaker'
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :nation_type do
     # XXX [Steve] since the code must be UNIQUE, it must be different upon
     #             each call:

@@ -4,7 +4,7 @@ require 'ffaker'
 require 'common/validation_error_tools'
 
 
-FactoryGirl.define do
+FactoryBot.define do
 
   factory :fin_calendar do
     season_id             { Season.find( [162, 152, 142, 132, 122, 112].sample ).id }

@@ -30,14 +30,14 @@ describe SqlConverter, type: :strategy do
   #
   describe "#destroy_with_sql_capture" do
     # Create a deletable fixture, with some children rows:
-    let(:meeting) { FactoryGirl.create( :meeting_with_sessions ) }
+    let(:meeting) { FactoryBot.create( :meeting_with_sessions ) }
 
     it "returns nil for an invalid parameter" do
       expect( subject.destroy_with_sql_capture( nil ) ).to be nil
     end
 
     it "returns nil in case of deletion error" do
-      unsaved_meeting = FactoryGirl.build( :meeting )
+      unsaved_meeting = FactoryBot.build( :meeting )
       expect( subject.destroy_with_sql_capture( unsaved_meeting ) ).to be nil
     end
 

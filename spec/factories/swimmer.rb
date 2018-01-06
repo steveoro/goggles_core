@@ -4,7 +4,7 @@ require 'ffaker'
 require 'common/validation_error_tools'
 
 
-FactoryGirl.define do
+FactoryBot.define do
 
   trait :common_swimmer_fields do
     first_name                { FFaker::Name.first_name }

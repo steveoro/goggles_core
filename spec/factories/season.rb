@@ -4,7 +4,7 @@ require 'ffaker'
 require 'common/validation_error_tools'
 
 
-FactoryGirl.define do
+FactoryBot.define do
 
   trait :random_season do
     edition                   { ((rand * 1000) % 1000).to_i } # mediumint(9), using a sequence yields validation errors

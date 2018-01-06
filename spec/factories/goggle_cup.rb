@@ -4,7 +4,7 @@ require 'ffaker'
 require 'common/validation_error_tools'
 
 
-FactoryGirl.define do
+FactoryBot.define do
 
   factory :goggle_cup do
     description               { "#{FFaker::Name.suffix} #{FFaker::Address.city} Fun Cup" }

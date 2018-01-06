@@ -2,7 +2,7 @@ require 'date'
 require 'ffaker'
 
 
-FactoryGirl.define do
+FactoryBot.define do
 
   factory :federation_type do
     sequence( :code )         { |n| "F#{n}" }

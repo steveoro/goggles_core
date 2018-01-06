@@ -1,6 +1,6 @@
 require 'common/validation_error_tools'
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :swimmer_season_score do
     meeting_individual_result   { create(:meeting_individual_result) }
     badge                       { meeting_individual_result.badge }

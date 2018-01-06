@@ -4,7 +4,7 @@ require 'ffaker'
 require 'common/validation_error_tools'
 
 
-FactoryGirl.define do
+FactoryBot.define do
 
   factory :category_type do
     age_begin                 { ((((rand * 100) % 15).to_i * 5) + 25) }

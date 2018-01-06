@@ -5,7 +5,7 @@
 
 = UserSwimmerConfirmation model
 
-  - version:  6.069
+  - version:  6.200
   - author:   Steve A.
 
   Holds confirmations received by a user about its association with a
@@ -23,9 +23,7 @@ class UserSwimmerConfirmation < ApplicationRecord
   belongs_to :swimmer
   validates_associated :swimmer
 
-  belongs_to :confirmator,
-    class_name: User,
-    foreign_key: "confirmator_id"
+  belongs_to :confirmator, class_name: 'User', foreign_key: "confirmator_id"
 
 # FIXME for Rails 4+, move required/permitted check to the controller using the model
 #  attr_accessible :user_id, :swimmer_id, :confirmator_id

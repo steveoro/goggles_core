@@ -2,7 +2,7 @@ require 'date'
 require 'ffaker'
 
 
-FactoryGirl.define do
+FactoryBot.define do
 
   factory :data_import_meeting_team_score do
     data_import_session

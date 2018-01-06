@@ -6,7 +6,7 @@ require 'drop_down_listable'
 
 = Season
 
-  - version:  6.177
+  - version:  6.200
   - author:   Steve A., Leega
 
 =end
@@ -22,8 +22,15 @@ class Meeting < ApplicationRecord
   validates_associated :edition_type
   validates_associated :timing_type
 
-  acts_as_taggable_on :tags_by_users
-  acts_as_taggable_on :tags_by_teams
+  # [Steve, 20180106] Upgrading to Rails 5.1 creates some incompability w/ acts_as_taggable_on
+  # Previous version:
+  #  acts_as_taggable_on :tags_by_users
+  #  acts_as_taggable_on :tags_by_teams
+  # Current vesion:
+  has_many :tags_by_user_taggings,  class_name: 'ActsAsTaggableOn::Tagging'
+  has_many :tags_by_users,          class_name: 'ActsAsTaggableOn::Tag'
+  has_many :tags_by_team_taggings,  class_name: 'ActsAsTaggableOn::Tagging'
+  has_many :tags_by_teams,          class_name: 'ActsAsTaggableOn::Tag'
 
   belongs_to( :individual_score_computation_type,
               class_name: "ScoreComputationType",

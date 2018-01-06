@@ -2,7 +2,7 @@ require 'date'
 require 'ffaker'
 
 
-FactoryGirl.define do
+FactoryBot.define do
 
   factory :season_personal_standard do
     season

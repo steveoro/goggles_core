@@ -1,7 +1,7 @@
 require 'ffaker'
 
 
-FactoryGirl.define do
+FactoryBot.define do
 
   factory :data_import_session do
     file_name               { "ris#{(season.begin_date + 60.days).strftime("%Y%m%d")}#{ FFaker::Internet.domain_word }.txt" }

@@ -2,7 +2,7 @@ require 'date'
 require 'ffaker'
 
 
-FactoryGirl.define do
+FactoryBot.define do
 
   factory :article do
     sequence( :title )    { |n| "Great dummy article title n.#{n}" }

@@ -2,7 +2,7 @@ require 'date'
 require 'ffaker'
 
 
-FactoryGirl.define do
+FactoryBot.define do
 
   factory :goggle_cup_standard do
     goggle_cup

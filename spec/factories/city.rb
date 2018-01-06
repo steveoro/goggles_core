@@ -1,7 +1,7 @@
 require 'ffaker'
 
 
-FactoryGirl.define do
+FactoryBot.define do
 
   trait :random_city do
     name                    { FFaker::Address.city }

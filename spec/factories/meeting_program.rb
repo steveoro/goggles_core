@@ -4,7 +4,7 @@ require 'ffaker'
 require 'common/validation_error_tools'
 
 
-FactoryGirl.define do
+FactoryBot.define do
 
   trait :common_meeting_program_fields do
     event_order               { ((rand * 100) % 25).to_i + 1 }

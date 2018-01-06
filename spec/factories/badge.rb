@@ -4,7 +4,7 @@ require 'ffaker'
 require 'common/validation_error_tools'
 
 
-FactoryGirl.define do
+FactoryBot.define do
 
   trait :random_badge_code do
     number                    { 8.times.collect{ |i| (rand * 10).to_i }.join }

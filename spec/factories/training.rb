@@ -2,7 +2,7 @@ require 'date'
 require 'ffaker'
 
 
-FactoryGirl.define do
+FactoryBot.define do
 
   trait :training_header do
     sequence( :description )  { |n| "#{ FFaker::Lorem.word } workout n.#{n}" }

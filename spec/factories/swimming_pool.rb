@@ -1,7 +1,7 @@
 require 'ffaker'
 
 
-FactoryGirl.define do
+FactoryBot.define do
 
   factory :swimming_pool do
     name                    { "#{ FFaker::Address.street_name } pool" }

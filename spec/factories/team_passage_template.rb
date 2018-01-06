@@ -1,7 +1,7 @@
 require 'ffaker'
 
 
-FactoryGirl.define do
+FactoryBot.define do
 
   factory :team_passage_template do
     team

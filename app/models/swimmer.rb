@@ -7,7 +7,7 @@ require 'wrappers/timing'
 
 = Swimmer model
 
-  - version:  6.069
+  - version:  6.200
   - author:   Steve A.
 
 =end
@@ -28,8 +28,15 @@ class Swimmer < ApplicationRecord
   belongs_to :associated_user, class_name: "User",
              foreign_key: "associated_user_id"
 
-  acts_as_taggable_on :tags_by_users
-  acts_as_taggable_on :tags_by_teams
+  # [Steve, 20180106] Upgrading to Rails 5.1 creates some incompability w/ acts_as_taggable_on
+  # Previous version:
+  #  acts_as_taggable_on :tags_by_users
+  #  acts_as_taggable_on :tags_by_teams
+  # Current vesion:
+  has_many :tags_by_user_taggings,  class_name: 'ActsAsTaggableOn::Tagging'
+  has_many :tags_by_users,          class_name: 'ActsAsTaggableOn::Tag'
+  has_many :tags_by_team_taggings,  class_name: 'ActsAsTaggableOn::Tagging'
+  has_many :tags_by_teams,          class_name: 'ActsAsTaggableOn::Tag'
 
   has_many :user_swimmer_confirmations
   has_many :confirmators, through: :user_swimmer_confirmations

@@ -45,7 +45,7 @@ describe SwimmingPool, :type => :model do
 
   describe "#get_city_and_attributes" do
     context "when city is nil," do
-      let(:fixture_pool_with_no_city) { FactoryGirl.create(:swimming_pool, city_id: nil) }
+      let(:fixture_pool_with_no_city) { FactoryBot.create(:swimming_pool, city_id: nil) }
 
       it "returns a String" do
         expect( fixture_pool_with_no_city.get_city_and_attributes ).to be_a( String )

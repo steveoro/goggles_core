@@ -4,7 +4,7 @@ require 'ffaker'
 require 'common/validation_error_tools'
 
 
-FactoryGirl.define do
+FactoryBot.define do
 
   factory :team_affiliation do
     team
@@ -54,12 +54,12 @@ module TeamAffiliationFactoryTools
   #
   def self.create_affiliation_with_badge_list( team, swimmer_count = 5 )
     rand_season = SeasonFactoryTools.get_season_with_full_categories()
-    affiliation = FactoryGirl.create(
+    affiliation = FactoryBot.create(
       :team_affiliation,
       team:   team,
       season: rand_season
     )
-    FactoryGirl.create_list(
+    FactoryBot.create_list(
       :badge,
       swimmer_count,
       team:             team,

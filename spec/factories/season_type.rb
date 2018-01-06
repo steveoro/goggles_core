@@ -2,7 +2,7 @@ require 'date'
 require 'ffaker'
 
 
-FactoryGirl.define do
+FactoryBot.define do
 
   factory :season_type do
     # Code has a unique index on season_type, so we must use a sequence here:

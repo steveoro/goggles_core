@@ -4,7 +4,7 @@ require 'ffaker'
 require 'common/validation_error_tools'
 
 
-FactoryGirl.define do
+FactoryBot.define do
 
   trait :common_meeting_individual_result_fields do
     rank                      { ((rand * 100) % 25).to_i + 1 }
@@ -70,12 +70,12 @@ module MeetingIndividualResultFactoryTools
     list = []
     event_list = EventsByPoolType.only_for_meetings.not_relays.select([:event_type_id, :pool_type_id]).sort{ rand() - 0.5 }[ 0.. row_count-1 ]
     event_list.each do |event_by_pool_type|
-      list << FactoryGirl.create( :meeting_individual_result,
+      list << FactoryBot.create( :meeting_individual_result,
         swimmer_id:      swimmer.id,
-        meeting_program: FactoryGirl.create( :meeting_program,
-          meeting_event: FactoryGirl.create( :meeting_event,
-            meeting_session: FactoryGirl.create( :meeting_session,
-              swimming_pool: FactoryGirl.create( :swimming_pool,
+        meeting_program: FactoryBot.create( :meeting_program,
+          meeting_event: FactoryBot.create( :meeting_event,
+            meeting_session: FactoryBot.create( :meeting_session,
+              swimming_pool: FactoryBot.create( :swimming_pool,
                 pool_type_id: event_by_pool_type.pool_type_id
               )
             ),

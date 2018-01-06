@@ -1,6 +1,6 @@
 require 'ffaker'
 
-FactoryGirl.define do
+FactoryBot.define do
 
   factory :area_type do
     code        { "#{FFaker::Lorem.word}"[0..2] }

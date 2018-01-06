@@ -1,6 +1,6 @@
-# Read about factories at https://github.com/thoughtbot/factory_girl
+# Read about factories at https://github.com/thoughtbot/factory_bot
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :data_import_swimmer_analysis_result do
     data_import_session
     analysis_log_text         { FFaker::Lorem.paragraph[0..128] }

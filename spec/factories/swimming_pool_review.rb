@@ -2,7 +2,7 @@ require 'date'
 require 'ffaker'
 
 
-FactoryGirl.define do
+FactoryBot.define do
 
   factory :swimming_pool_review do
     sequence( :title )    { |n| "Something happened n.#{n}" }

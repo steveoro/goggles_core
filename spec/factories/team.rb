@@ -4,7 +4,7 @@ require 'ffaker'
 require 'common/validation_error_tools'
 
 
-FactoryGirl.define do
+FactoryBot.define do
 
   trait :fake_phone_numbers do
     phone_mobile              { FFaker::PhoneNumber.phone_number }

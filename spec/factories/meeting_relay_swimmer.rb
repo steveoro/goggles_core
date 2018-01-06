@@ -1,8 +1,8 @@
-# Read about factories at https://github.com/thoughtbot/factory_girl
+# Read about factories at https://github.com/thoughtbot/factory_bot
 require 'common/validation_error_tools'
 
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :meeting_relay_swimmer do
     meeting_relay_result
     # The following column uses the pre-loaded seed records:

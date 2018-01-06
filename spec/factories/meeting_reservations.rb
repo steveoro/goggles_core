@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :meeting_reservation do
     meeting               { Meeting.has_results.sort{ rand - 0.5 }[0] }
     team                  { badge.team }

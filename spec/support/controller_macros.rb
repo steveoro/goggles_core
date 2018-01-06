@@ -1,4 +1,4 @@
-require 'factory_girl'
+require 'factory_bot'
 
 
 =begin
@@ -40,7 +40,7 @@ module ControllerMacros
   #++
 
 
-  # Logs-in a User instance created with FactoryGirl
+  # Logs-in a User instance created with FactoryBot
   # before each test of the group when invoked.
   # Default RSpec version with Devise-only authentication.
   #
@@ -48,7 +48,7 @@ module ControllerMacros
   #
   def login_user( chosen_user = nil )
     @request.env["devise.mapping"] = Devise.mappings[:user]
-    @user = chosen_user || FactoryGirl.create(:user)
+    @user = chosen_user || FactoryBot.create(:user)
     sign_in @user
   end
   #-- -------------------------------------------------------------------------

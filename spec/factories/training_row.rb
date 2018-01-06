@@ -2,7 +2,7 @@ require 'date'
 require 'ffaker'
 
 
-FactoryGirl.define do
+FactoryBot.define do
 
   trait :training_detail do
     # The following columns use the pre-loaded seed records:

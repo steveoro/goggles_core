@@ -6,7 +6,7 @@ require 'passages_batch_updater'
 describe PassagesBatchUpdater, type: :strategy do
   # [Steve] We don't need to save the random user instance created, since we
   # won't use any of its associations, nor its ID, so "build" is enough.
-  subject { PassagesBatchUpdater.new( FactoryGirl.build(:user) ) }
+  subject { PassagesBatchUpdater.new( FactoryBot.build(:user) ) }
 
   it_behaves_like( "(the existance of a method)", [
     :edited_passages, :new_passages, :destroyed_passages,

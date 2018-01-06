@@ -9,7 +9,7 @@ require 'rspec/rails'
 
 # Add additional requires below this line. Rails is not loaded until this point!
 require 'devise' # note: require 'devise' after require 'rspec/rails' (this allows to use devise test helpers)
-require 'factory_girl_rails'
+require 'factory_bot_rails'
 
 # DatabaseCleaner (when used) require goes here:
 # require 'database_cleaner'
@@ -57,8 +57,8 @@ RSpec.configure do |config|
   config.extend( ControllerMacros, type: :controller )
   config.extend( CustomMatchers::Routing, type: :controller )
 
-  # [Steve, 20140226] Configure FactoryGirl to work with RSpec
-  config.include( FactoryGirl::Syntax::Methods )
+  # [Steve, 20140226] Configure FactoryBot to work with RSpec
+  config.include( FactoryBot::Syntax::Methods )
 
   # ## Mock Framework
   #

@@ -1,8 +1,8 @@
-# Read about factories at https://github.com/thoughtbot/factory_girl
+# Read about factories at https://github.com/thoughtbot/factory_bot
 require 'common/validation_error_tools'
 
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :data_import_meeting_relay_swimmer do
     data_import_session
     conflicting_id            nil

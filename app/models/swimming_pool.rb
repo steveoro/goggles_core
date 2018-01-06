@@ -54,8 +54,15 @@ class SwimmingPool < ApplicationRecord
   scope :sort_swimming_pool_by_hair_dryer_type,     ->(dir) { order("hair_dryer_types.code #{dir.to_s}, swimming_pools.name #{dir.to_s}") }
   scope :sort_swimming_pool_by_locker_cabinet_type, ->(dir) { order("locker_cabinet_types.code #{dir.to_s}, swimming_pools.name #{dir.to_s}") }
 
-  acts_as_taggable_on :tags_by_users
-  acts_as_taggable_on :tags_by_teams
+  # [Steve, 20180106] Upgrading to Rails 5.1 creates some incompability w/ acts_as_taggable_on
+  # Previous version:
+  #  acts_as_taggable_on :tags_by_users
+  #  acts_as_taggable_on :tags_by_teams
+  # Current vesion:
+  has_many :tags_by_user_taggings,  class_name: 'ActsAsTaggableOn::Tagging'
+  has_many :tags_by_users,          class_name: 'ActsAsTaggableOn::Tag'
+  has_many :tags_by_team_taggings,  class_name: 'ActsAsTaggableOn::Tagging'
+  has_many :tags_by_teams,          class_name: 'ActsAsTaggableOn::Tag'
 
 
   delegate :name, to: :user, prefix: true, allow_nil: true

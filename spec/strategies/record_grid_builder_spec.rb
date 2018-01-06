@@ -78,7 +78,7 @@ describe RecordGridBuilder, type: :strategy do
 
   # This is testing an empty grid:
   context "when building a grid for season with NO records," do
-    let( :fake_season_type )  { FactoryGirl.create(:season_type) }
+    let( :fake_season_type )  { FactoryBot.create(:season_type) }
     let( :records )           { IndividualRecord.for_season_type( fake_season_type.id ) }
     let( :collector )         { RecordCollector.new( list: records, record_type_code: 'FOR', season_type: fake_season_type ) }
 

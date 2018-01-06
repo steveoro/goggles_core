@@ -4,7 +4,7 @@ require 'ffaker'
 require 'common/validation_error_tools'
 
 
-FactoryGirl.define do
+FactoryBot.define do
 
   factory :individual_record do
     meeting_individual_result
@@ -55,15 +55,15 @@ module IndividualRecordFactoryTools
     list = []
     event_list = EventsByPoolType.only_for_meetings.not_relays.select([:event_type_id, :pool_type_id]).sort{ rand() - 0.5 }[ 0.. row_count-1 ]
     event_list.each do |event_by_pool_type|
-      swimmer ||= FactoryGirl.create(:swimmer)      # use a random swimmer if none is provided
-      list << FactoryGirl.create( :individual_record,
+      swimmer ||= FactoryBot.create(:swimmer)      # use a random swimmer if none is provided
+      list << FactoryBot.create( :individual_record,
         swimmer_id: swimmer.id,
-        meeting_individual_result: FactoryGirl.create( :meeting_individual_result,
+        meeting_individual_result: FactoryBot.create( :meeting_individual_result,
           swimmer_id: swimmer.id,
-          meeting_program: FactoryGirl.create( :meeting_program,
-            meeting_event: FactoryGirl.create( :meeting_event,
-              meeting_session: FactoryGirl.create( :meeting_session,
-                swimming_pool: FactoryGirl.create( :swimming_pool,
+          meeting_program: FactoryBot.create( :meeting_program,
+            meeting_event: FactoryBot.create( :meeting_event,
+              meeting_session: FactoryBot.create( :meeting_session,
+                swimming_pool: FactoryBot.create( :swimming_pool,
                   pool_type_id: event_by_pool_type.pool_type_id )
                 ),
               event_type_id: event_by_pool_type.event_type_id ),

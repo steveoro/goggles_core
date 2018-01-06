@@ -1,6 +1,6 @@
-# Read about factories at https://github.com/thoughtbot/factory_girl
+# Read about factories at https://github.com/thoughtbot/factory_bot
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :meeting_event_reservation do
     meeting               { Meeting.has_results.joins(:event_types).includes(:event_types).where('event_types.is_a_relay' => false).distinct.sort{ rand - 0.5 }[0] }
     team                  { badge.team }
