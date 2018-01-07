@@ -150,6 +150,7 @@ ActiveRecord::Schema.define(version: 20180106195500) do
     t.integer "entry_time_type_id"
     t.integer "team_affiliation_id"
     t.integer "final_rank"
+    t.boolean "is_out_of_goggle_cup", default: false
     t.index ["category_type_id"], name: "fk_badges_category_types"
     t.index ["entry_time_type_id"], name: "fk_badges_entry_time_types"
     t.index ["number"], name: "index_badges_on_number"
