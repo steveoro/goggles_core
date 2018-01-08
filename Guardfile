@@ -20,7 +20,7 @@ engine_name = 'goggles_core'
 rspec_options = {
   results_file: Dir.pwd + '/tmp/guard_rspec_results.txt', # This option must match the path in engine_plan.rb
   # Run any spec using zeus as a pre-loader, excluding profiling/performance specs:
-  cmd: "zeus rspec -f progress -t ~type:performance -t ~tag:slow",
+  cmd: "spring rspec -f progress -t ~type:performance -t ~tag:slow",
   all_after_pass: false,
   failed_mode: :focus
 }
@@ -63,8 +63,9 @@ group :rspec do
 end
 
 
-group :slow do
-#  guard :rspec, cmd: 'zeus rspec -f progress -t tag:slow',
-#        results_file: Dir.pwd + '/tmp/guard_rspec_results.txt',
-#        all_after_pass: false
+guard 'spring', bundler: true do
+  watch('Gemfile.lock')
+  watch(%r{^config/})
+  watch(%r{^spec/(support|factories)/})
+  watch(%r{^spec/factory.rb})
 end

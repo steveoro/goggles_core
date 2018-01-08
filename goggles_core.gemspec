@@ -21,10 +21,7 @@ Gem::Specification.new do |s|
   ]
   s.test_files = Dir["spec/**/*"]
 
-  s.add_dependency "rails", "~> 5"
-  s.add_dependency "jquery-rails"
-  s.add_dependency "haml" #, '~> 4.0.5'
-
+  s.add_dependency "rails", "~> 5.1.4"
   s.add_dependency "mysql2" #, "~> 0.3.11"
   s.add_dependency "devise"
   s.add_dependency "devise-i18n"
@@ -34,6 +31,8 @@ Gem::Specification.new do |s|
   # - devise-token_authenticatable, https://github.com/baschtl/devise-token_authenticatable
   # - devise_token_auth, https://github.com/lynndylanhurley/devise_token_auth
 
+  s.add_dependency "jquery-rails"
+  s.add_dependency "haml-rails"
   s.add_dependency "execjs"
   s.add_dependency "therubyracer"
 

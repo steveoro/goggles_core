@@ -19,5 +19,10 @@ gem "amistad", git: "https://github.com/fasar-sw/amistad.git", branch: 'rails5' 
 # gem 'debugger'
 
 group :development, :test do
-#  gem 'zeus', require: false
+  # Spring speeds up development by keeping your application running in the background.
+  # Read more: https://github.com/rails/spring
+  gem 'spring'
+  gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'spring-commands-rspec'
+  gem 'guard-spring'
 end

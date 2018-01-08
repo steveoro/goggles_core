@@ -7,7 +7,7 @@ require 'sql_converter'
 
 = UserContentLogger
 
-  - Goggles framework vers.:  6.010
+  - Goggles framework vers.:  6.201
   - author: Steve A.
 
   Generic strategy/service class dedicated to log each user-created
@@ -44,9 +44,9 @@ class UserContentLogger
 
   # Each instance will append to a separate file, depending upon model name
   # (UGC => User Generated Content)
-  LOG_BASENAME = 'ugc_'
+  LOG_BASENAME = 'ugc_' unless defined?( LOG_BASENAME )
 
-  LOG_DESTINATION = 'public/output'
+  LOG_DESTINATION = 'public/output' unless defined?( LOG_DESTINATION )
 
   # These attribute getters are mainly used in specs and nothing more.
   attr_reader :table_name, :log_filename, :email_on_create, :email_on_destroy
