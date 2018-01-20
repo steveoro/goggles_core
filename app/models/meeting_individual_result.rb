@@ -93,7 +93,7 @@ class MeetingIndividualResult < ApplicationRecord
   scope :sort_by_team,                ->(dir = 'ASC') { joins(:team, :swimmer).order("teams.name #{dir.to_s}, swimmers.complete_name #{dir.to_s}") }
   scope :sort_by_badge,               ->(dir = 'ASC') { joins(:badge).order("badges.number #{dir.to_s}") }
   #scope :sort_by_timing,              ->(dir = 'ASC') { order("is_disqualified, (hundreds+(seconds*100)+(minutes*6000)) #{dir.to_s}") }
-  scope :sort_by_timing,              ->(dir = 'ASC') { order("is_disqualified, minutes, seconds, hundreds) #{dir.to_s}") }
+  scope :sort_by_timing,              ->(dir = 'ASC') { order("is_disqualified, minutes, seconds, hundreds #{dir.to_s}") }
   scope :sort_by_rank,                ->(dir = 'ASC') { order("is_disqualified, rank #{dir.to_s}") }
   scope :sort_by_date,                ->(dir = 'ASC') { includes(:meeting_session).order("meeting_sessions.scheduled_date #{dir.to_s}") }
   scope :sort_by_goggle_cup,          ->(dir = 'DESC') { order("goggle_cup_points #{dir.to_s}") }
