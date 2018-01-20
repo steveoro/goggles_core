@@ -149,13 +149,15 @@ class TeamBestFinder
   # Disqualified results won't be considered.
   #
   def has_individual_result?( gender_type, pool_type, event_type, category_code )
+#    team.meeting_individual_results
+#      .is_not_disqualified
+#      .for_gender_type(gender_type)
+#      .for_pool_type(pool_type)
+#      .for_event_type(event_type)
+#      .for_category_code(category_code).count > 0
     team.meeting_individual_results
       .is_not_disqualified
-      .for_gender_type(gender_type)
-      .for_pool_type(pool_type)
-      .for_event_type(event_type)
-      .for_category_code(category_code)
-      .sort_by_timing.count > 0
+      .for_team_best(pool_type, gender_type, category_code, event_type).count > 0
   end
 
 
@@ -167,12 +169,16 @@ class TeamBestFinder
   #
   def get_team_best_individual_result( gender_type, pool_type, event_type, category_code )
     if has_individual_result?( gender_type, pool_type, event_type, category_code )
+#      team.meeting_individual_results
+#        .is_not_disqualified
+#        .for_gender_type(gender_type)
+#        .for_pool_type(pool_type)
+#        .for_event_type(event_type)
+#        .for_category_code(category_code)
+#        .sort_by_timing.first
       team.meeting_individual_results
         .is_not_disqualified
-        .for_gender_type(gender_type)
-        .for_pool_type(pool_type)
-        .for_event_type(event_type)
-        .for_category_code(category_code)
+        .for_team_best(pool_type, gender_type, category_code, event_type)
         .sort_by_timing.first
     else
       nil
