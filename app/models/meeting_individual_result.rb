@@ -121,7 +121,8 @@ class MeetingIndividualResult < ApplicationRecord
   scope :for_over_that_score,         ->(score_sym = 'standard_points', points = 800) { where("#{score_sym.to_s} > #{points}") }
   scope :for_meeting_editions,        ->(meeting)              { joins(:meeting).where(['meetings.code = ?', meeting.code]) }
 
-  scope :for_team_best,               ->(pool_type, gender_type, category_code, event_type) { joins(:pool_type, :gender_type, :category_type, :event_type).where(['pool_types.id = ? and gender_types.id = ? and category_types.code = ? and event_types.id = ?', pool_type.id, gender_type.id, category_code, event_type.id]) }
+  #scope :for_team_best,               ->(pool_type, gender_type, category_code, event_type) { joins(:meeting_program, :meeting_event, :category_type).where(['meeting_programs.pool_types_id = ? and meeting_programs.gender_types_id = ? and category_types.code = ? and meeting_events.event_types_id = ?', pool_type.id, gender_type.id, category_code, event_type.id]) }
+  scope :for_team_best,               ->(pool_type, gender_type, category_code, event_type) { joins(meeting_program: [:category_type, :meeting_event]).where(['meeting_programs.pool_type_id = ? and meeting_programs.gender_type_id = ? and category_types.code = ? and meeting_events.event_type_id = ?', pool_type.id, gender_type.id, category_code, event_type.id]) }
 
 
   # ----------------------------------------------------------------------------
