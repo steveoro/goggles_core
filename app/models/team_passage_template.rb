@@ -15,7 +15,7 @@ class TeamPassageTemplate < ApplicationRecord
 
   has_one  :stroke_type,    through: :event_type
 
-  scope :sort_by_length,     -> { includes( :passage_type ).order('passage_types.length_in_meters') }
+  scope :sort_by_length,     -> { joins( :passage_type ).includes( :passage_type ).order('passage_types.length_in_meters') }
 
   scope :for_team,           ->(team)       { where(['team_id = ?', team.id]) }
   scope :for_event_type,     ->(event_type) { where(['event_type_id = ?', event_type.id]) }
