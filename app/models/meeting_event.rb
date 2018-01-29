@@ -46,8 +46,8 @@ class MeetingEvent < ApplicationRecord
 
   scope :sort_by_order,    ->(dir = 'ASC') { order("event_order #{dir.to_s}") }
 
-  scope :only_relays,      -> { includes(:event_type).where('event_types.is_a_relay' => true) }
-  scope :are_not_relays,   -> { includes(:event_type).where('event_types.is_a_relay' => false) }
+  scope :only_relays,      -> { joins(:event_type).includes(:event_type).where('event_types.is_a_relay' => true) }
+  scope :are_not_relays,   -> { joins(:event_type).includes(:event_type).where('event_types.is_a_relay' => false) }
 
   # ----------------------------------------------------------------------------
   # Base methods:

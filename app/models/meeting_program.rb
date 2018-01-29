@@ -47,8 +47,8 @@ class MeetingProgram < ApplicationRecord
 #                  :pool_type_id, :time_standard_id
 
 
-  scope :only_relays,        -> { includes(:event_type).where('event_types.is_a_relay' => true) }
-  scope :are_not_relays,     -> { includes(:event_type).where('event_types.is_a_relay' => false) }
+  scope :only_relays,        -> { joins(:event_type).includes(:event_type).where('event_types.is_a_relay' => true) }
+  scope :are_not_relays,     -> { joins(:event_type).includes(:event_type).where('event_types.is_a_relay' => false) }
 
   scope :sort_meeting_program_by_user,            ->(dir) { order("users.name #{dir.to_s}, meeting_sessions.scheduled_date #{dir.to_s}, meeting_programs.event_order #{dir.to_s}") }
   scope :sort_meeting_program_by_event_type,      ->(dir) { order("event_types.code #{dir.to_s}") }
