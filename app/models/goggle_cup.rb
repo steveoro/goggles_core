@@ -111,7 +111,7 @@ class GoggleCup < ApplicationRecord
   # Check if a Goggle cup has at least one valid result
   #
   def has_results?
-    meeting_individual_results.has_points( :goggle_cup_points ).count > 0
+    meeting_individual_results.has_points( :goggle_cup_points ).exists?
   end
   # ----------------------------------------------------------------------------
 
@@ -123,7 +123,7 @@ class GoggleCup < ApplicationRecord
       .includes( :goggle_cup_definitions )
       .where(
         ['team_id = ? AND goggle_cup_definitions.season_id = ?', team_id, season_id]
-      ).count > 0
+      ).exists?
   end
   # ----------------------------------------------------------------------------
 

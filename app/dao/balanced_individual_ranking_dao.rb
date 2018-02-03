@@ -177,7 +177,7 @@ class BalancedIndividualRankingDAO
       # Search meetings for he swimmer in the season
       season.meetings.each do |meeting|
         meeting_individual_results = meeting.meeting_individual_results.is_valid.where(["meeting_individual_results.swimmer_id = ?", @swimmer.id])
-        if meeting_individual_results.count > 0
+        if meeting_individual_results.exists?
           # The swimmer has results for that meeting
           @meetings << BIRMeetingScoreDAO.new( meeting, meeting_individual_results, seasonal_event_bests )
         end
@@ -233,7 +233,7 @@ class BalancedIndividualRankingDAO
     
       # Search swimmers for the season, gender and category
       season.badges.for_gender_type( gender_type ).for_category_type( category_type ).each do |badge|
-        @swimmers << BIRSwimmerScoreDAO.new( badge.swimmer, season, seasonal_event_bests ) if badge.meeting_individual_results.count > 0
+        @swimmers << BIRSwimmerScoreDAO.new( badge.swimmer, season, seasonal_event_bests ) if badge.meeting_individual_results.exists?
       end
       
       # Sort swimmers by total points

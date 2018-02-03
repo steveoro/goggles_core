@@ -110,7 +110,7 @@ class SeasonPonderatedBestsDAO
     #
     def get_ponderated_best
       # Maybe better trace if no results collected
-      #@best_results.count > 0 ? Timing.new() : @ponderated_time
+      #@best_results.exists? ? Timing.new() : @ponderated_time
       @ponderated_time
     end
 

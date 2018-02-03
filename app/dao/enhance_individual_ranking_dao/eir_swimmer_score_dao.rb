@@ -51,7 +51,7 @@ class EnhanceIndividualRankingDAO
       # Search meetings for he swimmer in the season
       season.meetings.each do |meeting|
         meeting_individual_results = meeting.meeting_individual_results.is_valid.where(["meeting_individual_results.swimmer_id = ?", @swimmer.id])
-        if meeting_individual_results.count > 0
+        if meeting_individual_results.exists?
           # The swimmer has results for that meeting
           @meetings << EIRMeetingScoreDAO.new( meeting, meeting_individual_results )
         end

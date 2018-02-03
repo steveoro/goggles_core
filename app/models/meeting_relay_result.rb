@@ -143,7 +143,7 @@ class MeetingRelayResult < ApplicationRecord
 
   # Retrieves the complete names of relay swimmers if present
   def get_short_relay_swimmers
-    if self.meeting_relay_swimmers.count > 0
+    if self.meeting_relay_swimmers.exists?
       "(#{self.meeting_relay_swimmers.map{ |mrs| mrs.swimmer.get_full_name }.join('-')})"
     else
       ''

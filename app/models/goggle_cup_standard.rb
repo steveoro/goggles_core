@@ -71,7 +71,7 @@ class GoggleCupStandard < ApplicationRecord
     GoggleCupStandard.where([
       'goggle_cup_id = ? AND swimmer_id = ? AND pool_type_id = ? AND event_type_id = ?',
       goggle_cup_id, swimmer_id, pool_type_id, event_type_id])
-      .count > 0
+      .exists?
   end
 
   # Returns standard goggle cup for a given goggle_cup-swimmer-pool_typ-event_type

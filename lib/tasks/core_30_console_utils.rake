@@ -205,7 +205,7 @@ DESC
       if ! past || ! meeting.meeting_date_to_iso || meeting.meeting_date_to_iso <= DateTime.now.strftime( '%Y%m%d' )
         meeting_found += 1
         pool_type = meeting.get_pool_type
-        logger.info( "\r\n#{meeting.id} - #{meeting.get_meeting_date} #{meeting.get_full_name} (#{meeting.code}) #{pool_type.code if pool_type} #{meeting.meeting_individual_results.count if meeting.meeting_individual_results.count > 0} -> #{meeting.get_data_import_file_name}\r\n" )
+        logger.info( "\r\n#{meeting.id} - #{meeting.get_meeting_date} #{meeting.get_full_name} (#{meeting.code}) #{pool_type.code if pool_type} #{meeting.meeting_individual_results.count if meeting.meeting_individual_results.exists?} -> #{meeting.get_data_import_file_name}\r\n" )
 
         meeting_row = ''
         meeting_row += "#{meeting.id};"
@@ -275,7 +275,7 @@ DESC
     Meeting.where(['header_date between ? and ?', begin_date, end_date]).sort_by_date.each do |meeting|
       meeting_found += 1
       pool_type = meeting.get_pool_type
-      logger.info( "\r\n#{meeting.id} - #{meeting.get_meeting_date} #{meeting.get_full_name} (#{meeting.code}) #{pool_type.code if pool_type} #{meeting.meeting_individual_results.count if meeting.meeting_individual_results.count > 0} -> #{meeting.get_data_import_file_name} #{'- ANNULLATO' if meeting.is_cancelled}\r\n" )
+      logger.info( "\r\n#{meeting.id} - #{meeting.get_meeting_date} #{meeting.get_full_name} (#{meeting.code}) #{pool_type.code if pool_type} #{meeting.meeting_individual_results.count if meeting.meeting_individual_results.exists?} -> #{meeting.get_data_import_file_name} #{'- ANNULLATO' if meeting.is_cancelled}\r\n" )
     end
 
     # If no meetings found log warning

@@ -147,7 +147,7 @@ class SeasonalEventBestDAO
             if @season.meeting_individual_results.is_valid
                 .for_gender_type(gender_type)
                 .for_category_type(category_type)
-                .for_event_type(event_type).count > 0
+                .for_event_type(event_type).exists?
               set_best_for_gender_category_and_event( gender_type, category_type, event_type, event_total, event_swam )
             end
           end

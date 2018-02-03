@@ -52,7 +52,7 @@ class EnhanceIndividualRankingDAO
 
       # Search swimmers for the season, gender and category
       season.badges.for_gender_type( gender_type ).for_category_type( category_type ).each do |badge|
-        @swimmers << EIRSwimmerScoreDAO.new( badge.swimmer, season ) if badge.meeting_individual_results.count > 0
+        @swimmers << EIRSwimmerScoreDAO.new( badge.swimmer, season ) if badge.meeting_individual_results.exists?
       end
 
       # Sort swimmers by total points
