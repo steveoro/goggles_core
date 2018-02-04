@@ -84,7 +84,7 @@ class TimeStandard < ApplicationRecord
     TimeStandard.where([
       'season_id = ? AND pool_type_id = ? AND event_type_id = ? AND gender_type_id = ? AND category_type_id = ?',
       season_id, pool_type_id, event_type_id, gender_type_id, category_type_id])
-      .count > 0
+      .exists?
   end
 
   # Returns standard time for a given season-pool_typ-event_type-gender_type-category_type

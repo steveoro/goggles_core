@@ -173,7 +173,7 @@ class SeasonPonderatedBestsDAO
               .for_category_code( category_code )
               .for_pool_type( pool_type )
               .for_event_type( event_type )
-              .count > 0
+              exists?
               @single_events << SeasonPonderatedBestsDAO::EventPonderatedBestDAO.new(
                 @season,
                 gender_type,

@@ -40,7 +40,7 @@ class MeetingStatCalculator
   # and more than one team partecipating
   #
   def has_results?()
-    (( @meeting.are_results_acquired || @meeting.meeting_individual_results.count > 0 ) && @meeting.teams.distinct.count > 1 )
+    (( @meeting.are_results_acquired || @meeting.meeting_individual_results.exists? ) && @meeting.teams.distinct.count > 1 )
   end
 
   # Verify if meeting has relays
@@ -48,7 +48,7 @@ class MeetingStatCalculator
   # and some meeting_relay_results
   #
   def has_relays?()
-    ( has_results? && @meeting.meeting_relay_results.count > 0 )
+    ( has_results? && @meeting.meeting_relay_results.exists? )
   end
 
   # Verify if meeting has entries
@@ -56,7 +56,7 @@ class MeetingStatCalculator
   # and more than one entered team
   #
   def has_entries?()
-    ( @meeting.meeting_entries.count > 0 && @meeting.meeting_entries.select('team_id').distinct.count > 1 )
+    ( @meeting.meeting_entries.exists? && @meeting.meeting_entries.select('team_id').distinct.count > 1 )
   end
   # ---------------------------------------------------------------------------
 
@@ -344,13 +344,13 @@ class MeetingStatCalculator
         @meeting_stats.set_general( :results_relay_count   , @meeting.meeting_relay_results.count )
         @meeting_stats.set_general( :dsqs_relay_count      , @meeting.meeting_relay_results.is_disqualified.count )
 
-        if @meeting.meeting_relay_results.has_points.count > 0
+        if @meeting.meeting_relay_results.has_points.exists?
           @meeting_stats.set_general( :average_relay_score   , get_relays_average )
         end
       end
 
       # Score-based
-      if @meeting.meeting_individual_results.has_points.count > 0
+      if @meeting.meeting_individual_results.has_points.exists?
         @meeting_stats.set_general( :average_male_score     , get_average(:is_male) )
         @meeting_stats.set_general( :average_female_score   , get_average(:is_female) )
         @meeting_stats.set_general( :average_total_score    , get_average(:has_points) )
@@ -417,7 +417,7 @@ class MeetingStatCalculator
           team_stat.female_silvers       = get_team_medals( team, :is_female, 2 )
           team_stat.female_bronzes       = get_team_medals( team, :is_female, 3 )
 
-          if has_relays? && @meeting.meeting_relay_results.for_team( team ).count > 0
+          if has_relays? && @meeting.meeting_relay_results.for_team( team ).exists?
             team_stat.relay_disqualifieds  = @meeting.meeting_relay_results.for_team( team ).is_disqualified.count
             team_stat.relay_golds          = @meeting.meeting_relay_results.for_team( team ).has_rank( 1 ).count
             team_stat.relay_silvers        = @meeting.meeting_relay_results.for_team( team ).has_rank( 2 ).count

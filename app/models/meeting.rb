@@ -200,7 +200,7 @@ class Meeting < ApplicationRecord
   #
   def get_short_events( separator = ', ' )
     ms = self.meeting_sessions.sort_by_order
-    if ms.count > 0
+    if ms.exists?
       ms.map{ |ms| ms.get_short_events( separator ) }.join( separator )
     else
       I18n.t('meeting.to_be_defined')
@@ -214,7 +214,7 @@ class Meeting < ApplicationRecord
   #
   def get_complete_events( separator = ', ' )
     ms = self.meeting_sessions.sort_by_order
-    if ms.count > 0
+    if ms.exists?
       ms.map{ |ms| ms.get_short_events( separator ) }.join("\r\n")
     else
       I18n.t('meeting.to_be_defined')
@@ -229,7 +229,7 @@ class Meeting < ApplicationRecord
   #
   def get_short_dates( separator = ', ' )
     ms = self.meeting_sessions.sort_by_order
-    if ms.count > 0
+    if ms.exists?
       ms.map{ |ms| ms.get_scheduled_date }.uniq.join( separator )
     else
       I18n.t('meeting.to_be_defined')
@@ -243,7 +243,7 @@ class Meeting < ApplicationRecord
   #
   def get_session_dates( separator = "\r\n" )
     ms = self.meeting_sessions.sort_by_order
-    if ms.count > 0
+    if ms.exists?
       ms.map{ |ms| ms.get_scheduled_date }.join( separator )
     else
       I18n.t('meeting.to_be_defined')
@@ -271,7 +271,7 @@ class Meeting < ApplicationRecord
   # for this meeting.
   #
   def get_swimming_pool
-    self.meeting_sessions.sort_by_order.first.swimming_pool if self.meeting_sessions.count > 0
+    self.meeting_sessions.sort_by_order.first.swimming_pool if self.meeting_sessions.exists?
   end
   # ----------------------------------------------------------------------------
 
@@ -279,7 +279,7 @@ class Meeting < ApplicationRecord
   # assuming the one of the first session swimming pool
   #
   def get_city
-    if ( self.meeting_sessions.count > 0 &&
+    if ( self.meeting_sessions.exists? &&
          self.meeting_sessions.sort_by_order.first.swimming_pool &&
          self.meeting_sessions.sort_by_order.first.swimming_pool.city )
       self.meeting_sessions.sort_by_order.first.swimming_pool.city.name
@@ -293,7 +293,7 @@ class Meeting < ApplicationRecord
   # for this meeting.
   #
   def get_pool_type
-    self.meeting_sessions.sort_by_order.first.swimming_pool.pool_type if self.meeting_sessions.count > 0 && self.meeting_sessions.sort_by_order.first.swimming_pool
+    self.meeting_sessions.sort_by_order.first.swimming_pool.pool_type if self.meeting_sessions.exists? && self.meeting_sessions.sort_by_order.first.swimming_pool
   end
   # ----------------------------------------------------------------------------
 

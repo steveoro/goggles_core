@@ -95,7 +95,7 @@ class SwimmerPersonalBestUpdater
   def set_personal_best!( event_by_pool_type, reset = true, mir_id = nil )
     # TODO Handle multiple personal-best timings for same event... FUTUREDEV
     sql_attributes = {}
-    if @swimmer.meeting_individual_results.for_event_by_pool_type( event_by_pool_type ).is_not_disqualified.count > 0
+    if @swimmer.meeting_individual_results.for_event_by_pool_type( event_by_pool_type ).is_not_disqualified.exists?
       reset_personal_best!( event_by_pool_type ) if reset
       mir_id = @swimmer.meeting_individual_results.for_event_by_pool_type( event_by_pool_type ).is_not_disqualified.sort_by_timing( :asc ).first.id if not mir_id
       mir = MeetingIndividualResult.find( mir_id )

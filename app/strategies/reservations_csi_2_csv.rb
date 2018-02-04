@@ -89,7 +89,7 @@ class ReservationsCsi2Csv
     # Scan involved swimmers
     reservations.each do |meeting_reservation|
       swimmer = meeting_reservation.swimmer
-      if @meeting.meeting_event_reservations.where( ['swimmer_id = ?', swimmer.id] ).is_reserved.count > 0
+      if @meeting.meeting_event_reservations.where( ['swimmer_id = ?', swimmer.id] ).is_reserved.exists?
         badge = meeting_reservation.badge
         gender_type = swimmer.gender_type
         category_type = badge.category_type

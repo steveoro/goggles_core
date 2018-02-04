@@ -124,7 +124,7 @@ class ChampionshipRankingCalculator
     # to check if score is stored
     columns = []
     [:season_individual_points, :season_relay_points, :season_team_points].each do |column|
-      columns << column if @season.meeting_team_scores.where("#{column} > 0").count > 0
+      columns << column if @season.meeting_team_scores.where("#{column} > 0").exists?
     end
     columns
   end

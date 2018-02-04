@@ -63,7 +63,7 @@ class SeasonPersonalStandard < ApplicationRecord
     SeasonPersonalStandard.where([
       'season_id = ? AND swimmer_id = ? AND pool_type_id = ? AND event_type_id = ?',
       season_id, swimmer_id, pool_type_id, event_type_id])
-      .count > 0
+      .exists?
   end
 
   # Returns standard time for a given season-swimmer-pool_typ-event_type

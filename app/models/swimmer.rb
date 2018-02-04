@@ -223,7 +223,7 @@ class Swimmer < ApplicationRecord
   # Default values are 'MASFIN' and current year (calendar).
   #
   def has_badge_for_season_and_year?( header_year = Season.build_header_year_from_date, season_type = SeasonType.find_by_code('MASFIN') )
-    badges.for_season_type( season_type ).for_year( header_year ).count > 0
+    badges.for_season_type( season_type ).for_year( header_year ).exists?
   end
   #-- -------------------------------------------------------------------------
   #++

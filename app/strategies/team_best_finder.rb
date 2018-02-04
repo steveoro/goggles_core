@@ -23,7 +23,7 @@ class TeamBestFinder
     unless team && team.instance_of?( Team )
       raise ArgumentError.new("Needs a valid team: #{team.inspect}")
     end
-    unless team.meeting_individual_results.count > 0
+    unless team.meeting_individual_results.exists?
       raise ArgumentError.new("Team #{team.get_full_name} hasn't results")
     end
     @team                = team
@@ -154,10 +154,10 @@ class TeamBestFinder
 #      .for_gender_type(gender_type)
 #      .for_pool_type(pool_type)
 #      .for_event_type(event_type)
-#      .for_category_code(category_code).count > 0
+#      .for_category_code(category_code).exists?
     team.meeting_individual_results
       .is_not_disqualified
-      .for_team_best(pool_type, gender_type, category_code, event_type).count > 0
+      .for_team_best(pool_type, gender_type, category_code, event_type).exists?
   end
 
 

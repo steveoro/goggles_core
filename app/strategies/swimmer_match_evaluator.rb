@@ -56,20 +56,20 @@ class SwimmerMatchEvaluator
   # same meeting_program
   #
   def has_matches?( visitor_swimmer = @visitor_swimmer )
-    @local_swimmer.meeting_programs.count > 0 &&
+    @local_swimmer.meeting_programs.exists? &&
      visitor_swimmer && visitor_swimmer.id &&
      @local_swimmer.meeting_programs
       .where([
         'exists (select 1 from meeting_individual_results mir join swimmers s on s.id = mir.swimmer_id where s.id = ? and mir.meeting_program_id = meeting_programs.id)',
         visitor_swimmer.id
-      ]).count > 0
+      ]).exists?
   end
 
   # Search if locale and visitor swimmer has ever swam in the
   # same meeting_program for a given event type
   #
   def has_matches_on_event?( event_type, visitor_swimmer = @visitor_swimmer )
-    @local_swimmer.meeting_programs.count > 0 &&
+    @local_swimmer.meeting_programs.exists? &&
      visitor_swimmer && visitor_swimmer.id &&
      @local_swimmer.meeting_programs
       .joins( :meeting_event )
@@ -78,7 +78,7 @@ class SwimmerMatchEvaluator
         'meeting_events.event_type_id = ? and exists (select 1 from meeting_individual_results mir join swimmers s on s.id = mir.swimmer_id where s.id = ? and mir.meeting_program_id = meeting_programs.id)',
         event_type.id,
         visitor_swimmer.id
-      ]).count > 0
+      ]).exists?
   end
 
   # Scan for meeting_programs in which locale and visitor are

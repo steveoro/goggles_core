@@ -34,7 +34,7 @@ class GoggleCupStandardFinder
   # for the goggle cup team
   # Assumes that swimmer has at least one result
   def oldest_swimmer_result( swimmer )
-    swimmer.meeting_individual_results.for_team( @goggle_cup.team ).has_time.is_not_disqualified.count > 0 ?
+    swimmer.meeting_individual_results.for_team( @goggle_cup.team ).has_time.is_not_disqualified.exists? ?
      swimmer.meeting_individual_results.for_team( @goggle_cup.team ).has_time.is_not_disqualified.sort_by_date('ASC').first.get_scheduled_date :
      Date.today.next_day
   end
@@ -132,7 +132,7 @@ class GoggleCupStandardFinder
     # Necessary beacuse a time swam during the Goggle cup year should became
     # new standard time if not present, but should be not considerd
     # during time standard creation to ricreate clear situation
-    delete_goggle_cup_standards_for_swimmer!( swimmer ) if @goggle_cup.goggle_cup_standards.for_swimmer( swimmer ).count > 0
+    delete_goggle_cup_standards_for_swimmer!( swimmer ) if @goggle_cup.goggle_cup_standards.for_swimmer( swimmer ).exists?
 
     sql_diff_text_log << "-- Creating time standards for #{swimmer.get_full_name}\r\n"
     find_swimmer_goggle_cup_standard( swimmer ).each_pair do |event_key, standard_time|
@@ -207,7 +207,7 @@ class GoggleCupStandardFinder
     swimmer_candidates.each_with_index do |swimmer, index|
 # DEBUG
       putc "+" if (index % 100 == 0)
-      involved_swimmers << swimmer if swimmer.meeting_individual_results.for_team( @goggle_cup.team ).has_time.is_not_disqualified.count > 0 &&
+      involved_swimmers << swimmer if swimmer.meeting_individual_results.for_team( @goggle_cup.team ).has_time.is_not_disqualified.exists? &&
        oldest_swimmer_result( swimmer ) <= @goggle_cup.end_date.prev_year
     end
 # DEBUG

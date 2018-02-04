@@ -38,7 +38,7 @@ class SwimmerSeasonalScoreCalculator
   # Retrieves seasonal badge for swimmer
   #
   def get_badge
-    swimmer.badges.for_season( @season ).first if swimmer.badges.for_season( @season ).count > 0
+    swimmer.badges.for_season( @season ).first if swimmer.badges.for_season( @season ).exists?
   end
   #-- --------------------------------------------------------------------------
   #++
