@@ -193,14 +193,19 @@ class Passage < ApplicationRecord
   end
 
   # Computes the total time for this passage, starting from the beginning of a given result (event).
-  # This method returns the incremental time by summing all associated passages preceeding this one.
+  # If set the "time from start" it will be used 
+  # If not set it returns the incremental time by summing all associated passages preceeding this one.
   # Assumes passage times are correctly set.
   # Returns a Timing instance.
   #
   def compute_incremental_time
-    passages_list = get_all_previous_passages
-    total_hundreds = passages_list.sum(:hundreds) + ( passages_list.sum(:seconds) * 100 ) + (passages_list.sum(:minutes) * 6000 ) + hundreds + ( seconds * 100 ) + ( minutes * 6000 )
-    Timing.new( total_hundreds )
+    if !seconds_from_start
+      passages_list = get_all_previous_passages
+      total_hundreds = passages_list.sum(:hundreds) + ( passages_list.sum(:seconds) * 100 ) + (passages_list.sum(:minutes) * 6000 ) + hundreds + ( seconds * 100 ) + ( minutes * 6000 )
+      Timing.new( total_hundreds )
+    else
+      Timing.new( hundreds_from_start, seconds_from_start, minutes_from_start )
+    end
   end
   #-- --------------------------------------------------------------------------
   #++
