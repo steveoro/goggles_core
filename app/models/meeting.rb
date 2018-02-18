@@ -45,7 +45,7 @@ class Meeting < ApplicationRecord
   has_one  :season_type, through: :season
 
   # First-level children: (they "belongs_to" meeting)
-  has_many :meeting_sessions,           dependent: :delete_all
+  has_many :meeting_sessions,           -> { order(:session_order) },       dependent: :delete_all
   has_many :meeting_team_scores,        dependent: :delete_all
   has_many :meeting_reservations,       dependent: :delete_all
   has_many :meeting_event_reservations, dependent: :delete_all
