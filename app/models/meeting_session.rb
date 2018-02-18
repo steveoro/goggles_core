@@ -26,7 +26,7 @@ class MeetingSession < ApplicationRecord
   has_one  :season,      through: :meeting
   has_one  :season_type, through: :meeting
 
-  has_many :meeting_events, dependent: :delete_all
+  has_many :meeting_events, -> { order(:event_order) }, dependent: :delete_all
 
   has_many :event_types,                through: :meeting_events
   has_many :meeting_programs,           through: :meeting_events
