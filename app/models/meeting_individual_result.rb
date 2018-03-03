@@ -34,7 +34,7 @@ class MeetingIndividualResult < ApplicationRecord
   has_one  :federation_type,  through: :season_type
   has_one  :stroke_type,      through: :event_type
 
-  has_many :passages
+  has_many :passages, -> { order(:passage_type_id) }
                                                     # These reference fields may be filled-in later (thus not validated upon creation):
   belongs_to :team
   belongs_to :team_affiliation
