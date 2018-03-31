@@ -32,7 +32,8 @@ describe RecordX4dDAO, type: :model do
 
       it_behaves_like( "(the existance of a method returning strings)", [
         :get_record_timing,
-        :get_record_date
+        :get_record_swimmer,
+        :get_record_meeting
       ] )
 
       describe "#parameters," do
@@ -97,8 +98,8 @@ describe RecordX4dDAO, type: :model do
       end
 
       describe "#get_record_date," do
-        it "retrurns the meeting scheduled daterecord timing" do
-          expect( subject.get_record_date ).to eq( mir.meeting.get_scheduled_date )
+        it "retrurns the meeting scheduled date" do
+          expect( subject.get_record_date ).to eq( mir.get_scheduled_date )
         end
       end
 
@@ -140,7 +141,7 @@ describe RecordX4dDAO, type: :model do
   describe "[a well formed instance]" do
 
     it_behaves_like( "(existance of a member array)", [
-      :records
+      :records, :gender_types, :pool_types, :category_types, :event_types
     ])
 
     it_behaves_like( "(the existance of a method)", [
@@ -205,6 +206,19 @@ describe RecordX4dDAO, type: :model do
       subject.add_record( mir )
       expect( subject.records.size ).to eq( 1 )
       expect( subject.records[0] ).to be_an_instance_of( RecordX4dDAO::RecordElementDAO )
+    end
+    it "increases member arrays" do
+      expect( subject.records.size ).to eq( 0 )
+      expect( subject.gender_types.size ).to eq( 0 )
+      expect( subject.pool_types.size ).to eq( 0 )
+      expect( subject.category_types.size ).to eq( 0 )
+      expect( subject.event_types.size ).to eq( 0 )
+      subject.add_record( mir )
+      expect( subject.records.size ).to eq( 1 )
+      expect( subject.gender_types.size ).to eq( 1 )
+      expect( subject.pool_types.size ).to eq( 1 )
+      expect( subject.category_types.size ).to eq( 1 )
+      expect( subject.event_types.size ).to eq( 1 )
     end
     it "uses record pool, gender, event and category if not forced" do
       subject.add_record( mir )

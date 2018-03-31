@@ -16,7 +16,7 @@ class RecordX4dDAO
 
   class RecordElementDAO
     # These must be initialized on creation:
-    attr_reader :pool_type_code, :gender_type_code, :event_type_code, :category_type_code, :record
+    attr_reader :pool_type_code, :gender_type_code, :event_type_code, :category_type_code, :record, :swimmer_id, :meeting_id
     #-- -------------------------------------------------------------------------
     #++
 
@@ -32,6 +32,12 @@ class RecordX4dDAO
       @event_type_code    = event_type_code
       @category_type_code = category_type_code
       @record             = record
+      @timing             = record.get_timing
+      @meeting_id         = record.meeting.id
+      @meeting_name       = record.meeting.description
+      @date               = record.get_scheduled_date
+      @swimmer_id         = record.swimmer_id
+      @swimmer_name       = record.swimmer.complete_name
     end
 
     # Pool type safe getter
@@ -69,16 +75,31 @@ class RecordX4dDAO
     # Uses the meeting_idividual_results base function
     #
     def get_record_timing
-      @record.get_timing
+      @timing
     end
 
     # Record linked date getter
-    # Returns a formatted string containing the record date
+    # Returns the record date
     # Uses the meeting function
     #
     def get_record_date
-      @record.meeting.get_scheduled_date
+      @date
     end
+    
+    # Record linked swimmer name getter
+    # Returns a formatted string containing the record swimmer complete name
+    #
+    def get_record_swimmer
+      @swimmer_name
+    end
+
+    # Record linked meeting name getter
+    # Returns a formatted string containing the record meeting description
+    #
+    def get_record_meeting
+      @meeting_name
+    end
+
 
 # FIXME [Steve] NO DECORATOR CALLS in CORE 5.0
     # Record linked swimmer getter
@@ -103,7 +124,7 @@ class RecordX4dDAO
   end
 
   # These must be initialized on creation:
-  attr_reader :owner, :record_type
+  attr_reader :owner, :record_type, :gender_types, :pool_types, :category_types, :event_types
 
   # These can be edited later on:
   attr_accessor :records
@@ -115,9 +136,13 @@ class RecordX4dDAO
       raise ArgumentError.new("Record 4D needs a valid record type")
     end
 
-    @owner       = owner
-    @record_type = record_type
-    @records     = []
+    @owner          = owner
+    @record_type    = record_type
+    @records        = []
+    @gender_types   = []
+    @pool_types     = []
+    @category_types = []
+    @event_types    = []
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -141,6 +166,12 @@ class RecordX4dDAO
         @records << new_record
         added = true
       end
+      
+      # Populates membre arrays
+      @gender_types << gender_code if !@gender_types.include?( gender_code ) 
+      @pool_types << gender_code if !@pool_types.include?( gender_code ) 
+      @category_types << gender_code if !@category_types.include?( gender_code ) 
+      @event_types << gender_code if !@event_types.include?( gender_code ) 
     end
     added
   end

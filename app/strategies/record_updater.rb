@@ -49,10 +49,12 @@ class RecordUpdater
   def find_existing_record_for( result_row, must_be_a_team_record )
     record_type = RecordType.find_by_code( must_be_a_team_record ? 'TTB' : 'FOR' )
     if must_be_a_team_record
-      IndividualRecord.where(
+      IndividualRecord.includes(:category_type).where(
         pool_type_id:     result_row.pool_type.id,
         event_type_id:    result_row.event_type.id,
-        category_type_id: result_row.category_type.id,
+        # Leega. The category should be compared with code and not by id because every seasons has its own ones
+        #category_type_id: result_row.category_type.id,
+        'category_types.code' => result_row.category_type.code,
         gender_type_id:   result_row.gender_type.id,
         record_type_id:   record_type.id,
         team_id:          result_row.team_id,
