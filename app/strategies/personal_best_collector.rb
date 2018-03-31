@@ -2,7 +2,7 @@
 
 =begin
 
-= RecordCollector
+= PersonalBestCollector
   - Goggles framework vers.:  4.00.439
   - author: Leega, Steve A.
 

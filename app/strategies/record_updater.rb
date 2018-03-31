@@ -59,11 +59,13 @@ class RecordUpdater
         is_team_record:   true
       ).first
     else
-      IndividualRecord.includes(:season_type)
+      IndividualRecord.includes(:season_type, :category_type)
         .where(
           pool_type_id:     result_row.pool_type.id,
           event_type_id:    result_row.event_type.id,
-          category_type_id: result_row.category_type.id,
+          # Leega. The category should be compared with code and not by id because every seasons has its own ones
+          #category_type_id: result_row.category_type.id,
+          'category_types.code' => result_row.category_type.code,
           gender_type_id:   result_row.gender_type.id,
           record_type_id:   record_type.id,
           # [Steve, 20150602] If it's not a "team record", then it must be a federation
