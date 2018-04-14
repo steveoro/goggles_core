@@ -302,7 +302,7 @@ class MeetingStatCalculator
   # Assumes the standard (FIN) pints are always calculated
   #
   def get_best_standard_scores( scope_name = :is_male, score_num = 3 )
-    @meeting.meeting_individual_results.is_valid.send(scope_name.to_sym).has_points.order('standard_points DESC').first(score_num)
+    @meeting.meeting_individual_results.is_valid.send(scope_name.to_sym).has_points.unscope(:order).order('standard_points DESC').first(score_num)
   end
   # ---------------------------------------------------------------------------
 
@@ -311,7 +311,7 @@ class MeetingStatCalculator
   # Assumes the standard (FIN) pints are always calculated
   #
   def get_worst_standard_scores( scope_name = :is_male, score_num = 3 )
-    @meeting.meeting_individual_results.is_valid.send(scope_name.to_sym).has_points.order('standard_points ASC').limit(score_num)
+    @meeting.meeting_individual_results.is_valid.send(scope_name.to_sym).has_points.unscope(:order).order('standard_points ASC').limit(score_num)
   end
   # ---------------------------------------------------------------------------
 

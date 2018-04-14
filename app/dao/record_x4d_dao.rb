@@ -169,9 +169,9 @@ class RecordX4dDAO
       
       # Populates membre arrays
       @gender_types << gender_code if !@gender_types.include?( gender_code ) 
-      @pool_types << gender_code if !@pool_types.include?( gender_code ) 
-      @category_types << gender_code if !@category_types.include?( gender_code ) 
-      @event_types << gender_code if !@event_types.include?( gender_code ) 
+      @pool_types << pool_code if !@pool_types.include?( pool_code ) 
+      @category_types << category_code if !@category_types.include?( category_code ) 
+      @event_types << event_code if !@event_types.include?( event_code ) 
     end
     added
   end
