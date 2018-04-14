@@ -66,7 +66,7 @@ class MeetingStatCalculator
   #
   def get_teams()
     if has_results?
-      teams = @meeting.teams.sort_by_name('ASC').distinct
+      teams = @meeting.teams.unscope(:order).sort_by_name('ASC').distinct
     elsif has_entries?
       teams = []
       @meeting.meeting_entries.select( 'team_id' ).distinct.map{ |e| e.team_id }.each do |team_id|
