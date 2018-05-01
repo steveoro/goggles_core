@@ -34,7 +34,7 @@ class EnhanceIndividualRankingDAO
 
     # Creates a new instance from a ameeting_indivudla_result.
     #
-    def initialize( swimmer, season )
+    def initialize( swimmer, season, total_meetings = seaon.meetings.count )
       unless swimmer && swimmer.instance_of?( Swimmer )
         raise ArgumentError.new( "Enhance individual ranking swimmer needs a swimmer" )
       end
@@ -62,7 +62,7 @@ class EnhanceIndividualRankingDAO
 
       # Calculate best 5 on 6 results
       @meetings.each_with_index do |meeting,index|
-        @total_best_5_on_6 = @total_best_5_on_6 + meeting.get_total_points if index < 5
+        @total_best_5_on_6 = @total_best_5_on_6 + meeting.get_total_points if index < total_meetings
       end
     end
     #-- -------------------------------------------------------------------------

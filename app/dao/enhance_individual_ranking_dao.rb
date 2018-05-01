@@ -27,7 +27,7 @@ class EnhanceIndividualRankingDAO
   #++
 
   # These can be edited later on:
-  attr_accessor :season, :gender_and_categories, :meetings_with_results
+  attr_accessor :season, :gender_and_categories, :meetings_with_results, :total_meetings
 
   # Creates a new instance.
   #
@@ -41,6 +41,7 @@ class EnhanceIndividualRankingDAO
     @season                = season
     @meetings_with_results = season.meetings.has_results
     @gender_and_categories = []
+    @total_meetings        = @season.meetings.count 
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -65,7 +66,7 @@ class EnhanceIndividualRankingDAO
 
   # Calculate the ranking for given gender and category
   def calculate_ranking( gender_type, category_type )
-    EIRGenderCategoryRankingDAO.new( @season, gender_type, category_type )
+    EIRGenderCategoryRankingDAO.new( @season, gender_type, category_type, @total_meetings )
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -79,7 +80,7 @@ class EnhanceIndividualRankingDAO
 
   # Set the ranking for given gender and category
   # TODO Localize and store on DB
-  def get_html_ranking_description( tot_meetings = @season.meetings.count )
+  def get_html_ranking_description( tot_meetings = @total_meetings )
     best_meetings = tot_meetings - 1 
     "La classifica finale è calcolata considerando le #{best_meetings} migliori prove su #{tot_meetings}.<br>Per ogni prova vengono totalizzati i punti in base a:<ul><li>piazzamento</li><li>valore della prestazione rapportata ai record regionali</li><li>miglioramento personale</li><li>doppio podio nella manifestazione</li><li>premio gare impegnative</li></ul>".html_safe
   end

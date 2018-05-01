@@ -34,25 +34,24 @@ class EnhanceIndividualRankingDAO
 
     # Creates a new instance
     #
-    def initialize( season, gender_type, category_type )
+    def initialize( season, gender_type, category_type, total_meetings = season.meetings.count )
       unless season && season.instance_of?( Season )
-        raise ArgumentError.new("Balanced individual ranking needs a season")
+        raise ArgumentError.new("Enhanced individual ranking needs a season")
       end
       unless gender_type && gender_type.instance_of?( GenderType )
-        raise ArgumentError.new( "Balanced individual ranking for gender and category needs a gender type" )
+        raise ArgumentError.new( "Enhanced individual ranking for gender and category needs a gender type" )
       end
       unless category_type && category_type.instance_of?( CategoryType )
-        raise ArgumentError.new( "Balanced individual ranking for gender and category needs a category type" )
+        raise ArgumentError.new( "Enhanced individual ranking for gender and category needs a category type" )
       end
 
       @gender_type   = gender_type
       @category_type = category_type
       @swimmers      = []
 
-
       # Search swimmers for the season, gender and category
       season.badges.for_gender_type( gender_type ).for_category_type( category_type ).each do |badge|
-        @swimmers << EIRSwimmerScoreDAO.new( badge.swimmer, season ) if badge.meeting_individual_results.exists?
+        @swimmers << EIRSwimmerScoreDAO.new( badge.swimmer, season, total_meetings ) if badge.meeting_individual_results.exists?
       end
 
       # Sort swimmers by total points
