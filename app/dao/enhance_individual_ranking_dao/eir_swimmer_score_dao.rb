@@ -34,7 +34,7 @@ class EnhanceIndividualRankingDAO
 
     # Creates a new instance from a ameeting_indivudla_result.
     #
-    def initialize( swimmer, season, total_meetings = seaon.meetings.count )
+    def initialize( swimmer, season, total_meetings = season.meetings.count )
       unless swimmer && swimmer.instance_of?( Swimmer )
         raise ArgumentError.new( "Enhance individual ranking swimmer needs a swimmer" )
       end
