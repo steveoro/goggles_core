@@ -293,7 +293,7 @@ class MeetingStatCalculator
   # Statistic calculation of the oldest swimmers has swam in the meeting
   #
   def get_oldest_swimmers( scope_name = :is_male, swimmer_num = 3 )
-    @meeting.swimmers.send(scope_name.to_sym).order(:year_of_birth).distinct.limit(swimmer_num)
+    @meeting.swimmers.send(scope_name.to_sym).unscope(:order).order(:year_of_birth).distinct.limit(swimmer_num)
   end
   # ---------------------------------------------------------------------------
 
