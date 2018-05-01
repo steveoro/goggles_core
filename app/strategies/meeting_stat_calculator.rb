@@ -217,7 +217,7 @@ class MeetingStatCalculator
   # Returns 0 in no standard points
   #
   def get_team_best_standard( team, scope_name = :is_male )
-    @meeting.meeting_individual_results.for_team(team).is_valid.send(scope_name.to_sym).has_points.count > 0 ? @meeting.meeting_individual_results.for_team(team).is_valid.send(scope_name.to_sym).has_points.order('standard_points DESC').first.standard_points : 0.00
+    @meeting.meeting_individual_results.for_team(team).is_valid.send(scope_name.to_sym).has_points.count > 0 ? @meeting.meeting_individual_results.for_team(team).is_valid.send(scope_name.to_sym).has_points.unscope(:order).order('standard_points DESC').first.standard_points : 0.00
   end
   # ---------------------------------------------------------------------------
 
@@ -227,7 +227,7 @@ class MeetingStatCalculator
   # Returns 0 in no standard points
   #
   def get_team_worst_standard( team, scope_name = :is_male )
-    @meeting.meeting_individual_results.for_team(team).is_valid.send(scope_name.to_sym).has_points.count > 0 ? @meeting.meeting_individual_results.for_team(team).is_valid.send(scope_name.to_sym).has_points.order('standard_points ASC').first.standard_points : 0.00
+    @meeting.meeting_individual_results.for_team(team).is_valid.send(scope_name.to_sym).has_points.count > 0 ? @meeting.meeting_individual_results.for_team(team).is_valid.send(scope_name.to_sym).has_points.unscope(:order).order('standard_points ASC').first.standard_points : 0.00
   end
   # ---------------------------------------------------------------------------
 
