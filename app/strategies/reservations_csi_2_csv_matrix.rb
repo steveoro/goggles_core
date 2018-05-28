@@ -38,8 +38,8 @@ class ReservationsCsi2CsvMatrix
   # be collected.
   #
   def initialize( meeting, filtering_team = nil, logger = ConsoleLogger.new )
-    unless ReservationsCsi2Csv.is_a_csi_meeting( meeting )
-      raise ArgumentError.new("The specified Meeting must be a valid instance of Meeting, belonging to the '#{ SeasonType::CODE_MAS_CSI }' SeasonType.")
+    unless ReservationsCsi2CsvMatrix.is_a_valid_meeting( meeting )
+      raise ArgumentError.new("The specified Meeting must be a valid instance of Meeting")
     end
     @meeting = meeting
     @filtering_team = filtering_team
@@ -61,9 +61,9 @@ class ReservationsCsi2CsvMatrix
   # (regardless the fact that the Meeting has or hasn't any associated reservations).
   # Always false otherwise.
   #
-  def self.is_a_csi_meeting( meeting )
+  def self.is_a_valid_meeting( meeting )
     return false if meeting.nil?
-    ( meeting && meeting.instance_of?( Meeting ) && meeting.season_type.code == SeasonType::CODE_MAS_CSI )
+    meeting && meeting.instance_of?( Meeting )
   end
   #-- -------------------------------------------------------------------------
   #++
