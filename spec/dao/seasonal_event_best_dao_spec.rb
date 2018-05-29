@@ -5,11 +5,15 @@ require 'rails_helper'
 describe SeasonalEventBestDAO, type: :model do
   let(:season)        { Season.find(141) }
   let(:gender_type)   { GenderType.individual_only.sample }
-  let(:category_type) { season.category_types.sample }
-  let(:event_type)    { season.event_types.sample }
-  let(:is_converted)  { (rand * 0.5).to_i }
-  let(:total_events)  { ((rand * 2) % 2).to_i + 1 }
-  let(:events_swam)   { ((rand * total_events) % total_events).to_i + 1 }
+  let(:category_type) { season.category_types.are_not_relays.sample }
+  let(:event_type)    { season.event_types.reject{|et| et.is_a_relay }.sample }
+
+#  let(:relay_category_type) { season.category_types.only_relays.sample }
+#  let(:relay_event_type)    { season.event_types.only_relays.sample }
+
+  let(:is_converted)  { [true, false].sample }
+  let(:total_events)  { (2..4).to_a.sample }
+  let(:events_swam)   { (1..total_events).to_a.sample }
   let(:time_swam)     { ((rand * 15000) % 15000).to_i + 1 }
 
   context "SingleEventBestDAO subclass," do
@@ -122,6 +126,7 @@ describe SeasonalEventBestDAO, type: :model do
 # DEBUG
 #          puts "\r\n- best_calculated.time_swam class: " + best_calculated.time_swam.class.name + "\r\n"
 #          equivalent_mirs.each{ |mir| puts mir.class.name + ", "  }
+
           expect( equivalent_mirs ).to all be >= best_calculated.time_swam
         end
 

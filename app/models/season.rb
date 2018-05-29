@@ -43,7 +43,7 @@ class Season < ApplicationRecord
   # [Steve, 20170718] Hand-made has_many :event_types, through: :meetings (which can't work correctly)
   #
   def event_types
-    self.meeting_events.map do |me|
+    self.meeting_events.includes(:event_type).map do |me|
       me.event_type
     end
   end

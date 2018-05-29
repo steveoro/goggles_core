@@ -223,6 +223,16 @@ describe Season, type: :model do
     end
     #-- -----------------------------------------------------------------------
     #++
+
+    describe "#event_types" do
+      subject { Season.all.sample.event_types }
+      it "returns an array of EventTypes" do
+        expect( subject ).to be_an( Array )
+        expect( subject ).to all be_a( EventType )
+      end
+    end
+    #-- -----------------------------------------------------------------------
+    #++
   end
   #-- -------------------------------------------------------------------------
   #++
