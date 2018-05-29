@@ -168,12 +168,12 @@ class SeasonPonderatedBestsDAO
           @categories.each do |category_code|
             # If at least on meeting individual result add an element
             if MeetingIndividualResult
-              .for_season_type( @season.season_type )
-              .for_gender_type( gender_type )
-              .for_category_code( category_code )
-              .for_pool_type( pool_type )
-              .for_event_type( event_type )
-              exists?
+                .for_season_type( @season.season_type )
+                .for_gender_type( gender_type )
+                .for_category_code( category_code )
+                .for_pool_type( pool_type )
+                .for_event_type( event_type )
+                .exists?
               @single_events << SeasonPonderatedBestsDAO::EventPonderatedBestDAO.new(
                 @season,
                 gender_type,
