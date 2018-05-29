@@ -20,9 +20,10 @@ describe ReservationsCsi2Csv, type: :strategy do
   end
 
   let(:meeting_csi_w_res) do
+    # [Steve, 20180529] Exclude a single meeting w/ messed-up (duplicated) reservations by team ID 14
     meeting = Meeting.includes(:season_type, :meeting_event_reservations)
       .joins(:season_type, :meeting_event_reservations)
-      .where(['(season_types.code = ?) AND (meeting_event_reservations.is_doing_this = ?)', 'MASCSI', true])
+      .where(['(meetings.id != 17101) AND (season_types.code = ?) AND (meeting_event_reservations.is_doing_this = ?)', 'MASCSI', true])
       .limit(200)
       .sample
     expect( meeting ).to be_a( Meeting )
@@ -193,6 +194,7 @@ describe ReservationsCsi2Csv, type: :strategy do
           ReservationsCsi2Csv.new( meeting_csi_w_res, team_for_meeting_csi_w_res )
         end
 
+
         describe "#collect()" do
           it "increases the size of #csi_data_rows of the tot. reservation rows for the specified team" do
             expect( subject.csi_data_rows.size ).to eq(0)
@@ -204,10 +206,16 @@ describe ReservationsCsi2Csv, type: :strategy do
               team_id: team_for_meeting_csi_w_res.id,
               is_doing_this: true
             ).count
+# DEBUG
+#            puts "\r\n*** Data collected from Meeting ID #{ meeting_csi_w_res.id }: ***"
+#            puts " 8< ".center(80,'-')
+#            subject.csi_data_rows.each_with_index{ |line,idx| puts "#{idx}: #{line}" }
+#            puts " 8< ".center(80,'-')
 
             expect( subject.csi_data_rows.size ).to eq( total_swimmer_reservations )
           end
         end
+
         describe "#save_to_file()" do
           it "saves the output file" do
             subject.collect
