@@ -21,8 +21,10 @@ Gem::Specification.new do |s|
   ]
   s.test_files = Dir["spec/**/*"]
 
-  s.add_dependency "rails", "~> 5.1.4"
-  s.add_dependency "mysql2" #, "~> 0.3.11"
+  s.add_dependency "rails", "~> 5.1"
+  s.add_dependency "mysql2", "~> 0.4.10"
+  s.add_dependency "activerecord-session_store" # Needed to include a DB-based session store in Rails 4+
+
   s.add_dependency "devise"
   s.add_dependency "devise-i18n"
   s.add_dependency "simple_token_authentication", '~> 1.14' # '1.13' adds Rails 5 support
