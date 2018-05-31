@@ -26,3 +26,9 @@ group :development, :test do
   gem 'spring-commands-rspec'
   gem 'guard-spring'
 end
+
+
+group :test do
+  gem 'simplecov'
+  gem "codeclimate-test-reporter", require: nil   # [Steve, 20140321] CI/Test coverage via local test run
+end

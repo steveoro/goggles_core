@@ -1,7 +1,16 @@
+require "codeclimate-test-reporter"
+CodeClimate::TestReporter.start
+
+# [Steve] Test coverage integrated on SimpleCov, with local HTML-file reports
+# (Remember to exclude /coverage sub-dir from git repo)
+require 'simplecov'
+SimpleCov.start 'rails'
+puts "SimpleCov+CodeClimate::TestReporter required and started."
+
+
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../dummy/config/environment', __FILE__)
-
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require 'spec_helper'
