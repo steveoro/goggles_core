@@ -1,6 +1,3 @@
-require "codeclimate-test-reporter"
-CodeClimate::TestReporter.start
-
 # [Steve] Test coverage integrated on SimpleCov, with local HTML-file reports
 # (Remember to exclude /coverage sub-dir from git repo)
 require 'simplecov'
