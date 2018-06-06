@@ -41,6 +41,7 @@ describe FinCalendar, type: :model do
         :fin_startlist_code,
         :fin_results_code,
         :goggles_meeting_code,
+        :do_not_update,
 
         :get_short_name,
         :get_full_name,

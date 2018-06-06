@@ -5,7 +5,7 @@
 
 = SwimmingPool model
 
-  - version:  5.00
+  - version:  6.327
   - author:   Steve A., Leega
 
 =end
@@ -46,6 +46,7 @@ class SwimmingPool < ApplicationRecord
   # validates :has_restaurant_service,  :inclusion => { :in => [true, false] }
   # validates :has_gym_area,            :inclusion => { :in => [true, false] }
   # validates :has_children_area,       :inclusion => { :in => [true, false] }
+  # validates :do_not_update,           :inclusion => { :in => [true, false] }
 
   scope :sort_swimming_pool_by_user,                ->(dir) { order("users.name #{dir.to_s}, swimming_pools.name #{dir.to_s}") }
   scope :sort_swimming_pool_by_city,                ->(dir) { order("cities.name #{dir.to_s}, swimming_pools.name #{dir.to_s}") }
@@ -60,11 +61,6 @@ class SwimmingPool < ApplicationRecord
 
   delegate :name, to: :user, prefix: true, allow_nil: true
   delegate :name, to: :city, prefix: true, allow_nil: true
-
-# FIXME for Rails 4+, move required/permitted check to the controller using the model
-#  attr_accessible :city_id, :pool_type_id, :shower_type_id, :hair_dryer_type_id,
-#                  :locker_cabinet_type_id, :name, :nick_name, :address,
-#                  :phone_number, :fax_number, :e_mail, :contact_name, :lanes_number
   #-- -------------------------------------------------------------------------
   #++
 

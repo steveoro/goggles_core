@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180106195500) do
+ActiveRecord::Schema.define(version: 20180606133037) do
 
   create_table "achievement_rows", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "lock_version", default: 0
@@ -977,6 +977,7 @@ ActiveRecord::Schema.define(version: 20180106195500) do
     t.text "dates_import_text"
     t.text "program_import_text"
     t.integer "meeting_id"
+    t.boolean "do_not_update", default: false, null: false
     t.index ["goggles_meeting_code"], name: "index_fin_calendars_on_goggles_meeting_code"
     t.index ["meeting_id"], name: "index_fin_calendars_on_meeting_id"
     t.index ["season_id"], name: "index_fin_calendars_on_season_id"
@@ -1025,6 +1026,7 @@ ActiveRecord::Schema.define(version: 20180106195500) do
     t.integer "goggle_cup_id"
     t.integer "swimmer_id"
     t.index ["event_type_id"], name: "fk_goggle_cup_standards_event_types"
+    t.index ["goggle_cup_id", "swimmer_id", "pool_type_id", "event_type_id"], name: "idx_goggle_cup_standards_goggle_cup_swimmer_pool_event", unique: true
     t.index ["goggle_cup_id"], name: "fk_goggle_cup_standards_goggle_cups"
     t.index ["pool_type_id"], name: "fk_goggle_cup_standards_pool_types"
     t.index ["swimmer_id"], name: "fk_goggle_cup_standards_swimmers"
@@ -1222,6 +1224,7 @@ ActiveRecord::Schema.define(version: 20180106195500) do
     t.index ["swimmer_id"], name: "fk_meeting_individual_results_swimmers"
     t.index ["team_affiliation_id"], name: "fk_meeting_individual_results_team_affiliations"
     t.index ["team_id"], name: "fk_meeting_individual_results_teams"
+    t.index ["updated_at"], name: "idx_meeting_individual_results_updated_at"
     t.index ["user_id"], name: "idx_mir_user"
   end
 
@@ -1425,12 +1428,15 @@ ActiveRecord::Schema.define(version: 20180106195500) do
     t.boolean "is_fb_posted", default: false
     t.boolean "is_cancelled", default: false
     t.boolean "is_pb_scanned", default: false
+    t.bigint "organization_team_id"
+    t.boolean "do_not_update", default: false, null: false
     t.index ["code", "edition"], name: "idx_meetings_code"
     t.index ["edition_type_id"], name: "fk_meetings_edition_types"
     t.index ["entry_deadline"], name: "index_meetings_on_entry_deadline"
     t.index ["header_date"], name: "idx_meetings_header_date"
     t.index ["individual_score_computation_type_id"], name: "fk_meetings_score_individual_score_computation_types"
     t.index ["meeting_score_computation_type_id"], name: "fk_meetings_score_meeting_score_computation_types"
+    t.index ["organization_team_id"], name: "index_meetings_on_organization_team_id"
     t.index ["relay_score_computation_type_id"], name: "fk_meetings_score_relay_score_computation_types"
     t.index ["season_id"], name: "fk_meetings_seasons"
     t.index ["team_score_computation_type_id"], name: "fk_meetings_score_team_score_computation_types"
@@ -1627,6 +1633,9 @@ ActiveRecord::Schema.define(version: 20180106195500) do
     t.integer "pool_type_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["season_id", "swimmer_id", "pool_type_id", "event_type_id"], name: "idx_season_personal_standards_season_swimmer_event_pool", unique: true
+    t.index ["season_id"], name: "idx_season_personal_standards_season_id"
+    t.index ["swimmer_id"], name: "idx_season_personal_standards_swimmer_id"
   end
 
   create_table "season_types", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -1781,6 +1790,7 @@ ActiveRecord::Schema.define(version: 20180106195500) do
     t.integer "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean "do_not_update", default: false, null: false
     t.index ["city_id"], name: "fk_swimming_pools_cities"
     t.index ["hair_dryer_type_id"], name: "fk_swimming_pools_hair_dryer_types"
     t.index ["locker_cabinet_type_id"], name: "fk_swimming_pools_locker_cabinet_types"

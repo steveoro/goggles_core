@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 
-describe SwimmingPool, :type => :model do
+describe SwimmingPool, type: :model do
   describe "[a non-valid instance]" do
     it_behaves_like( "(missing required values)", [
       :name,
@@ -32,10 +32,33 @@ describe SwimmingPool, :type => :model do
     end
 
     context "[general methods]" do
+      it_behaves_like( "(the existance of a method)", [
+        # Fields:
+        :name, :nick_name,
+        :address, :phone_number, :fax_number, :e_mail, :contact_name,
+        :lanes_number,
+        :has_multiple_pools, :has_open_area, :has_bar, :has_restaurant_service,
+        :has_gym_area, :has_children_area,
+        :do_not_update,
+        # Methods:
+        :get_pool_length_in_meters,
+        :get_pool_lanes_number,
+        :get_pool_attributes,
+      ])
+
       it_behaves_like( "(the existance of a method returning non-empty strings)", [
+        # Semi-standard:
         :get_full_name,
         :get_verbose_name,
-        :user_name
+        :get_city_full_name,
+        :get_full_address,
+        :get_city_and_attributes,
+        # Delegation:
+        :user_name,
+        :city_name,
+        # Localization:
+        :i18n_short, :get_full_name,
+        :i18n_description, :get_verbose_name
       ])
     end
   end
