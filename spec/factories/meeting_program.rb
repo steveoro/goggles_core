@@ -20,8 +20,8 @@ FactoryBot.define do
     meeting_event
     category_type do                                # Get a coherent category according to the meeting_event:
       meeting_event.event_type.is_a_relay ?
-        CategoryType.is_valid.only_relays.order('RAND()').first :
-        CategoryType.is_valid.are_not_relays.order('RAND()').first
+        CategoryType.is_valid.only_relays.sample :
+        CategoryType.is_valid.are_not_relays.sample
     end
     pool_type                 { meeting_event.meeting_session.swimming_pool.pool_type }
 
@@ -36,14 +36,14 @@ FactoryBot.define do
     factory :meeting_program_individual do
       pool_type               { PoolType.only_for_meetings.sample }
       meeting_event           { create( :meeting_event_individual ) }
-      category_type           { CategoryType.is_valid.are_not_relays.order('RAND()').first }
+      category_type           { CategoryType.is_valid.are_not_relays.sample }
     end
 
     # This should yield only valid MeetingProgram rows, for relay results (not individual):
     factory :meeting_program_relay do
       pool_type               { PoolType.only_for_meetings.sample }
       meeting_event           { create( :meeting_event_relay ) }
-      category_type           { CategoryType.is_valid.only_relays.order('RAND()').first }
+      category_type           { CategoryType.is_valid.only_relays.sample }
     end
   end
   #-- -------------------------------------------------------------------------

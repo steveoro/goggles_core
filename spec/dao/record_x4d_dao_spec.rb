@@ -9,11 +9,11 @@ describe RecordX4dDAO, type: :model do
   #let(:category)        { CategoryType.are_not_relays[(rand * (CategoryType.are_not_relays.count - 1)).round(0)].code }
   #let(:record_type)     { RecordType.all[(rand * (RecordType.all.count - 1)).round(0)] }
 
-  let(:gender)          { GenderType.individual_only.order('RAND()').first.code }
-  let(:pool)            { PoolType.only_for_meetings.order('RAND()').first.code }
-  let(:event)           { EventType.are_not_relays.for_fin_calculation.order('RAND()').first.code }
-  let(:category)        { CategoryType.are_not_relays.order('RAND()').first.code }
-  let(:record_type)     { RecordType.order('RAND()').first }
+  let(:gender)          { GenderType.individual_only.sample.code }
+  let(:pool)            { PoolType.only_for_meetings.sample.code }
+  let(:event)           { EventType.are_not_relays.for_fin_calculation.sample.code }
+  let(:category)        { CategoryType.are_not_relays.sample.code }
+  let(:record_type)     { RecordType.all.sample.first }
 
   let(:mir)             { create( :meeting_individual_result ) }
 

@@ -16,10 +16,10 @@ describe SwimmerPersonalBestUpdater, type: :strategy do
 
   context "with requested parameters" do
     let(:csi_season_type) { SeasonType.find_by_code('MASCSI') }
-    let(:csi_season)      { csi_season_type.seasons.is_ended.order('RAND()').first }
+    let(:csi_season)      { csi_season_type.seasons.is_ended.sample }
     let(:subject_swimmer) do
-      ( team = csi_season.teams.order('RAND()').first ) while team.nil?
-      team.badges.for_season( csi_season ).order('RAND()').first.swimmer
+      ( team = csi_season.teams.sample ) while team.nil?
+      team.badges.for_season( csi_season ).sample.swimmer
     end
     let(:subject_team) { subject_swimmer.team }
 
@@ -100,7 +100,7 @@ describe SwimmerPersonalBestUpdater, type: :strategy do
 # FIXME RANDOM FAILURE HERE:
       xit "sets a time corresponding to the best swam (if swam)" do
         event = EventsByPoolType.not_relays.only_for_meetings
-          .order('RAND()').first
+          .sample
 # DEBUG
         puts "\r\n- subject swimmer: #{ subject_swimmer.inspect }"
         puts "=>  event chosen: #{ event.i18n_short } => #{ event.inspect }"
@@ -129,7 +129,7 @@ describe SwimmerPersonalBestUpdater, type: :strategy do
         expect( updater.set_personal_best!( fix_event_by_pool_type ) ).to be_nil
       end
       it "returns a time swam if swam before or nil if not" do
-        event = EventsByPoolType.not_relays.order('RAND()').first
+        event = EventsByPoolType.not_relays.sample
         if subject_swimmer.meeting_individual_results.for_event_by_pool_type( event ).is_not_disqualified.count > 0
           expect( subject.set_personal_best!( event ) ).to be_an_instance_of( MeetingIndividualResult )
           expect( subject_swimmer.meeting_individual_results.for_event_by_pool_type( event ).is_personal_best.count ).to be > 0

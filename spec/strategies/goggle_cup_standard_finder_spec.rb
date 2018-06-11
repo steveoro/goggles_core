@@ -12,10 +12,10 @@ describe GoggleCupStandardFinder, type: :strategy, tag: :slow do
     # To test randomly should create:
     # A team with swimmers (badges) withe results swam before the goggle cup
     #
-    #let(:@active_team)    { SeasonType.find_by_code('MASCSI').seasons.is_ended.order('RAND()').first.teams.distinct.order('RAND()').first }
+    #let(:@active_team)    { SeasonType.find_by_code('MASCSI').seasons.is_ended.sample.teams.distinct.sample }
     #let(:@goggle_cup)     { create( :@goggle_cup, season_year: Date.today.year, team: @active_team ) }
-    #let(:@goggle_cup)     { GoggleCup.for_team( @active_team ).is_closed_now.order('RAND()').first }
-    #let(:@active_swimmer) { @goggle_cup.swimmers.has_results.distinct.order('RAND()').first }
+    #let(:@goggle_cup)     { GoggleCup.for_team( @active_team ).is_closed_now.sample }
+    #let(:@active_swimmer) { @goggle_cup.swimmers.has_results.distinct.sample }
     #let( :team )    { create(:team) }
     #let( :badge )   { create( :badge, team: team ) }
     #let( :swimmer ) { badge.swimmer }
@@ -71,7 +71,7 @@ describe GoggleCupStandardFinder, type: :strategy, tag: :slow do
         expect( @subject.oldest_swimmer_result( @active_swimmer ) ).to be_an_instance_of( Date )
       end
       it "returns a date not greater than other one of swimmer results" do
-        expect( @subject.oldest_swimmer_result( @active_swimmer ) ).to be <= @active_swimmer.meeting_individual_results.order('RAND()').first.get_scheduled_date
+        expect( @subject.oldest_swimmer_result( @active_swimmer ) ).to be <= @active_swimmer.meeting_individual_results.sample.get_scheduled_date
       end
       it "returns tomorrow date if not swam results" do
         new_swimmer = create( :swimmer )

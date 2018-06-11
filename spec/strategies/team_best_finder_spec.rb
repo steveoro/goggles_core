@@ -14,7 +14,7 @@ describe TeamBestFinder, type: :strategy do
     st
   end
   let(:season) do
-    s = Season.has_results.for_season_type( season_type ).order('RAND()').first
+    s = Season.has_results.for_season_type( season_type ).sample
     expect( s ).to be_a( Season )
     s
   end
@@ -27,22 +27,22 @@ describe TeamBestFinder, type: :strategy do
   #let(:fin_season)      { SeasonType.find_by_code('MASFIN').seasons[(rand * (season_type.seasons.count - 1)).round(0)] }
   #let(:fix_mir)         { active_team.meeting_individual_results.is_not_disqualified[(rand * (active_team.meeting_individual_results.is_not_disqualified.count - 1)).round(0)] }
 
-  let(:active_team)     { season.teams.has_many_results.count > 0 ? season.teams.has_many_results.order('RAND()').first : fix_team }
-  let(:gender)          { GenderType.individual_only.order('RAND()').first }
-  let(:pool)            { PoolType.only_for_meetings.order('RAND()').first }
-  let(:event)           { EventType.are_not_relays.for_fin_calculation.order('RAND()').first }
+  let(:active_team)     { season.teams.has_many_results.count > 0 ? season.teams.has_many_results.sample : fix_team }
+  let(:gender)          { GenderType.individual_only.sample }
+  let(:pool)            { PoolType.only_for_meetings.sample }
+  let(:event)           { EventType.are_not_relays.for_fin_calculation.sample }
   let(:category) do
-    c = CategoryType.are_not_relays.for_season( season ).order('RAND()').first
+    c = CategoryType.are_not_relays.for_season( season ).sample
     expect( c ).to be_a( CategoryType )
     c
   end
   let(:fin_season) do
-    fs = Season.for_season_type( SeasonType.find_by_code('MASFIN') ).order('RAND()').first
+    fs = Season.for_season_type( SeasonType.find_by_code('MASFIN') ).sample
     expect( fs ).to be_a( Season )
     expect( fs.season_type.code ).to eq('MASFIN')
     fs
   end
-  let(:fix_mir)         { active_team.meeting_individual_results.is_not_disqualified.order('RAND()').first }
+  let(:fix_mir)         { active_team.meeting_individual_results.is_not_disqualified.sample }
   #-- -------------------------------------------------------------------------
   #++
 
@@ -231,7 +231,7 @@ describe TeamBestFinder, type: :strategy do
         # XXX This one seem to work just fine:
         fin_categories = fin_season.category_types.are_not_relays.to_a.select{|row| row.code =~ /M??/ }
         fin_category = fin_categories.sort{ rand - 0.5 }[0]
-        # .order('RAND()').first
+        # .sample
 # DEBUG
 #        puts "\r\n- fin_season...: #{ fin_season.inspect }"
 #        puts "\r\n- fin_season.category_types.are_not_relays: #{ fin_season.category_types.are_not_relays.map{|r| r.code}.inspect }"
@@ -242,12 +242,12 @@ describe TeamBestFinder, type: :strategy do
       end
       it "returns true for non standard FIN categories (U25) for multiple season types" do
         #u25_category = fin_season.category_types.are_not_relays.where("code like 'U%'")[(rand * (fin_season.category_types.are_not_relays.where("code like 'U%'").count - 1)).round(0)]
-        u25_category = fin_season.category_types.are_not_relays.where("code like 'U%'").order('RAND()').first
+        u25_category = fin_season.category_types.are_not_relays.where("code like 'U%'").sample
         expect( fix_tbf.category_needs_split?( u25_category ) ).to eq( true )
       end
       it "returns false for non standard FIN categories (U25) for only FIN season types" do
         #u25_category = fin_season.category_types.are_not_relays.where("code like 'U%'")[(rand * (fin_season.category_types.are_not_relays.where("code like 'U%'").count - 1)).round(0)]
-        u25_category = fin_season.category_types.are_not_relays.where("code like 'U%'").order('RAND()').first
+        u25_category = fin_season.category_types.are_not_relays.where("code like 'U%'").sample
         fix_tbf.distinct_categories.delete_if{ |e| e.code = 'M20' }
         fix_tbf.distinct_categories.delete_if{ |e| e.code = 'SEN' }
         expect( fix_tbf.distinct_categories.rindex{ |e| e.code == 'M20' } ).to be nil
@@ -274,27 +274,27 @@ describe TeamBestFinder, type: :strategy do
       end
       it "returns the same category if split not needed" do
         #m45_mir = fix_team.meeting_individual_results.for_category_code('M45')[(rand * (fix_team.meeting_individual_results.for_category_code('M45').count - 1)).round(0)]
-        m45_mir = fix_team.meeting_individual_results.for_category_code('M45').order('RAND()').first
+        m45_mir = fix_team.meeting_individual_results.for_category_code('M45').sample
         expect( m45_mir.category_type.code ).to eq( 'M45' )
         expect( fix_tbf.get_category_to_split_into( m45_mir ).code ).to eq( 'M45' )
         #m30_mir = fix_team.meeting_individual_results.for_category_code('M30')[(rand * (fix_team.meeting_individual_results.for_category_code('M30').count - 1)).round(0)]
-        m30_mir = fix_team.meeting_individual_results.for_category_code('M30').order('RAND()').first
+        m30_mir = fix_team.meeting_individual_results.for_category_code('M30').sample
         expect( m30_mir.category_type.code ).to eq( 'M30' )
         expect( fix_tbf.get_category_to_split_into( m30_mir ).code ).to eq( 'M30' )
       end
       it "returns a different category if split needed" do
         #over_mir = fix_team.meeting_individual_results.for_category_code('OVER')[(rand * (fix_team.meeting_individual_results.for_category_code('OVER').count - 1)).round(0)]
-        over_mir = fix_team.meeting_individual_results.for_category_code('OVER').order('RAND()').first
+        over_mir = fix_team.meeting_individual_results.for_category_code('OVER').sample
         expect( over_mir.category_type.code ).to eq( 'OVER' )
         expect( fix_tbf.get_category_to_split_into( over_mir ).code ).not_to eq( 'OVER' )
         #s50_mir = fix_team.meeting_individual_results.for_category_code('50S')[(rand * (fix_team.meeting_individual_results.for_category_code('50S').count - 1)).round(0)]
-        s50_mir = fix_team.meeting_individual_results.for_category_code('50S').order('RAND()').first
+        s50_mir = fix_team.meeting_individual_results.for_category_code('50S').sample
         expect( s50_mir.category_type.code ).to eq( '50S' )
         expect( fix_tbf.get_category_to_split_into( s50_mir ).code ).not_to eq( '50S' )
       end
       it "returns the correct category if split needed" do
         #over_mir = fix_team.meeting_individual_results.for_category_code('OVER')[(rand * (fix_team.meeting_individual_results.for_category_code('OVER').count - 1)).round(0)]
-        over_mir = fix_team.meeting_individual_results.for_category_code('OVER').order('RAND()').first
+        over_mir = fix_team.meeting_individual_results.for_category_code('OVER').sample
         split_cat = fix_tbf.get_category_to_split_into( over_mir )
         swimmer_age = over_mir.get_swimmer_age
         expect( over_mir.category_type.age_begin ).to be <= swimmer_age
@@ -302,7 +302,7 @@ describe TeamBestFinder, type: :strategy do
         expect( split_cat.age_begin ).to be <= swimmer_age
         expect( split_cat.age_end ).to be >= swimmer_age
         #s50_mir = fix_team.meeting_individual_results.for_category_code('50S')[(rand * (fix_team.meeting_individual_results.for_category_code('50S').count - 1)).to_i]
-        s50_mir = fix_team.meeting_individual_results.for_category_code('50S').order('RAND()').first
+        s50_mir = fix_team.meeting_individual_results.for_category_code('50S').sample
         split_cat = fix_tbf.get_category_to_split_into( s50_mir )
         swimmer_age = s50_mir.get_swimmer_age
         expect( s50_mir.category_type.age_begin ).to be <= swimmer_age
@@ -324,7 +324,7 @@ describe TeamBestFinder, type: :strategy do
       end
       it "returns true for event with results" do
         #fix_mir = active_team.meeting_individual_results.is_not_disqualified[(rand * (active_team.meeting_individual_results.is_not_disqualified.count - 1)).round(0)]
-        fix_mir = active_team.meeting_individual_results.is_not_disqualified.order('RAND()').first
+        fix_mir = active_team.meeting_individual_results.is_not_disqualified.sample
         fix_gender   = fix_mir.gender_type
         fix_pool     = fix_mir.pool_type
         fix_event    = fix_mir.event_type

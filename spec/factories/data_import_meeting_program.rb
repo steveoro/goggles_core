@@ -16,13 +16,13 @@ FactoryBot.define do
         .only_for_meetings
         .for_pool_type_code( meeting_session.swimming_pool.pool_type.code )
         .where( "event_types.length_in_meters < 3000" )
-        .order('RAND()')
-        .first.event_type
+        .sample
+        .event_type
     end
     category_type do                                # Get a coherent category according to the meeting_event:
       event_type.is_a_relay ?
-        CategoryType.is_valid.only_relays.order('RAND()').first :
-        CategoryType.is_valid.are_not_relays.order('RAND()').first
+        CategoryType.is_valid.only_relays.sample :
+        CategoryType.is_valid.are_not_relays.sample
     end
     minutes                   { ((rand * 2) % 2).to_i }
     seconds                   { ((rand * 60) % 60).to_i }
@@ -43,11 +43,11 @@ FactoryBot.define do
           .not_relays
           .for_pool_type_code( meeting_session.swimming_pool.pool_type.code )
           .where( "event_types.length_in_meters < 3000" )
-          .order('RAND()')
-          .first.event_type
+          .sample
+          .event_type
       end
       category_type do                              # Get a coherent category according to the meeting_event:
-        CategoryType.is_valid.are_not_relays.order('RAND()').first
+        CategoryType.is_valid.are_not_relays.sample
       end
     end
 
@@ -58,11 +58,11 @@ FactoryBot.define do
           .are_relays
           .for_pool_type_code( meeting_session.swimming_pool.pool_type.code )
           .where( "event_types.length_in_meters < 3000" )
-          .order('RAND()')
-          .first.event_type
+          .sample
+          .event_type
       end
       category_type do                              # Get a coherent category according to the meeting_event:
-        CategoryType.is_valid.only_relays.order('RAND()').first
+        CategoryType.is_valid.only_relays.sample
       end
     end
   end

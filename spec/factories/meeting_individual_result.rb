@@ -16,7 +16,7 @@ FactoryBot.define do
     minutes                   0
     seconds                   { ((rand * 60) % 60).to_i }
     hundreds                  { ((rand * 100) % 100).to_i }
-    disqualification_code_type { (rand == 1) ? DisqualificationCodeType.order('RAND()').first : nil }
+    disqualification_code_type { (rand == 1) ? DisqualificationCodeType.all.sample : nil }
     user
   end
   #-- -------------------------------------------------------------------------

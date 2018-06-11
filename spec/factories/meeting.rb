@@ -10,7 +10,7 @@ FactoryBot.define do
     sequence( :code )         { |n| "meeting-#{n}" }
     description               { "#{FFaker::Name.suffix} #{FFaker::Address.city} Meeting" }
     edition                   { ((rand * 100) % 40).to_i }
-    season                    { Season.is_ended.order('RAND()').first }
+    season                    { Season.is_ended.sample }
     header_date               { season.begin_date + (rand * 100).to_i.days }
     header_year               { season.header_year }
     edition_type              { EditionType.all.sample }

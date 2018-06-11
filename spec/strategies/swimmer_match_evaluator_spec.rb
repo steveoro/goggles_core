@@ -5,7 +5,7 @@ describe SwimmerMatchEvaluator, :type => :model do
   let( :swimmer )         { create( :swimmer ) }
   let( :older_swimmer )   { create( :swimmer, year_of_birth: swimmer.year_of_birth - ( (rand * 4).to_i ), gender_type: swimmer.gender_type ) }
   let( :younger_swimmer ) { create( :swimmer, year_of_birth: swimmer.year_of_birth + ( (rand * 4).to_i ), gender_type: swimmer.gender_type ) }
-  let( :fix_event )       { EventType.are_not_relays.order('RAND()').first }
+  let( :fix_event )       { EventType.are_not_relays.sample }
 
   before(:all) do
     @leega   = Swimmer.find(23)

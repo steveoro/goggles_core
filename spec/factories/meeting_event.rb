@@ -13,7 +13,7 @@ FactoryBot.define do
       EventsByPoolType.only_for_meetings
         .for_pool_type_code( meeting_session.swimming_pool.pool_type.code )
         .distance_more_than(50).distance_less_than(1500)
-        .order('RAND()').first.event_type_id
+        .sample.event_type_id
     end
     heat_type                 { HeatType.all.sample }
     user
@@ -37,7 +37,7 @@ FactoryBot.define do
       event_type do
         EventsByPoolType.only_for_meetings.not_relays
           .for_pool_type_code( meeting_session.swimming_pool.pool_type.code )
-          .distance_more_than(50).distance_less_than(1500).order('RAND()').first.event_type
+          .distance_more_than(50).distance_less_than(1500).sample.event_type
       end
     end
 
@@ -45,7 +45,7 @@ FactoryBot.define do
     factory :meeting_event_relay do
       event_type do
         EventsByPoolType.only_for_meetings.are_relays
-          .for_pool_type_code( meeting_session.swimming_pool.pool_type.code ).order('RAND()').first.event_type
+          .for_pool_type_code( meeting_session.swimming_pool.pool_type.code ).sample.event_type
       end
     end
   end

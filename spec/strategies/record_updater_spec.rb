@@ -48,7 +48,7 @@ describe RecordUpdater, type: :strategy do
   describe "#find_existing_record_for" do
     context "when searching for an existing SEASON_TYPE record," do
       let(:fixture) do
-        IndividualRecord.where(is_team_record: false).limit(1000).all.sort{ rand - 0.5 }[0]
+        IndividualRecord.where(is_team_record: false).limit(1000).all.sample
       end
       let(:test_subject) do
         subject.find_existing_record_for( fixture, false )
@@ -61,7 +61,7 @@ describe RecordUpdater, type: :strategy do
 
     context "when searching for an existing TEAM record," do
       let(:fixture) do
-        IndividualRecord.where(is_team_record: true).limit(1000).all.sort{ rand - 0.5 }[0]
+        IndividualRecord.where(is_team_record: true).limit(1000).all.sample
       end
       let(:test_subject) do
         subject.find_existing_record_for( fixture, true )
@@ -74,7 +74,7 @@ describe RecordUpdater, type: :strategy do
 
     context "when searching for a missing SEASON_TYPE record," do
       let(:fixture) do
-        fixture_row = IndividualRecord.where(is_team_record: false).limit(1000).all.sort{ rand - 0.5 }[0]
+        fixture_row = IndividualRecord.where(is_team_record: false).limit(1000).all.sample
         fixture_row.pool_type_id = PoolType::MT33_ID
         fixture_row
       end
@@ -89,7 +89,7 @@ describe RecordUpdater, type: :strategy do
 
     context "when searching for a missing TEAM record," do
       let(:fixture) do
-        fixture_row = IndividualRecord.where(is_team_record: true).limit(1000).all.sort{ rand - 0.5 }[0]
+        fixture_row = IndividualRecord.where(is_team_record: true).limit(1000).all.sample
         fixture_row.pool_type_id = PoolType::MT33_ID
         fixture_row
       end
@@ -111,7 +111,7 @@ describe RecordUpdater, type: :strategy do
       # [Stevem 20150604] It doesn't matter for the method if its actually a MIR or
       # any other kind of result. So this is quicker than using a MIR and doing a query
       # searching for a better or worse record row.
-      IndividualRecord.where(is_team_record: false).limit(1000).all.sort{ rand - 0.5 }[0]
+      IndividualRecord.where(is_team_record: false).limit(1000).all.sample
     end
     let(:fixture_better_result) do
       fixture = fixture_result.dup
@@ -161,10 +161,10 @@ describe RecordUpdater, type: :strategy do
 
   describe "#scan_results_for_season_type_records" do
     let(:fixture_result_list) do
-      IndividualRecord.where(is_team_record: false).limit(1000).all.sort{ rand - 0.5 }[0..5]
+      IndividualRecord.where(is_team_record: false).limit(1000).all.sample(5)
     end
     let(:fixture_better_list) do
-      list = IndividualRecord.where(is_team_record: false).limit(1000).all.sort{ rand - 0.5 }[0..5]
+      list = IndividualRecord.where(is_team_record: false).limit(1000).all.sample(5)
       list.map{ |row| row.seconds -= 1; row }
     end
 
@@ -237,33 +237,59 @@ describe RecordUpdater, type: :strategy do
 
 
     context "when scanning a list of MIRs with some new (missing) records," do
-      let(:fixture_missing_list) do
-        MeetingIndividualResultFactoryTools.create_unique_result_list( create(:swimmer), 3 )
+      # We choose a couple of random rows among the records that are actually linked to a MIR:
+      let(:sample_record_list) do
+        IndividualRecord.joins(:meeting_individual_result).includes(:meeting_individual_result)
+          .where( is_team_record: false ).limit(1000)
+          .all.sample(2)
       end
-# XXX THIS WAS FAILING RANDOMLY W/ nil federation_type for some MIR, (see RecordUpdater @ line 163) - corrected with new fixture_missing_list
+      # We create a short list with 2 existing records (chosen above) and one crafted from scratch:
+      let(:fixture_missing_list) do
+        # [Steve, 20180611] Old version:
+#        MeetingIndividualResultFactoryTools.create_unique_result_list( create(:swimmer), 3 )
+
+        # New version:
+        # Let's build-up an all-time "impossible record to beat" as a missing new record, together w/ the existing records:
+        rec = sample_record_list.last
+        sample_record_list + [
+          FactoryBot.create(
+            :meeting_individual_result,
+            team_id:              rec.meeting_individual_result.team_id,
+            swimmer_id:           rec.meeting_individual_result.swimmer_id,
+            badge_id:             rec.meeting_individual_result.badge_id,
+            team_affiliation_id:  rec.meeting_individual_result.team_affiliation_id,
+            minutes:              0,
+            seconds:              5,
+            meeting_program:      FactoryBot.create(
+              :meeting_program,
+              meeting_event: FactoryBot.create(:meeting_event, event_type_id: 1)  # 25SL
+            )
+          )
+        ]
+      end
+
       let(:test_subject) do
         new_subject = RecordUpdater.new()
         new_subject.scan_results_for_season_type_records( fixture_missing_list )
         new_subject
       end
 
-      it "leaves the #updated_records counter to zero" do
+      it "leaves the #updated_records counter to 0 (no existing records to be updated)" do
         expect( test_subject.updated_records ).to eq(0)
       end
-# FIXME The following is failing randomly:
-      xit "sets the #added_records counter to the number of inserted rows" do
-        expect( test_subject.added_records ).to eq( fixture_missing_list.size )
+      it "sets the #added_records counter to the number of inserted rows (1 for the crafted record)" do
+        expect( test_subject.added_records ).to eq( 1 )
       end
 
       it "updates the SQL executable log text with INSERT statements" do
         expect( test_subject.sql_diff_text_log ).to match(/INSERT\s/i)
 # DEBUG
-        puts( "\r\nResulting SQL for inserts:\r\n----8<----\r\n" + test_subject.sql_diff_text_log + "\r\n----8<----\r\n")
+#        puts( "\r\nResulting SQL for inserts:\r\n----8<----\r\n" + test_subject.sql_diff_text_log + "\r\n----8<----\r\n")
       end
-# FIXME The following is failing randomly:
-      xit "updates the SQL executable log text with NO UPDATE statements" do
+
+      it "updates the SQL executable log text with NO UPDATE statements" do
 # DEBUG
-        puts( "\r\nResulting SQL for UPDATE:\r\n----8<----\r\n" + test_subject.sql_diff_text_log + "\r\n----8<----\r\n")
+#        puts( "\r\nResulting SQL for UPDATE:\r\n----8<----\r\n" + test_subject.sql_diff_text_log + "\r\n----8<----\r\n")
         expect( test_subject.sql_diff_text_log ).not_to match(/UPDATE\s/i)
       end
     end
@@ -274,10 +300,10 @@ describe RecordUpdater, type: :strategy do
 
   describe "#scan_results_for_team_records" do
     let(:fixture_result_list) do
-      IndividualRecord.where(is_team_record: true).limit(1000).all.sort{ rand - 0.5 }[0..5]
+      IndividualRecord.where(is_team_record: true).limit(1000).all.sample(5)
     end
     let(:fixture_better_list) do
-      list = IndividualRecord.where(is_team_record: true).limit(1000).all.sort{ rand - 0.5 }[0..5]
+      list = IndividualRecord.where(is_team_record: true).limit(1000).all.sample(5)
       list.map{ |row| row.seconds -= 1; row }
     end
 
