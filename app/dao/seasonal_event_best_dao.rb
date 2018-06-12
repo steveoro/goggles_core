@@ -60,13 +60,19 @@ class SeasonalEventBestDAO
   #-- -------------------------------------------------------------------------
   #++
 
-  # Calculate the event best time for given gender and category
-  # Find the best event time for 25 meters and 50 meters
-  # Compare the 50 meters converted in 25 meters anc choose the best
+  # Computes the event best timing for a given gender and category.
   #
-  # [FIXME, Steve] WHAT DOES IT RETURN? WHAT'S ITS DEFAULT?
-  # nil or new SingleEventBestDAO? Why can't update self?
-  # Does this work also for relays?
+  # The method finds the best timing associated for the same event in both short-course (25 m.)
+  # and long-course (50m.) events.
+  #
+  # It compares all best 50m. & 25 m. results found, converting all long-course results
+  # into their equivalent shor-course counterparts and chooses the best one.
+  #
+  # === Returns:
+  #
+  # A SingleEventBestDAO instance, for the event converted as a short-course event
+  #  (pool type: 25m.)
+  # Typically, the result should never be nil.
   #
   def calculate_event_best( gender_type, category_type, event_type, event_total, event_swam )
 # DEBUG
@@ -75,42 +81,76 @@ class SeasonalEventBestDAO
 #    puts "- category: #{category_type.inspect}"
 #    puts "- event: #{event_type.inspect}"
 #    puts "- total_events: #{event_total}, events_swam: #{event_swam}"
+
     # If event_type doesn't refer to a 50-meters event, no conversion is needed
     is_converted = false
-    best_mir = @season.meeting_individual_results
-      .is_valid
-      .for_gender_type(gender_type)
-      .for_category_type(category_type)
-      .for_event_type(event_type)
+
+    best_mir = MeetingIndividualResult.is_valid
+      .joins(:meeting_program, :meeting_event, :meeting_session, :meeting)
+      .includes(:meeting_program, :meeting_event, :meeting)
+      .where( 'meetings.season_id = ?', @season.id )
+      .where( 'meeting_programs.gender_type_id = ?', gender_type.id )
+      .where( 'meeting_programs.category_type_id = ?', category_type.id )
+      .where( 'meeting_events.event_type_id = ?', event_type.id )
       .sort_by_timing
       .first
+    # [Steve, 20180612] Previous unoptimized version:
+    #
+    # @season.meeting_individual_results
+    #   .is_valid
+    #   .for_gender_type(gender_type)
+    #   .for_category_type(category_type)
+    #   .for_event_type(event_type)
+    #   .sort_by_timing
+    #   .first
 
     if best_mir
 # DEBUG
 #      puts "\r\nbest_mir found! => #{ best_mir.inspect }"
       time_swam = best_mir.get_timing_instance
 
-      # If best_mir refers to a 50 metres pool, this doesn't need any conversion and we can stop:
+      # If best_mir refers to a 50 metres pool, it typically doesn't need any additional checks
+      # (simply because a long-course timing usually takes a little longer than a short-course one),
+      # thus we'll just convert it to short-course timing and we are done:
       if best_mir.pool_type.length_in_meters == 50
 # DEBUG
 #        puts "best_mir pool_type = 50"
         is_converted = true
         time_swam = @timing_converter.convert_time_to_short( time_swam, gender_type, event_type )
-      # If event type refers to a 50-meters event, it needs to be converted and be compared
+
+      # If the best MIR found was referring to a short-course event and the event
+      # allows conversion, then we seek if there's a long-course event with an apparent
+      # "worst" timing (since long-course events take usually more time).
+      # If we find one, we convert it and, if it's really better than the original
+      # short-course result found, then we use it to build up the DAO instance.
       else
 # DEBUG
 #        puts "best_mir pool_type != 50"
         if @timing_converter.is_conversion_possible?( gender_type, event_type )
 #          puts "conversion possible!"
-          # Find best event swam in 50 meters
-          best_mir_50 = @season.meeting_individual_results
-            .is_valid
-            .for_gender_type(gender_type)
-            .for_category_type(category_type)
-            .for_event_type(event_type)
-            .for_pool_type( PoolType.find_by_code( '50' ) )
-            .sort_by_timing
-            .first
+
+          # Find a possibly better event swam in 50 meters (that, without conversion,
+          # may have slipped past the initial query above as apparently "worse"):
+          best_mir_50 = MeetingIndividualResult.is_valid
+              .joins(:meeting_program, :meeting_event, :meeting_session, :meeting)
+              .includes(:meeting_program, :meeting_event, :meeting)
+              .where( 'meetings.season_id = ?', @season.id )
+              .where( 'meeting_programs.pool_type_id = ?', PoolType::MT50_ID )
+              .where( 'meeting_programs.gender_type_id = ?', gender_type.id )
+              .where( 'meeting_programs.category_type_id = ?', category_type.id )
+              .where( 'meeting_events.event_type_id = ?', event_type.id )
+              .sort_by_timing
+              .first
+          # [Steve, 20180612] Previous unoptimized version:
+          #
+          # @season.meeting_individual_results
+          #  .is_valid
+          #  .for_gender_type(gender_type)
+          #  .for_category_type(category_type)
+          #  .for_event_type(event_type)
+          #  .for_pool_type( PoolType.find_by_code( '50' ) )
+          #  .sort_by_timing
+          #  .first
 
           if best_mir_50
 # DEBUG

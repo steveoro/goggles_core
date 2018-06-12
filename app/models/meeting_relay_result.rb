@@ -7,7 +7,7 @@ require 'wrappers/timing'
 # Model class
 #
 # @author   Steve A.
-# @version  4.00.797
+# @version  6.330
 #
 class MeetingRelayResult < ApplicationRecord
   include TimingGettable
@@ -69,11 +69,11 @@ class MeetingRelayResult < ApplicationRecord
 
   scope :has_rank,               ->(rank_filter) { where(rank: rank_filter) }
   scope :has_points,             ->(score_sym = 'standard_points') { where("#{score_sym.to_s} > 0") }
-  scope :has_time,               -> { where("((minutes * 6000) + (seconds * 100) + hundreds > 0)") }
+  scope :has_time,               -> { where("(minutes > 0) AND (seconds > 0) AND (hundreds > 0)") }
 
   scope :sort_by_user,           ->(dir)         { order("users.name #{dir.to_s}, meeting_program_id #{dir.to_s}, rank #{dir.to_s}") }
   scope :sort_by_meeting_relay,  ->(dir)         { order("meeting_program_id #{dir.to_s}, rank #{dir.to_s}") }
-  scope :sort_by_timing,         ->(dir = 'ASC') { order("is_disqualified, (hundreds+(seconds*100)+(minutes*6000)) #{dir.to_s}") }
+  scope :sort_by_timing,         ->(dir = 'ASC') { order(is_disqualified: :asc, minutes: dir.to_s.downcase.to_sym, seconds: dir.to_s.downcase.to_sym, hundreds: dir.to_s.downcase.to_sym) }
   scope :sort_by_rank,           ->(dir = 'ASC') { order("is_disqualified, rank #{dir.to_s}") }
   scope :for_team,               ->(team)        { where(team_id: team.id) }
   scope :sort_by_category,       ->(dir = 'ASC') { joins(:category_type, :gender_type).order("gender_types.code, category_types.code #{dir.to_s}") }

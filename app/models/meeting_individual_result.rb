@@ -7,7 +7,7 @@ require 'wrappers/timing'
 # Model class
 #
 # @author   Steve A., Leega
-# @version  6.111
+# @version  6.330
 #
 class MeetingIndividualResult < ApplicationRecord
   include SwimmerRelatable
@@ -63,16 +63,9 @@ class MeetingIndividualResult < ApplicationRecord
   validates_numericality_of :reaction_time
 
 
-# FIXME for Rails 4+, move required/permitted check to the controller using the model
-#  attr_accessible :rank, :is_play_off, :is_out_of_race, :is_disqualified, :standard_points,
-#                  :meeting_individual_points, :minutes, :seconds, :hundreds,
-#                  :meeting_program_id, :swimmer_id, :team_id, :badge_id, :user_id,
-#                  :disqualification_code_type_id, :goggle_cup_points, :reaction_time,
-#                  :team_points, :team_affiliation_id, :is_personal_best
-
-
   delegate :short_name, to: :category_type, prefix: true
   delegate :code,       to: :event_type, prefix: true
+
 
   scope :is_valid,                    -> { where(is_out_of_race: false, is_disqualified: false) }
   scope :is_not_disqualified,         -> { where(is_disqualified: false) }
@@ -85,27 +78,27 @@ class MeetingIndividualResult < ApplicationRecord
 
   scope :has_rank,                    ->(rank_filter) { where(rank: rank_filter) }
   scope :has_points,                  ->(score_sym = 'standard_points') { where("#{score_sym.to_s} > 0") }
-  #scope :has_time,                    -> { where("((minutes * 6000) + (seconds * 100) + hundreds > 0)") }
-  scope :has_time,                    -> { where("(minutes + seconds + hundreds > 0)") }
+  scope :has_time,                    -> { where("(minutes > 0) AND (seconds > 0) AND (hundreds > 0)") }
 
   scope :sort_by_user,                ->(dir = 'ASC') { order("users.name #{dir.to_s}, meeting_programs.meeting_session_id #{dir.to_s}, swimmers.last_name #{dir.to_s}, swimmers.first_name #{dir.to_s}") }
   scope :sort_by_meeting,             ->(dir)         { order("meeting_programs.meeting_session_id #{dir.to_s}, swimmers.last_name #{dir.to_s}, swimmers.first_name #{dir.to_s}") }
   scope :sort_by_swimmer,             ->(dir = 'ASC') { joins(:swimmer).order("swimmers.complete_name #{dir.to_s}, meeting_individual_results.rank #{dir.to_s}") }
   scope :sort_by_team,                ->(dir = 'ASC') { joins(:team, :swimmer).order("teams.name #{dir.to_s}, swimmers.complete_name #{dir.to_s}") }
   scope :sort_by_badge,               ->(dir = 'ASC') { joins(:badge).order("badges.number #{dir.to_s}") }
-  scope :sort_by_timing,              ->(dir = 'ASC') { order("is_disqualified, (hundreds+(seconds*100)+(minutes*6000)) #{dir.to_s}") }
-  #scope :sort_by_timing,              ->(dir = 'ASC') { order("is_disqualified, minutes, seconds, hundreds #{dir.to_s}") }
-  scope :sort_by_rank,                ->(dir = 'ASC') { order("is_disqualified, rank #{dir.to_s}") }
+  scope :sort_by_timing,              ->(dir = 'ASC') { order(is_disqualified: :asc, minutes: dir.to_s.downcase.to_sym, seconds: dir.to_s.downcase.to_sym, hundreds: dir.to_s.downcase.to_sym) }
+  scope :sort_by_rank,                ->(dir = 'ASC') { order(is_disqualified: :asc, rank: dir.to_s.downcase.to_sym) }
   scope :sort_by_date,                ->(dir = 'ASC') { joins(:meeting_session).order("meeting_sessions.scheduled_date #{dir.to_s}") }
-  scope :sort_by_goggle_cup,          ->(dir = 'DESC') { order("goggle_cup_points #{dir.to_s}") }
-  scope :sort_by_standard_points,     ->(dir = 'DESC') { order("standard_points #{dir.to_s}") }
+  scope :sort_by_goggle_cup,          ->(dir = 'DESC') { order(goggle_cup_points: dir.to_s.downcase.to_sym) }
+  scope :sort_by_standard_points,     ->(dir = 'DESC') { order(standard_points: dir.to_s.downcase.to_sym) }
   scope :sort_by_pool_and_event,      ->(dir = 'ASC') { joins(:event_type, :pool_type).order("pool_types.length_in_meters #{dir.to_s}, event_types.style_order #{dir.to_s}") }
   scope :sort_by_gender_and_category, ->(dir = 'ASC') { joins(:gender_type, :category_type).order("gender_types.code #{dir.to_s}, category_types.code #{dir.to_s}") }
   scope :sort_by_updated_at,          ->(dir = 'ASC') { order("updated_at #{dir.to_s}") }
   scope :sort_by_event_order,         ->(dir = 'ASC') { joins(meeting_event: [:meeting_session]).order("(meeting_sessions.session_order*100)+meeting_events.event_order #{dir.to_s}") }
-  #scope :sort_by_event_order,         ->(dir = 'ASC') { includes(:meeting_event, :meeting_session).order("meeting_sessions.session_order, meeting_events.event_order #{dir.to_s}") }
-  scope :sort_by_event_and_timing,    ->(dir = 'ASC') { joins(meeting_event: [:meeting_session]).order("(meeting_sessions.session_order*100)+meeting_events.event_order #{dir.to_s}, is_disqualified, (hundreds+(seconds*100)+(minutes*6000)) DESC") }
-  #scope :sort_by_event_and_timing,    ->(dir = 'ASC') { includes(:meeting_event, :meeting_session).order("meeting_sessions.session_order, meeting_events.event_order #{dir.to_s}, is_disqualified, minutes, seconds, hundreds) DESC") }
+  scope :sort_by_event_and_timing,    ->(dir = 'ASC') do
+    joins( meeting_event: [:meeting_session] )
+    .order("(meeting_sessions.session_order*100)+meeting_events.event_order #{dir.to_s})")
+    .order(is_disqualified: :asc, minutes: :desc, seconds: :desc, hundreds: :desc)
+  end
 
   scope :for_event_by_pool_type,      ->(event_by_pool_type)   { joins(:event_type, :pool_type).where(["event_types.id = ? AND pool_types.id = ?", event_by_pool_type.event_type_id, event_by_pool_type.pool_type_id]) }
   scope :for_pool_type,               ->(pool_type)            { joins(:pool_type).where(['pool_types.id = ?', pool_type.id]) }

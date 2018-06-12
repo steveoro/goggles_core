@@ -98,7 +98,13 @@ describe SeasonalEventBestDAO, type: :model do
       end
 
       it "returns a value smaller than other of same gender, category and event" do
-        mirs = season.meeting_individual_results.is_valid.for_gender_type(gender_type).for_category_type( category_type ).for_event_type( event_type )
+        mirs = MeetingIndividualResult.is_valid
+              .joins(:meeting_program, :meeting_event, :meeting_session, :meeting)
+              .includes(:meeting_program, :meeting_event, :meeting)
+              .where( 'meetings.season_id = ?', season.id )
+              .where( 'meeting_programs.gender_type_id = ?', gender_type.id )
+              .where( 'meeting_programs.category_type_id = ?', category_type.id )
+              .where( 'meeting_events.event_type_id = ?', event_type.id )
         best_calculated = subject.calculate_event_best(
           gender_type,
           category_type,
@@ -107,9 +113,9 @@ describe SeasonalEventBestDAO, type: :model do
           events_swam
         )
 # DEBUG
+        puts "\r\n***********************************************************************************"
         if best_calculated.nil?
-          puts "\r\n***********************************************************************************"
-          puts "\r\n=> seasonal_event_best_dao_spec, #106:"
+          puts "\r\n=> seasonal_event_best_dao_spec, #100:"
           puts "- gender: #{gender_type.inspect }"
           puts "- category: #{ category_type.inspect }"
           puts "- event: #{ event_type.inspect }"
@@ -118,14 +124,19 @@ describe SeasonalEventBestDAO, type: :model do
           puts "== FIX IT or CHANGE THIS SPEC! =="
           puts "\r\n***********************************************************************************"
         else
-          equivalent_mirs = mirs.map do |mir|
-            mir.pool_type.code == '50' ?
-            subject.timing_converter.convert_time_to_short( mir.get_timing_instance, gender_type, event_type ) :
-            mir.get_timing_instance
-          end
 # DEBUG
-#          puts "\r\n- best_calculated.time_swam class: " + best_calculated.time_swam.class.name + "\r\n"
-#          equivalent_mirs.each{ |mir| puts mir.class.name + ", "  }
+          puts "- best_calculated: #{ best_calculated.time_swam } (#{ best_calculated.time_swam.class.name })\r\n"
+          puts "- gender: #{gender_type.code }, category: #{ category_type.code }, event: #{ event_type.code }"
+          puts "- total_events: #{ total_events }, events_swam: #{ events_swam }\r\nCandidate MIRs:"
+
+          equivalent_mirs = mirs.map do |mir|
+            timing = mir.pool_type.code == '50' ?
+                subject.timing_converter.convert_time_to_short( mir.get_timing_instance, gender_type, event_type ) :
+                mir.get_timing_instance
+# DEBUG
+            puts "- ID: #{ mir.id } => #{ mir.get_timing(true) }, converted: #{ timing } (from: #{ mir.class.name }, pool: #{ mir.pool_type.code })"
+            timing
+          end
 
           expect( equivalent_mirs ).to all be >= best_calculated.time_swam
         end
