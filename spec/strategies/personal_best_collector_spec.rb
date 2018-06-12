@@ -6,7 +6,7 @@ require 'date'
 describe PersonalBestCollector, type: :strategy do
   # Use pre-loaded seeds:
   let( :swimmer )  { Swimmer.find( 23 ) }  # Assumes swimmer Leega from seeds
-  let( :events_by_pool_type ) { EventsByPoolType.find( 11 )}  # Assumes 50FA, 25 mt from seeds
+  let( :events_by_pool_type ) { EventsByPoolType.find( 11 )}  # Assumes 50FA, 25m. from seeds (quite common event)
   let( :record_type_code )  { RecordType.find( 1 ).code }  # Assumes Swimmer personal best from seeds
 
   # TODO refactor tests using a 4-element array of subjects, for each subject do the tests
@@ -15,7 +15,6 @@ describe PersonalBestCollector, type: :strategy do
 
   # Using a given swimmer
   subject { PersonalBestCollector.new( swimmer ) }
-
 
   context "[implemented methods]" do
     it_behaves_like( "(the existance of a method)",
@@ -90,12 +89,19 @@ describe PersonalBestCollector, type: :strategy do
 
 
   describe "#collection" do
+    # Using a given swimmer
+    subject { PersonalBestCollector.new( swimmer ) }
+
     it "returns the collection instance" do
       expect( subject.collection ).to be_an_instance_of( PersonalBestCollection )
     end
     # This is useful if the getter is implemented using #dup or #clone.
     # [Steve, 20140717] *** Currently: NOT ***
     it "returns a collection having the same number of elements of the internal collection" do
+# DEBUG
+      puts "\r\n- subject.collection: #{ subject.collection.inspect }"
+      puts "- subject: #{ subject.inspect }"
+
       expect( subject.collection.count ).to eq(subject.count)
     end
   end
@@ -104,7 +110,22 @@ describe PersonalBestCollector, type: :strategy do
 
 
   describe "#collect_from_all_category_results_having" do
+    # Using a given swimmer, MASCSI seasons
+    let(:season)        { swimmer.seasons.where(season_type_id: 2).last(3).sample }
+    let(:season_type)   { season.season_type }
+    subject { PersonalBestCollector.new( swimmer, season: season, season_type: season_type ) }
+
     it "returns the size of the internal collection" do
+# DEBUG
+      puts "\r\n- events_by_pool_type: #{ events_by_pool_type.inspect }"
+      puts "- record_type_code: #{ record_type_code.inspect }"
+      puts "- subject.season: #{ subject.season.inspect }"
+      puts "- subject.season_type: #{ subject.season_type.inspect }"
+      puts "- subject.start_date: #{ subject.start_date.inspect }"
+      puts "- subject.end_date: #{ subject.end_date.inspect }"
+      puts "\r\n- subject.collection: #{ subject.collection.inspect }"
+      puts "- subject: #{ subject.inspect }"
+
       subject.collect_from_all_category_results_having( events_by_pool_type, record_type_code )
       expect( subject.count ).to be > 0
     end
@@ -114,7 +135,22 @@ describe PersonalBestCollector, type: :strategy do
 
 
   describe "#collect_last_results_having" do
+    # Using a given swimmer, MASCSI seasons
+    let(:season)        { swimmer.seasons.where(season_type_id: 2).last(3).sample }
+    let(:season_type)   { season.season_type }
+    subject { PersonalBestCollector.new( swimmer, season: season, season_type: season_type ) }
+
     it "returns the size of the internal collection" do
+# DEBUG
+      puts "\r\n- events_by_pool_type: #{ events_by_pool_type.inspect }"
+      puts "- record_type_code: #{ record_type_code.inspect }"
+      puts "- subject.season: #{ subject.season.inspect }"
+      puts "- subject.season_type: #{ subject.season_type.inspect }"
+      puts "- subject.start_date: #{ subject.start_date.inspect }"
+      puts "- subject.end_date: #{ subject.end_date.inspect }"
+      puts "\r\n- subject.collection: #{ subject.collection.inspect }"
+      puts "- subject: #{ subject.inspect }"
+
       subject.collect_last_results_having( events_by_pool_type, record_type_code )
       expect( subject.count ).to be == 1
     end
@@ -124,12 +160,23 @@ describe PersonalBestCollector, type: :strategy do
 
 
   describe "#clear" do
+    # Using a given swimmer, MASCSI seasons
+    let(:season)        { swimmer.seasons.where(season_type_id: 2).last(3).sample }
+    let(:season_type)   { season.season_type }
+    subject { PersonalBestCollector.new( swimmer, season: season, season_type: season_type ) }
+
     it "returns the cleared collection instance" do
       expect( subject.clear ).to be_an_instance_of( PersonalBestCollection )
     end
+
     it "clears the internal list" do
       subject.collect_from_all_category_results_having( events_by_pool_type, record_type_code )
-      expect{ subject.clear }.to change{ subject.count }.to(0)
+      if ( subject.count > 0 )
+        expect{ subject.clear }.to change{ subject.count }.to(0)
+      else
+        subject.clear
+        expect( subject.count ).to eq(0)
+      end
     end
   end
   #-- -------------------------------------------------------------------------
@@ -137,12 +184,16 @@ describe PersonalBestCollector, type: :strategy do
 
 
   describe "#events_by_pool_type_list" do
+    # Using a given swimmer
+    subject { PersonalBestCollector.new( swimmer ) }
+
     it "returns a non empty collection" do
       expect( subject.events_by_pool_type_list.count ).to be > 0
     end
     it "returns a collection" do
       expect( subject.events_by_pool_type_list ).to be_a_kind_of( ActiveRecord::Relation )
     end
+
     it "returns a collection of EventsByPoolType" do
       subject.events_by_pool_type_list.each do |element|
         expect( element ).to be_an_instance_of( EventsByPoolType )
@@ -154,12 +205,16 @@ describe PersonalBestCollector, type: :strategy do
 
 
   describe "#start_date" do
+    # Using a given swimmer
+    subject { PersonalBestCollector.new( swimmer ) }
+
     it "returns a date or a nil value" do
       expect( subject.start_date ).to be_an_instance_of( Date ).or be_nil
     end
     it "retunrs nil if start date nt set" do
       expect( subject.start_date ).to be_nil
     end
+
     it "returns the start_date internal variable if set" do
       fix_date = Date.today
       fix_pb_collector = PersonalBestCollector.new( swimmer, start_date: fix_date, end_date: fix_date )
@@ -168,6 +223,9 @@ describe PersonalBestCollector, type: :strategy do
   end
 
   describe "#set_start_date" do
+    # Using a given swimmer
+    subject { PersonalBestCollector.new( swimmer ) }
+
     it "assigns a given date to start_date internal variable" do
       fix_date = Date.today
       expect( subject.start_date ).to be_nil
@@ -180,12 +238,16 @@ describe PersonalBestCollector, type: :strategy do
 
 
   describe "#end_date" do
+    # Using a given swimmer
+    subject { PersonalBestCollector.new( swimmer ) }
+
     it "returns a date or a nil value" do
       expect( subject.end_date ).to be_an_instance_of( Date ).or be_nil
     end
     it "retunrs nil if end date nt set" do
       expect( subject.end_date ).to be_nil
     end
+
     it "returns the end_date internal variable if set" do
       fix_date = Date.today
       fix_pb_collector = PersonalBestCollector.new( swimmer, start_date: fix_date, end_date: fix_date )
@@ -194,6 +256,9 @@ describe PersonalBestCollector, type: :strategy do
   end
 
   describe "#set_end_date" do
+    # Using a given swimmer
+    subject { PersonalBestCollector.new( swimmer ) }
+
     it "assigns a given date to end_date internal variable" do
       fix_date = Date.today
       expect( subject.end_date ).to be_nil
@@ -206,6 +271,9 @@ describe PersonalBestCollector, type: :strategy do
 
 
   describe "#full_scan" do
+    # Using a given swimmer
+    subject { PersonalBestCollector.new( swimmer ) }
+
     it "returns an instance of RecordCollection" do
       # Do nothing, just test the result
       expect( subject.full_scan() ).to be_an_instance_of( PersonalBestCollection )

@@ -455,13 +455,14 @@ class RecordCollector
       # [Steve, 20160916] Old implementation:
       # Exclude from the result all other rows that have a greater timing result (keep same ranking results)
 #      first_recs.reject!{ |row| first_timing_value < (row.minutes*6000 + row.seconds*100 + row.hundreds) }
+
       # [Steve, 20160916] New implementation:
       first_recs = first_recs.where(["minutes*6000 + seconds*100 + hundreds <= ?", first_timing_value])
     end
 # DEBUG
-#    first_recs.each do |row|
-#      puts "- ID:#{row.id} => #{row.get_full_name}\r\n"
-#    end
+    first_recs.each do |row|
+      puts "- ID:#{row.id} => #{row.get_timing}\r\n"
+    end
     first_recs.each { |rec| @collection.add( rec, record_type_code ) }    # Add the first records to the collection
     @collection
   end

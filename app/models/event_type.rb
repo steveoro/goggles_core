@@ -100,7 +100,7 @@ class EventType < ApplicationRecord
                                                     # NOTE: assuming type_text has a format like => "mistaffetta NxLLL farf"
     re = Regexp.new( /(\d)x(\d{2,3})\s/ui )
     match = re.match( type_text )
-    raise "EventType.parse_relay_event_type_from_import_text(): unsupported type_text parameter format!" unless match.instance_of?( MatchData )
+    raise "EventType.parse_relay_event_type_from_import_text(): unsupported type_text ('#{ type_text }') parameter format!" unless match.instance_of?( MatchData )
     phases, phase_length_in_meters = match.captures.map{ |e| e.to_i }
 
     relay_type = EventType.where(
@@ -159,7 +159,7 @@ class EventType < ApplicationRecord
     elsif length_in_meters == 1500
       csi_code = '7'
     end
-    csi_code  
+    csi_code
   end
   # ----------------------------------------------------------------------------
 end

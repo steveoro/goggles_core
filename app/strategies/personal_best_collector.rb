@@ -3,7 +3,7 @@
 =begin
 
 = PersonalBestCollector
-  - Goggles framework vers.:  4.00.439
+  - Goggles framework vers.:  6.331
   - author: Leega, Steve A.
 
  Collector strategy class for individual all time personal bests stored into
@@ -124,7 +124,10 @@ class PersonalBestCollector
   # This method works by scanning existing MeetingIndividualResult(s) on DB.
   #
   def collect_from_all_category_results_having( events_by_pool_type, record_type_code )
-    mir = @swimmer.meeting_individual_results.is_valid.has_time.for_event_by_pool_type( events_by_pool_type )
+    mir = @swimmer.meeting_individual_results
+        .is_valid
+        .has_time
+        .for_event_by_pool_type( events_by_pool_type )
     mir = mir.joins( :season ).where( ['seasons.id = ?', @season.id]) if @season
     mir = mir.joins( :season_type ).where( ['season_types.id = ?', @season_type.id]) if @season_type
     mir = mir.joins( :meeting ).where( ['(meetings.header_date >= ?) AND (meetings.header_date <= ?)', @start_date, @end_date]) if @start_date
@@ -138,7 +141,11 @@ class PersonalBestCollector
   # This method works by scanning existing MeetingIndividualResult(s) on DB.
   #
   def collect_last_results_having( events_by_pool_type, record_type_code )
-    mir = @swimmer.meeting_individual_results.is_valid.has_time.for_event_by_pool_type( events_by_pool_type ).sort_by_date('DESC').limit(1)
+    mir = @swimmer.meeting_individual_results
+        .is_valid
+        .has_time
+        .for_event_by_pool_type( events_by_pool_type )
+        .sort_by_date('DESC').limit(1)
     mir = mir.joins( :season ).where( ['seasons.id = ?', @season.id]) if @season
     mir = mir.joins( :season_type ).where( ['season_types.id = ?', @season_type.id]) if @season_type
     update_and_return_collection_with_first_results( mir, record_type_code )
