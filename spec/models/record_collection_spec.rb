@@ -76,27 +76,49 @@ describe RecordCollection, :type => :model do
   end
 
   describe "#initialize" do
+    let(:random_mir)  { MeetingIndividualResult.has_time.last(100).sample }
+    let(:random_mirs) { MeetingIndividualResult.has_time.last(100).sample(5) }
+    let(:rec_type)    { RecordType.find(1) } # SPB
+    let(:random_rec)  { IndividualRecord.last(100).sample }
+    let(:random_recs) { IndividualRecord.last(100).sample(5) }
+
     it "allows an IndividualRecord instance as a parameter" do
-      result = RecordCollection.new( create(:individual_record) )
+      result = RecordCollection.new( random_rec )
       expect( result ).to be_an_instance_of( RecordCollection )
       expect( result.count ).to eq(1)
     end
     it "allows a MeetingIndividualResult instance as a parameter" do
-      result = RecordCollection.new( create(:meeting_individual_result) )
+      result = RecordCollection.new( random_mir )
       expect( result ).to be_an_instance_of( RecordCollection )
       expect( result.count ).to eq(1)
     end
+
     it "allows a list of IndividualRecord rows as a parameter" do
-      record_list = IndividualRecordFactoryTools.create_personal_best_list( create(:swimmer) )
-      result = RecordCollection.new( record_list )
+      result = RecordCollection.new( random_recs )
       expect( result ).to be_an_instance_of( RecordCollection )
-      expect( result.count ).to eq( record_list.size )
+      # [Steve, 20180613] Since adding directly "fresh" IndividualRecords
+      # may assure unique results in categories, we can safely check that the
+      # resulting record list has the same size as the input record list:
+      expect( result.count ).to eq( random_recs.size )
     end
+
     it "allows a list of MeetingIndividualResult rows as a parameter" do
-      mir_list = MeetingIndividualResultFactoryTools.create_unique_result_list( create(:swimmer) )
-      result = RecordCollection.new( mir_list )
+# DEBUG
+#      puts "\r\n MIRs:"
+#      random_mirs.each{ |mir| puts "#{ mir.get_full_name } #{ mir.get_category_type_short_name }" }
+
+      result = RecordCollection.new( random_mirs )
       expect( result ).to be_an_instance_of( RecordCollection )
-      expect( result.count ).to eq( mir_list.size )
+# DEBUG
+#      puts "\r\n Resulting collection:"
+#      result.each{ |key, rec| puts "key: '#{ key}' => #{ rec.meeting_individual_result.get_full_name }" }
+
+      # [Steve, 20180613] Adding MIRs to a RecordCollection will invoke checking
+      # for same-type & category results already stored in.
+      # Thus, picking random MIRs will almost always result in RecordCollections
+      # that are shorter then the input MIR list.
+      expect( result.count ).to be <= random_mirs.size
+      expect( result.count ).to be > 0
     end
   end
   #-- -----------------------------------------------------------------------
