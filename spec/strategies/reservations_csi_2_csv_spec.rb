@@ -20,10 +20,10 @@ describe ReservationsCsi2Csv, type: :strategy do
   end
 
   let(:meeting_csi_w_res) do
-    # [Steve, 20180529] Exclude a single meeting w/ messed-up (duplicated) reservations by team ID 14
+    # [Steve, 20180529] Exclude recent meetings w/ messed-up (duplicated) reservations by team ID 14
     meeting = Meeting.includes(:season_type, :meeting_event_reservations)
       .joins(:season_type, :meeting_event_reservations)
-      .where(['(meetings.id != 17101) AND (season_types.code = ?) AND (meeting_event_reservations.is_doing_this = ?)', 'MASCSI', true])
+      .where(['(meetings.id < 17101) AND (season_types.code = ?) AND (meeting_event_reservations.is_doing_this = ?)', 'MASCSI', true])
       .limit(200)
       .sample
     expect( meeting ).to be_a( Meeting )
@@ -167,9 +167,9 @@ describe ReservationsCsi2Csv, type: :strategy do
           it "is composed of lines having the same number of columns (separated by ';')" do
             lines_array = subject.output_text.split("\r\n").map{ |line| line.split(';') }
 # DEBUG
-            puts "\r\n------8<--------[lines_array]:"
-            lines_array.each{|line_array| puts "Columns: #{ line_array.count } => #{ line_array.inspect }" }
-            puts "------8<--------[lines_array count: #{ lines_array.count }]"
+#            puts "\r\n------8<--------[lines_array]:"
+#            lines_array.each{|line_array| puts "Columns: #{ line_array.count } => #{ line_array.inspect }" }
+#            puts "------8<--------[lines_array count: #{ lines_array.count }]"
             # Each line must have the same count of elements as the first one:
             lines_array.each_with_index do |line, index|
               expect( line.count ).to eq( lines_array.first.count )
