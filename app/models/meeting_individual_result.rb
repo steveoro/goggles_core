@@ -7,7 +7,7 @@ require 'wrappers/timing'
 # Model class
 #
 # @author   Steve A., Leega
-# @version  6.330
+# @version  6.332
 #
 class MeetingIndividualResult < ApplicationRecord
   include SwimmerRelatable
@@ -78,7 +78,9 @@ class MeetingIndividualResult < ApplicationRecord
 
   scope :has_rank,                    ->(rank_filter) { where(rank: rank_filter) }
   scope :has_points,                  ->(score_sym = 'standard_points') { where("#{score_sym.to_s} > 0") }
-  scope :has_time,                    -> { where("(minutes > 0) AND (seconds > 0) AND (hundreds > 0)") }
+
+  # [Steve, 20180613] Do not change the scope below with a composite check on each field joined by 'AND's, because it does not work
+  scope :has_time,                    -> { where("(minutes + seconds + hundreds > 0)") }
 
   scope :sort_by_user,                ->(dir = 'ASC') { order("users.name #{dir.to_s}, meeting_programs.meeting_session_id #{dir.to_s}, swimmers.last_name #{dir.to_s}, swimmers.first_name #{dir.to_s}") }
   scope :sort_by_meeting,             ->(dir)         { order("meeting_programs.meeting_session_id #{dir.to_s}, swimmers.last_name #{dir.to_s}, swimmers.first_name #{dir.to_s}") }

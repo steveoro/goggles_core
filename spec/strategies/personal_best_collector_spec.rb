@@ -99,8 +99,8 @@ describe PersonalBestCollector, type: :strategy do
     # [Steve, 20140717] *** Currently: NOT ***
     it "returns a collection having the same number of elements of the internal collection" do
 # DEBUG
-      puts "\r\n- subject.collection: #{ subject.collection.inspect }"
-      puts "- subject: #{ subject.inspect }"
+#      puts "\r\n- subject.collection: #{ subject.collection.inspect }"
+#      puts "- subject: #{ subject.inspect }"
 
       expect( subject.collection.count ).to eq(subject.count)
     end
@@ -110,23 +110,25 @@ describe PersonalBestCollector, type: :strategy do
 
 
   describe "#collect_from_all_category_results_having" do
-    # Using a given swimmer, MASCSI seasons
-    let(:season)        { swimmer.seasons.where(season_type_id: 2).last(3).sample }
-    let(:season_type)   { season.season_type }
+    # Using a given swimmer:
+    let(:random_mir)    { swimmer.meeting_individual_results.last(50).sample }
+    let(:season)        { random_mir.season }
+    let(:season_type)   { random_mir.season_type }
+    let(:linked_ebpt)   { EventsByPoolType.find_by_pool_and_event_codes( random_mir.pool_type.code, random_mir.event_type.code ) }
     subject { PersonalBestCollector.new( swimmer, season: season, season_type: season_type ) }
 
     it "returns the size of the internal collection" do
 # DEBUG
-      puts "\r\n- events_by_pool_type: #{ events_by_pool_type.inspect }"
-      puts "- record_type_code: #{ record_type_code.inspect }"
-      puts "- subject.season: #{ subject.season.inspect }"
-      puts "- subject.season_type: #{ subject.season_type.inspect }"
-      puts "- subject.start_date: #{ subject.start_date.inspect }"
-      puts "- subject.end_date: #{ subject.end_date.inspect }"
-      puts "\r\n- subject.collection: #{ subject.collection.inspect }"
-      puts "- subject: #{ subject.inspect }"
+#      puts "\r\n- events_by_pool_type: #{ linked_ebpt.inspect }"
+#      puts "- record_type_code: #{ record_type_code.inspect }"
+#      puts "- subject.season: #{ subject.season.inspect }"
+#      puts "- subject.season_type: #{ subject.season_type.inspect }"
+#      puts "- subject.start_date: #{ subject.start_date.inspect }"
+#      puts "- subject.end_date: #{ subject.end_date.inspect }"
+#      puts "\r\n- subject.collection: #{ subject.collection.inspect }"
+#      puts "- subject: #{ subject.inspect }"
 
-      subject.collect_from_all_category_results_having( events_by_pool_type, record_type_code )
+      subject.collect_from_all_category_results_having( linked_ebpt, record_type_code )
       expect( subject.count ).to be > 0
     end
   end
@@ -135,23 +137,25 @@ describe PersonalBestCollector, type: :strategy do
 
 
   describe "#collect_last_results_having" do
-    # Using a given swimmer, MASCSI seasons
-    let(:season)        { swimmer.seasons.where(season_type_id: 2).last(3).sample }
-    let(:season_type)   { season.season_type }
+    # Using a given swimmer:
+    let(:random_mir)    { swimmer.meeting_individual_results.last(50).sample }
+    let(:season)        { random_mir.season }
+    let(:season_type)   { random_mir.season_type }
+    let(:linked_ebpt)   { EventsByPoolType.find_by_pool_and_event_codes( random_mir.pool_type.code, random_mir.event_type.code ) }
     subject { PersonalBestCollector.new( swimmer, season: season, season_type: season_type ) }
 
     it "returns the size of the internal collection" do
 # DEBUG
-      puts "\r\n- events_by_pool_type: #{ events_by_pool_type.inspect }"
-      puts "- record_type_code: #{ record_type_code.inspect }"
-      puts "- subject.season: #{ subject.season.inspect }"
-      puts "- subject.season_type: #{ subject.season_type.inspect }"
-      puts "- subject.start_date: #{ subject.start_date.inspect }"
-      puts "- subject.end_date: #{ subject.end_date.inspect }"
-      puts "\r\n- subject.collection: #{ subject.collection.inspect }"
-      puts "- subject: #{ subject.inspect }"
+#      puts "\r\n- events_by_pool_type: #{ linked_ebpt.inspect }"
+#      puts "- record_type_code: #{ record_type_code.inspect }"
+#      puts "- subject.season: #{ subject.season.inspect }"
+#      puts "- subject.season_type: #{ subject.season_type.inspect }"
+#      puts "- subject.start_date: #{ subject.start_date.inspect }"
+#      puts "- subject.end_date: #{ subject.end_date.inspect }"
+#      puts "\r\n- subject.collection: #{ subject.collection.inspect }"
+#      puts "- subject: #{ subject.inspect }"
 
-      subject.collect_last_results_having( events_by_pool_type, record_type_code )
+      subject.collect_last_results_having( linked_ebpt, record_type_code )
       expect( subject.count ).to be == 1
     end
   end
@@ -160,9 +164,11 @@ describe PersonalBestCollector, type: :strategy do
 
 
   describe "#clear" do
-    # Using a given swimmer, MASCSI seasons
-    let(:season)        { swimmer.seasons.where(season_type_id: 2).last(3).sample }
-    let(:season_type)   { season.season_type }
+    # Using a given swimmer:
+    let(:random_mir)    { swimmer.meeting_individual_results.last(50).sample }
+    let(:season)        { random_mir.season }
+    let(:season_type)   { random_mir.season_type }
+    let(:linked_ebpt)   { EventsByPoolType.find_by_pool_and_event_codes( random_mir.pool_type.code, random_mir.event_type.code ) }
     subject { PersonalBestCollector.new( swimmer, season: season, season_type: season_type ) }
 
     it "returns the cleared collection instance" do
@@ -170,7 +176,7 @@ describe PersonalBestCollector, type: :strategy do
     end
 
     it "clears the internal list" do
-      subject.collect_from_all_category_results_having( events_by_pool_type, record_type_code )
+      subject.collect_from_all_category_results_having( linked_ebpt, record_type_code )
       if ( subject.count > 0 )
         expect{ subject.clear }.to change{ subject.count }.to(0)
       else

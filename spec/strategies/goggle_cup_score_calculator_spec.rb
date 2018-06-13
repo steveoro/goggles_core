@@ -154,7 +154,7 @@ describe GoggleCupScoreCalculator, type: :strategy do
             expect( fix_gc.get_goggle_cup_score(worst_time_swam) ).to be < young_aged_max
           end
 #FIXME random failure at season start
-          xit "checks for correct calculation for goggle cup standard present worst than time swam" do
+          it "checks for correct calculation for goggle cup standard present worst than time swam" do
             better_time_swam = Timing.new( fix_gc.get_goggle_cup_standard.get_timing_instance.to_hundreds - 150 )
             expect( fix_gc.get_goggle_cup_score(better_time_swam) ).to be > young_aged_max
           end

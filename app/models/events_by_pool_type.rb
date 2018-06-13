@@ -1,3 +1,11 @@
+#
+# == EventsByPoolType
+#
+# Model class
+#
+# @author   Steve A., Leega
+# @version  6.332
+#
 class EventsByPoolType < ApplicationRecord
 
   belongs_to :pool_type
@@ -38,7 +46,7 @@ class EventsByPoolType < ApplicationRecord
   end
   # ----------------------------------------------------------------------------
 
-  # Find a sopecific event for a pool type using codes
+  # Find a specific event for a pool type using codes
   #
   def self.find_by_pool_and_event_codes( pool_type_code, event_type_code )
     result = EventsByPoolType.joins(:event_type, :pool_type).where( ['(pool_types.code = ?) AND (event_types.code = ?)', pool_type_code, event_type_code] )
