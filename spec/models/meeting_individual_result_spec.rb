@@ -7,10 +7,46 @@ describe MeetingIndividualResult, :type => :model do
   #-- -------------------------------------------------------------------------
   #++
 
+
+  context "[scope]" do
+    describe "self.sort_by_event_order" do
+      it "does not raise any errors (for ASC sorting)" do
+        expect{
+          # [Steve, 20180614] Let's choose a meeting w/o too many MIRs and test this scope:
+          Meeting.find(17105).meeting_individual_results.sort_by_event_order.count
+        }.not_to raise_error
+      end
+      it "does not raise any errors (for DESC sorting)" do
+        expect{
+          # [Steve, 20180614] Let's choose a meeting w/o too many MIRs and test this scope:
+          Meeting.find(17105).meeting_individual_results.sort_by_event_order('DESC').count
+        }.not_to raise_error
+      end
+    end
+
+    describe "self.sort_by_event_and_timing" do
+      it "does not raise any errors (for ASC sorting)" do
+        expect{
+          # [Steve, 20180614] Let's choose a meeting w/o too many MIRs and test this scope:
+          Meeting.find(17105).meeting_individual_results.sort_by_event_and_timing.count
+        }.not_to raise_error
+      end
+      it "does not raise any errors (for DESC sorting)" do
+        expect{
+          # [Steve, 20180614] Let's choose a meeting w/o too many MIRs and test this scope:
+          Meeting.find(17105).meeting_individual_results.sort_by_event_and_timing('DESC').count
+        }.not_to raise_error
+      end
+    end
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
+
   context "[a well formed instance]" do
 
     # XXX Using pre-existing values to speed-up tests:
-    subject { MeetingIndividualResult.limit(1000).sort{0.5 - rand}.first }
+    subject { MeetingIndividualResult.limit(100).sample }
 
     it "is a valid istance" do
       expect( subject ).to be_valid

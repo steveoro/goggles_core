@@ -7,7 +7,7 @@ require 'wrappers/timing'
 # Model class
 #
 # @author   Steve A., Leega
-# @version  6.332
+# @version  6.334
 #
 class MeetingIndividualResult < ApplicationRecord
   include SwimmerRelatable
@@ -95,11 +95,17 @@ class MeetingIndividualResult < ApplicationRecord
   scope :sort_by_pool_and_event,      ->(dir = 'ASC') { joins(:event_type, :pool_type).order("pool_types.length_in_meters #{dir.to_s}, event_types.style_order #{dir.to_s}") }
   scope :sort_by_gender_and_category, ->(dir = 'ASC') { joins(:gender_type, :category_type).order("gender_types.code #{dir.to_s}, category_types.code #{dir.to_s}") }
   scope :sort_by_updated_at,          ->(dir = 'ASC') { order("updated_at #{dir.to_s}") }
-  scope :sort_by_event_order,         ->(dir = 'ASC') { joins(meeting_event: [:meeting_session]).order("(meeting_sessions.session_order*100)+meeting_events.event_order #{dir.to_s}") }
+
+  scope :sort_by_event_order,         ->(dir = 'ASC') do
+    joins( :meeting_program, :meeting_event, :meeting_session )
+    .includes( :meeting_event, :meeting_session )
+    .order('meeting_sessions.session_order #{dir.to_s}', 'meeting_events.event_order #{dir.to_s}')
+  end
+
   scope :sort_by_event_and_timing,    ->(dir = 'ASC') do
-    joins( meeting_event: [:meeting_session] )
-    .order("(meeting_sessions.session_order*100)+meeting_events.event_order #{dir.to_s})")
-    .order(is_disqualified: :asc, minutes: :desc, seconds: :desc, hundreds: :desc)
+    joins( :meeting_program, :meeting_event, :meeting_session )
+    .includes( :meeting_event, :meeting_session )
+    .order('meeting_sessions.session_order #{dir.to_s}', 'meeting_events.event_order #{dir.to_s}', :is_disqualified, :minutes, :seconds, :hundreds)
   end
 
   scope :for_event_by_pool_type,      ->(event_by_pool_type)   { joins(:event_type, :pool_type).where(["event_types.id = ? AND pool_types.id = ?", event_by_pool_type.event_type_id, event_by_pool_type.pool_type_id]) }
