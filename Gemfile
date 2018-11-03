@@ -18,6 +18,7 @@ gem "amistad", git: "https://github.com/fasar-sw/amistad.git", branch: 'rails5' 
 # To use debugger
 # gem 'debugger'
 
+
 group :development, :test do
   # Spring speeds up development by keeping your application running in the background.
   # Read more: https://github.com/rails/spring
@@ -25,10 +26,14 @@ group :development, :test do
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'spring-commands-rspec'
   gem 'guard-spring'
+  gem 'bullet'
 end
 
 
 group :test do
   gem 'simplecov'
   gem "codeclimate-test-reporter", require: nil   # [Steve, 20140321] CI/Test coverage via local test run
+  gem "better_errors" #, '~> 1.1.0'
+  gem "binding_of_caller"
+  gem 'rails_best_practices'
 end

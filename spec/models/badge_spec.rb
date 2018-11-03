@@ -24,6 +24,21 @@ describe Badge, :type => :model do
       :entry_time_type
     ])
 
+    # Additional instance helpers:
+    [
+      :season_type,
+      :gender_type,
+      :team_managers,
+      :meeting_individual_results,
+      :passages,
+      :meetings,
+
+    ].each do |method|
+      it "responds to #{ method }" do
+        expect( subject ).to respond_to( method )
+      end
+    end
+
     # Filtering scopes:
     it_behaves_like( "(the existance of a class method)", [
       :sort_by_user,
@@ -119,7 +134,7 @@ describe Badge, :type => :model do
   end
   # ---------------------------------------------------------------------------
   #++
-  
+
   describe "#has_ironmaster?" do
     it "returns a boolean" do
       expect( subject.has_ironmaster? ).to be( true ).or( be( false ))

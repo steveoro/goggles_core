@@ -2,7 +2,7 @@
 
 = Badge model
 
-  - version:  4.00.409
+  - version:  6.371
   - author:   Steve A.
 
 =end
@@ -30,7 +30,8 @@ class Badge < ApplicationRecord
 
   has_many :meeting_individual_results
   has_many :passages
-  has_many :meetings,    through: :meeting_individual_results
+  has_many :meetings,      through: :meeting_individual_results
+  has_many :team_managers, through: :team_affiliation
 
   validates_presence_of   :number, length: { within: 1..40 }, allow_nil: false
 
