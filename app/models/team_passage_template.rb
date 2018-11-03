@@ -25,7 +25,7 @@ class TeamPassageTemplate < ApplicationRecord
   # passage types for the specified length_in_meters.
   #
   def self.get_default_passage_types_for( total_length_in_meters, pool_length = 50 )
-    PassageType.where( ["length_in_meters <= ?", total_length_in_meters] )
+    PassageType.where( ["length_in_meters <= ? and length_in_meters >= ?", total_length_in_meters, pool_length] )
       .order( :length_in_meters )
       .to_a
       .delete_if do |row|
