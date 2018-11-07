@@ -11,6 +11,9 @@
   Container module for methods or strategies to obtain complete SQL statements from
   ActiveRecord object instances.
 
+  Leega: We have to ignore figurates only attributes, such `tags_by_user_list` and `tags_by_team_list`
+  because they aren't stored in DB
+
 =end
 module SqlConverter
 
@@ -24,8 +27,9 @@ module SqlConverter
     sql_text << "INSERT INTO #{ con.quote_column_name( record.class.table_name ) } "
     columns = []
     values  = []
+      #.reject{ |key| key == 'lock_version' }
     record.attributes
-      .reject{ |key| key == 'lock_version' }
+      .reject{ |key| to_ignore.include?(key) }
       .each do |key, value|
       columns << con.quote_column_name( key )
       values  << con.quote( value )
@@ -48,8 +52,9 @@ module SqlConverter
     sql_text << "-- #{explanation}\r\n" if explanation
     sql_text << "UPDATE #{ con.quote_column_name( record.class.table_name ) }\r\n"
     sets = []
+      #.reject{ |key| key == 'id' || key == 'lock_version' }
     attribute_hash
-      .reject{ |key| key == 'id' || key == 'lock_version' }
+      .reject{ |key| key == 'id' || to_ignore.include?(key) }
       .each do |key, value|
       sets << "#{ con.quote_column_name(key) }=#{ con.quote(value) }"
     end
@@ -137,5 +142,12 @@ module SqlConverter
     user ||= record.confirmator if record.respond_to?( :confirmator )
     user ||= record.user if record.respond_to?( :user )
     "-- #{user}\r\n"
+  end
+  
+  # Attributes forced to be ignored
+  # 'lock_version' because should use default
+  # 'tags_by_user_list' and 'tags_by_team_list' because not on DB
+  def to_ignore
+    ['lock_version', 'tags_by_user_list', 'tags_by_team_list']
   end
 end
