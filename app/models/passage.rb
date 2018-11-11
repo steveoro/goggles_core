@@ -7,7 +7,7 @@ require 'wrappers/timing'
 # Model class
 #
 # @author   Leega, Steve A.
-# @version  4.00.811
+# @version  6.373
 #
 class Passage < ApplicationRecord
   include SwimmerRelatable
@@ -139,24 +139,28 @@ class Passage < ApplicationRecord
     meeting_individual_result ? meeting_individual_result.get_passages : []
   end
 
-  # Memoized getter for the complete list of previous passages
+  # Getter for the complete list of previous passages
   #
   def get_all_previous_passages
     if get_total_distance > 400
-      @all_previous_passages ||= get_passages.count > 0 ?
-        get_passages.where( 'length_in_meters < ? and length_in_meters > 50', get_passage_distance ) :
+      if get_passages.count > 0
+        get_passages.where( 'length_in_meters < ? and length_in_meters > 50', get_passage_distance )
+      else
         get_passages
+      end
     else
-      @all_previous_passages ||=  get_passages.count > 0 ?
-        get_passages.where( 'length_in_meters < ?', get_passage_distance ) :
+      if get_passages.count > 0
+        get_passages.where( 'length_in_meters < ?', get_passage_distance )
+      else
         get_passages
+      end
     end
   end
 
-  # Memoized getter for the previous passage instance
+  # Getter for the previous passage instance
   #
   def get_previous_passage
-    @previous_passage ||= get_all_previous_passages.last
+    get_all_previous_passages.last
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -193,7 +197,7 @@ class Passage < ApplicationRecord
   end
 
   # Computes the total time for this passage, starting from the beginning of a given result (event).
-  # If set the "time from start" it will be used 
+  # If set the "time from start" it will be used
   # If not set it returns the incremental time by summing all associated passages preceeding this one.
   # Assumes passage times are correctly set.
   # Returns a Timing instance.
