@@ -288,6 +288,71 @@ DESC
   end
   #-- -------------------------------------------------------------------------
   #++
+
+
+  desc <<-DESC
+Show meeting schedule
+Resulting log files are stored into '#{LOG_DIR}'.
+
+Presents an event_order ordered list
+of events scheduled for the meeting matching to search criteria
+
+Options: meeting=<meeting_id> log_dir=#{LOG_DIR}]
+
+- 'meeting'  meeting id of meeting to search for.
+- 'log_dir'  allows to override the default log dir destination.
+
+DESC
+  task :meeting_schedule do |t|
+    puts "*** ut:meeting_schedule ***"
+    meeting_id      = ENV.include?("meeting") ? ENV["meeting"] : nil
+    rails_config    = Rails.configuration             # Prepare & check configuration:
+    db_name         = rails_config.database_configuration[Rails.env]['database']
+    db_user         = rails_config.database_configuration[Rails.env]['username']
+    db_pwd          = rails_config.database_configuration[Rails.env]['password']
+    log_dir         = ENV.include?("log_dir") ? ENV["log_dir"] : LOG_DIR
+
+    # Verify parameters
+    unless meeting_id
+      puts("This needs a meeting id to search for.")
+      exit
+    end
+
+    # Display some info:
+    puts "DB name:          #{db_name}"
+    puts "DB user:          #{db_user}"
+    puts "log_dir:          #{log_dir}"
+    puts "\r\n"
+    logger = ConsoleLogger.new
+
+    puts "Requiring Rails environment to allow usage of any Model..."
+    require 'rails/all'
+    require File.join( Rails.root.to_s, 'config/environment' )
+
+    # Search meetings
+    logger.info( "\r\nSearch meeting schedule for '%#{meeting_id}%'" )
+    logger.info( "\r\n<------------------------------------------------------------>\r\n" )
+    meeting = Meeting.find(meeting_id)
+    unless meeting
+      puts("This needs a valid meeting id to search for.")
+      exit
+    end
+    
+    pool_type = meeting.get_pool_type
+    logger.info( "\r\n#{meeting.id} - #{meeting.get_meeting_date} #{meeting.get_full_name} (#{meeting.code})" )
+    
+    meeting.meeting_sessions.each do |meeting_session|
+      logger.info( "- #{meeting_session.session_order}. #{meeting_session.get_scheduled_date} (#{meeting_session.pool_type.code}): #{meeting_session.get_warm_up_time}/#{meeting_session.get_begin_time} -> #{meeting_session.id}\r\n" )
+      meeting_session.meeting_events.each do |meeting_event|
+        logger.info( "  - #{meeting_event.event_order}. #{meeting_event.event_type.code} -> #{meeting_event.id}\r\n" )        
+      end
+    end
+
+    logger.info( "\r\n\r\n" )
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
 end
 # =============================================================================
 
