@@ -23,8 +23,8 @@ class GoggleCup < ApplicationRecord
   has_many :seasons,                    through: :goggle_cup_definitions
   has_many :meetings,                   through: :seasons
   has_many :season_types,               through: :seasons
-  has_many :badges,                     through: :seasons
-  has_many :swimmers,                   through: :badges # Should used with uniq
+  has_many :badges,                     through: :seasons # Do not use this!!!
+  has_many :swimmers,                   through: :badges # Should used with uniq -> # Do not use this!!!
   has_many :meeting_individual_results, through: :badges
 
   validates_presence_of     :description
