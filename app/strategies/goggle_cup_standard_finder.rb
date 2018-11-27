@@ -199,7 +199,7 @@ class GoggleCupStandardFinder
   def scan_and_search_for_involved_swimmers
     involved_swimmers = []
     #swimmer_candidates = @goggle_cup.swimmers.has_results.distinct  # The has_many goggle_cup->badges dowsn't work well!
-    swimmer_candidates = team.badges.where(['season_id in (select season_id from goggle_cup_definitions where goggle_cup_id = ?)', g.id]).where( 'not is_out_of_goggle_cup').map{ |b| b.swimmer }.uniq
+    swimmer_candidates = @goggle_cup.team.badges.where(['season_id in (select season_id from goggle_cup_definitions where goggle_cup_id = ?)', g.id]).where( 'not is_out_of_goggle_cup').map{ |b| b.swimmer }.uniq
 # DEBUG
     puts "\r\n- GoggleCupStandardFinder#scan_and_search_for_involved_swimmers: swimmer candidates = #{ swimmer_candidates.count }"
 #    puts "Callers [0..7]:"
