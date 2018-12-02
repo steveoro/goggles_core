@@ -46,6 +46,7 @@ class Meeting < ApplicationRecord
   )
 
   has_one  :season_type, through: :season
+  has_one  :federation_type, through: :season
 
   # First-level children: (they "belongs_to" meeting)
   has_many :meeting_sessions,           -> { order(:session_order) },       dependent: :delete_all
