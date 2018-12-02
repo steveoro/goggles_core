@@ -41,25 +41,25 @@ describe ReservationsFin2CsvMatrix, type: :strategy do
   #++
 
 
-  describe "self.is_a_fin_meeting," do
-    it "responds to self.is_a_fin_meeting" do
-      expect( ReservationsFin2CsvMatrix ).to respond_to( :is_a_fin_meeting )
+  describe "self.is_a_valid_meeting," do
+    it "responds to self.is_a_valid_meeting" do
+      expect( ReservationsFin2CsvMatrix ).to respond_to( :is_a_valid_meeting )
     end
 
     it "returns false for a nil instance" do
-      expect( ReservationsFin2CsvMatrix.is_a_fin_meeting(nil) ).to be false
+      expect( ReservationsFin2CsvMatrix.is_a_valid_meeting(nil) ).to be false
     end
     it "returns false for a non-Meeting instance" do
-      expect( ReservationsFin2CsvMatrix.is_a_fin_meeting("not a meeting!") ).to be false
+      expect( ReservationsFin2CsvMatrix.is_a_valid_meeting("not a meeting!") ).to be false
     end
     it "returns false for a non-FIN Meeting instance" do
-      expect( ReservationsFin2CsvMatrix.is_a_fin_meeting(meeting_not_fin) ).to be false
+      expect( ReservationsFin2CsvMatrix.is_a_valid_meeting(meeting_not_fin) ).to be false
     end
     it "returns true for a FIN Meeting instance w/o reservations" do
-      expect( ReservationsFin2CsvMatrix.is_a_fin_meeting(meeting_fin_w_o_res) ).to be true
+      expect( ReservationsFin2CsvMatrix.is_a_valid_meeting(meeting_fin_w_o_res) ).to be true
     end
     it "returns true for a FIN Meeting instance w/ reservations" do
-      expect( ReservationsFin2CsvMatrix.is_a_fin_meeting(meeting_fin_w_res) ).to be true
+      expect( ReservationsFin2CsvMatrix.is_a_valid_meeting(meeting_fin_w_res) ).to be true
     end
   end
   #-- -------------------------------------------------------------------------

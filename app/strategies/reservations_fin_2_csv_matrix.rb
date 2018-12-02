@@ -64,7 +64,7 @@ class ReservationsFin2CsvMatrix
   #
   def self.is_a_valid_meeting( meeting )
     return false if meeting.nil?
-    meeting && meeting.instance_of?( Meeting ) && meeting.season_type.federation_type.code = 'FIN'
+    meeting && meeting.instance_of?( Meeting ) && meeting.federation_type.code == 'FIN'
   end
   #-- -------------------------------------------------------------------------
   #++
