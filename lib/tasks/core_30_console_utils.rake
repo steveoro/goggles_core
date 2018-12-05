@@ -134,7 +134,7 @@ DESC
       logger.info( "\r\n#{team.id} - #{team.get_verbose_name} (#{team.name} / #{team.editable_name})" )
       logger.info( "<------------------------------------------------------------>" )
       team.team_affiliations.sort_team_affiliation_by_season('ASC').each do |team_affiliation|
-        logger.info( " - #{team_affiliation.season_id}: #{team_affiliation.name}" )
+        logger.info( " - #{team_affiliation.season_id}: #{team_affiliation.name} (#{team_affiliation.id})" )
       end
       logger.info( "\r\n\r\n" )
     end
@@ -342,7 +342,7 @@ DESC
     logger.info( "\r\n#{meeting.id} - #{meeting.get_meeting_date} #{meeting.get_full_name} (#{meeting.code})" )
     
     meeting.meeting_sessions.each do |meeting_session|
-      logger.info( "- #{meeting_session.session_order}. #{meeting_session.get_scheduled_date} (#{meeting_session.pool_type.code}): #{meeting_session.get_warm_up_time}/#{meeting_session.get_begin_time} -> #{meeting_session.id}\r\n" )
+      logger.info( "- #{meeting_session.session_order}. #{meeting_session.get_scheduled_date} (#{meeting_session.swimming_pool.get_verbose_name}): #{meeting_session.get_warm_up_time}/#{meeting_session.get_begin_time} -> #{meeting_session.id}\r\n" )
       meeting_session.meeting_events.each do |meeting_event|
         logger.info( "  - #{meeting_event.event_order}. #{meeting_event.event_type.code} -> #{meeting_event.id}\r\n" )        
       end
