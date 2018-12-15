@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180606133037) do
+ActiveRecord::Schema.define(version: 20181215104937) do
 
   create_table "achievement_rows", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "lock_version", default: 0
@@ -137,6 +137,20 @@ ActiveRecord::Schema.define(version: 20180606133037) do
     t.index ["user_id"], name: "idx_articles_user"
   end
 
+  create_table "badge_payments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "lock_version", default: 0
+    t.decimal "amount", precision: 10, scale: 2
+    t.date "payment_date"
+    t.text "notes"
+    t.boolean "is_manual"
+    t.bigint "badge_id"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["badge_id"], name: "index_badge_payments_on_badge_id"
+    t.index ["user_id"], name: "index_badge_payments_on_user_id"
+  end
+
   create_table "badges", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "lock_version", default: 0
     t.string "number", limit: 40
@@ -151,6 +165,8 @@ ActiveRecord::Schema.define(version: 20180606133037) do
     t.integer "team_affiliation_id"
     t.integer "final_rank"
     t.boolean "is_out_of_goggle_cup", default: false
+    t.boolean "has_to_pay_fees", default: false, null: false
+    t.boolean "has_to_pay_badge", default: false, null: false
     t.index ["category_type_id"], name: "fk_badges_category_types"
     t.index ["entry_time_type_id"], name: "fk_badges_entry_time_types"
     t.index ["number"], name: "index_badges_on_number"
@@ -1044,6 +1060,14 @@ ActiveRecord::Schema.define(version: 20180606133037) do
     t.integer "max_performance", limit: 2, default: 5
     t.boolean "is_limited_to_season_types_defined", default: false, null: false
     t.date "end_date"
+    t.integer "age_for_negative_modifier", default: 20
+    t.decimal "negative_modifier", precision: 10, scale: 2, default: "-10.0"
+    t.integer "age_for_positive_modifier", default: 60
+    t.decimal "positive_modifier", precision: 10, scale: 2, default: "5.0"
+    t.boolean "has_to_create_standards", default: true
+    t.boolean "has_to_update_standards", default: false
+    t.text "pre_calculation_sql"
+    t.text "post_calculation_sql"
     t.index ["season_year"], name: "idx_season_year"
     t.index ["team_id"], name: "fk_goggle_cups_teams"
     t.index ["user_id"], name: "idx_goggle_cups_user"
@@ -1430,6 +1454,9 @@ ActiveRecord::Schema.define(version: 20180606133037) do
     t.boolean "is_pb_scanned", default: false
     t.bigint "organization_team_id"
     t.boolean "do_not_update", default: false, null: false
+    t.decimal "meeting_fee", precision: 10, scale: 2
+    t.decimal "event_fee", precision: 10, scale: 2
+    t.decimal "relay_fee", precision: 10, scale: 2
     t.index ["code", "edition"], name: "idx_meetings_code"
     t.index ["edition_type_id"], name: "fk_meetings_edition_types"
     t.index ["entry_deadline"], name: "index_meetings_on_entry_deadline"
@@ -1664,6 +1691,7 @@ ActiveRecord::Schema.define(version: 20180606133037) do
     t.integer "timing_type_id"
     t.text "rules", limit: 16777215
     t.boolean "has_individual_rank", default: true
+    t.decimal "badge_fee", precision: 10, scale: 2
     t.index ["begin_date"], name: "index_seasons_on_begin_date"
     t.index ["edition_type_id"], name: "fk_seasons_edition_types"
     t.index ["season_type_id"], name: "fk_seasons_season_types"
