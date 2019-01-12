@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181215104937) do
+ActiveRecord::Schema.define(version: 20190112092856) do
 
   create_table "achievement_rows", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "lock_version", default: 0
@@ -1068,6 +1068,9 @@ ActiveRecord::Schema.define(version: 20181215104937) do
     t.boolean "has_to_update_standards", default: false
     t.text "pre_calculation_sql"
     t.text "post_calculation_sql"
+    t.boolean "is_team_limited", default: true
+    t.integer "career_step", default: 100
+    t.decimal "career_bonus", precision: 10, scale: 2, default: "0.0"
     t.index ["season_year"], name: "idx_season_year"
     t.index ["team_id"], name: "fk_goggle_cups_teams"
     t.index ["user_id"], name: "idx_goggle_cups_user"

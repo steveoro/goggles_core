@@ -1,7 +1,7 @@
 require 'wrappers/timing'
 
 #
-# == GoggleCupSstandardFinder
+# == GoggleCupStandardFinder
 #
 # Strategy Pattern implementation for Goggle Cup standard times retreiving
 #
@@ -31,12 +31,18 @@ class GoggleCupStandardFinder
 
   # Get the oldest swimmer result date considering
   # only meetings where the swimmer parteciapted
-  # for the goggle cup team
+  # for the given team if goggle cup is team_limited
   # Assumes that swimmer has at least one result
   def oldest_swimmer_result( swimmer )
-    swimmer.meeting_individual_results.for_team( @goggle_cup.team ).has_time.is_not_disqualified.exists? ?
-     swimmer.meeting_individual_results.for_team( @goggle_cup.team ).has_time.is_not_disqualified.sort_by_date('ASC').first.get_scheduled_date :
-     Date.today.next_day
+    if @goggle_cup.is_team_limited
+      swimmer.meeting_individual_results.for_team( @goggle_cup.team ).has_time.is_not_disqualified.exists? ?
+       swimmer.meeting_individual_results.for_team( @goggle_cup.team ).has_time.is_not_disqualified.sort_by_date('ASC').first.get_scheduled_date :
+       Date.today.next_day
+    else
+      swimmer.meeting_individual_results.has_time.is_not_disqualified.exists? ?
+       swimmer.meeting_individual_results.has_time.is_not_disqualified.sort_by_date('ASC').first.get_scheduled_date :
+       Date.today.next_day
+    end
   end
 
   # Determinates the year_by_year periods to scan for
@@ -75,22 +81,43 @@ class GoggleCupStandardFinder
   def find_swimmer_goggle_cup_standard( swimmer )
     swimmer_goggle_cup_standards = Hash.new
 
-    # Check in the period and exit if result found
-    EventsByPoolType.not_relays.only_for_meetings.each do |event_by_pool_type|
-      get_periods_to_scan( swimmer ).each do |date|
-        mir = swimmer.
-         meeting_individual_results.
-         for_team( @goggle_cup.team ).
-         for_date_range( date.prev_year, date ).
-         for_event_by_pool_type( event_by_pool_type ).
-         sort_by_timing.
-         first
-        if mir
-          swimmer_goggle_cup_standards["#{event_by_pool_type.get_key}"] = mir.get_timing_instance
-          break
+    if @goggle_cup.is_team_limited
+      # Check in the period for the specific team and exit if result found
+      EventsByPoolType.not_relays.only_for_meetings.each do |event_by_pool_type|
+        get_periods_to_scan( swimmer ).each do |date|
+          mir = swimmer.
+           meeting_individual_results.
+           for_team( @goggle_cup.team ).
+           for_date_range( date.prev_year, date ).
+           for_event_by_pool_type( event_by_pool_type ).
+           has_time.is_not_disqualified.
+           sort_by_timing.
+           first
+          if mir
+            swimmer_goggle_cup_standards["#{event_by_pool_type.get_key}"] = mir.get_timing_instance
+            break
+          end
         end
       end
-    end
+    else
+      # Check in the period for all teams and exit if result found
+      EventsByPoolType.not_relays.only_for_meetings.each do |event_by_pool_type|
+        get_periods_to_scan( swimmer ).each do |date|
+          mir = swimmer.
+           meeting_individual_results.
+           for_date_range( date.prev_year, date ).
+           for_event_by_pool_type( event_by_pool_type ).
+           has_time.is_not_disqualified.
+           sort_by_timing.
+           first
+          if mir
+            swimmer_goggle_cup_standards["#{event_by_pool_type.get_key}"] = mir.get_timing_instance
+            break
+          end
+        end
+      end
+    end    
+    
     swimmer_goggle_cup_standards
   end
   #-- --------------------------------------------------------------------------
@@ -208,8 +235,16 @@ class GoggleCupStandardFinder
     swimmer_candidates.each_with_index do |swimmer, index|
 # DEBUG
       putc "+" if (index % 100 == 0)
-      involved_swimmers << swimmer if swimmer.meeting_individual_results.for_team( @goggle_cup.team ).has_time.is_not_disqualified.exists? &&
-       oldest_swimmer_result( swimmer ) <= @goggle_cup.end_date.prev_year
+
+      if @goggle_cup.is_team_limited
+        # Consider only team results
+        involved_swimmers << swimmer if swimmer.meeting_individual_results.for_team( @goggle_cup.team ).has_time.is_not_disqualified.exists? &&
+         oldest_swimmer_result( swimmer ) <= @goggle_cup.end_date.prev_year
+      else
+        # Consider all results
+        involved_swimmers << swimmer if swimmer.meeting_individual_results.has_time.is_not_disqualified.exists? &&
+         oldest_swimmer_result( swimmer ) <= @goggle_cup.end_date.prev_year
+      end
     end
 # DEBUG
     puts "\r\n--- END LOOP"
