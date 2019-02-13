@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190112092856) do
+ActiveRecord::Schema.define(version: 20190213194658) do
 
   create_table "achievement_rows", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "lock_version", default: 0
@@ -167,6 +167,7 @@ ActiveRecord::Schema.define(version: 20190112092856) do
     t.boolean "is_out_of_goggle_cup", default: false
     t.boolean "has_to_pay_fees", default: false, null: false
     t.boolean "has_to_pay_badge", default: false, null: false
+    t.boolean "has_to_pay_relays", default: false, null: false
     t.index ["category_type_id"], name: "fk_badges_category_types"
     t.index ["entry_time_type_id"], name: "fk_badges_entry_time_types"
     t.index ["number"], name: "index_badges_on_number"

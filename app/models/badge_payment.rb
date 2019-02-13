@@ -23,6 +23,7 @@ class BadgePayment < ApplicationRecord
   scope :sort_by_date,  ->(dir)      { order("badge_payments.payment_date #{dir.to_s}") }
 
   scope :for_badge,     ->(badge)    { where( badge_id: badge.id ) }
+  scope :for_badges,    ->(badges)   { where( badge_id: badges.ids ) }
   scope :for_swimmer,   ->(swimmer)  { joins(:swimmer).where( "swimmers.id = #{swimmer.id}" ) }
   scope :for_team,      ->(team)     { joins(:team).where( "team.id = #{team.id}" ) }
 
