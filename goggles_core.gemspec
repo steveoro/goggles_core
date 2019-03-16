@@ -21,7 +21,8 @@ Gem::Specification.new do |s|
   ]
   s.test_files = Dir["spec/**/*"]
 
-  s.add_dependency "rails", "~> 5.1"
+  s.add_dependency "rails", "~> 5.1.6"
+  s.add_dependency "actionview", "~> 5.1.6.2"
   s.add_dependency "mysql2", "~> 0.4.10"
   s.add_dependency "activerecord-session_store" # Needed to include a DB-based session store in Rails 4+
 
