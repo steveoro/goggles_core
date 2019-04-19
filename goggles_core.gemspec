@@ -35,7 +35,7 @@ Gem::Specification.new do |s|
   # - devise_token_auth, https://github.com/lynndylanhurley/devise_token_auth
 
   s.add_dependency "jquery-rails"
-  s.add_dependency "haml-rails"
+  s.add_dependency 'haml-rails', '~> 2'
   s.add_dependency "execjs"
   s.add_dependency "therubyracer"
 

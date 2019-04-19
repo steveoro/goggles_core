@@ -5,6 +5,9 @@ source "https://rubygems.org"
 # development dependencies will be added by default to the :development group.
 gemspec
 
+gem "actionview", "~> 5.1.6.2"
+gem 'haml-rails', '~> 2'
+
 # jquery-rails is used by the dummy application
 gem "jquery-rails"
 
