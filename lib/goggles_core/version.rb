@@ -14,7 +14,7 @@ module GogglesCore
   #++
 
   # Actual Core versioning, used for Gem differentiation.
-  VERSION = "1.3.95"
+  VERSION = "1.3.96"
 
   module Version
     # Framework Core internal name.
