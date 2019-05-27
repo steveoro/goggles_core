@@ -81,7 +81,7 @@ class EnhanceIndividualRankingDAO
   # Set the ranking for given gender and category
   # TODO Localize and store on DB
   def get_html_ranking_description( tot_meetings = @total_meetings )
-    best_meetings = tot_meetings > 4 ? tot_meetings - 1 : tot_meetings
+    best_meetings = tot_meetings > 3 ? tot_meetings - 1 : tot_meetings
     "La classifica finale è calcolata considerando le #{best_meetings} migliori prove su #{tot_meetings}.<br>Per ogni prova vengono totalizzati i punti in base a:<ul><li>piazzamento</li><li>valore della prestazione rapportata ai record regionali</li><li>miglioramento personale</li><li>doppio podio nella manifestazione</li><li>premio gare impegnative</li></ul>".html_safe
   end
   #-- -------------------------------------------------------------------------

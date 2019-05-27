@@ -62,7 +62,7 @@ class EnhanceIndividualRankingDAO
 
       # Calculate best 5 on 6 results
       @meetings.each_with_index do |meeting,index|
-        @total_best_5_on_6 = @total_best_5_on_6 + meeting.get_total_points if index < total_meetings - 1
+        @total_best_5_on_6 = @total_best_5_on_6 + meeting.get_total_points if total_meetings <= 3 || (index < total_meetings - 1)
       end
     end
     #-- -------------------------------------------------------------------------
