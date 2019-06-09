@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -13,7 +15,7 @@ Rails.application.configure do
   config.consider_all_requests_local = true
 
   # Enable/disable caching. By default caching is disabled.
-  if Rails.root.join('tmp/caching-dev.txt').exist?
+  if Rails.root.join('tmp', 'caching-dev.txt').exist?
     config.action_controller.perform_caching = true
 
     config.cache_store = :memory_store
@@ -53,9 +55,9 @@ Rails.application.configure do
   # config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
   # Letter opener still unused yet here:
-#  config.action_mailer.delivery_method = :letter_opener
-#  config.action_mailer.delivery_method = :test
-#  config.action_mailer.asset_host = "http://127.0.0.1:3000"
+  #  config.action_mailer.delivery_method = :letter_opener
+  #  config.action_mailer.delivery_method = :test
+  #  config.action_mailer.asset_host = "http://127.0.0.1:3000"
   config.action_mailer.default_url_options = { host: 'localhost' }
 
   # Allow 'better_errors' gem to output stack-trace on TRUSTED_IP (beyond localhost),
@@ -64,7 +66,6 @@ Rails.application.configure do
   # > TRUSTED_IP=192.168.0.xyz rails s
   #
   BetterErrors::Middleware.allow_ip! ENV['TRUSTED_IP'] if ENV['TRUSTED_IP']
-
 
   # ============================================================================
   # Bullet gem specific configuration:  [Steve A., 20181103]
@@ -135,5 +136,4 @@ Rails.application.configure do
     # Detect unnecessary COUNT queries which could be avoided with a counter_cache:
     # Bullet.counter_cache_enable        = false
   end
-
 end

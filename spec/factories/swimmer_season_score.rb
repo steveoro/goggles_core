@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'common/validation_error_tools'
 
 FactoryBot.define do
@@ -6,10 +8,10 @@ FactoryBot.define do
     badge                       { meeting_individual_result.badge }
     event_type                  { meeting_individual_result.event_type }
     score                       { meeting_individual_result.standard_points }
-    
+
     before(:create) do |built_instance|
       if built_instance.invalid?
-        puts "\r\nFactory def. error => " << ValidationErrorTools.recursive_error_for( built_instance )
+        puts "\r\nFactory def. error => " << ValidationErrorTools.recursive_error_for(built_instance)
         puts built_instance.inspect
       end
     end

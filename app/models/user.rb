@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'digest/sha1'
 require 'common/format'
 
@@ -5,24 +7,22 @@ require 'drop_down_listable'
 require 'framework/naming_tools'
 require 'i18n'
 
-
-=begin
-
-= User model
-
-  - version:  6.069
-  - author:   Steve A.
-
-=end
+#
+# = User model
+#
+#   - version:  6.069
+#   - author:   Steve A.
+#
 class User < ApplicationRecord
+
   after_create    UserContentLogger.new('users', email_on_create: true)
   # XXX [Steve, 20170130] We don't care anymore (so much) about these updates: commented out
-#  after_update    UserContentLogger.new('users')
+  #  after_update    UserContentLogger.new('users')
   before_destroy  UserContentLogger.new('users', email_on_destroy: true)
 
   include Rails.application.routes.url_helpers
   include DropDownListable
-  include Amistad::FriendModel                       # For Facebook-like friendship management
+  include Amistad::FriendModel # For Facebook-like friendship management
 
   acts_as_token_authenticatable
   acts_as_voter
@@ -37,37 +37,37 @@ class User < ApplicationRecord
 
   belongs_to :swimmer
 
-  has_many :user_training_stories                      # These are confirmation endorsed by others (user is passive subject)
-  has_many :user_swimmer_confirmations                  # These are confirmation endorsed by others (user is passive subject)
+  has_many :user_training_stories # These are confirmation endorsed by others (user is passive subject)
+  has_many :user_swimmer_confirmations # These are confirmation endorsed by others (user is passive subject)
   has_many :confirmators, through: :user_swimmer_confirmations
   has_many :given_confirmations,
-    class_name: "UserSwimmerConfirmation",           # These are confirmation given to others (user is active subject, a "confirmator")
-    foreign_key: "confirmator_id"
+           class_name: 'UserSwimmerConfirmation', # These are confirmation given to others (user is active subject, a "confirmator")
+           foreign_key: 'confirmator_id'
 
   belongs_to :swimmer_level_type
   belongs_to :coach_level_type
 
   validates_associated :swimmer_level_type
 
-  # FIXME [Steve, 20141204] We should really rename this table using a passive name,
+  # FIXME: [Steve, 20141204] We should really rename this table using a passive name,
   # something like "managed_affiliations"
   has_many :team_managers
 
-  validates_presence_of   :name
-  validates_uniqueness_of :name, message: :already_exists
+  validates :name, presence: true
+  validates :name, uniqueness: { message: :already_exists }
 
-  validates_length_of     :description,   maximum: 100  # Same as Swimmer#complete_name
-  validates_length_of     :first_name,    maximum: 50
-  validates_length_of     :last_name,     maximum: 50
-  validates_length_of     :year_of_birth, maximum: 4
+  validates     :description,   length: { maximum: 100 } # Same as Swimmer#complete_name
+  validates     :first_name,    length: { maximum: 50 }
+  validates     :last_name,     length: { maximum: 50 }
+  validates     :year_of_birth, length: { maximum: 4 }
 
-# FIXME for Rails 4+, move required/permitted check to the controller using the model
-#  attr_accessible :name, :email, :description, :password, :password_confirmation,
-#                  :last_name, :first_name, :year_of_birth,
-#                  :api_authentication_token,
-#                  :outstanding_goggle_score_bias,
-#                  :outstanding_standard_score_bias,
-#                  :coach_level_type, :swimmer_level_type
+  # FIXME: for Rails 4+, move required/permitted check to the controller using the model
+  #  attr_accessible :name, :email, :description, :password, :password_confirmation,
+  #                  :last_name, :first_name, :year_of_birth,
+  #                  :api_authentication_token,
+  #                  :outstanding_goggle_score_bias,
+  #                  :outstanding_standard_score_bias,
+  #                  :coach_level_type, :swimmer_level_type
 
   scope :data_updates_newsletter_readers, -> { where(use_email_data_updates_notify: true) }
   scope :achievements_newsletter_readers, -> { where(use_email_achievements_notify: true) }
@@ -78,25 +78,22 @@ class User < ApplicationRecord
 
   # Clears swimmer association before account removal.
   before_destroy do |user|
-    if user.has_associated_swimmer?
-      user.set_associated_swimmer( nil )
-    end
+    user.set_associated_swimmer(nil) if user.has_associated_swimmer?
     # We leave user-generated content in place on user-deletion, but
     # we simply disassociate the content from the user_id, to respect
     # the user decision to disappear:
-    UserTraining.where( user_id: user.id ).update_all( user_id: nil )
-    UserTrainingStory.where( user_id: user.id ).update_all( user_id: nil )
-    UserResult.where( user_id: user.id ).update_all( user_id: nil )
-    UserAchievement.where( user_id: user.id ).update_all( user_id: nil )
-    SwimmingPoolReview.where( user_id: user.id ).update_all( user_id: nil )
+    UserTraining.where(user_id: user.id).update_all(user_id: nil)
+    UserTrainingStory.where(user_id: user.id).update_all(user_id: nil)
+    UserResult.where(user_id: user.id).update_all(user_id: nil)
+    UserAchievement.where(user_id: user.id).update_all(user_id: nil)
+    SwimmingPoolReview.where(user_id: user.id).update_all(user_id: nil)
   end
   #-- -------------------------------------------------------------------------
   #++
 
-
   # Utility method to retrieve the controller base route directly from an instance of the model
   def base_uri
-    users_path( self )
+    users_path(self)
   end
 
   # Computes a descriptive name associated with this data
@@ -116,24 +113,22 @@ class User < ApplicationRecord
   #-- -------------------------------------------------------------------------
   #++
 
-
   # Returns the an array containing the first and the last name of this
   # user. When empty or nil the names are obtained from the description.
   def get_first_and_last_name
-    if first_name && last_name && first_name.size > 0 && last_name.size > 0
-      [ first_name, last_name ]
-    elsif description && description.size > 0
+    if first_name && last_name && !first_name.empty? && !last_name.empty?
+      [first_name, last_name]
+    elsif description.present?
       [
         description.split(' ')[0],
         description.split(' ')[1]
       ]
     else
-      [ name[0..4], '' ]                            # Return just the first 5 char from the username, just to increase the chances
+      [name[0..4], ''] # Return just the first 5 char from the username, just to increase the chances
     end
   end
   #-- -------------------------------------------------------------------------
   #++
-
 
   # Updates both this user and a Swimmer instance for "association" (identity match).
   #
@@ -148,24 +143,25 @@ class User < ApplicationRecord
   # - +true+ when successful.
   # - +false+ in case of error, or when the specified swimmer is not available for association (is already "taken").
   #
-  def set_associated_swimmer( new_swimmer = nil )
-    if new_swimmer.instance_of?( Swimmer )          # === Set a new association:
-      return false if (new_swimmer.associated_user_id.to_i != 0) && (new_swimmer.associated_user_id.to_i != self.id)
-      # TODO We could/should check here if we have a user.swimmer link that does NOT correspond to a swimmer.associated_user link
+  def set_associated_swimmer(new_swimmer = nil)
+    if new_swimmer.instance_of?(Swimmer) # === Set a new association:
+      return false if (new_swimmer.associated_user_id.to_i != 0) && (new_swimmer.associated_user_id.to_i != id)
+
+      # TODO: We could/should check here if we have a user.swimmer link that does NOT correspond to a swimmer.associated_user link
       if swimmer                                    # Already associated? Clear first the old swimmer:
         swimmer.associated_user_id = nil
         swimmer.save!
       end
       self.swimmer_id = new_swimmer.id              # Update this user:
       self.year_of_birth = new_swimmer.year_of_birth
-      self.first_name  = new_swimmer.first_name.titleize unless new_swimmer.first_name.nil? || new_swimmer.first_name.empty?
-      self.last_name   = new_swimmer.last_name.titleize  unless new_swimmer.last_name.nil?  || new_swimmer.last_name.empty?
-      self.description = "#{self.first_name} #{self.last_name}"
+      self.first_name  = new_swimmer.first_name.titleize if new_swimmer.first_name.present?
+      self.last_name   = new_swimmer.last_name.titleize  if new_swimmer.last_name.present?
+      self.description = "#{first_name} #{last_name}"
       save!
-      new_swimmer.associated_user_id = self.id      # Update the swimmer
+      new_swimmer.associated_user_id = id # Update the swimmer
       new_swimmer.save!
 
-    elsif new_swimmer.nil?                          # === Clear (dissociate) existing association:
+    elsif new_swimmer.nil? # === Clear (dissociate) existing association:
       if swimmer
         swimmer.associated_user_id = nil
         swimmer.save!
@@ -178,10 +174,9 @@ class User < ApplicationRecord
   #-- -------------------------------------------------------------------------
   #++
 
-
   # Returns true if this user has a swimmer_id already associated to him/her.
   def has_associated_swimmer?
-    ! (swimmer.nil?)
+    !swimmer.nil?
   end
 
   # Returns true if this user has at least some UserSwimmerConfirmation defined
@@ -191,12 +186,11 @@ class User < ApplicationRecord
 
   # Returns the first swimmer-association confirmation found given to the specified user
   # or nil when not found.
-  def find_any_confirmation_given_to( user )
-    UserSwimmerConfirmation.find_any_between( user, self ).first
+  def find_any_confirmation_given_to(user)
+    UserSwimmerConfirmation.find_any_between(user, self).first
   end
   #-- -------------------------------------------------------------------------
   #++
-
 
   # Label symbol corresponding to either a column name or a model method to be used
   # mainly in generating DropDown option lists.
@@ -220,9 +214,9 @@ class User < ApplicationRecord
   # Allows to specify which label method can be used for the output, defaults to
   # the framework standard :i18n_short.
   # Returns an empty string when not available.
-  def get_swimmer_level_type( label_method_sym = :i18n_short )
+  def get_swimmer_level_type(label_method_sym = :i18n_short)
     if swimmer_level_type
-      swimmer_level_type.send( label_method_sym.to_sym )  # (just to be sure)
+      swimmer_level_type.send(label_method_sym.to_sym) # (just to be sure)
     else
       ''
     end
@@ -230,27 +224,28 @@ class User < ApplicationRecord
   #-- -------------------------------------------------------------------------
   #++
 
-
   # Returns the team_affiliation.id (or nil) given a specified season_id, seeking
   # inside the list of associated team_managers.
   #
-  def find_team_affiliation_id_from_team_managers_for( season_id )
+  def find_team_affiliation_id_from_team_managers_for(season_id)
     return nil if team_managers.nil?
+
     team_manager = team_managers.includes(:team_affiliation).joins(:team_affiliation)
-      .select{|tm| tm.team_affiliation.season_id == season_id }.first
+                                .select { |tm| tm.team_affiliation.season_id == season_id }.first
     team_manager ? team_manager.team_affiliation_id : nil
   end
-
 
   # Returns the team_affiliation.id (or nil) given a specified season_id, seeking
   # inside the list of associated swimmer badges.
   #
-  def find_team_affiliation_id_from_badges_for( season_id )
+  def find_team_affiliation_id_from_badges_for(season_id)
     return nil if swimmer.nil?
+
     badge = swimmer.badges.includes(:team_affiliation).joins(:team_affiliation)
-      .where( season_id: season_id ).first
+                   .where(season_id: season_id).first
     badge ? badge.team_affiliation_id : nil
   end
   #-- -------------------------------------------------------------------------
   #++
+
 end

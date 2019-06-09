@@ -1,25 +1,24 @@
+# frozen_string_literal: true
+
 require 'drop_down_listable'
 require 'localizable'
 
-
-
-=begin
-
-= GenderType model
-
-  - version:  4.00.681
-  - author:   Steve A.
-
-=end
+#
+# = GenderType model
+#
+#   - version:  4.00.681
+#   - author:   Steve A.
+#
 class GenderType < ApplicationRecord
+
   include DropDownListable
   include Localizable
 
-  validates_presence_of   :code, length: { maximum: 1 }, allow_nil: false
-  validates_uniqueness_of :code, message: :already_exists
+  validates :code, presence: { length: { maximum: 1 }, allow_nil: false }
+  validates :code, uniqueness: { message: :already_exists }
 
-  scope :individual_only,   -> { where( "(gender_types.code != 'X')" ) }
-  scope :sort_by_courtesy,  -> { order( 'code' ) }
+  scope :individual_only,   -> { where("(gender_types.code != 'X')") }
+  scope :sort_by_courtesy,  -> { order('code') }
 
   # Unique ID used inside the DB to address the Male GenderType instance
   MALE_ID   = 1
@@ -34,20 +33,20 @@ class GenderType < ApplicationRecord
   # Commodity Hash used to enlist all defined IDs and their corresponding Codes
   #
   TYPES_HASH = {
-    MALE_ID   => 'M',
+    MALE_ID => 'M',
     FEMALE_ID => 'F',
     MIXED_OR_ANY_ID => 'X'
-  }
+  }.freeze
   # ----------------------------------------------------------------------------
 
   # Returns true if the current row's ID is equal to MALE_ID
   def is_male
-    ( self.id == MALE_ID )
+    (id == MALE_ID)
   end
 
   # Returns true if the current row's ID is equal to FEMALE_ID
   def is_female
-    ( self.id == FEMALE_ID )
+    (id == FEMALE_ID)
   end
   # ----------------------------------------------------------------------------
 
@@ -56,13 +55,13 @@ class GenderType < ApplicationRecord
   # the corresponding GenderType or GenderType.find_by_code('X')
   # when unable to parse.
   #
-  def self.parse_gender_type_from_import_text( gender_token )
+  def self.parse_gender_type_from_import_text(gender_token)
     if gender_token.upcase == 'M' || gender_token =~ /maschi/ui
-      GenderType.find_by_code('M')
+      GenderType.find_by(code: 'M')
     elsif gender_token.upcase == 'F' || gender_token =~ /femmi/ui
-      GenderType.find_by_code('F')
+      GenderType.find_by(code: 'F')
     else
-      GenderType.find_by_code('X')
+      GenderType.find_by(code: 'X')
     end
   end
   # ----------------------------------------------------------------------------
@@ -72,13 +71,13 @@ class GenderType < ApplicationRecord
   #
   # Returns '? if no gender corrispondence to given code
   #
-  def self.retrieve_description_by_uisp_code( uisp_code )
+  def self.retrieve_description_by_uisp_code(uisp_code)
     gender_type_desc = '?'
-    if GenderType.exists?( :code => uisp_code.upcase )
-      gender_type = GenderType.find_by_code( uisp_code.upcase )
+    if GenderType.exists?(code: uisp_code.upcase)
+      gender_type = GenderType.find_by(code: uisp_code.upcase)
       gender_type_desc = gender_type.i18n_description
     end
-    gender_type_desc  
+    gender_type_desc
   end
   # ----------------------------------------------------------------------------
 
@@ -92,7 +91,8 @@ class GenderType < ApplicationRecord
     elsif code == 'F'
       csi_code = '0'
     end
-    csi_code  
+    csi_code
   end
   # ----------------------------------------------------------------------------
+
 end

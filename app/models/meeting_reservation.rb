@@ -1,15 +1,13 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
-
-=begin
-
-= MeetingReservation model
-
-  - version:  6.024
-  - author:   Steve A.
-
-=end
+#
+# = MeetingReservation model
+#
+#   - version:  6.024
+#   - author:   Steve A.
+#
 class MeetingReservation < ApplicationRecord
+
   include SwimmerRelatable
 
   belongs_to :meeting
@@ -27,6 +25,6 @@ class MeetingReservation < ApplicationRecord
   # t.boolean :is_not_coming
   # t.boolean :has_confirmed
 
-  scope :is_coming,            -> { where("not is_not_coming") }
+  scope :is_coming, -> { where('not is_not_coming') }
 
 end

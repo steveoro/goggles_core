@@ -1,26 +1,26 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
-=begin
-
-= SwimmerMatchDAO
-  - Goggles framework vers.:  4.00.859.20160312
-  - author: Leega
-
- Utility class to get swimmer "match" data.
-
-=== Members:
- - <tt>:swimmer_male_count</tt> => Count of male swimmers with result
- - <tt>:result_male_count_count</tt> => Count of male total results
- - <tt>:oldest_male_swimmer</tt> => Oldest male swimmer with result
- - <tt>:disqualified_male_count</tt> => Count of male disqualified results
- - <tt>:swimmer_female_count</tt> => Count of male swimmers with result
- - <tt>:result_female_count</tt> => Count of male total results
- - <tt>:oldest_female_swimmer</tt> => Oldest male swimmer with result
- - <tt>:disqualified_female_count</tt> => Count of female disqualified results
-
-=end
+#
+# = SwimmerMatchDAO
+#   - Goggles framework vers.:  4.00.859.20160312
+#   - author: Leega
+#
+#  Utility class to get swimmer "match" data.
+#
+# === Members:
+#  - <tt>:swimmer_male_count</tt> => Count of male swimmers with result
+#  - <tt>:result_male_count_count</tt> => Count of male total results
+#  - <tt>:oldest_male_swimmer</tt> => Oldest male swimmer with result
+#  - <tt>:disqualified_male_count</tt> => Count of male disqualified results
+#  - <tt>:swimmer_female_count</tt> => Count of male swimmers with result
+#  - <tt>:result_female_count</tt> => Count of male total results
+#  - <tt>:oldest_female_swimmer</tt> => Oldest male swimmer with result
+#  - <tt>:disqualified_female_count</tt> => Count of female disqualified results
+#
 class SwimmerMatchDAO
+
   class SwimmerMatchProgramDAO
+
     # These must be initialized on creation:
     attr_reader :description, :meeting, :event_type
 
@@ -31,7 +31,7 @@ class SwimmerMatchDAO
     # Note the ascending precision of the parameters, which allows to skip
     # the rarely used ones.
     #
-    def initialize( local_result = nil, visitor_result = nil, description = nil, meeting = nil, event_type = nil )
+    def initialize(local_result = nil, visitor_result = nil, description = nil, meeting = nil, event_type = nil)
       @description     = description
       @local_result    = local_result
       @visitor_result  = visitor_result
@@ -46,7 +46,7 @@ class SwimmerMatchDAO
       if @description
         @description
       else
-        @local_result ? "#{@local_result.get_full_name} - #{@visitor_result.get_full_name if @visitor_result}" : '?'
+        @local_result ? "#{@local_result.get_full_name} - #{@visitor_result&.get_full_name}" : '?'
       end
     end
 
@@ -75,20 +75,22 @@ class SwimmerMatchDAO
     # Gets the locale timing
     #
     def get_locale_timing
-      @local_result.get_timing if @local_result
+      @local_result&.get_timing
     end
 
     # Gets the visitor timing
     #
     def get_visitor_timing
-      @visitor_result.get_timing if @visitor_result
+      @visitor_result&.get_timing
     end
+
   end
   # ---------------------------------------------------------------------------
 
   class SwimmerMatchEventSumDAO
+
     # These must be initialized on creation:
-    #attr_reader :event_type
+    # attr_reader :event_type
 
     # These can be edited later on:
     attr_accessor :event_type, :wons_count, :losses_count, :neutrals_count
@@ -97,10 +99,8 @@ class SwimmerMatchDAO
     # Note the ascending precision of the parameters, which allows to skip
     # the rarely used ones.
     #
-    def initialize( event_type, wons_count = 0, losses_count = 0, neutrals_count = 0 )
-      unless event_type && event_type.instance_of?( EventType )
-        raise ArgumentError.new("Swimmer match event summary needs a valid event type")
-      end
+    def initialize(event_type, wons_count = 0, losses_count = 0, neutrals_count = 0)
+      raise ArgumentError, 'Swimmer match event summary needs a valid event type' unless event_type&.instance_of?(EventType)
 
       @event_type     = event_type
       @wons_count     = wons_count
@@ -110,7 +110,7 @@ class SwimmerMatchDAO
 
     # Increments the given summary voice
     #
-    def increment( summary )
+    def increment(summary)
       case summary
       when :wons
         @wons_count += 1
@@ -120,6 +120,7 @@ class SwimmerMatchDAO
         @neutrals_count += 1
       end
     end
+
   end
   # ---------------------------------------------------------------------------
 
@@ -147,15 +148,15 @@ class SwimmerMatchDAO
 
   # Sets the locale swimmer
   #
-  def set_locale( local_swimmer )
-    @locale = local_swimmer if local_swimmer && local_swimmer.instance_of?( Swimmer )
+  def set_locale(local_swimmer)
+    @locale = local_swimmer if local_swimmer&.instance_of?(Swimmer)
   end
   # ---------------------------------------------------------------------------
 
   # Sets the visitor swimmer
   #
-  def set_visitor( visitor_swimmer )
-    @visitor = visitor_swimmer if visitor_swimmer && visitor_swimmer.instance_of?( Swimmer )
+  def set_visitor(visitor_swimmer)
+    @visitor = visitor_swimmer if visitor_swimmer&.instance_of?(Swimmer)
   end
   # ---------------------------------------------------------------------------
 
@@ -211,34 +212,33 @@ class SwimmerMatchDAO
   #
   # If results not valid nothing is done and returns -1
   #
-  def add_match( local_result, visitor_result, description = nil, meeting = nil, event_type = nil )
+  def add_match(local_result, visitor_result, description = nil, meeting = nil, event_type = nil)
     # Check if results are valids
-    if local_result &&
-     local_result.instance_of?( MeetingIndividualResult ) &&
-     local_result.swimmer == @locale &&
-     visitor_result &&
-     visitor_result.instance_of?( MeetingIndividualResult ) &&
-     visitor_result.swimmer == @visitor
-      locale_timing  = local_result.is_disqualified ? 999999999999 : local_result.get_timing_instance.to_hundreds
-      visitor_timing = visitor_result.is_disqualified ? 999999999999 : visitor_result.get_timing_instance.to_hundreds
+    if local_result&.instance_of?(MeetingIndividualResult) &&
+       local_result.swimmer == @locale &&
+       visitor_result &&
+       visitor_result.instance_of?(MeetingIndividualResult) &&
+       visitor_result.swimmer == @visitor
+      locale_timing  = local_result.is_disqualified ? 999_999_999_999 : local_result.get_timing_instance.to_hundreds
+      visitor_timing = visitor_result.is_disqualified ? 999_999_999_999 : visitor_result.get_timing_instance.to_hundreds
 
-      meeting = local_result.meeting if meeting == nil
-      event_type = local_result.event_type if event_type == nil
+      meeting = local_result.meeting if meeting.nil?
+      event_type = local_result.event_type if event_type.nil?
 
       # Populate first and last meetings
-      @first_meeting = meeting if @first_meeting == nil || @first_meeting.get_meeting_date.to_date > meeting.get_meeting_date.to_date
-      @last_meeting = meeting if @last_meeting == nil || @last_meeting.get_meeting_date.to_date < meeting.get_meeting_date.to_date
+      @first_meeting = meeting if @first_meeting.nil? || @first_meeting.get_meeting_date.to_date > meeting.get_meeting_date.to_date
+      @last_meeting = meeting if @last_meeting.nil? || @last_meeting.get_meeting_date.to_date < meeting.get_meeting_date.to_date
 
-      match = SwimmerMatchProgramDAO.new( local_result, visitor_result, description, meeting, event_type )
+      match = SwimmerMatchProgramDAO.new(local_result, visitor_result, description, meeting, event_type)
 
       # Verify reults timing
       # locale better than visitor
-      if locale_timing < visitor_timing
-        matches = add_match_to_collection( match, @wons, event_type, :wons )
+      matches = if locale_timing < visitor_timing
+        add_match_to_collection(match, @wons, event_type, :wons)
       elsif locale_timing > visitor_timing
-        matches = add_match_to_collection( match, @losses, event_type, :losses )
+        add_match_to_collection(match, @losses, event_type, :losses)
       else
-        matches = add_match_to_collection( match, @neutrals, event_type, :neutrals )
+        add_match_to_collection(match, @neutrals, event_type, :neutrals)
       end
       matches > 0 ? get_matches_count : matches
     else
@@ -252,17 +252,17 @@ class SwimmerMatchDAO
   # Retruns 0 if already present
   # Returns the collectyion matches number if added
   #
-  def add_match_to_collection( match, collection, event_type, summary )
-    if collection.rindex{ |e| e.local_result == match.local_result && e.visitor_result == match.visitor_result }
+  def add_match_to_collection(match, collection, event_type, summary)
+    if collection.rindex { |e| e.local_result == match.local_result && e.visitor_result == match.visitor_result }
       0
     else
       # Handle event summary
-      event = @events_summary.rindex{ |e| e.event_type == event_type }
+      event = @events_summary.rindex { |e| e.event_type == event_type }
       if event
-        @events_summary[event].increment( summary )
+        @events_summary[event].increment(summary)
       else
-        event_summary = SwimmerMatchEventSumDAO.new( event_type )
-        event_summary.increment( summary )
+        event_summary = SwimmerMatchEventSumDAO.new(event_type)
+        event_summary.increment(summary)
         @events_summary << event_summary
       end
 
@@ -270,4 +270,5 @@ class SwimmerMatchDAO
       collection.count
     end
   end
+
 end

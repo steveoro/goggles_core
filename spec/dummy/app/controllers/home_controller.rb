@@ -1,6 +1,9 @@
+# frozen_string_literal: true
+
 class HomeController < ApplicationController
+
   # Devise HTTP log-in strategy:
-  before_action :authenticate_user!,  only: [:restricted_info]
+  before_action :authenticate_user!, only: [:restricted_info]
 
   # Basic index action to test inclusion of the Core engine, open to all users
   #
@@ -13,7 +16,7 @@ class HomeController < ApplicationController
   # Used to test inclusion of the Core engine.
   #
   def restricted_info
-    @for_user_eyes_only = "I guess you are a logged-id User!"
+    @for_user_eyes_only = 'I guess you are a logged-id User!'
   end
   #-- -------------------------------------------------------------------------
   #++

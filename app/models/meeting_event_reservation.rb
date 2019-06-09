@@ -1,16 +1,15 @@
-# encoding: utf-8
+# frozen_string_literal: true
+
 require 'wrappers/timing'
 
-
-=begin
-
-= MeetingEventReservation model
-
-  - version:  6.157
-  - author:   Steve A.
-
-=end
+#
+# = MeetingEventReservation model
+#
+#   - version:  6.157
+#   - author:   Steve A.
+#
 class MeetingEventReservation < ApplicationRecord
+
   include SwimmerRelatable
   include EventTypeRelatable
 
@@ -34,16 +33,23 @@ class MeetingEventReservation < ApplicationRecord
   # t.integer :suggested_hundreds
   # t.boolean :is_doing_this
 
-  scope :is_reserved,            -> { where("is_doing_this") }
+  scope :is_reserved, -> { where('is_doing_this') }
 
   # Low-level instance aliases to column dynamic fields to make TimingGettable work anyway:
-  def minutes;  suggested_minutes; end
-  def seconds;  suggested_seconds; end
-  def hundreds; suggested_hundreds; end
+  def minutes
+    suggested_minutes
+  end
+
+  def seconds
+    suggested_seconds
+  end
+
+  def hundreds
+    suggested_hundreds
+  end
 
   include TimingGettable
   include TimingValidatable
-
 
   # Returns true if the current instance has not been currently "registered" by
   # a Swimmer.
@@ -57,24 +63,22 @@ class MeetingEventReservation < ApplicationRecord
   # registration.
   #
   def is_not_registered
-    (!is_doing_this) &&
-    suggested_minutes.nil? && suggested_seconds.nil? && suggested_hundreds.nil?
+    !is_doing_this &&
+      suggested_minutes.nil? && suggested_seconds.nil? && suggested_hundreds.nil?
   end
   #-- -------------------------------------------------------------------------
   #++
-
 
   # Returns true if the current instance refers to a no-time registration.
   #
   def is_no_time
-    (is_doing_this) &&
-    (suggested_minutes.to_i == 0) &&
-    (suggested_seconds.to_i == 0) &&
-    (suggested_hundreds.to_i == 0)
+    is_doing_this &&
+      (suggested_minutes.to_i == 0) &&
+      (suggested_seconds.to_i == 0) &&
+      (suggested_hundreds.to_i == 0)
   end
   #-- -------------------------------------------------------------------------
   #++
-
 
   # Retrieves the (first) MeetingProgram associated with this instance, whenever possible.
   # Returns nil otherwise.
@@ -83,9 +87,10 @@ class MeetingEventReservation < ApplicationRecord
     MeetingProgram.where(
       meeting_event_id: meeting_event.id,
       category_type_id: category_type.id,
-      gender_type_id:   gender_type.id
+      gender_type_id: gender_type.id
     ).first
   end
   #-- -------------------------------------------------------------------------
   #++
+
 end

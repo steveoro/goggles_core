@@ -1,17 +1,16 @@
-# encoding: utf-8
+# frozen_string_literal: true
+
 require 'date'
 require 'drop_down_listable'
 
-
-=begin
-
-= Season
-
-  - version:  6.111
-  - author:   Steve A., Leega
-
-=end
+#
+# = Season
+#
+#   - version:  6.111
+#   - author:   Steve A., Leega
+#
 class Season < ApplicationRecord
+
   include DropDownListable
   include UserRelatable
 
@@ -22,7 +21,7 @@ class Season < ApplicationRecord
   validates_associated :edition_type
   validates_associated :timing_type
 
-  has_one  :federation_type,            through: :season_type
+  has_one  :federation_type, through: :season_type
 
   has_many :meetings
   has_many :goggle_cup_definitions
@@ -43,39 +42,37 @@ class Season < ApplicationRecord
   # [Steve, 20170718] Hand-made has_many :event_types, through: :meetings (which can't work correctly)
   #
   def event_types
-    self.meeting_events.includes(:event_type).map do |me|
-      me.event_type
-    end
+    meeting_events.includes(:event_type).map(&:event_type)
   end
 
-  validates_presence_of :header_year
-  validates_length_of   :header_year, within: 1..9, allow_nil: false
+  validates :header_year, presence: true
+  validates :header_year, length: { within: 1..9, allow_nil: false }
 
-  validates_presence_of :edition
-  validates_length_of   :edition, within: 1..3, allow_nil: false
+  validates :edition, presence: true
+  validates :edition, length: { within: 1..3, allow_nil: false }
 
-  validates_presence_of :description
-  validates_length_of   :description, within: 1..100, allow_nil: false
+  validates :description, presence: true
+  validates :description, length: { within: 1..100, allow_nil: false }
 
-  validates_presence_of :begin_date
-  validates_presence_of :end_date
+  validates :begin_date, presence: true
+  validates :end_date, presence: true
 
-  scope :sort_season_by_begin_date,  ->(dir = 'ASC') { order("seasons.begin_date #{dir.to_s}") }
-  scope :sort_season_by_end_date,    ->(dir = 'ASC') { order("seasons.end_date #{dir.to_s}") }
-  scope :sort_season_by_season_type, ->(dir) { order("season_types.code #{dir.to_s}, seasons.begin_date #{dir.to_s}") }
-  scope :sort_season_by_user,        ->(dir) { order("users.name #{dir.to_s}, seasons.begin_date #{dir.to_s}") }
+  scope :sort_season_by_begin_date,  ->(dir = 'ASC') { order("seasons.begin_date #{dir}") }
+  scope :sort_season_by_end_date,    ->(dir = 'ASC') { order("seasons.end_date #{dir}") }
+  scope :sort_season_by_season_type, ->(dir) { order("season_types.code #{dir}, seasons.begin_date #{dir}") }
+  scope :sort_season_by_user,        ->(dir) { order("users.name #{dir}, seasons.begin_date #{dir}") }
 
-  scope :is_not_ended,               -> { where('end_date is null or end_date >= curdate()') }
-  scope :is_ended,                   -> { where('end_date is not null and end_date < curdate()') }
-  scope :is_ended_before,            ->(end_date) { where(["end_date is not null and end_date < ?", end_date]) }
-  scope :is_in_range,                ->(from_date, to_date) { where(["(begin_date is not null and begin_date <= ?) and (end_date is not null and end_date >= ?)", to_date, from_date]) }
+  scope :is_not_ended,    -> { where('end_date is null or end_date >= curdate()') }
+  scope :is_ended,        -> { where('end_date is not null and end_date < curdate()') }
+  scope :is_ended_before, ->(end_date) { where(['end_date is not null and end_date < ?', end_date]) }
+  scope :is_in_range,     ->(from_date, to_date) { where(['(begin_date is not null and begin_date <= ?) and (end_date is not null and end_date >= ?)', to_date, from_date]) }
 
-  scope :for_season_type,            ->(season_type) { where(season_type_id: season_type.id) }
-  scope :has_results,                -> { where("exists(select 1 from meetings where are_results_acquired)") }
+  scope :for_season_type, ->(season_type) { where(season_type_id: season_type.id) }
+  scope :has_results,     -> { where('exists(select 1 from meetings where are_results_acquired)') }
 
-# FIXME for Rails 4+, move required/permitted check to the controller using the model
-#  attr_accessible :season_type_id, :edition_type_id, :timing_type_id,
-#                  :header_year, :edition, :description, :begin_date, :end_date, :rules, :has_individual_rank
+  # FIXME: for Rails 4+, move required/permitted check to the controller using the model
+  #  attr_accessible :season_type_id, :edition_type_id, :timing_type_id,
+  #                  :header_year, :edition, :description, :begin_date, :end_date, :rules, :has_individual_rank
   #-- -------------------------------------------------------------------------
   #++
 
@@ -95,12 +92,12 @@ class Season < ApplicationRecord
 
   # Retrieves the Season Type short name
   def get_season_type
-    self.season_type ? self.season_type.short_name :  '?'
+    season_type ? season_type.short_name : '?'
   end
 
   # Retrieves the Federation Type short name
   def get_federation_type
-    self.federation_type ? self.federation_type.short_name :  '?'
+    federation_type ? federation_type.short_name : '?'
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -126,9 +123,9 @@ class Season < ApplicationRecord
   # - TRUE if season is ended at the specified date
   # - FALSE if season is not ended at the date or there is no season end defined
   #
-  def is_season_ended_at( evaluation_date = Date.today )
-    if self.end_date
-      ( self.end_date <= evaluation_date ) ? true : false
+  def is_season_ended_at(evaluation_date = Date.today)
+    if end_date
+      end_date <= evaluation_date
     else
       false
     end
@@ -144,8 +141,8 @@ class Season < ApplicationRecord
   # - +true+ if season is starting at the specified date
   # - +false+ if season has not started at the specified date
   #
-  def is_season_started_at( evaluation_date = Date.today )
-    ( self.begin_date <= evaluation_date ) ? true : false
+  def is_season_started_at(evaluation_date = Date.today)
+    begin_date <= evaluation_date
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -153,16 +150,17 @@ class Season < ApplicationRecord
   # Returns a generic, usually valid +header_year+ string given the specified date.
   # (It may yield wrong values for certain Championships.)
   #
-  def self.build_header_year_from_date( evaluation_date = Date.today )
-    raise ArgumentError.new( "evaluation_date must be of a Date kind." ) unless evaluation_date.kind_of?( Date )
+  def self.build_header_year_from_date(evaluation_date = Date.today)
+    raise ArgumentError, 'evaluation_date must be of a Date kind.' unless evaluation_date.is_a?(Date)
+
     year = evaluation_date.month < 10 ? evaluation_date.year - 1 : evaluation_date.year
-    "#{year}/#{year+1}"
+    "#{year}/#{year + 1}"
   end
 
   # Returns the exact +header_year+ string given the current instance of Season.
   #
-  def build_header_year()
-    "#{self.begin_date.year}/#{self.end_date.year}"
+  def build_header_year
+    "#{begin_date.year}/#{end_date.year}"
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -170,15 +168,16 @@ class Season < ApplicationRecord
   # Returns the last defined season for a specific SeasonType code
   # considering the begin date
   #
-  def self.get_last_season_by_type( season_type_code )
+  def self.get_last_season_by_type(season_type_code)
     Season.joins(:season_type).where(['season_types.code = ?', season_type_code]).sort_season_by_begin_date('ASC').last
   end
 
   # Returns the last defined season for a specific SeasonType code
   #
-  def get_last_season_by_type( season_type_code )
-    Season.get_last_season_by_type( season_type_code )
+  def get_last_season_by_type(season_type_code)
+    Season.get_last_season_by_type(season_type_code)
   end
   #-- -------------------------------------------------------------------------
   #++
+
 end

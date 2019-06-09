@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'wrappers/timing'
 
 #
@@ -13,6 +15,7 @@ require 'wrappers/timing'
 # @version  6.093
 #
 class MeetingDateChanger
+
   include SqlConvertable
 
   # These can be edited later on:
@@ -24,16 +27,10 @@ class MeetingDateChanger
   # An instance of meeting
   # an amount of days to move meeting header and scheduled date
   #
-  def initialize( meeting, days_to_move_on, confirm = false )
-    unless meeting && meeting.instance_of?( Meeting )
-      raise ArgumentError.new("Needs the meeting to be changed")
-    end
-    if not meeting.header_date
-      raise ArgumentError.new("The meeting hasn't any header date")
-    end
-    unless days_to_move_on && days_to_move_on.kind_of?( Integer )
-      raise ArgumentError.new("Needs the amount of days to move on")
-    end
+  def initialize(meeting, days_to_move_on, confirm = false)
+    raise ArgumentError, 'Needs the meeting to be changed' unless meeting&.instance_of?(Meeting)
+    raise ArgumentError, "The meeting hasn't any header date" unless meeting.header_date
+    raise ArgumentError, 'Needs the amount of days to move on' unless days_to_move_on&.is_a?(Integer)
 
     @meeting         = meeting
     @days_to_move_on = days_to_move_on
@@ -51,19 +48,19 @@ class MeetingDateChanger
     @meeting.save
     sql_attributes['header_date']  = @meeting.header_date
     sql_attributes['is_confirmed'] = @meeting.is_confirmed if @confirm
-    sql_diff_text_log << to_sql_update( @meeting, false, sql_attributes, "\r\n" )
+    sql_diff_text_log << to_sql_update(@meeting, false, sql_attributes, "\r\n")
     @meeting.header_date
   end
 
   # Set the meeting session scheduled date according to the days to move on
   #
-  def move_meeting_session_date!( meeting_session )
+  def move_meeting_session_date!(meeting_session)
     sql_attributes = {}
     if meeting_session.scheduled_date
       meeting_session.scheduled_date = meeting_session.scheduled_date + @days_to_move_on
       meeting_session.save
       sql_attributes['scheduled_date'] = meeting_session.scheduled_date
-      sql_diff_text_log << to_sql_update( meeting_session, false, sql_attributes, "\r\n" )
+      sql_diff_text_log << to_sql_update(meeting_session, false, sql_attributes, "\r\n")
     end
     meeting_session.scheduled_date
   end
@@ -71,13 +68,14 @@ class MeetingDateChanger
   # Set the meeting header date according to the days to move on
   #
   def change_dates!
-    create_sql_diff_header( "Changing meeting #{@meeting.id}-#{@meeting.code} from #{@meeting.header_date} to #{@meeting.header_date + @days_to_move_on}" )
+    create_sql_diff_header("Changing meeting #{@meeting.id}-#{@meeting.code} from #{@meeting.header_date} to #{@meeting.header_date + @days_to_move_on}")
     move_meeting_date!
     @meeting.meeting_sessions.each do |meeting_session|
-      move_meeting_session_date!( meeting_session )
+      move_meeting_session_date!(meeting_session)
     end
-    create_sql_diff_footer( "#{@meeting.id}-#{@meeting.code} date change done" )
+    create_sql_diff_footer("#{@meeting.id}-#{@meeting.code} date change done")
   end
   # ----------------------------------------------------------------------------
   #++
+
 end

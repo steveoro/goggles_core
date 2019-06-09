@@ -1,9 +1,9 @@
+# frozen_string_literal: true
+
 require 'date'
 require 'ffaker'
 
-
 FactoryBot.define do
-
   factory :data_import_meeting_relay_result do
     data_import_session
     conflicting_id            nil
@@ -16,7 +16,7 @@ FactoryBot.define do
 
     # Make the circular reference between the session and the
     # season valid:
-    after(:create) do |created_instance, evaluator|
+    after(:create) do |created_instance, _evaluator|
       created_instance.data_import_session.season = created_instance.data_import_meeting_program.meeting_session.season
     end
   end

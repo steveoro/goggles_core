@@ -1,17 +1,16 @@
+# frozen_string_literal: true
+
 require 'active_support'
 require 'wrappers/timing'
 
-
-=begin
-
-= TimingGettable
-
-- version:  4.00.219.20140413
-  - author:   Steve A.
-
-  Concern that adds validations to the timing fields: :minutes, :seconds & :hundreds
-
-=end
+#
+# = TimingGettable
+#
+# - version:  4.00.219.20140413
+#   - author:   Steve A.
+#
+#   Concern that adds validations to the timing fields: :minutes, :seconds & :hundreds
+#
 module TimingValidatable
   extend ActiveSupport::Concern
 
@@ -26,5 +25,4 @@ module TimingValidatable
     validates_length_of       :hundreds, within: 1..2, allow_nil: false
     validates_numericality_of :hundreds
   end
-
 end

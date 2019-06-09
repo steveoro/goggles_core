@@ -1,15 +1,13 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
-
-=begin
-
-= MeetingRelayReservation model
-
-  - version:  6.053
-  - author:   Steve A.
-
-=end
+#
+# = MeetingRelayReservation model
+#
+#   - version:  6.053
+#   - author:   Steve A.
+#
 class MeetingRelayReservation < ApplicationRecord
+
   include SwimmerRelatable
   include EventTypeRelatable
 
@@ -32,4 +30,5 @@ class MeetingRelayReservation < ApplicationRecord
   # t.boolean :is_doing_this
   #-- -------------------------------------------------------------------------
   #++
+
 end

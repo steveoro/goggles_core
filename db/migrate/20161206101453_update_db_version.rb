@@ -1,6 +1,7 @@
-
+# frozen_string_literal: true
 
 class UpdateDbVersion < ActiveRecord::Migration[5.0]
+
   def change
     AppParameter.update(
       AppParameter::PARAM_VERSIONING_CODE,
@@ -8,4 +9,5 @@ class UpdateDbVersion < ActiveRecord::Migration[5.0]
       AppParameter::PARAM_DB_VERSION_FIELD.to_sym => GogglesCore::Version::DB
     )
   end
+
 end

@@ -1,8 +1,8 @@
+# frozen_string_literal: true
+
 require 'ffaker'
 
-
 FactoryBot.define do
-
   factory :data_import_city do
     data_import_session
     conflicting_id        nil
@@ -16,7 +16,7 @@ FactoryBot.define do
 
     before(:create) do |built_instance|
       if built_instance.invalid?
-        puts "\r\nFactory def. error => " << ValidationErrorTools.recursive_error_for( built_instance )
+        puts "\r\nFactory def. error => " << ValidationErrorTools.recursive_error_for(built_instance)
         puts built_instance.inspect
       end
     end

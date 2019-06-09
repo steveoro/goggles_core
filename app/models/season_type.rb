@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 require 'drop_down_listable'
 
-
 class SeasonType < ApplicationRecord
+
   include DropDownListable
 
   # Commodity reference to a specific code stored in the DB; make sure this value is always correct
@@ -10,22 +12,22 @@ class SeasonType < ApplicationRecord
   # Commodity reference to a specific code stored in the DB; make sure this value is always correct
   CODE_MAS_CSI = 'MASCSI'
 
-  validates_presence_of   :code, length: { within: 1..10 }, allow_nil: false
-  validates_uniqueness_of :code, message: :already_exists
+  validates :code, presence: { length: { within: 1..10 }, allow_nil: false }
+  validates :code, uniqueness: { message: :already_exists }
 
-  validates_length_of     :description, maximum: 100
-  validates_length_of     :short_name, maximum: 40
+  validates     :description, length: { maximum: 100 }
+  validates     :short_name, length: { maximum: 40 }
 
   belongs_to :federation_type
-  validates_presence_of :federation_type            # (must be not null)
-  validates_associated :federation_type             # (foreign key integrity)
+  validates :federation_type, presence: true # (must be not null)
+  validates_associated :federation_type # (foreign key integrity)
 
   has_many :seasons
   has_many :swimmers,     through: :seasons
   has_many :teams,        through: :seasons
-  has_many :event_types,  through: :seasons  # FIXME This one doesn't work
+  has_many :event_types,  through: :seasons # FIXME: This one doesn't work
 
-  scope :is_master,   -> { where("code like 'MAS%'") }
+  scope :is_master, -> { where("code like 'MAS%'") }
   # ----------------------------------------------------------------------------
 
   # Comodity helper
@@ -45,9 +47,10 @@ class SeasonType < ApplicationRecord
 
   # ID getter for the specified code; returns 0 on error
   #
-  def self.get_id_by_code( code )
-    season_type = SeasonType.find_by_code( code )
+  def self.get_id_by_code(code)
+    season_type = SeasonType.find_by(code: code)
     season_type ? season_type.id : 0
   end
   # ----------------------------------------------------------------------------
+
 end

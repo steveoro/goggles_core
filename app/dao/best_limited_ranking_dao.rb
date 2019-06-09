@@ -1,27 +1,26 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
-=begin
-
-= BestLimitedRankingDAO
-
-  - Goggles framework vers.:  4.00.546
-  - author: Leega
-
- DAO class containing the structure for best limited ranking rendering.
- A best limited ranking is a special ranking that consider only a certain
- number of best results
- The DAO contains data and some utils 
-
- Attributes
-   results => meeting_individual_results considered in ranking
-   number  => number of element of results
-   score   => total score
-   average => average score of each element of results
-   min     => minimum score of results elements
-   max     => maximum score of results elements
-
-=end
+#
+# = BestLimitedRankingDAO
+#
+#   - Goggles framework vers.:  4.00.546
+#   - author: Leega
+#
+#  DAO class containing the structure for best limited ranking rendering.
+#  A best limited ranking is a special ranking that consider only a certain
+#  number of best results
+#  The DAO contains data and some utils
+#
+#  Attributes
+#    results => meeting_individual_results considered in ranking
+#    number  => number of element of results
+#    score   => total score
+#    average => average score of each element of results
+#    min     => minimum score of results elements
+#    max     => maximum score of results elements
+#
 class BestLimitedRankingDAO
+
   # These must be initialized on creation:
   attr_reader :column
 
@@ -29,12 +28,12 @@ class BestLimitedRankingDAO
   attr_accessor :results, :number, :score, :average, :min, :max
   #-- -------------------------------------------------------------------------
   #++
-  
+
   # Creates a new instance.
   # Should use given column
   # Automatically sets given mirs as considered results
   #
-  def initialize( mirs = nil, column = :standard_points )
+  def initialize(mirs = nil, column = :standard_points)
     @results = []
     @number  = 0
     @score   = 0
@@ -43,8 +42,8 @@ class BestLimitedRankingDAO
     @max     = 0
 
     @column  = column
-    
-    set_results( mirs ) if mirs
+
+    set_results(mirs) if mirs
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -58,17 +57,17 @@ class BestLimitedRankingDAO
   def get_score
     @score ||= calculate_score
   end
-  
+
   # Retrieve the average score
   def get_average
     @average ||= calculate_average
   end
-  
+
   # Retrieve the minimum score
   def get_min
     @min ||= calculate_min
   end
-  
+
   # Retrieve the maximum score
   def get_max
     @max ||= calculate_max
@@ -87,10 +86,10 @@ class BestLimitedRankingDAO
   end
   #-- -------------------------------------------------------------------------
   #++
-  
+
   # Add a meeting individual result to the results collection
-  def set_results( meeting_individual_results )
-    @results = [] 
+  def set_results(meeting_individual_results)
+    @results = []
     meeting_individual_results.each do |meeting_individual_result|
       @results << meeting_individual_result
     end
@@ -99,7 +98,7 @@ class BestLimitedRankingDAO
   end
 
   # Add a meeting individual result to the results collection
-  def add_result( meeting_individual_result )
+  def add_result(meeting_individual_result)
     @results << meeting_individual_result
     sort_results
     synchronize
@@ -108,9 +107,9 @@ class BestLimitedRankingDAO
   #++
 
   private
-  
+
   def sort_results
-    @results.sort!{ |p,n| n.send(@column.to_sym) <=> p.send(@column.to_sym) }
+    @results.sort! { |p, n| n.send(@column.to_sym) <=> p.send(@column.to_sym) }
   end
 
   # Performs all the operation needed to synchronize DAO data
@@ -129,14 +128,14 @@ class BestLimitedRankingDAO
 
   # Calculate total score considering the given column
   def calculate_score
-    @results.collect{ |mir| mir.send(@column.to_sym) }.sum
+    @results.collect { |mir| mir.send(@column.to_sym) }.sum
   end
 
   # Calculate average score
   def calculate_average
     @number > 0 ? @score / @number : 0
   end
-  
+
   # Calculate minimum score
   def calculate_min
     if @number > 0
@@ -145,7 +144,7 @@ class BestLimitedRankingDAO
       0
     end
   end
-  
+
   # Calculate maximum score
   def calculate_max
     if @number > 0
@@ -154,4 +153,5 @@ class BestLimitedRankingDAO
       0
     end
   end
+
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 # Surely this spec is actually not really required anymore, since there are already
@@ -6,10 +8,11 @@ require 'rails_helper'
 # This is left here only as example of how the concern has been 'TDD'eveloped before it
 # was even ready to be used in Production.
 
-
 # Dummy class holder for the fields used by the module
 class DummyLocalizableIncludee < Achievement
+
   include Localizable
+
 end
 
 # Works also this way: (Note that the inclusion is done *after* the definition
@@ -22,7 +25,6 @@ end
 # end
 # -----------------------------------------------------------------------------
 
-
 describe DummyLocalizableIncludee do
-  it_behaves_like "Localizable"
+  it_behaves_like 'Localizable'
 end

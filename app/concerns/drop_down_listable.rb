@@ -1,18 +1,17 @@
+# frozen_string_literal: true
+
 require 'active_support'
 
-
-=begin
-  
-= DropDownListable
-
-  - version:  4.00.111.20140304
-  - author:   Steve A.
-
-  Concern that adds the capability to display an "includee" Model as a filtered drop-down
-  list, by adding a method that returns an Array that can be subsequently a& easily
-  decorated as a drop-down list by using a single HTML select statement.
-
-=end
+#
+# = DropDownListable
+#
+#   - version:  4.00.111.20140304
+#   - author:   Steve A.
+#
+#   Concern that adds the capability to display an "includee" Model as a filtered drop-down
+#   list, by adding a method that returns an Array that can be subsequently a& easily
+#   decorated as a drop-down list by using a single HTML select statement.
+#
 module DropDownListable
   extend ActiveSupport::Concern
 
@@ -28,8 +27,8 @@ module DropDownListable
     #-- -----------------------------------------------------------------------
     #++
 
-# TODO Add support for multiple drop down order. 
-# TODO Add support for custom sort order. 
+    # TODO: Add support for multiple drop down order.
+    # TODO Add support for custom sort order.
 
     # Returns an Array of 2-items Arrays, in which each item is the ID of the record
     # (the key) and the other is assumed to be its displayable label.
@@ -64,10 +63,10 @@ module DropDownListable
     # - an Array of arrays having the structure described above:
     #      [ [label1, key_value1], [label2, key_value2], ... ]
     #
-    def to_dropdown( where_condition = nil, key_sym = :id, label_sym = get_label_symbol() )
-      self.where( where_condition ).map{ |row|
+    def to_dropdown(where_condition = nil, key_sym = :id, label_sym = get_label_symbol)
+      where(where_condition).map do |row|
         [row.send(label_sym), row.send(key_sym)]
-      }.sort_by{ |ar| ar[0] }
+      end.sort_by { |ar| ar[0] }
     end
 
     # Create a custom not sorted dropdown list
@@ -76,10 +75,10 @@ module DropDownListable
     # so the object to dropdown should be sorted before
     # and preserve order in the dropdown box
     #
-    def to_unsorted_dropdown( where_condition = nil, key_sym = :id, label_sym = get_label_symbol() )
-      self.where( where_condition ).map{ |row|
+    def to_unsorted_dropdown(where_condition = nil, key_sym = :id, label_sym = get_label_symbol)
+      where(where_condition).map do |row|
         [row.send(label_sym), row.send(key_sym)]
-      }
+      end
     end
   end
   #-- -------------------------------------------------------------------------

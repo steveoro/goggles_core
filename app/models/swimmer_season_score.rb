@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 class SwimmerSeasonScore < ApplicationRecord
-  belongs_to :user                                  # [Steve, 20120212] Do not validate associated user!
+
+  belongs_to :user # [Steve, 20120212] Do not validate associated user!
 
   belongs_to :badge
   belongs_to :event_type
@@ -14,24 +17,25 @@ class SwimmerSeasonScore < ApplicationRecord
   has_one  :category_type,    through: :badge
   has_one  :gender_type,      through: :swimmer
 
-  validates_presence_of     :score
-  validates_numericality_of :score
+  validates :score, presence: true
+  validates :score, numericality: true
 
   delegate :code,       to: :event_type, prefix: true
   delegate :code,       to: :category_type, prefix: true
   delegate :code,       to: :gender_type, prefix: true
 
-  scope :sort_by_score, ->(dir = 'DESC') { order("score #{dir.to_s}") }
+  scope :sort_by_score, ->(dir = 'DESC') { order("score #{dir}") }
   # ----------------------------------------------------------------------------
 
   # Retrieves the associated Swimmer full name
   def get_swimmer_name
-    self.swimmer ? self.swimmer.get_full_name() : '?'
+    swimmer ? swimmer.get_full_name : '?'
   end
 
   # Retrieves the associated Team full name
   def get_team_name
-    self.team ? self.team.get_full_name() : '?'
+    team ? team.get_full_name : '?'
   end
-  # ---------------------------------------------------------------------------- 
+  # ----------------------------------------------------------------------------
+
 end

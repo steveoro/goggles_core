@@ -1,9 +1,9 @@
+# frozen_string_literal: true
+
 require 'date'
 require 'ffaker'
 
-
 FactoryBot.define do
-
   factory :data_import_meeting_session do
     data_import_session
     conflicting_id            nil

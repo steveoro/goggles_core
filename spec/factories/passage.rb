@@ -1,9 +1,9 @@
+# frozen_string_literal: true
+
 require 'date'
 require 'ffaker'
 
-
 FactoryBot.define do
-
   # [Steve, 20151215] => WARNING: <=
   #
   #    *** THIS FACTORY REQUIRES A FULL MIR TO CREATE VALID INSTANCES ***
@@ -29,7 +29,7 @@ FactoryBot.define do
     team                      { meeting_individual_result.team }
     user
     # The following column uses the pre-loaded seed records:
-    passage_type              { PassageType.all.sort{ rand - 0.5 }[0] }
+    passage_type { PassageType.all.min { rand - 0.5 } }
   end
   #-- -------------------------------------------------------------------------
   #++

@@ -1,19 +1,18 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
-=begin
-
-= MeetingSession
-
-  - version:  6.111
-  - author:   Steve A., Leega
-
-=end
+#
+# = MeetingSession
+#
+#   - version:  6.111
+#   - author:   Steve A., Leega
+#
 class MeetingSession < ApplicationRecord
+
   include MeetingAccountable
 
   belongs_to :user
   # [Steve, 20120212] Validating on User fails always because of validation requirements inside User (password & salt)
-#  validates_associated :user                       # (Do not enable this for User)
+  #  validates_associated :user                       # (Do not enable this for User)
 
   belongs_to :meeting
   belongs_to :swimming_pool
@@ -33,26 +32,23 @@ class MeetingSession < ApplicationRecord
   has_many :meeting_entries,            through: :meeting_events
   has_many :meeting_individual_results, through: :meeting_programs
 
-  validates_presence_of :session_order
-  validates_length_of   :session_order, within: 1..2, allow_nil: false
+  validates :session_order, presence: true
+  validates :session_order, length: { within: 1..2, allow_nil: false }
 
-  validates_presence_of :scheduled_date
+  validates :scheduled_date, presence: true
 
-  validates_presence_of :description
-  validates_length_of   :description, maximum: 100, allow_nil: false
+  validates :description, presence: true
+  validates :description, length: { maximum: 100, allow_nil: false }
 
+  # FIXME: for Rails 4+, move required/permitted check to the controller using the model
+  #  attr_accessible :session_order, :scheduled_date, :warm_up_time, :begin_time,
+  #                  :notes, :meeting_id, :swimming_pool_id, :user_id, :description,
+  #                  :is_autofilled, :day_part_type_id
 
-# FIXME for Rails 4+, move required/permitted check to the controller using the model
-#  attr_accessible :session_order, :scheduled_date, :warm_up_time, :begin_time,
-#                  :notes, :meeting_id, :swimming_pool_id, :user_id, :description,
-#                  :is_autofilled, :day_part_type_id
-
-
-  scope :sort_meeting_session_by_user,          ->(dir) { order("users.name #{dir.to_s}, meeting_sessions.scheduled_date #{dir.to_s}") }
-  scope :sort_meeting_session_by_meeting,       ->(dir) { order("meetings.description #{dir.to_s}, meeting_sessions.session_order #{dir.to_s}") }
-  scope :sort_meeting_session_by_swimming_pool, ->(dir) { order("swimming_pools.nick_name #{dir.to_s}, meeting_sessions.scheduled_date #{dir.to_s}") }
-  scope :sort_by_order,                         ->(dir = 'ASC') { order("meeting_sessions.session_order #{dir.to_s}") }
-
+  scope :sort_meeting_session_by_user,          ->(dir) { order("users.name #{dir}, meeting_sessions.scheduled_date #{dir}") }
+  scope :sort_meeting_session_by_meeting,       ->(dir) { order("meetings.description #{dir}, meeting_sessions.session_order #{dir}") }
+  scope :sort_meeting_session_by_swimming_pool, ->(dir) { order("swimming_pools.nick_name #{dir}, meeting_sessions.scheduled_date #{dir}") }
+  scope :sort_by_order,                         ->(dir = 'ASC') { order("meeting_sessions.session_order #{dir}") }
 
   # ----------------------------------------------------------------------------
   # Base methods:
@@ -124,8 +120,8 @@ class MeetingSession < ApplicationRecord
 
   # Safety getter for the DayPartType name
   #
-  def get_day_part_type( label_method = :i18n_description )
-    day_part_type.respond_to?( label_method ) ? day_part_type.send(label_method) : ''
+  def get_day_part_type(label_method = :i18n_description)
+    day_part_type.respond_to?(label_method) ? day_part_type.send(label_method) : ''
   end
 
   # Retrieves the Meeting short name
@@ -144,21 +140,21 @@ class MeetingSession < ApplicationRecord
   #-- -------------------------------------------------------------------------
   #++
 
-
   # Retrieves the meeting EventType list as an Array.
   # E.g.: 200FS, 100BF, 50BS, 4x50IM
   #
   def get_event_types
-    meeting_events ? meeting_events.sort_by_order.includes(:event_type).joins(:event_type).map{ |row| row.event_type } : []
+    meeting_events ? meeting_events.sort_by_order.includes(:event_type).joins(:event_type).map(&:event_type) : []
   end
 
   # Retrieves the meeting event list, each as a customizable separated short description.
   # E.g.: '200FS, 100BF, 50BS, 4x50IM'
   # Returns an empty string for no event list.
   #
-  def get_short_events( separator = ', ')
-    get_event_types.map{ |event_type| event_type.i18n_compact }.join( separator )
+  def get_short_events(separator = ', ')
+    get_event_types.map(&:i18n_compact).join(separator)
   end
   #-- -------------------------------------------------------------------------
   #++
+
 end

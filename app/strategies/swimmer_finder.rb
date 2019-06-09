@@ -1,22 +1,20 @@
-# encoding: utf-8
+# frozen_string_literal: true
+
 require 'conditions_generator_column_string_regexped' # Used to generate simple_search query condition
 
-
-=begin
-
-= SwimmerFinder
-
- - Goggles framework vers.:  6.071
- - author: Steve A.
-
- Finder (strategy) class used to retrieve lists of Swimmer instances based
- upon a "simple" search query.
-
- To reduce query overhead and API abuse, this finder instance will return an
- empty list if the query parameter is empty or unspecified.
- (MeetingFinder is the only finder class that allows empty query parameters so far.)
-
-=end
+#
+# = SwimmerFinder
+#
+#  - Goggles framework vers.:  6.071
+#  - author: Steve A.
+#
+#  Finder (strategy) class used to retrieve lists of Swimmer instances based
+#  upon a "simple" search query.
+#
+#  To reduce query overhead and API abuse, this finder instance will return an
+#  empty list if the query parameter is empty or unspecified.
+#  (MeetingFinder is the only finder class that allows empty query parameters so far.)
+#
 class SwimmerFinder
 
   # Constructor
@@ -26,14 +24,13 @@ class SwimmerFinder
   #               an empty or nil query term.
   # - limit: limit for results of the query
   #
-  def initialize( query_term = nil, limit = nil )
+  def initialize(query_term = nil, limit = nil)
     query_term = nil if query_term.to_s == ''
     @query_term = query_term
     @limit = limit
   end
   #-- --------------------------------------------------------------------------
   #++
-
 
   # Executes the search, returning just an array of row IDs, corresponding to the
   # rows satisfying the search term.
@@ -49,32 +46,32 @@ class SwimmerFinder
         'complete_name',
         @query_term
       )
-      ids += Swimmer.select(:id).sort_by_name.where( query_condition ).limit( @limit )
-        .map{ |row| row.id }.flatten.uniq
+      ids += Swimmer.select(:id).sort_by_name.where(query_condition).limit(@limit)
+                    .map(&:id).flatten.uniq
 
       if !@limit || ids.size < (@limit.to_i - 1)
         # Search among other most-used text columns in Swimmer:
         search_like_text = "%#{@query_term}%"
         ids += Swimmer.select(:id).sort_by_name.where(
           [
-            "(nickname LIKE ?) OR (e_mail LIKE ?)",
+            '(nickname LIKE ?) OR (e_mail LIKE ?)',
             search_like_text, search_like_text
           ]
-        ).limit( @limit ).map{ |row| row.id }.flatten.uniq
+        ).limit(@limit).map(&:id).flatten.uniq
       end
     end
     # Return the results:
-    ids.uniq[ 0..@limit.to_i-1 ]
+    ids.uniq[0..@limit.to_i - 1]
   end
   #-- --------------------------------------------------------------------------
   #++
-
 
   # Executes the search, returning full row instances
   #
   def search
-    Swimmer.where( id: search_ids() ).limit( @limit )
+    Swimmer.where(id: search_ids).limit(@limit)
   end
   #-- --------------------------------------------------------------------------
   #++
+
 end

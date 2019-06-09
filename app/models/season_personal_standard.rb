@@ -1,12 +1,14 @@
+# frozen_string_literal: true
+
 require 'wrappers/timing'
 
-
 class SeasonPersonalStandard < ApplicationRecord
+
   include SwimmerRelatable
   include TimingGettable
   include TimingValidatable
 
-  belongs_to :user                                  # [Steve, 20120212] Do not validate associated user!
+  belongs_to :user # [Steve, 20120212] Do not validate associated user!
 
   belongs_to :season
   belongs_to :event_type
@@ -42,37 +44,40 @@ class SeasonPersonalStandard < ApplicationRecord
 
   # Retrieves the user name associated with this instance
   def user_name
-    self.user ? self.user.name : ''
+    user ? user.name : ''
   end
   # ----------------------------------------------------------------------------
 
   # Retrieves the localized Event Type code
   def get_event_type
-    self.event_type ? self.event_type.i18n_short : '?'
+    event_type ? event_type.i18n_short : '?'
   end
 
   # Retrieves the localized Pool Type code
   def get_pool_type
-    self.pool_type ? self.pool_type.i18n_short : '?'
+    pool_type ? pool_type.i18n_short : '?'
   end
   # ----------------------------------------------------------------------------
 
   # Checks if exists a standard time for a given season-swimmer-pool_typ-event_type
   #
-  def self.has_standard?( season_id, swimmer_id, pool_type_id, event_type_id )
+  def self.has_standard?(season_id, swimmer_id, pool_type_id, event_type_id)
     SeasonPersonalStandard.where([
-      'season_id = ? AND swimmer_id = ? AND pool_type_id = ? AND event_type_id = ?',
-      season_id, swimmer_id, pool_type_id, event_type_id])
-      .exists?
+                                   'season_id = ? AND swimmer_id = ? AND pool_type_id = ? AND event_type_id = ?',
+                                   season_id, swimmer_id, pool_type_id, event_type_id
+                                 ])
+                          .exists?
   end
 
   # Returns standard time for a given season-swimmer-pool_typ-event_type
   # or nil if not present
   #
-  def self.get_standard( season_id, swimmer_id, pool_type_id, event_type_id )
+  def self.get_standard(season_id, swimmer_id, pool_type_id, event_type_id)
     SeasonPersonalStandard.where([
-      'season_id = ? AND swimmer_id = ? AND pool_type_id = ? AND event_type_id = ?',
-      season_id, swimmer_id, pool_type_id, event_type_id]).first
+                                   'season_id = ? AND swimmer_id = ? AND pool_type_id = ? AND event_type_id = ?',
+                                   season_id, swimmer_id, pool_type_id, event_type_id
+                                 ]).first
   end
   # ----------------------------------------------------------------------------
+
 end

@@ -1,12 +1,12 @@
+# frozen_string_literal: true
+
 require 'date'
 require 'ffaker'
 
-
 FactoryBot.define do
-
   factory :user_achievement do
     user
-    achievement       { Achievement.all.sort{ rand - 0.5 }[0] }
+    achievement { Achievement.all.min { rand - 0.5 } }
   end
   #-- -------------------------------------------------------------------------
   #++

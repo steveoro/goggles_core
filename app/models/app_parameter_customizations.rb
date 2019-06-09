@@ -1,25 +1,22 @@
-=begin
-  
-= AppParameterCustomizations
+# frozen_string_literal: true
 
-  - version:  3.02.20130206
-  - author:   Steve A.
-  - custom version for the application: Goggles
-
-=end
+#
+# = AppParameterCustomizations
+#
+#   - version:  3.02.20130206
+#   - author:   Steve A.
+#   - custom version for the application: Goggles
+#
 module AppParameterCustomizations
-                                # Custom param ID codes:
-#  CODE_WHATEVER = 10 unless defined?(CODE_WHATEVER)
+  # Custom param ID codes:
+  #  CODE_WHATEVER = 10 unless defined?(CODE_WHATEVER)
   #----------------------------------------------------------------------------
 
-
-# TODO CUSTOMIZE THIS WHEN NEEDED
+  # TODO: CUSTOMIZE THIS WHEN NEEDED
   # ---------------------------------------------------------------------------
   #++
 
-
   private
-
 
   # ---------------------------------------------------------------------------
   #++

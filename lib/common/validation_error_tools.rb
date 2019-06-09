@@ -1,24 +1,22 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
 require 'singleton'
 
-
-=begin
-
-= ValidationErrorTools
-
-  - author: Steve A.
-
-  Container class for any generic tool for validation error message decoration and
-  extraction.
-  Refactored from old implementation, (p) 2006-2014, FASAR Software, Italy
-
-=== Typical usage:
-
-    ValidationErrorTools.recursive_error_for( any_active_record_instance )
-
-=end
+#
+# = ValidationErrorTools
+#
+#   - author: Steve A.
+#
+#   Container class for any generic tool for validation error message decoration and
+#   extraction.
+#   Refactored from old implementation, (p) 2006-2014, FASAR Software, Italy
+#
+# === Typical usage:
+#
+#     ValidationErrorTools.recursive_error_for( any_active_record_instance )
+#
 class ValidationErrorTools
+
   include Singleton
 
   # Scans recursively the ActiveRecord row instance specified for validation errors,
@@ -38,24 +36,25 @@ class ValidationErrorTools
   # is +true+.
   # An empty string otherwise.
   #
-  def self.recursive_error_for( member, error_msg = '' )
+  def self.recursive_error_for(member, error_msg = '')
     if member.invalid?
-      member.errors.messages.keys.each do | sub_member_sym |
-        sub_member = member.send( sub_member_sym )
-        if sub_member.kind_of?( ActiveRecord::Base )  # Recurse!
+      member.errors.messages.keys.each do |sub_member_sym|
+        sub_member = member.send(sub_member_sym)
+        error_msg << if sub_member.is_a?(ActiveRecord::Base) # Recurse!
           # Go deep until we found a "leaf" (an atomic or non-active_record member)
-          error_msg << ValidationErrorTools.recursive_error_for(
+          ValidationErrorTools.recursive_error_for(
             sub_member,
             "#{member.class.name} ID:#{member.id} => "
           )
-        else                                          # Leaf reached!
-          error_msg << "#{member.class.name} ID:#{member.id}, " <<
-                       "#{sub_member_sym}: #{member.errors.messages[ sub_member_sym ].join(', ')}"
-        end
+        else # Leaf reached!
+          "#{member.class.name} ID:#{member.id}, " \
+            "#{sub_member_sym}: #{member.errors.messages[sub_member_sym].join(', ')}"
+                     end
       end
     end
     error_msg
   end
   #-- -------------------------------------------------------------------------
   #++
+
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 begin
   require 'bundler/setup'
 rescue LoadError
@@ -11,7 +13,7 @@ end
 # - Bundler: https://github.com/bundler/bundler/issues/3205
 # - guard-rspec: https://github.com/guard/guard-rspec/issues/258
 #
-#Bundler::GemHelper.install_tasks
+# Bundler::GemHelper.install_tasks
 
 require 'rdoc/task'
 
@@ -23,7 +25,7 @@ RDoc::Task.new(:rdoc) do |rdoc|
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
 
-APP_RAKEFILE = File.expand_path("../spec/dummy/Rakefile", __FILE__)
+APP_RAKEFILE = File.expand_path('spec/dummy/Rakefile', __dir__).freeze
 load 'rails/tasks/engine.rake'
 load 'rails/tasks/statistics.rake'
 
@@ -45,19 +47,19 @@ task default: :spec
 # load 'rails/tasks/engine.rake'#
 #
 # begin
-  # require 'rdoc/task'
+# require 'rdoc/task'
 # rescue LoadError
-  # require 'rdoc/rdoc'
-  # require 'rake/rdoctask'
-  # RDoc::Task = Rake::RDocTask
+# require 'rdoc/rdoc'
+# require 'rake/rdoctask'
+# RDoc::Task = Rake::RDocTask
 # end
 #
 # RDoc::Task.new(:rdoc) do |rdoc|
-  # rdoc.rdoc_dir = 'rdoc'
-  # rdoc.title    = 'GogglesCore'
-  # rdoc.options << '--line-numbers'
-  # rdoc.rdoc_files.include('README.rdoc')
-  # rdoc.rdoc_files.include('lib/**/*.rb')
+# rdoc.rdoc_dir = 'rdoc'
+# rdoc.title    = 'GogglesCore'
+# rdoc.options << '--line-numbers'
+# rdoc.rdoc_files.include('README.rdoc')
+# rdoc.rdoc_files.include('lib/**/*.rb')
 # end
 #
 #

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # == UserSocializer
 #
@@ -8,8 +10,9 @@
 #
 class UserSocializer
 
-  def initialize( user )
-    raise ArgumentError.new("'user' parameter must be an instance of User") unless user.instance_of?( User )
+  def initialize(user)
+    raise ArgumentError, "'user' parameter must be an instance of User" unless user.instance_of?(User)
+
     @user = user
   end
   #-- --------------------------------------------------------------------------
@@ -26,27 +29,28 @@ class UserSocializer
   #
   # Returns the confirmation row on success, +nil+ otherwise.
   #
-  def confirm_with_notify( another_user )
+  def confirm_with_notify(another_user)
     return nil unless another_user.instance_of?(User) && @user.has_associated_swimmer? && another_user.has_associated_swimmer?
-    result = UserSwimmerConfirmation.confirm_for( another_user, another_user.swimmer, @user )
+
+    result = UserSwimmerConfirmation.confirm_for(another_user, another_user.swimmer, @user)
     if result
       NewsFeed.create_social_feed(
         another_user.id,
         @user.id,
         I18n.t('newsfeed.confirm_title'),
-        I18n.t('newsfeed.confirm_body').gsub("{SWIMMER_NAME}", @user.get_full_name)
+        I18n.t('newsfeed.confirm_body').gsub('{SWIMMER_NAME}', @user.get_full_name)
       )
       NewsFeed.create_social_feed(
         @user.id,
         another_user.id,
         I18n.t('newsfeed.done_confirm_title'),
         I18n.t('newsfeed.done_confirm_body')
-          .gsub("{BUDDY_NAME}", another_user.name)
-          .gsub("{SWIMMER_NAME}", another_user.swimmer.get_full_name)
+          .gsub('{BUDDY_NAME}', another_user.name)
+          .gsub('{SWIMMER_NAME}', another_user.swimmer.get_full_name)
       )
-# FIXME This will make all unique another_user's team-buddies as friends:
-      TeamBuddyLinker.new( another_user ).socialize_with_team_mates
-      # TODO Create also achievement accordingly
+      # FIXME: This will make all unique another_user's team-buddies as friends:
+      TeamBuddyLinker.new(another_user).socialize_with_team_mates
+      # TODO: Create also achievement accordingly
     end
     result
   end
@@ -61,17 +65,18 @@ class UserSocializer
   #
   # Returns the confirmation row on success, +nil+ otherwise.
   #
-  def unconfirm_with_notify( another_user )
+  def unconfirm_with_notify(another_user)
     return nil unless another_user.instance_of?(User) && @user.has_associated_swimmer? && another_user.has_associated_swimmer?
-    result = UserSwimmerConfirmation.unconfirm_for( another_user, another_user.swimmer, @user )
+
+    result = UserSwimmerConfirmation.unconfirm_for(another_user, another_user.swimmer, @user)
     if result
       NewsFeed.create_social_feed(
         another_user.id,
         @user.id,
         I18n.t('newsfeed.unconfirm_title'),
-        I18n.t('newsfeed.unconfirm_body').gsub("{SWIMMER_NAME}", another_user.swimmer.get_full_name)
+        I18n.t('newsfeed.unconfirm_body').gsub('{SWIMMER_NAME}', another_user.swimmer.get_full_name)
       )
-      # TODO Block friendships also?
+      # TODO: Block friendships also?
       # TODO Create also achievement accordingly
     end
     result
@@ -87,21 +92,21 @@ class UserSocializer
   # The "requestee" friendable can also set the requested sharing attributes which
   # will then either be confirmed (set to true) or denied (set to false) during the approval process.
   #
-  def invite_with_notify( swimming_buddy, shares_passages = false, shares_trainings = false, shares_calendars = false )
-    if @user.invite( swimming_buddy, shares_passages, shares_trainings, shares_calendars )
+  def invite_with_notify(swimming_buddy, shares_passages = false, shares_trainings = false, shares_calendars = false)
+    if @user.invite(swimming_buddy, shares_passages, shares_trainings, shares_calendars)
       news_feed = NewsFeed.create_social_feed(
         swimming_buddy.id,
         @user.id,
         I18n.t('newsfeed.invite_title'),
-        I18n.t('newsfeed.invite_body').gsub("{SWIMMER_NAME}", @user.get_full_name),
+        I18n.t('newsfeed.invite_body').gsub('{SWIMMER_NAME}', @user.get_full_name),
         false # (This is no 'temp/achievement' kind of feed, so we'll generate a newsletter mail until it is read)
       )
-# FIXME [Steve, 20160616] WRONG PLACE HERE TO INVOKE DIRECLTY THE MAILER!
-# For framework vers. 5.0 we aim at a better separation between the presentation
-# layer and the B-L layer. So no presentation-related mailer should be called here.
-# *** TO RESTORE PREVIOUS FUNCTIONALITY, ADD A MAILER CALL TO THE CALLEE OF THIS METHOD ***
+      # FIXME: [Steve, 20160616] WRONG PLACE HERE TO INVOKE DIRECLTY THE MAILER!
+      # For framework vers. 5.0 we aim at a better separation between the presentation
+      # layer and the B-L layer. So no presentation-related mailer should be called here.
+      # *** TO RESTORE PREVIOUS FUNCTIONALITY, ADD A MAILER CALL TO THE CALLEE OF THIS METHOD ***
       # Generate a nofify mail without delay:
-#      NewsletterMailer.community_mail( swimming_buddy, news_feed ).deliver
+      #      NewsletterMailer.community_mail( swimming_buddy, news_feed ).deliver
     end
   end
 
@@ -116,10 +121,10 @@ class UserSocializer
   # Otherwise, set the sharing attributes using their dedicated setter methods.
   # (#set_share_passages_with, #set_share_trainings_with, #set_share_calendar_with)
   #
-  def approve_with_notify( swimming_buddy, shares_passages = false, shares_trainings = false, shares_calendars = false )
-    if @user.approve( swimming_buddy, shares_passages, shares_trainings, shares_calendars )
-      NewsFeed.create_social_approve_feed( @user, swimming_buddy )
-      # TODO Create also achievement row accordingly?
+  def approve_with_notify(swimming_buddy, shares_passages = false, shares_trainings = false, shares_calendars = false)
+    if @user.approve(swimming_buddy, shares_passages, shares_trainings, shares_calendars)
+      NewsFeed.create_social_approve_feed(@user, swimming_buddy)
+      # TODO: Create also achievement row accordingly?
     end
   end
 
@@ -127,17 +132,18 @@ class UserSocializer
   # user casting the deletion on the friendship, to get something like
   # "you are no longer a swimming buddy of ...").
   #
-  def remove_with_notify( swimming_buddy )
-    if @user.remove_friendship( swimming_buddy )
+  def remove_with_notify(swimming_buddy)
+    if @user.remove_friendship(swimming_buddy)
       NewsFeed.create_social_feed(
         @user.id,
         swimming_buddy.id,
         I18n.t('newsfeed.remove_title'),
-        I18n.t('newsfeed.remove_body').gsub("{SWIMMER_NAME}", swimming_buddy.get_full_name)
+        I18n.t('newsfeed.remove_body').gsub('{SWIMMER_NAME}', swimming_buddy.get_full_name)
       )
-      # TODO Create also achievement row accordingly?
+      # TODO: Create also achievement row accordingly?
     end
   end
   #-- --------------------------------------------------------------------------
   #++
+
 end

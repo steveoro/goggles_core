@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -34,8 +36,8 @@ Rails.application.configure do
   # ActionMailer::Base.deliveries array.
   config.action_mailer.delivery_method = :test
   # Letter opener still unused yet here:
-#  config.action_mailer.delivery_method = :letter_opener
-#  config.action_mailer.asset_host = "http://127.0.0.1:3000"
+  #  config.action_mailer.delivery_method = :letter_opener
+  #  config.action_mailer.asset_host = "http://127.0.0.1:3000"
   config.action_mailer.default_url_options = { host: 'localhost' }
 
   # Print deprecation notices to the stderr.
@@ -43,7 +45,6 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
-
 
   # ============================================================================
   # Bullet gem specific configuration:
@@ -59,5 +60,4 @@ Rails.application.configure do
     # Detect eager-loaded associations which are not used
     Bullet.unused_eager_loading_enable = false
   end
-
 end

@@ -1,6 +1,7 @@
+# frozen_string_literal: true
+
 # Read about factories at https://github.com/thoughtbot/factory_bot
 require 'common/validation_error_tools'
-
 
 FactoryBot.define do
   factory :data_import_meeting_entry do
@@ -8,7 +9,7 @@ FactoryBot.define do
     conflicting_id            nil
     import_text               { FFaker::Lorem.paragraph[0..250] }
 
-    sequence( :start_list_number )
+    sequence(:start_list_number)
 
     minutes                   0
     seconds                   { ((rand * 60) % 60).to_i }
@@ -22,7 +23,7 @@ FactoryBot.define do
     user_id                   1
 
     badge do
-      create( :badge, season: SeasonFactoryTools.get_season_with_full_categories() )
+      create(:badge, season: SeasonFactoryTools.get_season_with_full_categories)
     end
     swimmer                   { badge.swimmer }
     team                      { badge.team }
@@ -41,13 +42,13 @@ FactoryBot.define do
 
     # Make the circular reference between the session and the
     # season valid:
-    after(:create) do |created_instance, evaluator|
+    after(:create) do |created_instance, _evaluator|
       created_instance.data_import_session.season = created_instance.data_import_meeting_program.meeting_session.season
     end
 
     before(:create) do |built_instance|
       if built_instance.invalid?
-        puts "\r\nFactory def. error => " << ValidationErrorTools.recursive_error_for( built_instance )
+        puts "\r\nFactory def. error => " << ValidationErrorTools.recursive_error_for(built_instance)
         puts built_instance.inspect
       end
     end

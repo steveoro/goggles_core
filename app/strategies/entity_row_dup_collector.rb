@@ -1,42 +1,38 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
-
-=begin
-
-= EntityRowDupCollector
-
-  - Goggles framework vers.:  4.00.731
-  - author: Steve A.
-
- Typically used during Team-merge operations.
-
- Allows to collect 2 arrays of rows from the same entity class (of type ActiveRecord::Base),
- the first of "duplicated" rows ("dups", for brevity), the second of "non-duplicate"
- rows ("non-dups").
-
- Both "dups" & "non-dups" arrays are collected comparing between them a source/slave
- array of rows versus a destination/master array of rows extracted from the same
- entity.
-
- A row  is considered a "duplicate" if present in the source array while having
- values that appera to be identical or equivalent to the ones of any existing
- destination row.
-
-=end
+#
+# = EntityRowDupCollector
+#
+#   - Goggles framework vers.:  4.00.731
+#   - author: Steve A.
+#
+#  Typically used during Team-merge operations.
+#
+#  Allows to collect 2 arrays of rows from the same entity class (of type ActiveRecord::Base),
+#  the first of "duplicated" rows ("dups", for brevity), the second of "non-duplicate"
+#  rows ("non-dups").
+#
+#  Both "dups" & "non-dups" arrays are collected comparing between them a source/slave
+#  array of rows versus a destination/master array of rows extracted from the same
+#  entity.
+#
+#  A row  is considered a "duplicate" if present in the source array while having
+#  values that appera to be identical or equivalent to the ones of any existing
+#  destination row.
+#
 class EntityRowDupCollector
 
   attr_reader :duplicate_rows, :non_duplicates_rows, :source_rows, :dest_rows
 
   # Creates a new instance
   #
-  def initialize( entity_class )
+  def initialize(entity_class)
     @entity_class = entity_class
     @duplicate_rows = []
     @non_duplicates_rows = []
   end
   #-- -------------------------------------------------------------------------
   #++
-
 
   # Collects the two member array of rows from the entity class specified in the
   # constructor: the 'duplicate' and the 'non-duplicates' row arrays.
@@ -81,24 +77,24 @@ class EntityRowDupCollector
   #     (dest_row.season_id == src_row.season_id)
   #   end
   #
-  def process( src_param, src_lamdba, dest_param, dest_lambda, &equality_check )
-    @duplicate_rows = []                            # Reset the destination arrays
+  def process(src_param, src_lamdba, dest_param, dest_lambda)
+    @duplicate_rows = [] # Reset the destination arrays
     @non_duplicates_rows = []
-                                                    # Collect source & destionation lists:
-    @source_rows = @entity_class.instance_exec( src_param, &src_lamdba )
-    @dest_rows   = @entity_class.instance_exec( dest_param, &dest_lambda )
+    # Collect source & destionation lists:
+    @source_rows = @entity_class.instance_exec(src_param, &src_lamdba)
+    @dest_rows   = @entity_class.instance_exec(dest_param, &dest_lambda)
 
     # To get the unique, non-duplicate src rows, reject all the rows from the source
     # that are equal to any destination row:
     @non_duplicates_rows = @source_rows.reject do |src_row|
-      ( @dest_rows.size > 0 ) &&                    # Do not reject anything if the dest. rows array is empty
-      @dest_rows.any? do |dest_row|
-        yield( src_row, dest_row ) if block_given?
-      end
+      !@dest_rows.empty? && # Do not reject anything if the dest. rows array is empty
+        @dest_rows.any? do |dest_row|
+          yield(src_row, dest_row) if block_given?
+        end
     end
 
     @duplicate_rows = @source_rows.reject do |src_row|
-      @non_duplicates_rows.any?{ |nondup_row| nondup_row.id == src_row.id }
+      @non_duplicates_rows.any? { |nondup_row| nondup_row.id == src_row.id }
     end
   end
   #-- -------------------------------------------------------------------------

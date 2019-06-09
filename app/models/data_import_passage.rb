@@ -1,9 +1,10 @@
-require 'wrappers/timing'
-#require 'swimmer_relatable'
-require 'timing_gettable'
-#require 'timing_validatable'
-#require 'data_importable'
+# frozen_string_literal: true
 
+require 'wrappers/timing'
+# require 'swimmer_relatable'
+require 'timing_gettable'
+# require 'timing_validatable'
+# require 'data_importable'
 
 #
 # == DataImportPassage
@@ -14,15 +15,16 @@ require 'timing_gettable'
 # @version  4.00.811
 #
 class DataImportPassage < ApplicationRecord
+
   include SwimmerRelatable
   include TimingGettable
   include TimingValidatable
   include DataImportable
 
-  belongs_to :user                                  # [Steve, 20120212] Do not validate associated user!
-  belongs_to :meeting_entry, foreign_key: "conflicting_id"
+  belongs_to :user # [Steve, 20120212] Do not validate associated user!
+  belongs_to :meeting_entry, foreign_key: 'conflicting_id'
 
-  validates_presence_of :import_text
+  validates :import_text, presence: true
 
   belongs_to :data_import_meeting_program
   belongs_to :data_import_meeting_individual_result
@@ -37,4 +39,5 @@ class DataImportPassage < ApplicationRecord
 
   belongs_to :passage_type
   #-- --------------------------------------------------------------------------
+
 end

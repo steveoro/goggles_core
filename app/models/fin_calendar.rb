@@ -1,29 +1,25 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
-
-=begin
-
-= fin_calendar
-
-  - version:  6.095
-  - author:   Steve A., Leega
-
-=end
+#
+# = fin_calendar
+#
+#   - version:  6.095
+#   - author:   Steve A., Leega
+#
 class FinCalendar < ApplicationRecord
 
   # String names used to detect months:
-  STANDARD_MONTH_NAMES = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre']
+  STANDARD_MONTH_NAMES = %w[Gennaio Febbraio Marzo Aprile Maggio Giugno Luglio Agosto Settembre Ottobre Novembre Dicembre].freeze
   #-- -------------------------------------------------------------------------
   #++
 
-  belongs_to :user                                  # [Steve, 20120212] Do not validate associated user!
+  belongs_to :user # [Steve, 20120212] Do not validate associated user!
   belongs_to :season
   belongs_to :meeting
 
   validates_associated :season
 
-  validates_presence_of :goggles_meeting_code, allow_nil: false
-
+  validates :goggles_meeting_code, presence: { allow_nil: false }
 
   # ----------------------------------------------------------------------------
   # Base methods:
@@ -47,27 +43,24 @@ class FinCalendar < ApplicationRecord
   #-- -------------------------------------------------------------------------
   #++
 
-
   # Computes a pseudo-unique key for the current calendar row, using only the date
   # and place information specified as parameters.
   #
-  def self.calendar_unique_key( calendar_year, calendar_month, calendar_date, calendar_place )
+  def self.calendar_unique_key(calendar_year, calendar_month, calendar_date, calendar_place)
     # Compact the month name into a number:
-    month_index = STANDARD_MONTH_NAMES.index( calendar_month.to_s.downcase.camelcase )
+    month_index = STANDARD_MONTH_NAMES.index(calendar_month.to_s.downcase.camelcase)
     # Compose a pseudo-unique key for the current calendar row among this season:
-    "#{ calendar_year }/#{ month_index ? month_index+1 : nil }/#{ calendar_date }:#{ calendar_place.gsub(/[\s\,\:\-\_\']/,'').downcase }"
+    "#{calendar_year}/#{month_index ? month_index + 1 : nil}/#{calendar_date}:#{calendar_place.gsub(/[\s\,\:\-\_\']/, '').downcase}"
   end
-
 
   # Computes a pseudo-unique key for the current calendar row, using only the date
   # and place information from the calendar row members.
   #
   def calendar_unique_key
-    FinCalendar.calendar_unique_key( calendar_year, calendar_month, calendar_date, calendar_place )
+    FinCalendar.calendar_unique_key(calendar_year, calendar_month, calendar_date, calendar_place)
   end
   #-- -------------------------------------------------------------------------
   #++
-
 
   # Retrieves the month (number) either from the start-list or the result FIN code
   # (used in the corresponding link field but filled separately during data acquisition).
@@ -77,7 +70,7 @@ class FinCalendar < ApplicationRecord
   def get_month_from_fin_code
     month_from_code = 0
     if fin_startlist_code || fin_results_code
-      codice = fin_startlist_code ? fin_startlist_code : fin_results_code
+      codice = fin_startlist_code || fin_results_code
       months = {}
       months['A'] = 10  # October
       months['B'] = 11  # November
@@ -94,4 +87,5 @@ class FinCalendar < ApplicationRecord
   end
   #-- -------------------------------------------------------------------------
   #++
+
 end

@@ -1,5 +1,6 @@
-require 'wrappers/timing'
+# frozen_string_literal: true
 
+require 'wrappers/timing'
 
 #
 # == MeetingRelaySwimmer
@@ -10,11 +11,12 @@ require 'wrappers/timing'
 # @version  4.00.341
 #
 class MeetingRelaySwimmer < ApplicationRecord
+
   include SwimmerRelatable
   include TimingGettable
   include TimingValidatable
 
-  belongs_to :user                                  # [Steve, 20120212] Do not validate associated user!
+  belongs_to :user # [Steve, 20120212] Do not validate associated user!
 
   belongs_to :meeting_relay_result
   belongs_to :badge
@@ -32,24 +34,22 @@ class MeetingRelaySwimmer < ApplicationRecord
 
   has_one  :event_type,       through: :meeting_relay_result
 
-  validates_presence_of     :relay_order
-  validates_length_of       :relay_order, within: 1..3, allow_nil: false
-  validates_numericality_of :relay_order
+  validates :relay_order, presence: true
+  validates :relay_order, length: { within: 1..3, allow_nil: false }
+  validates :relay_order, numericality: true
 
-  validates_presence_of     :reaction_time
-  validates_numericality_of :reaction_time
+  validates :reaction_time, presence: true
+  validates :reaction_time, numericality: true
 
-  scope :sort_by_user,            ->(dir) { order("users.name #{dir.to_s}") }
-  scope :sort_by_swimmer_name,    ->(dir) { order("swimmer.last_name #{dir.to_s}, swimmer.first_name #{dir.to_s}") }
-  scope :sort_by_badge,           ->(dir) { order("badge.number #{dir.to_s}") }
-  scope :sort_by_stroke_type,     ->(dir) { order("stroke_type.code #{dir.to_s}") }
-  scope :sort_by_order,           ->(dir = 'ASC') { order("relay_order #{dir.to_s}") }
-
+  scope :sort_by_user,            ->(dir) { order("users.name #{dir}") }
+  scope :sort_by_swimmer_name,    ->(dir) { order("swimmer.last_name #{dir}, swimmer.first_name #{dir}") }
+  scope :sort_by_badge,           ->(dir) { order("badge.number #{dir}") }
+  scope :sort_by_stroke_type,     ->(dir) { order("stroke_type.code #{dir}") }
+  scope :sort_by_order,           ->(dir = 'ASC') { order("relay_order #{dir}") }
 
   # ----------------------------------------------------------------------------
   # Base methods:
   # ----------------------------------------------------------------------------
-
 
   # Computes a shorter description for the name associated with this data
   def get_full_name
@@ -63,23 +63,24 @@ class MeetingRelaySwimmer < ApplicationRecord
 
   # Retrieves the user name associated with this instance
   def user_name
-    self.user ? self.user.name : ''
+    user ? user.name : ''
   end
   # ----------------------------------------------------------------------------
 
   # Retrieves the localized Event Type code
   def get_event_type
-    self.meeting_program ? self.meeting_program.event_type.i18n_short : '?'
+    meeting_program ? meeting_program.event_type.i18n_short : '?'
   end
 
   # Retrieves the Meeting Relay Swimmer name
   def get_swimmer_name
-    self.swimmer ? self.swimmer.get_full_name() : '?'
+    swimmer ? swimmer.get_full_name : '?'
   end
 
   # Retrieves the localized Stroke Type code
   def get_stroke_type
-    self.stroke_type ? self.stroke_type.i18n_short : '?'
+    stroke_type ? stroke_type.i18n_short : '?'
   end
   # ----------------------------------------------------------------------------
+
 end

@@ -1,15 +1,15 @@
+# frozen_string_literal: true
+
 require 'date'
 require 'ffaker'
 
-
 FactoryBot.define do
-
   factory :data_import_meeting do
     data_import_session
     conflicting_id            nil
     import_text               { FFaker::Lorem.paragraph[0..200] }
 
-    sequence( :code )         { |n| "meeting#(n)" }
+    sequence(:code) { |_n| 'meeting#(n)' }
     description               { "#{FFaker::Name.suffix} #{FFaker::Address.city} Meeting" }
 
     edition                   { ((rand * 100) % 40).to_i }

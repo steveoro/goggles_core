@@ -1,18 +1,17 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
-=begin
-
-= ChampionshipDAO
-
-  - Goggles framework vers.:  4.00.546
-  - author: Leega
-
- DAO class containing the structure for chapionship ranking rendering.
-
-=end
+#
+# = ChampionshipDAO
+#
+#   - Goggles framework vers.:  4.00.546
+#   - author: Leega
+#
+#  DAO class containing the structure for chapionship ranking rendering.
+#
 class ChampionshipDAO
-  
+
   class TeamScoreDAO
+
     # These must be initialized on creation:
     attr_reader :team
 
@@ -20,17 +19,17 @@ class ChampionshipDAO
     attr_accessor :total_points, :meetings
     #-- -------------------------------------------------------------------------
     #++
-  
+
     # Creates a new instance.
     #
-    def initialize( team )
+    def initialize(team)
       @team          = team
       @meetings      = []
-      @total_points  = 0   # Automatically computed on meeting add
+      @total_points  = 0 # Automatically computed on meeting add
     end
     #-- -------------------------------------------------------------------------
     #++
-    
+
     # Add a meeting to the meetings collection
     def add_meeting(season_meeting_team_score, columns)
       @meetings << season_meeting_team_score
@@ -40,6 +39,7 @@ class ChampionshipDAO
         end
       end
     end
+
   end
 
   # These must be initialized on creation:
@@ -52,19 +52,19 @@ class ChampionshipDAO
   # Needs to  be sure team_scores is an instance of TeamScoreDAO
   # to perform correcto sorting
   #
-  def initialize( columns, meetings, team_scores )
-    unless team_scores.kind_of?( Array )
-      raise ArgumentError.new("Championship DAO must be an array of TeamScoreDAO element")
-    end
+  def initialize(columns, meetings, team_scores)
+    raise ArgumentError, 'Championship DAO must be an array of TeamScoreDAO element' unless team_scores.is_a?(Array)
+
     team_scores.each do |team_score|
-      if not team_score.instance_of?( ChampionshipDAO::TeamScoreDAO )
-        raise ArgumentError.new("Championship DAO must contain a TeamScoreDAO element")
+      unless team_score.instance_of?(ChampionshipDAO::TeamScoreDAO)
+        raise ArgumentError, 'Championship DAO must contain a TeamScoreDAO element'
       end
     end
     @columns     = columns
     @meetings    = meetings
-    @team_scores = team_scores.sort{ |p,n| n.total_points <=> p.total_points }
+    @team_scores = team_scores.sort { |p, n| n.total_points <=> p.total_points }
   end
   #-- -------------------------------------------------------------------------
   #++
+
 end

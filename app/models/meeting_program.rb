@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # == MeetingProgram
 #
@@ -7,11 +9,12 @@
 # @version  6.177
 #
 class MeetingProgram < ApplicationRecord
+
   include MeetingAccountable
 
   belongs_to :user
   # [Steve, 20120212] Validating on User fails always because of validation requirements inside User (password & salt)
-#  validates_associated :user                       # (Do not enable this for User)
+  #  validates_associated :user                       # (Do not enable this for User)
 
   belongs_to :meeting_event
   belongs_to :category_type
@@ -37,25 +40,22 @@ class MeetingProgram < ApplicationRecord
   has_one  :season,                     through: :meeting_session
   has_one  :season_type,                through: :meeting_session
 
-  validates_presence_of :event_order
-  validates_length_of   :event_order, within: 1..3, allow_nil: false
+  validates :event_order, presence: true
+  validates :event_order, length: { within: 1..3, allow_nil: false }
 
-
-# FIXME for Rails 4+, move required/permitted check to the controller using the model
-#  attr_accessible :event_order, :category_type_id, :gender_type_id, :user_id,
-#                  :is_autofilled, :is_out_of_race, :begin_time, :meeting_event_id,
-#                  :pool_type_id, :time_standard_id
-
+  # FIXME: for Rails 4+, move required/permitted check to the controller using the model
+  #  attr_accessible :event_order, :category_type_id, :gender_type_id, :user_id,
+  #                  :is_autofilled, :is_out_of_race, :begin_time, :meeting_event_id,
+  #                  :pool_type_id, :time_standard_id
 
   scope :only_relays,        -> { joins(:event_type).includes(:event_type).where('event_types.is_a_relay' => true) }
   scope :are_not_relays,     -> { joins(:event_type).includes(:event_type).where('event_types.is_a_relay' => false) }
 
-  scope :sort_meeting_program_by_user,            ->(dir) { order("users.name #{dir.to_s}, meeting_sessions.scheduled_date #{dir.to_s}, meeting_programs.event_order #{dir.to_s}") }
-  scope :sort_meeting_program_by_event_type,      ->(dir) { order("event_types.code #{dir.to_s}") }
-  scope :sort_meeting_program_by_category_type,   ->(dir) { order("category_types.code #{dir.to_s}") }
-  scope :sort_meeting_program_by_gender_type,     ->(dir) { order("gender_type.code #{dir.to_s}") }
-  scope :sort_by_date,                            ->(dir = 'ASC') { order("meeting_sessions.scheduled_date #{dir.to_s}, meeting_programs.event_order #{dir.to_s}") }
-
+  scope :sort_meeting_program_by_user,            ->(dir) { order("users.name #{dir}, meeting_sessions.scheduled_date #{dir}, meeting_programs.event_order #{dir}") }
+  scope :sort_meeting_program_by_event_type,      ->(dir) { order("event_types.code #{dir}") }
+  scope :sort_meeting_program_by_category_type,   ->(dir) { order("category_types.code #{dir}") }
+  scope :sort_meeting_program_by_gender_type,     ->(dir) { order("gender_type.code #{dir}") }
+  scope :sort_by_date,                            ->(dir = 'ASC') { order("meeting_sessions.scheduled_date #{dir}, meeting_programs.event_order #{dir}") }
 
   # ----------------------------------------------------------------------------
   # Base methods:
@@ -95,7 +95,7 @@ class MeetingProgram < ApplicationRecord
 
   # Retrieves the user name associated with this instance
   def user_name
-    self.user ? self.user.name : ''
+    user ? user.name : ''
   end
   # ----------------------------------------------------------------------------
 
@@ -106,17 +106,17 @@ class MeetingProgram < ApplicationRecord
 
   # Retrieves the Category Type id
   def get_category_type_id
-    self.category_type ? self.category_type.id : '?'
+    category_type ? category_type.id : '?'
   end
 
   # Retrieves the Category Type code
   def get_category_type_code
-    self.category_type ? self.category_type.code : '?'
+    category_type ? category_type.code : '?'
   end
 
   # Retrieves the Category Type short name
   def get_category_type_name
-    self.category_type ? self.category_type.short_name : '?'
+    category_type ? category_type.short_name : '?'
   end
   # ----------------------------------------------------------------------------
 
@@ -131,18 +131,18 @@ class MeetingProgram < ApplicationRecord
 
   # Retrieves the Meeting Session scheduled_date
   def get_scheduled_date
-    self.meeting_session ? self.meeting_session.scheduled_date : '?'
+    meeting_session ? meeting_session.scheduled_date : '?'
   end
   # ----------------------------------------------------------------------------
 
   # Retrieves the Meeting Session short name (includes Meeting name)
   def get_meeting_session_name
-    self.meeting_session ? self.meeting_session.get_full_name() : '?'
+    meeting_session ? meeting_session.get_full_name : '?'
   end
 
   # Retrieves the Meeting Session verbose name (includes Meeting name)
   def get_meeting_session_verbose_name
-    self.meeting_session ? self.meeting_session.get_verbose_name() : '?'
+    meeting_session ? meeting_session.get_verbose_name : '?'
   end
   # ----------------------------------------------------------------------------
 

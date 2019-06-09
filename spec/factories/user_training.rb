@@ -1,14 +1,14 @@
+# frozen_string_literal: true
+
 require 'date'
 require 'ffaker'
 
-
 FactoryBot.define do
-
   factory :user_training do
     training_header
 
     factory :user_training_with_rows do
-      after(:create) do |created_instance, evaluator|
+      after(:create) do |created_instance, _evaluator|
         create_list(
           :user_training_row,
           ((rand * 10).to_i + 2),                   # total number or detail rows

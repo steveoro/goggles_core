@@ -1,25 +1,23 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
-=begin
-
-= RecordCollector
-  - Goggles framework vers.:  4.00.799
-  - author: Steve A.
-
- Collector strategy class for individual records stored into a newly created
- RecordCollection instance.
-
- Records are collected according to the filtering parameters set using the
- constructor.
-
-=end
+#
+# = RecordCollector
+#   - Goggles framework vers.:  4.00.799
+#   - author: Steve A.
+#
+#  Collector strategy class for individual records stored into a newly created
+#  RecordCollection instance.
+#
+#  Records are collected according to the filtering parameters set using the
+#  constructor.
+#
 class RecordCollector
+
   include SqlConverter
 
   attr_reader :sql_executable_log
   #-- -------------------------------------------------------------------------
   #++
-
 
   # Creates a new instance while setting the filtering parameters for the records
   # selection.
@@ -44,102 +42,87 @@ class RecordCollector
   # - season: a filtering Season instance (this filter is ignored when looping on IndividualRecords)
   # - meeting: a Meeting instance (this filter is ignored when looping on IndividualRecords)
   #
-  def initialize( options = {} )
-    list_of_rows  = options[:list].respond_to?(:each) ? options[:list] : nil
+  def initialize(options = {})
+    list_of_rows = options[:list].respond_to?(:each) ? options[:list] : nil
 
-    record_type_code = options[:record_type_code] if options[:record_type_code].instance_of?( String )
-    record_type_code = options[:record_type].code if options[:record_type].instance_of?( RecordType )
-    if list_of_rows && list_of_rows[0].instance_of?( MeetingIndividualResult )
-      raise ArgumentError.new("Missing a valid record_type or record_type_code parameter!") unless record_type_code
+    record_type_code = options[:record_type_code] if options[:record_type_code].instance_of?(String)
+    record_type_code = options[:record_type].code if options[:record_type].instance_of?(RecordType)
+    if list_of_rows && list_of_rows[0].instance_of?(MeetingIndividualResult)
+      raise ArgumentError, 'Missing a valid record_type or record_type_code parameter!' unless record_type_code
     end
 
-    @collection   = RecordCollection.new( list_of_rows, record_type_code )
-    @sql_executable_log = ''                        # SQL diff log
+    @collection = RecordCollection.new(list_of_rows, record_type_code)
+    @sql_executable_log = '' # SQL diff log
 
     # Options safety check:
-    @swimmer      = options[:swimmer] if options[:swimmer].instance_of?( Swimmer )
-    @team         = options[:team] if options[:team].instance_of?( Team )
-    @season_type  = options[:season_type] if options[:season_type].instance_of?( SeasonType )
-    @season       = options[:season] if options[:season].instance_of?( Season )
-    @meeting      = options[:meeting] if options[:meeting].instance_of?( Meeting )
-    @start_date   = options[:start_date] if options[:start_date].instance_of?( Date )
-    @end_date     = options[:end_date] if options[:end_date].instance_of?( Date )
+    @swimmer      = options[:swimmer] if options[:swimmer].instance_of?(Swimmer)
+    @team         = options[:team] if options[:team].instance_of?(Team)
+    @season_type  = options[:season_type] if options[:season_type].instance_of?(SeasonType)
+    @season       = options[:season] if options[:season].instance_of?(Season)
+    @meeting      = options[:meeting] if options[:meeting].instance_of?(Meeting)
+    @start_date   = options[:start_date] if options[:start_date].instance_of?(Date)
+    @end_date     = options[:end_date] if options[:end_date].instance_of?(Date)
 
     # Set precedence on filter values:
     @team = nil if @season_type
 
     # Cache the unique codes lists:
-    @record_type_codes = RecordType.select(:code).distinct.map{ |row| row.code }
+    @record_type_codes = RecordType.select(:code).distinct.map(&:code)
     # Let's refine the full scan loop parameters, when it's the case:
     if @meeting
       @pool_type_codes = @meeting.pool_types.select(:code).distinct
-        .map{ |row| row.code }.uniq
+                                 .map(&:code).uniq
       @event_type_codes = @meeting.event_types.are_not_relays.select(:code).distinct
-        .map{ |row| row.code }.uniq
+                                  .map(&:code).uniq
       @category_type_codes = @meeting.meeting_events.to_a
-        .map{ |me| me.category_types.select(:code).distinct
-          .map{ |row| row.code }
-        }.flatten.uniq
+                                     .map do |me|
+        me.category_types.select(:code).distinct
+          .map(&:code)
+      end.flatten.uniq
     else
-      @pool_type_codes  = PoolType.only_for_meetings.select(:code).map{ |row| row.code }.uniq
-      @event_type_codes = EventType.are_not_relays.select(:code).map{ |row| row.code }.uniq
-      if @season_type
-        @category_type_codes = CategoryType.is_valid.are_not_relays.is_divided
-            .joins( :season )
-            .includes( :season )
-            .where( 'seasons.season_type_id' => @season_type.id )
-            .select(:code).distinct.map{|row| row.code }.uniq
+      @pool_type_codes  = PoolType.only_for_meetings.select(:code).map(&:code).uniq
+      @event_type_codes = EventType.are_not_relays.select(:code).map(&:code).uniq
+      @category_type_codes = if @season_type
+        CategoryType.is_valid.are_not_relays.is_divided
+                    .joins(:season)
+                    .includes(:season)
+                    .where('seasons.season_type_id' => @season_type.id)
+                    .select(:code).distinct.map(&:code).uniq
       else
-        @category_type_codes = CategoryType.is_valid.are_not_relays.is_divided
-            .select(:code).distinct.map{|row| row.code }.uniq
-      end
+        CategoryType.is_valid.are_not_relays.is_divided
+                    .select(:code).distinct.map(&:code).uniq
+                             end
     end
     # Genders for individual records are two, and that's it:
     @gender_type_codes = GenderType.individual_only.select(:code).distinct
-        .map{ |row| row.code }
+                                   .map(&:code)
   end
   #-- --------------------------------------------------------------------------
   #++
 
   # Getter for the internal Swimmer parameter. +nil+ when not defined.
-  def swimmer
-    @swimmer
-  end
+  attr_reader :swimmer
 
   # Getter for the internal Team parameter. +nil+ when not defined.
-  def team
-    @team
-  end
+  attr_reader :team
 
   # Getter for the internal SeasonType parameter. +nil+ when not defined.
-  def season_type
-    @season_type
-  end
+  attr_reader :season_type
 
   # Getter for the internal Season parameter. +nil+ when not defined.
-  def season
-    @season
-  end
+  attr_reader :season
 
   # Getter for the internal Meeting parameter. +nil+ when not defined.
-  def meeting
-    @meeting
-  end
+  attr_reader :meeting
 
   # Getter for the internal start date parameter. +nil+ when not defined.
-  def start_date
-    @start_date
-  end
+  attr_reader :start_date
 
   # Getter for the internal end date parameter. +nil+ when not defined.
-  def end_date
-    @end_date
-  end
+  attr_reader :end_date
 
   # Getter for the internal list.
-  def collection
-    @collection
-  end
+  attr_reader :collection
 
   # Getter for the internal list #count method.
   def count
@@ -158,7 +141,7 @@ class RecordCollector
   # Returns true on no errors during serialization.
   #
   def save
-    commit( false )
+    commit(false)
   end
 
   # Saves/persists the internal list of records into the database while removing
@@ -167,64 +150,63 @@ class RecordCollector
   # Returns true on no errors during serialization.
   # (The list should be empty afterwards when <tt>remove_from_list</tt> = true.)
   #
-  def commit( remove_from_list = true )
+  def commit(remove_from_list = true)
     persisted_ok = 0
     is_team_record = false
     # Reset the SQL log in between each commit:
     @sql_executable_log = '' if remove_from_list
 
-    if @team                                        # Team-filtered collection?
+    if @team # Team-filtered collection?
       is_team_record = true
-      @sql_executable_log << "-- TEAM Record collector commit for a total of #{ @collection.count }\r\n" <<
-                             "-- TEAM ID #{ @team.id }\r\n\r\n"
+      @sql_executable_log << "-- TEAM Record collector commit for a total of #{@collection.count}\r\n" \
+        "-- TEAM ID #{@team.id}\r\n\r\n"
     else
-      @sql_executable_log << "-- FEDERATION Record collector commit for a total of #{ @collection.count }\r\n\r\n"
+      @sql_executable_log << "-- FEDERATION Record collector commit for a total of #{@collection.count}\r\n\r\n"
     end
 
     @collection.each do |key, row|
       is_ok = false
-      existing_record = seek_existing_record_for( row, is_team_record )
-                                                    # Persist row:
+      existing_record = seek_existing_record_for(row, is_team_record)
+      # Persist row:
       if existing_record                            # Record found already existing?
         new_attribute_values = {
-          minutes:                      row.minutes,
-          seconds:                      row.seconds,
-          hundreds:                     row.hundreds,
-          swimmer_id:                   row.swimmer_id,
-          team_id:                      row.team_id,
-          season_id:                    row.season_id,
-          federation_type_id:           row.federation_type_id,
+          minutes: row.minutes,
+          seconds: row.seconds,
+          hundreds: row.hundreds,
+          swimmer_id: row.swimmer_id,
+          team_id: row.team_id,
+          season_id: row.season_id,
+          federation_type_id: row.federation_type_id,
           meeting_individual_result_id: row.meeting_individual_result_id,
-          is_team_record:               is_team_record
+          is_team_record: is_team_record
         }
-        is_ok = existing_record.update_attributes( new_attribute_values )
+        is_ok = existing_record.update(new_attribute_values)
       else                                          # Record not found?
         row.is_team_record = is_team_record
         begin
           is_ok = row.save!
-        rescue
+        rescue StandardError
           puts "\r\nError while saving #{row.inspect}"
-          puts "Exception: #{ $!.to_s }" if $!
+          puts "Exception: #{$ERROR_INFO}" if $ERROR_INFO
           @sql_executable_log << "-- save statement failed! Row ID: #{row.id}\r\n"
         end
       end
 
-      if is_ok                                      # Store the SQL diff:
-        if existing_record
-          @sql_executable_log << to_sql_update( existing_record, false, new_attribute_values, "\r\n" ) # (false: no comment)
-        else
-          @sql_executable_log << to_sql_insert( row, false, "\r\n" ) # (false: no comment)
-        end
-        persisted_ok += 1                           # Increase persisted counter
-        @collection.delete_with_key(key) if remove_from_list
-      end
+      next unless is_ok # Store the SQL diff:
+
+      @sql_executable_log << if existing_record
+        to_sql_update(existing_record, false, new_attribute_values, "\r\n") # (false: no comment)
+      else
+        to_sql_insert(row, false, "\r\n") # (false: no comment)
+                             end
+      persisted_ok += 1 # Increase persisted counter
+      @collection.delete_with_key(key) if remove_from_list
     end
-    @sql_executable_log << "\r\n\r\n-- Tot. committed rows with OK status: #{ persisted_ok }\r\n"
+    @sql_executable_log << "\r\n\r\n-- Tot. committed rows with OK status: #{persisted_ok}\r\n"
     remove_from_list ? (@collection.count == 0) : (@collection.count == persisted_ok)
   end
   #-- --------------------------------------------------------------------------
   #++
-
 
   # Returns an existing IndividualRecord matching most of the attributes of the
   # specified result_row, which may either be an instance of MeetingIndividualResult
@@ -233,115 +215,112 @@ class RecordCollector
   # Returns nil when no previous matching record was found, thus implying a
   # missing record or the need to add a new record row.
   #
-  def seek_existing_record_for( result_row, must_be_a_team_record )
+  def seek_existing_record_for(result_row, must_be_a_team_record)
     where_attribute_values = must_be_a_team_record ? {
-      pool_type_id:     result_row.pool_type_id,
-      event_type_id:    result_row.event_type_id,
+      pool_type_id: result_row.pool_type_id,
+      event_type_id: result_row.event_type_id,
       category_type_id: result_row.category_type_id,
-      gender_type_id:   result_row.gender_type_id,
-      record_type_id:   result_row.record_type_id,
-      team_id:          result_row.team_id,
-      is_team_record:   true
+      gender_type_id: result_row.gender_type_id,
+      record_type_id: result_row.record_type_id,
+      team_id: result_row.team_id,
+      is_team_record: true
     } :
     {
-      pool_type_id:     result_row.pool_type_id,
-      event_type_id:    result_row.event_type_id,
+      pool_type_id: result_row.pool_type_id,
+      event_type_id: result_row.event_type_id,
       category_type_id: result_row.category_type_id,
-      gender_type_id:   result_row.gender_type_id,
-      record_type_id:   result_row.record_type_id,
+      gender_type_id: result_row.gender_type_id,
+      record_type_id: result_row.record_type_id,
       # [Steve, 20150602] If it's not a "team record", then it must be a federation
       # record (a season_type_id-governed record):
       'season_types.id' => result_row.season_type.id,
-      is_team_record:   false
+      is_team_record: false
     }
-    IndividualRecord.includes(:season_type).where( where_attribute_values ).first
+    IndividualRecord.includes(:season_type).where(where_attribute_values).first
   end
   #-- --------------------------------------------------------------------------
   #++
 
+  # Returns the internal RecordCollection instance updated with the records collected using
+  # the specified parameters.
+  #
+  # This method works by scanning existing MeetingIndividualResult(s) on DB.
+  #
+  def collect_from_all_category_results_having(pool_type_code, event_type_code, gender_type_code,
+    record_type_code)
+    # DEBUG
+    #    puts "\r\n---[ RecordCollector#collect_from_results_having('#{pool_type_code}', '#{event_type_code}', '#{gender_type_code}', '#{record_type_code}') ]---"
+    mir = MeetingIndividualResult.is_valid
+                                 .joins(:pool_type, :event_type, :gender_type)
+                                 .includes(:pool_type, :event_type, :gender_type)
+                                 .where(
+                                   [
+                                     '(pool_types.code = ?) AND (event_types.code = ?) AND ' \
+                                     '(gender_types.code = ?) AND ' \
+                                     '(minutes * 6000 + seconds*100 + hundreds > 0)', # (avoid null times)
+                                     pool_type_code, event_type_code, gender_type_code
+                                   ]
+                                 ).readonly(false)
+    mir = mir.where(['swimmer_id = ?', @swimmer.id]) if @swimmer
+    mir = mir.where(['team_id = ?', @team.id]) if @team
+    mir = mir.joins(:meeting).where(['meetings.id = ?', @meeting.id]) if @meeting
+    mir = mir.joins(:season).where(['seasons.id = ?', @season.id]) if @season
+    mir = mir.joins(:season_type).where(['season_types.id = ?', @season_type.id]) if @season_type
+    update_and_return_collection_with_first_results(mir, record_type_code)
+  end
 
   # Returns the internal RecordCollection instance updated with the records collected using
   # the specified parameters.
   #
   # This method works by scanning existing MeetingIndividualResult(s) on DB.
   #
-  def collect_from_all_category_results_having( pool_type_code, event_type_code, gender_type_code,
-                                                record_type_code )
-# DEBUG
-#    puts "\r\n---[ RecordCollector#collect_from_results_having('#{pool_type_code}', '#{event_type_code}', '#{gender_type_code}', '#{record_type_code}') ]---"
+  def collect_from_results_having(pool_type_code, event_type_code, category_type_code,
+    gender_type_code, record_type_code)
+    # DEBUG
+    #    puts "\r\n---[ RecordCollector#collect_from_results_having('#{pool_type_code}', '#{event_type_code}', '#{category_type_code}', '#{gender_type_code}') ]---"
     mir = MeetingIndividualResult.is_valid
-      .joins( :pool_type, :event_type, :gender_type )
-      .includes( :pool_type, :event_type, :gender_type )
-      .where(
-      [
-        '(pool_types.code = ?) AND (event_types.code = ?) AND ' +
-        '(gender_types.code = ?) AND ' +
-        '(minutes * 6000 + seconds*100 + hundreds > 0)', # (avoid null times)
-        pool_type_code, event_type_code, gender_type_code
-      ]
-    ).readonly(false)
-    mir = mir.where( ['swimmer_id = ?', @swimmer.id] ) if @swimmer
-    mir = mir.where( ['team_id = ?', @team.id]) if @team
-    mir = mir.joins( :meeting ).where( ['meetings.id = ?', @meeting.id]) if @meeting
-    mir = mir.joins( :season ).where( ['seasons.id = ?', @season.id]) if @season
-    mir = mir.joins( :season_type ).where( ['season_types.id = ?', @season_type.id]) if @season_type
-    update_and_return_collection_with_first_results( mir, record_type_code )
+                                 .joins(:pool_type, :event_type, :category_type, :gender_type)
+                                 .includes(:pool_type, :event_type, :category_type, :gender_type)
+                                 .where(
+                                   [
+                                     '(pool_types.code = ?) AND (event_types.code = ?) AND ' \
+                                     '(category_types.code = ?) AND (gender_types.code = ?) AND ' \
+                                     '(minutes * 6000 + seconds*100 + hundreds > 0)', # (avoid null times)
+                                     pool_type_code, event_type_code, category_type_code, gender_type_code
+                                   ]
+                                 ).readonly(false)
+    mir = mir.where(['swimmer_id = ?', @swimmer.id]) if @swimmer
+    mir = mir.where(['team_id = ?', @team.id]) if @team
+    mir = mir.joins(:meeting).where(['meetings.id = ?', @meeting.id]) if @meeting
+    mir = mir.joins(:season).where(['seasons.id = ?', @season.id]) if @season
+    mir = mir.joins(:season_type).where(['season_types.id = ?', @season_type.id]) if @season_type
+    mir = mir.joins(:meeting).where(['(meetings.header_date >= ?) AND (meetings.header_date <= ?)', @start_date, @end_date]) if @start_date
+    update_and_return_collection_with_first_results(mir, record_type_code)
   end
-
-
-  # Returns the internal RecordCollection instance updated with the records collected using
-  # the specified parameters.
-  #
-  # This method works by scanning existing MeetingIndividualResult(s) on DB.
-  #
-  def collect_from_results_having( pool_type_code, event_type_code, category_type_code,
-                                   gender_type_code, record_type_code )
-# DEBUG
-#    puts "\r\n---[ RecordCollector#collect_from_results_having('#{pool_type_code}', '#{event_type_code}', '#{category_type_code}', '#{gender_type_code}') ]---"
-    mir = MeetingIndividualResult.is_valid
-      .joins( :pool_type, :event_type, :category_type, :gender_type )
-      .includes( :pool_type, :event_type, :category_type, :gender_type )
-      .where(
-      [
-        '(pool_types.code = ?) AND (event_types.code = ?) AND ' +
-        '(category_types.code = ?) AND (gender_types.code = ?) AND ' +
-        '(minutes * 6000 + seconds*100 + hundreds > 0)', # (avoid null times)
-        pool_type_code, event_type_code, category_type_code, gender_type_code
-      ]
-    ).readonly(false)
-    mir = mir.where( ['swimmer_id = ?', @swimmer.id] ) if @swimmer
-    mir = mir.where( ['team_id = ?', @team.id]) if @team
-    mir = mir.joins( :meeting ).where( ['meetings.id = ?', @meeting.id]) if @meeting
-    mir = mir.joins( :season ).where( ['seasons.id = ?', @season.id]) if @season
-    mir = mir.joins( :season_type ).where( ['season_types.id = ?', @season_type.id]) if @season_type
-    mir = mir.joins( :meeting ).where( ['(meetings.header_date >= ?) AND (meetings.header_date <= ?)', @start_date, @end_date]) if @start_date
-    update_and_return_collection_with_first_results( mir, record_type_code )
-  end
-
 
   # Returns the internal RecordCollection instance updated with the records collected using
   # the specified parameters.
   #
   # This method works by scanning existing IndividualRecord(s) on DB.
   #
-  def collect_from_records_having( pool_type_code, event_type_code, category_type_code,
-                                   gender_type_code, record_type_code )
+  def collect_from_records_having(pool_type_code, event_type_code, category_type_code,
+    gender_type_code, record_type_code)
     ir = IndividualRecord
-      .joins( :record_type, :pool_type, :event_type, :category_type, :gender_type )
-      .includes( :record_type, :pool_type, :event_type, :category_type, :gender_type )
-      .where(
-      [
-        '(record_types.code = ?) AND ' +
-        '(pool_types.code = ?) AND (event_types.code = ?) AND ' +
-        '(category_types.code = ?) AND (gender_types.code = ?) AND ' +
-        '(minutes * 6000 + seconds*100 + hundreds > 0)', # (avoid null times)
-        record_type_code, pool_type_code, event_type_code, category_type_code, gender_type_code
-      ]
-    ).readonly(false)
-    ir = ir.where( swimmer_id: @swimmer.id ) if @swimmer
-    ir = ir.where( team_id: @team.id ) if @team
-    ir = ir.for_season_type( @season_type.id ) if @season_type
-    update_and_return_collection_with_first_results( ir, record_type_code )
+         .joins(:record_type, :pool_type, :event_type, :category_type, :gender_type)
+         .includes(:record_type, :pool_type, :event_type, :category_type, :gender_type)
+         .where(
+           [
+             '(record_types.code = ?) AND ' \
+             '(pool_types.code = ?) AND (event_types.code = ?) AND ' \
+             '(category_types.code = ?) AND (gender_types.code = ?) AND ' \
+             '(minutes * 6000 + seconds*100 + hundreds > 0)', # (avoid null times)
+             record_type_code, pool_type_code, event_type_code, category_type_code, gender_type_code
+           ]
+         ).readonly(false)
+    ir = ir.where(swimmer_id: @swimmer.id) if @swimmer
+    ir = ir.where(team_id: @team.id) if @team
+    ir = ir.for_season_type(@season_type.id) if @season_type
+    update_and_return_collection_with_first_results(ir, record_type_code)
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -354,15 +333,14 @@ class RecordCollector
   #
   def get_collected_season_types
     result = {}
-    @collection.each do |collection_key, individual_record|
+    @collection.each do |_collection_key, individual_record|
       season_type = individual_record.season_type
-      result[ season_type.id ] = season_type unless result.has_key?( season_type.id )
+      result[season_type.id] = season_type unless result.key?(season_type.id)
     end
     result
   end
   #-- --------------------------------------------------------------------------
   #++
-
 
   # Returns the list of allowed RecordType codes
   def record_type_code_list
@@ -388,7 +366,6 @@ class RecordCollector
   def gender_type_codes_list
     @gender_type_codes
   end
-
 
   # Executes the block while passing iteratively self plus all the codes combinations
   # of PoolType(s), EventType(s), CategoryType(s) & GenderType(s) as parameters
@@ -419,12 +396,12 @@ class RecordCollector
   # the individual_records table. These can be later retrieved and stored on another
   # RecordCollection with the former method.
   #
-  def full_scan( &block )
+  def full_scan
     @pool_type_codes.each do |pool_type_code|
       @event_type_codes.each do |event_type_code|
         @category_type_codes.each do |category_type_code|
           @gender_type_codes.each do |gender_type_code|
-            yield( self, pool_type_code, event_type_code, category_type_code, gender_type_code ) if block_given?
+            yield(self, pool_type_code, event_type_code, category_type_code, gender_type_code) if block_given?
           end
         end
       end
@@ -434,9 +411,7 @@ class RecordCollector
   #-- -------------------------------------------------------------------------
   #++
 
-
   private
-
 
   # Returns the internal collection after having added the first +limit+ results
   # among the ones specified.
@@ -444,28 +419,29 @@ class RecordCollector
   # <tt>prefiltered_results</tt> is a Relation of either IndividualRecord or
   # MeetingIndividualResult instances.
   #
-  def update_and_return_collection_with_first_results( prefiltered_results, record_type_code, limit = 3 )
+  def update_and_return_collection_with_first_results(prefiltered_results, record_type_code, limit = 3)
     # Store these max first ranking results:
-    first_recs = prefiltered_results.order( :minutes, :seconds, :hundreds ).limit(limit)
-# DEBUG
-#    puts "Initial first_recs.size: #{first_recs.to_ary.size}"
+    first_recs = prefiltered_results.order(:minutes, :seconds, :hundreds).limit(limit)
+    # DEBUG
+    #    puts "Initial first_recs.size: #{first_recs.to_ary.size}"
 
-    if first_recs.count > 0                         # Compute the first timing result value
-      first_timing_value = first_recs.first.minutes*6000 + first_recs.first.seconds*100 + first_recs.first.hundreds
+    if first_recs.count > 0 # Compute the first timing result value
+      first_timing_value = first_recs.first.minutes * 6000 + first_recs.first.seconds * 100 + first_recs.first.hundreds
       # [Steve, 20160916] Old implementation:
       # Exclude from the result all other rows that have a greater timing result (keep same ranking results)
-#      first_recs.reject!{ |row| first_timing_value < (row.minutes*6000 + row.seconds*100 + row.hundreds) }
+      #      first_recs.reject!{ |row| first_timing_value < (row.minutes*6000 + row.seconds*100 + row.hundreds) }
 
       # [Steve, 20160916] New implementation:
-      first_recs = first_recs.where(["minutes*6000 + seconds*100 + hundreds <= ?", first_timing_value])
+      first_recs = first_recs.where(['minutes*6000 + seconds*100 + hundreds <= ?', first_timing_value])
     end
-# DEBUG
+    # DEBUG
     first_recs.each do |row|
       puts "- ID:#{row.id} => #{row.get_timing}\r\n"
     end
-    first_recs.each { |rec| @collection.add( rec, record_type_code ) }    # Add the first records to the collection
+    first_recs.each { |rec| @collection.add(rec, record_type_code) } # Add the first records to the collection
     @collection
   end
   #-- -------------------------------------------------------------------------
   #++
+
 end

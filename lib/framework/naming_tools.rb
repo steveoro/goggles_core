@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'singleton'
 
 #
@@ -8,11 +10,10 @@ require 'singleton'
 # (p) 2008-2013, FASAR Software, Italy
 #
 class NamingTools
+
   include Singleton
 
-
   public
-
 
   # List of all controller or "context" names that have a dedicated parameter row inside table app_parameters.
   # (Meaning "context" in the sense of either a controller or a +controller+<underscore>+action+ combination.
@@ -21,37 +22,34 @@ class NamingTools
   # This is used just to have a different "filtering resolution" or other dedicated rendering parameters
   # for any of the enlisted actions.
   #
-  PARAM_CTRL_SYMS = [
-    :home, :articles, :comments, :tags, :setup,
-    :seasons, :teams, :swimmers, :badges, :team_affiliations,
-    :time_standards,
-    :meetings,
-    :meeting_programs, :rankings,
-    :results,
-    :exercises,
-    :trainings,
-    :goggle_cups, :goggle_cup_standards,
-    :swimming_pool, :swimming_pool_reviews,
-    :data_import
-  ] unless defined? PARAM_CTRL_SYMS
+  unless defined? PARAM_CTRL_SYMS
+    PARAM_CTRL_SYMS = [
+      :home, :articles, :comments, :tags, :setup, :seasons, :teams, :swimmers, :badges, :team_affiliations,
+      :time_standards, :meetings, :meeting_programs, :rankings, :results, :exercises, :trainings, :goggle_cups,
+      :goggle_cup_standards, :swimming_pool, :swimming_pool_reviews, :data_import
+    ].freeze
+  end
 
   # Hash for all custom app_parameters column names used to store default values for each
   # controller of the application. Not all controller names need to be enlisted (nor they need
   # to have custom default values stored inside app_parameters).
   #
-  DEFAULT_VALUES_IN_APP_PARAMETERS = {
-  } unless defined? DEFAULT_VALUES_IN_APP_PARAMETERS
+  unless defined? DEFAULT_VALUES_IN_APP_PARAMETERS
+    DEFAULT_VALUES_IN_APP_PARAMETERS = {
+    }.freeze
+  end
   # ---------------------------------------------------------------------------
-
 
   # Returns the <tt>app_parameters</tt>  column name (as string) used to store the default value for the couple
   # <tt>( controller_sym, field_sym )</tt> specified as symbols. Returns +nil+ if none was found.
   #
-  def self.get_field_name_for_default_value_in_app_parameters_for( controller_sym, field_sym )
-    field_hash = NamingTools::DEFAULT_VALUES_IN_APP_PARAMETERS[ controller_sym ]
-    return field_hash[ field_sym ] unless field_hash.nil?
+  def self.get_field_name_for_default_value_in_app_parameters_for(controller_sym, field_sym)
+    field_hash = NamingTools::DEFAULT_VALUES_IN_APP_PARAMETERS[controller_sym]
+    return field_hash[field_sym] unless field_hash.nil?
+
     nil
   end
   # ---------------------------------------------------------------------------
   # ---------------------------------------------------------------------------
+
 end

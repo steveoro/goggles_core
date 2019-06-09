@@ -1,4 +1,7 @@
+# frozen_string_literal: true
+
 class CreateMeetingRelayReservations < ActiveRecord::Migration[5.0]
+
   def change
     create_table :meeting_relay_reservations do |t|
       t.references :meeting, foreign_key: true
@@ -13,4 +16,5 @@ class CreateMeetingRelayReservations < ActiveRecord::Migration[5.0]
       t.timestamps
     end
   end
+
 end

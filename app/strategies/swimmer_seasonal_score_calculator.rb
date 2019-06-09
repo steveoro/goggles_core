@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'wrappers/timing'
 
 #
@@ -19,14 +21,10 @@ class SwimmerSeasonalScoreCalculator
   # An instance of swimmer
   # An instance of season
   #
-  def initialize( swimmer, season )
-    unless swimmer && swimmer.instance_of?( Swimmer )
-      raise ArgumentError.new("Needs a valid swimmer")
-    end
-    unless season && season.instance_of?( Season )
-      raise ArgumentError.new("Needs a valid season")
-    end
-    
+  def initialize(swimmer, season)
+    raise ArgumentError, 'Needs a valid swimmer' unless swimmer&.instance_of?(Swimmer)
+    raise ArgumentError, 'Needs a valid season' unless season&.instance_of?(Season)
+
     @swimmer = swimmer
     @season  = season
     @badge   = get_badge
@@ -38,7 +36,7 @@ class SwimmerSeasonalScoreCalculator
   # Retrieves seasonal badge for swimmer
   #
   def get_badge
-    swimmer.badges.for_season( @season ).first if swimmer.badges.for_season( @season ).exists?
+    swimmer.badges.for_season(@season).first if swimmer.badges.for_season(@season).exists?
   end
   #-- --------------------------------------------------------------------------
   #++
@@ -58,24 +56,24 @@ class SwimmerSeasonalScoreCalculator
   #
   # Returns a BestLimitedRankingDAO for supermaster calculation
   #
-  def calculate_supermaster_score( number_of_bests = 5 )
+  def calculate_supermaster_score(number_of_bests = 5)
     supermaster_results = []
     events = []
     get_results.each do |meeting_individual_result|
-      if !events.include?( meeting_individual_result.event_type.code )
-        supermaster_results << meeting_individual_result
-        events << meeting_individual_result.event_type.code
-        break if supermaster_results.count == number_of_bests
-      end      
+      next if events.include?(meeting_individual_result.event_type.code)
+
+      supermaster_results << meeting_individual_result
+      events << meeting_individual_result.event_type.code
+      break if supermaster_results.count == number_of_bests
     end
-    BestLimitedRankingDAO.new( supermaster_results )
+    BestLimitedRankingDAO.new(supermaster_results)
   end
   #-- --------------------------------------------------------------------------
   #++
 
   # Calculates ironmaster score
   # Ironmaster score is calculated considering
-  # the best standard point results obtained 
+  # the best standard point results obtained
   # in each event type not regarding pool type
   #
   # Returns a BestLimitedRankingDAO for ironmaster calculation
@@ -84,42 +82,43 @@ class SwimmerSeasonalScoreCalculator
     ironmaster_results = []
     events = []
     get_results.each do |meeting_individual_result|
-      if !events.include?( meeting_individual_result.event_type.code )
+      unless events.include?(meeting_individual_result.event_type.code)
         ironmaster_results << meeting_individual_result
         events << meeting_individual_result.event_type.code
       end
     end
-    BestLimitedRankingDAO.new( ironmaster_results )
+    BestLimitedRankingDAO.new(ironmaster_results)
   end
   #-- --------------------------------------------------------------------------
   #++
 
   # Calculates team ranking score
   # Team ranking score is calculated considering
-  # the best (3) standard point results obtained 
+  # the best (3) standard point results obtained
   # in at least (2) different meetings
   # Results obtained before the year of 25th birthday
-  # hasn't been considered 
+  # hasn't been considered
   #
   # Returns a BestLimitedRankingDAO for team ranking calculation
   #
-  def calculate_team_ranking_score( number_of_meetings = 2, number_of_bests = 3 )
+  def calculate_team_ranking_score(number_of_meetings = 2, number_of_bests = 3)
     team_ranking_results = []
     events = []
     if @badge.category_type.code != 'U25' &&
-     @badge.meetings.distinct.count >= number_of_meetings
+       @badge.meetings.distinct.count >= number_of_meetings
       get_results.each do |meeting_individual_result|
-        if meeting_individual_result.get_scheduled_date.year - @swimmer.year_of_birth >= 25
-          if !events.include?( meeting_individual_result.event_type.code )
-            team_ranking_results << meeting_individual_result
-            events << meeting_individual_result.event_type.code
-            break if team_ranking_results.count == number_of_bests
-          end
-        end
+        next unless meeting_individual_result.get_scheduled_date.year - @swimmer.year_of_birth >= 25
+
+        next if events.include?(meeting_individual_result.event_type.code)
+
+        team_ranking_results << meeting_individual_result
+        events << meeting_individual_result.event_type.code
+        break if team_ranking_results.count == number_of_bests
       end
     end
-    BestLimitedRankingDAO.new( team_ranking_results )
+    BestLimitedRankingDAO.new(team_ranking_results)
   end
   #-- --------------------------------------------------------------------------
   #++
+
 end

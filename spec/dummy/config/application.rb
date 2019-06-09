@@ -1,20 +1,22 @@
+# frozen_string_literal: true
+
 require_relative 'boot'
 
 require 'rails/all'
 
 # Old Rails 3 method: Pick the frameworks you want:
-#require "active_record/railtie"
-#require "action_controller/railtie"
-#require "action_mailer/railtie"
-#require "active_resource/railtie"
-#require "sprockets/railtie"
+# require "active_record/railtie"
+# require "action_controller/railtie"
+# require "action_mailer/railtie"
+# require "active_resource/railtie"
+# require "sprockets/railtie"
 
 Bundler.require(*Rails.groups)
-require "goggles_core"
-
+require 'goggles_core'
 
 module Dummy
   class Application < Rails::Application
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
@@ -44,7 +46,7 @@ module Dummy
     # config.i18n.default_locale = :de
 
     # Configure the default encoding used in templates for Ruby 1.9.
-    config.encoding = "utf-8"
+    config.encoding = 'utf-8'
 
     # Enable escaping HTML in JSON.
     config.active_support.escape_html_entities_in_json = true
@@ -65,6 +67,6 @@ module Dummy
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
+
   end
 end
-

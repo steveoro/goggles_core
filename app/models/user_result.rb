@@ -1,25 +1,24 @@
-# encoding: utf-8
+# frozen_string_literal: true
+
 require 'wrappers/timing'
 
-
-=begin
-
-= UserResult model
-
-  - version:  6.069
-  - author:   Steve A.
-
-=end
+#
+# = UserResult model
+#
+#   - version:  6.069
+#   - author:   Steve A.
+#
 class UserResult < ApplicationRecord
+
   # XXX [Steve, 20170130] We don't care anymore (so much) about these updates: commented out
-#  after_create    UserContentLogger.new('user_results')
-#  after_update    UserContentLogger.new('user_results')
-#  before_destroy  UserContentLogger.new('user_results')
+  #  after_create    UserContentLogger.new('user_results')
+  #  after_update    UserContentLogger.new('user_results')
+  #  before_destroy  UserContentLogger.new('user_results')
 
   include TimingGettable
   include TimingValidatable
 
-  belongs_to :user                                  # [Steve, 20120212] Do not validate associated user!
+  belongs_to :user # [Steve, 20120212] Do not validate associated user!
 
   belongs_to :swimmer
   belongs_to :category_type
@@ -33,39 +32,38 @@ class UserResult < ApplicationRecord
   validates_associated :meeting_individual_result
 
   belongs_to :disqualification_code_type
-                                                    # Duplicate (shortcut) reference that may be filled-in at a later stage:
-  validates_presence_of     :description
-  validates_length_of       :description, within: 1..60, allow_nil: false
+  # Duplicate (shortcut) reference that may be filled-in at a later stage:
+  validates :description, presence: true
+  validates :description, length: { within: 1..60, allow_nil: false }
 
-  validates_presence_of     :standard_points
-  validates_numericality_of :standard_points
-  validates_presence_of     :meeting_points
-  validates_numericality_of :meeting_points
+  validates :standard_points, presence: true
+  validates :standard_points, numericality: true
+  validates :meeting_points, presence: true
+  validates :meeting_points, numericality: true
 
-  validates_presence_of     :rank
-  validates_length_of       :rank, within: 1..5, allow_nil: false
-  validates_numericality_of :rank
+  validates :rank, presence: true
+  validates :rank, length: { within: 1..5, allow_nil: false }
+  validates :rank, numericality: true
 
-  validates_presence_of     :is_disqualified
+  validates     :is_disqualified, presence: true
 
-  validates_presence_of     :reaction_time
-  validates_numericality_of :reaction_time
+  validates     :reaction_time, presence: true
+  validates :reaction_time, numericality: true
 
-# FIXME for Rails 4+, move required/permitted check to the controller using the model
-#  attr_accessible :user_id, :swimmer_id, :category_type_id, :pool_type_id,
-#                  :event_type_id, :meeting_individual_result_id,
-#                  :disqualification_code_type_id,
-#                  :description, :standard_points, :meeting_points, :rank,
-#                  :is_disqualified, :reaction_time
+  # FIXME: for Rails 4+, move required/permitted check to the controller using the model
+  #  attr_accessible :user_id, :swimmer_id, :category_type_id, :pool_type_id,
+  #                  :event_type_id, :meeting_individual_result_id,
+  #                  :disqualification_code_type_id,
+  #                  :description, :standard_points, :meeting_points, :rank,
+  #                  :is_disqualified, :reaction_time
 
   delegate :name, to: :user, prefix: true
 
-  scope :sort_by_user,          ->(dir) { order("users.name #{dir.to_s}, meetings.description #{dir.to_s}, swimmers.last_name #{dir.to_s}, swimmers.first_name #{dir.to_s}") }
-  scope :sort_by_category_type, ->(dir) { order("category_types.code #{dir.to_s},swimmers.last_name #{dir.to_s}, swimmers.first_name #{dir.to_s}") }
-  scope :sort_by_swimmer,       ->(dir) { order("swimmers.last_name #{dir.to_s}, swimmers.first_name #{dir.to_s}, meeting_individual_results.rank #{dir.to_s}") }
+  scope :sort_by_user,          ->(dir) { order("users.name #{dir}, meetings.description #{dir}, swimmers.last_name #{dir}, swimmers.first_name #{dir}") }
+  scope :sort_by_category_type, ->(dir) { order("category_types.code #{dir},swimmers.last_name #{dir}, swimmers.first_name #{dir}") }
+  scope :sort_by_swimmer,       ->(dir) { order("swimmers.last_name #{dir}, swimmers.first_name #{dir}, meeting_individual_results.rank #{dir}") }
   #-- -------------------------------------------------------------------------
   #++
-
 
   # Computes a shorter description for the name associated with this data
   def get_full_name
@@ -81,13 +79,14 @@ class UserResult < ApplicationRecord
 
   # Retrieves the localized Event Type code
   def get_event_type
-    self.event_type ? self.event_type.i18n_short : '?'
+    event_type ? event_type.i18n_short : '?'
   end
 
   # Retrieves the scheduled_date of this result
   def get_scheduled_date
-    self.event_date ? Format.a_date(self.event_date) : '?'
+    event_date ? Format.a_date(event_date) : '?'
   end
   #-- -------------------------------------------------------------------------
   #++
+
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'ffaker'
 
 FactoryBot.define do
@@ -10,7 +12,7 @@ FactoryBot.define do
 
     before(:create) do |built_instance|
       if built_instance.invalid?
-        puts "\r\nFactory def. error => " << ValidationErrorTools.recursive_error_for( built_instance )
+        puts "\r\nFactory def. error => " << ValidationErrorTools.recursive_error_for(built_instance)
         puts built_instance.inspect
       end
     end

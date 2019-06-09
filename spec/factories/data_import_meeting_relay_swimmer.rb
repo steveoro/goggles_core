@@ -1,6 +1,7 @@
+# frozen_string_literal: true
+
 # Read about factories at https://github.com/thoughtbot/factory_bot
 require 'common/validation_error_tools'
-
 
 FactoryBot.define do
   factory :data_import_meeting_relay_swimmer do
@@ -10,11 +11,11 @@ FactoryBot.define do
 
     meeting_relay_result
     # The following column uses the pre-loaded seed records:
-    stroke_type  do
+    stroke_type do
       EventsByPoolType.only_for_meetings
-        .are_relays
-        .all.sort{ rand - 0.5 }[0]
-        .stroke_type
+                      .are_relays
+                      .all.min { rand - 0.5 }
+                      .stroke_type
     end
 
     minutes                   0
@@ -29,13 +30,13 @@ FactoryBot.define do
         team: meeting_relay_result.team
       )
     end
-    swimmer                   { badge.swimmer }
+    swimmer { badge.swimmer }
 
     user
 
     before(:create) do |built_instance|
       if built_instance.invalid?
-        puts "\r\nFactory def. error => " << ValidationErrorTools.recursive_error_for( built_instance )
+        puts "\r\nFactory def. error => " << ValidationErrorTools.recursive_error_for(built_instance)
         puts built_instance.inspect
       end
     end

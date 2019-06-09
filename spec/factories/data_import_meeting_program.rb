@@ -1,9 +1,9 @@
+# frozen_string_literal: true
+
 require 'date'
 require 'ffaker'
 
-
 FactoryBot.define do
-
   factory :data_import_meeting_program do
     data_import_session
     common_meeting_program_fields
@@ -13,13 +13,13 @@ FactoryBot.define do
     meeting_session
     event_type do
       EventsByPoolType.joins(:event_type)
-        .only_for_meetings
-        .for_pool_type_code( meeting_session.swimming_pool.pool_type.code )
-        .where( "event_types.length_in_meters < 3000" )
-        .sample
-        .event_type
+                      .only_for_meetings
+                      .for_pool_type_code(meeting_session.swimming_pool.pool_type.code)
+                      .where('event_types.length_in_meters < 3000')
+                      .sample
+                      .event_type
     end
-    category_type do                                # Get a coherent category according to the meeting_event:
+    category_type do # Get a coherent category according to the meeting_event:
       event_type.is_a_relay ?
         CategoryType.is_valid.only_relays.sample :
         CategoryType.is_valid.are_not_relays.sample
@@ -32,19 +32,19 @@ FactoryBot.define do
 
     # Make the circular reference between the session and the
     # season valid:
-    after(:create) do |created_instance, evaluator|
+    after(:create) do |created_instance, _evaluator|
       created_instance.data_import_session.season = created_instance.meeting_session.season
     end
 
     factory :data_import_meeting_program_individual do
       event_type do
         EventsByPoolType.joins(:event_type)
-          .only_for_meetings
-          .not_relays
-          .for_pool_type_code( meeting_session.swimming_pool.pool_type.code )
-          .where( "event_types.length_in_meters < 3000" )
-          .sample
-          .event_type
+                        .only_for_meetings
+                        .not_relays
+                        .for_pool_type_code(meeting_session.swimming_pool.pool_type.code)
+                        .where('event_types.length_in_meters < 3000')
+                        .sample
+                        .event_type
       end
       category_type do                              # Get a coherent category according to the meeting_event:
         CategoryType.is_valid.are_not_relays.sample
@@ -54,12 +54,12 @@ FactoryBot.define do
     factory :data_import_meeting_program_relay do
       event_type do
         EventsByPoolType.joins(:event_type)
-          .only_for_meetings
-          .are_relays
-          .for_pool_type_code( meeting_session.swimming_pool.pool_type.code )
-          .where( "event_types.length_in_meters < 3000" )
-          .sample
-          .event_type
+                        .only_for_meetings
+                        .are_relays
+                        .for_pool_type_code(meeting_session.swimming_pool.pool_type.code)
+                        .where('event_types.length_in_meters < 3000')
+                        .sample
+                        .event_type
       end
       category_type do                              # Get a coherent category according to the meeting_event:
         CategoryType.is_valid.only_relays.sample

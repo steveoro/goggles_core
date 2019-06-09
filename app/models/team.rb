@@ -1,16 +1,15 @@
-# encoding: utf-8
+# frozen_string_literal: true
+
 require 'drop_down_listable'
 
-
-=begin
-
-= Team model
-
-  Encloses data for a specific and unique Team, which can have several TeamAffiliation(s),
-  one for each academic/sport year.
-
-=end
+#
+# = Team model
+#
+#   Encloses data for a specific and unique Team, which can have several TeamAffiliation(s),
+#   one for each academic/sport year.
+#
 class Team < ApplicationRecord
+
   include DropDownListable
 
   belongs_to :user                                  # [Steve, 20120212] Do not validate associated user!
@@ -31,34 +30,34 @@ class Team < ApplicationRecord
   has_many :computed_season_ranking
   has_many :team_passage_templates
 
-  validates_presence_of :name
-  validates_length_of :name, within: 1..60, allow_nil: false
+  validates :name, presence: true
+  validates :name, length: { within: 1..60, allow_nil: false }
 
-  validates_presence_of :editable_name
-  validates_length_of :editable_name, within: 1..60, allow_nil: false
+  validates :editable_name, presence: true
+  validates :editable_name, length: { within: 1..60, allow_nil: false }
 
-  validates_length_of :address,       maximum: 100
-  validates_length_of :phone_mobile,  maximum:  40
-  validates_length_of :phone_number,  maximum:  40
-  validates_length_of :fax_number,    maximum:  40
-  validates_length_of :e_mail,        maximum: 100
-  validates_length_of :contact_name,  maximum: 100
-  validates_length_of :home_page_url, maximum: 150
+  validates :address,       length: { maximum: 100 }
+  validates :phone_mobile,  length: { maximum:  40 }
+  validates :phone_number,  length: { maximum:  40 }
+  validates :fax_number,    length: { maximum:  40 }
+  validates :e_mail,        length: { maximum: 100 }
+  validates :contact_name,  length: { maximum: 100 }
+  validates :home_page_url, length: { maximum: 150 }
 
-  scope :sort_team_by_user, ->(dir) { order("users.name #{dir.to_s}, teams.name #{dir.to_s}") }
-  scope :sort_team_by_city, ->(dir) { order("cities.name #{dir.to_s}, teams.name #{dir.to_s}") }
-  scope :sort_by_name,      ->(dir) { order("teams.name #{dir.to_s}") }
+  scope :sort_team_by_user, ->(dir) { order("users.name #{dir}, teams.name #{dir}") }
+  scope :sort_team_by_city, ->(dir) { order("cities.name #{dir}, teams.name #{dir}") }
+  scope :sort_by_name,      ->(dir) { order("teams.name #{dir}") }
 
-  scope :has_results,       -> { where("EXISTS(SELECT 1 from meeting_individual_results where not is_disqualified and team_id = teams.id)") }
-  scope :has_many_results,  ->(how_many=20) { where(["(SELECT count(id) from meeting_individual_results where not is_disqualified and team_id = teams.id) > ?", how_many]) }
+  scope :has_results,       -> { where('EXISTS(SELECT 1 from meeting_individual_results where not is_disqualified and team_id = teams.id)') }
+  scope :has_many_results,  ->(how_many = 20) { where(['(SELECT count(id) from meeting_individual_results where not is_disqualified and team_id = teams.id) > ?', how_many]) }
 
   delegate :name, to: :user, prefix: true
 
-# FIXME for Rails 4+, move required/permitted check to the controller using the model
-#  attr_accessible :name, :name_variations, :user_id,
-#                  :editable_name, :address, :zip, :phone_mobile, :phone_number,
-#                  :fax_number, :e_mail, :contact_name, :home_page_url, :notes,
-#                  :city_id
+  # FIXME: for Rails 4+, move required/permitted check to the controller using the model
+  #  attr_accessible :name, :name_variations, :user_id,
+  #                  :editable_name, :address, :zip, :phone_mobile, :phone_number,
+  #                  :fax_number, :e_mail, :contact_name, :home_page_url, :notes,
+  #                  :city_id
   #-- -------------------------------------------------------------------------
   #++
 
@@ -79,15 +78,14 @@ class Team < ApplicationRecord
   #-- -------------------------------------------------------------------------
   #++
 
-
   # Check if team has a Goggle cup not closed (ended) at a certain date
   #
   # params
   # evaluation_date: the date the goggle cup should be current at (default today)
   #
-  def has_goggle_cup_at?( evaluation_date = Date.today )
+  def has_goggle_cup_at?(evaluation_date = Date.today)
     goggle_cups.sort_goggle_cup_by_year('DESC').each do |goggle_cup|
-      return true if goggle_cup.is_current_at?( evaluation_date )
+      return true if goggle_cup.is_current_at?(evaluation_date)
     end
     false
   end
@@ -99,9 +97,9 @@ class Team < ApplicationRecord
   # params
   # evaluation_date: the date the goggle cup should be current at (default today)
   #
-  def get_current_goggle_cup_at( evaluation_date = Date.today )
+  def get_current_goggle_cup_at(evaluation_date = Date.today)
     goggle_cups.sort_goggle_cup_by_year('DESC').each do |goggle_cup|
-      return goggle_cup if goggle_cup.is_current_at?( evaluation_date )
+      return goggle_cup if goggle_cup.is_current_at?(evaluation_date)
     end
     nil
   end
@@ -113,9 +111,9 @@ class Team < ApplicationRecord
   # params
   # evaluation_date: the date the goggle cup should be current at (default today)
   #
-  def get_current_goggle_cup_name_at( evaluation_date = Date.today )
+  def get_current_goggle_cup_name_at(evaluation_date = Date.today)
     goggle_cups.sort_goggle_cup_by_year('DESC').each do |goggle_cup|
-      return goggle_cup.get_full_name if goggle_cup.is_current_at?( evaluation_date )
+      return goggle_cup.get_full_name if goggle_cup.is_current_at?(evaluation_date)
     end
     'Goggle cup'
   end
@@ -127,8 +125,8 @@ class Team < ApplicationRecord
   # params
   # season_type: the season type to search for (default MASFIN)
   #
-  def get_current_affiliation( season_type = SeasonType.find_by_code('MASFIN') )
-    team_affiliations.for_season_type( season_type ).for_year( Season.build_header_year_from_date ).first
+  def get_current_affiliation(season_type = SeasonType.find_by(code: 'MASFIN'))
+    team_affiliations.for_season_type(season_type).for_year(Season.build_header_year_from_date).first
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -146,18 +144,19 @@ class Team < ApplicationRecord
 
   # Retrieves the array of unique swimmer IDs registered for a specified meeting_id
   #
-  def self.get_swimmer_ids_for( team_id, meeting_id )
-    team = Team.find_by_id( team_id )
+  def self.get_swimmer_ids_for(team_id, meeting_id)
+    team = Team.find_by(id: team_id)
     if team
       team.meeting_individual_results
-        .joins(:meeting)
-        .includes(:meeting)
-        .where(['meetings.id=?', meeting_id])
-        .map{ |row| row.swimmer_id }.uniq
+          .joins(:meeting)
+          .includes(:meeting)
+          .where(['meetings.id=?', meeting_id])
+          .map(&:swimmer_id).uniq
     else
       []
     end
   end
   #-- -------------------------------------------------------------------------
   #++
+
 end

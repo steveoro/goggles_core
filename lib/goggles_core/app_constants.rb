@@ -1,14 +1,13 @@
+# frozen_string_literal: true
+
 require 'goggles_core/version'
 
-
-=begin
-
-= Custom (global) application constants.
-
-  - version:  5.00
-  - author:   Steve A.
-
-=end
+#
+# = Custom (global) application constants.
+#
+#   - version:  5.00
+#   - author:   Steve A.
+#
 module GogglesCore
   #--
   # [Steve, 20080414]
@@ -26,7 +25,7 @@ module GogglesCore
     WEB_APP_NAME           = 'Goggles'
 
     # Main web-app domain name, lowercase, used in shared modules or sub-projects
-    WEB_MAIN_DOMAIN_NAME   = ( Rails.env.production? ? 'master-goggles.org' : ENV['HOSTNAME'] )
+    WEB_MAIN_DOMAIN_NAME   = (Rails.env.production? ? 'master-goggles.org' : ENV['HOSTNAME']).freeze
 
     # Main web-app admin email accounts, used by the internal mailer to notify critical events
     WEB_ADMIN_EMAILS       = 'steve.alloro@gmail.com'

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # == UserTrainingStoryAccessibility
 #
@@ -11,7 +13,7 @@ class UserTrainingStoryAccessibility
 
   # == Params:
   # An instance of UserTrainingStory, the current User instance and the flag indicating if the Admin is logged-in or not.
-  def initialize( current_user, user_training_story, is_admin_logged_in = false )
+  def initialize(current_user, user_training_story, is_admin_logged_in = false)
     @current_user = current_user
     @user_training_story = user_training_story
     @is_admin_logged_in = is_admin_logged_in
@@ -22,13 +24,13 @@ class UserTrainingStoryAccessibility
   # Checks if the current_user owns the specified training story.
   # Returns +true+ when successful.
   #
-  def is_owned()
+  def is_owned
     !!(
       @user_training_story &&
       @user_training_story.id &&
       (
         @is_admin_logged_in ||
-        ( @current_user && (@user_training_story.user_id == @current_user.id) )
+        (@current_user && (@user_training_story.user_id == @current_user.id))
       )
     )
   end
@@ -36,16 +38,17 @@ class UserTrainingStoryAccessibility
   # Checks if the current_user can access (R/O) the specified training story.
   # Returns +true+ when successful.
   #
-  def is_visible()
+  def is_visible
     !!(
       @user_training_story &&
       @user_training_story.id &&
       (
         @is_admin_logged_in ||
-        ( @current_user && @user_training_story.visible_to_user(@current_user) )
+        (@current_user && @user_training_story.visible_to_user(@current_user))
       )
     )
   end
   #-- --------------------------------------------------------------------------
   #++
+
 end

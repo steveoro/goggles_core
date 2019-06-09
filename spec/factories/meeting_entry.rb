@@ -1,18 +1,19 @@
+# frozen_string_literal: true
+
 # Read about factories at https://github.com/thoughtbot/factory_bot
 require 'common/validation_error_tools'
-
 
 FactoryBot.define do
   factory :meeting_entry do
     meeting_program
     badge do
-      create( :badge, season: SeasonFactoryTools.get_season_with_full_categories() )
+      create(:badge, season: SeasonFactoryTools.get_season_with_full_categories)
     end
     team              { badge.team }
     team_affiliation  { badge.team_affiliation }
     swimmer           { badge.swimmer }
 
-    sequence( :start_list_number )
+    sequence(:start_list_number)
 
     minutes                   0
     seconds                   { ((rand * 60) % 60).to_i }
@@ -20,7 +21,7 @@ FactoryBot.define do
 
     before(:create) do |built_instance|
       if built_instance.invalid?
-        puts "\r\nFactory def. error => " << ValidationErrorTools.recursive_error_for( built_instance )
+        puts "\r\nFactory def. error => " << ValidationErrorTools.recursive_error_for(built_instance)
         puts built_instance.inspect
       end
     end

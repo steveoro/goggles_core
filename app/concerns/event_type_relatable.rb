@@ -1,20 +1,20 @@
+# frozen_string_literal: true
+
 require 'active_support'
 require 'wrappers/timing'
 
-=begin
-
-= EventTypeRelatable
-
-  - version:  4.00.345.20140710
-  - author:   Leega, Steve A.
-
-  Container module for interfacing common "event_type-related" info (description, code)
-  and method functions.
-
-  *ASSUMES* the existance of the event_type reference and the validity of its
-  event_type#code field.
-
-=end
+#
+# = EventTypeRelatable
+#
+#   - version:  4.00.345.20140710
+#   - author:   Leega, Steve A.
+#
+#   Container module for interfacing common "event_type-related" info (description, code)
+#   and method functions.
+#
+#   *ASSUMES* the existance of the event_type reference and the validity of its
+#   event_type#code field.
+#
 module EventTypeRelatable
   extend ActiveSupport::Concern
 
@@ -47,16 +47,16 @@ module EventTypeRelatable
   def get_event_type_stroke
     event_type ? event_type.stroke_type.i18n_short : '?'
   end
-  
+
   # Retrieves the Event Type with distance and stroke separeted
-  def get_event_type_separated( separator = ' ' )
-    event_type ? ( event_type.length_in_meters.to_s + separator + event_type.stroke_type.i18n_short ) : '?'
+  def get_event_type_separated(separator = ' ')
+    event_type ? (event_type.length_in_meters.to_s + separator + event_type.stroke_type.i18n_short) : '?'
   end
-  
+
   # Retrieves the Event Type with distance and stroke separeted
   def get_event_type_for_csi_entry
-    event_type ? ( get_event_type_separated.gsub('MI', 'MX') ) : '?'
-  end 
+    event_type ? get_event_type_separated.gsub('MI', 'MX') : '?'
+  end
   #-- -------------------------------------------------------------------------
   #++
 end

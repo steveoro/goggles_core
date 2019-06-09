@@ -1,17 +1,15 @@
-=begin
+# frozen_string_literal: true
 
-= CustomMatchers
-
-  - version:  1.00.001
-  - author:   Steve A.
-
-  Support/container module for RSpec custom matchers.
-=end
+#
+# = CustomMatchers
+#
+#   - version:  1.00.001
+#   - author:   Steve A.
+#
+#   Support/container module for RSpec custom matchers.
 module CustomMatchers
-
   # RSpec support module for defining additional Routing custom matchers.
   module Routing
-
     # Helper to check named routes existance.
     #
     # === Sample usage:
@@ -27,16 +25,17 @@ module CustomMatchers
     #-- -----------------------------------------------------------------------
     #++
 
-
     # == Custom matcher implementation for named routes.
     #
     class HaveNamedRoute
+
       def initialize(context, name, *args)
         @context = context
         @name = name
         @path = "#{name}_path"
         @args = args
         raise ArgumentError, 'The last argument must be the expected uri' unless args.last
+
         @expected_uri = args.pop
       end
       #-- ---------------------------------------------------------------------
@@ -48,7 +47,7 @@ module CustomMatchers
       end
 
       # @override
-      def matches?(subject)
+      def matches?(_subject)
         @actual_uri = @context.send("#{@name}_path", *@args)
         @actual_uri == @expected_uri
       end
@@ -66,11 +65,10 @@ module CustomMatchers
       # Expectation result
       def example_call
         call = "#{@name}_path"
-        if ! @args.empty?
-          call << "(#{@args.map(&:to_s).join(', ')})"
-        end
+        call << "(#{@args.map(&:to_s).join(', ')})" unless @args.empty?
         call
       end
+
     end
     #-- -----------------------------------------------------------------------
     #++

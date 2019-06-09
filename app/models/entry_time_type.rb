@@ -1,20 +1,21 @@
+# frozen_string_literal: true
+
 require 'drop_down_listable'
 require 'localizable'
 
-=begin
-
-= EntryTimeType model
-
-  - version:  4.00.409
-  - author:   Steve A.
-
-=end
+#
+# = EntryTimeType model
+#
+#   - version:  4.00.409
+#   - author:   Steve A.
+#
 class EntryTimeType < ApplicationRecord
+
   include DropDownListable
   include Localizable
 
-  validates_presence_of   :code, length: { maximum: 1 }, allow_nil: false
-  validates_uniqueness_of :code, message: :already_exists
+  validates :code, presence: { length: { maximum: 1 }, allow_nil: false }
+  validates :code, uniqueness: { message: :already_exists }
 
   # Unique IDs used inside the DB, the description will be retrieved using I18n.t()
   MANUAL_ID     = 1
@@ -28,12 +29,13 @@ class EntryTimeType < ApplicationRecord
   # Commodity Array used to enlist all defined IDs
   #
   TYPES_HASH = {
-    MANUAL_ID     => 'M',
-    PERSONAL_ID   => 'P',
-    OBERCUP_ID    => 'O',
-    PREC_YEAR_ID  => 'A',
-    LAST_RACE_ID  => 'U'
-  }
+    MANUAL_ID => 'M',
+    PERSONAL_ID => 'P',
+    OBERCUP_ID => 'O',
+    PREC_YEAR_ID => 'A',
+    LAST_RACE_ID => 'U'
+  }.freeze
   #-- -------------------------------------------------------------------------
   #++
+
 end

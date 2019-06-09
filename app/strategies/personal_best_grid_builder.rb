@@ -1,18 +1,16 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
-=begin
-
-= PersonalBestGridBuilder
-  - Goggles framework vers.:  4.00.420.20140807
-  - author: Leega (copiator...)
-
- Uses a RecordCollector to allow the build-up of several HTML grid representing
- the distribution of all the records & best results collected.
-
- Dedicated Enumerators allow to loop by EventType, given
- specific PoolType coordinates.
-
-=end
+#
+# = PersonalBestGridBuilder
+#   - Goggles framework vers.:  4.00.420.20140807
+#   - author: Leega (copiator...)
+#
+#  Uses a RecordCollector to allow the build-up of several HTML grid representing
+#  the distribution of all the records & best results collected.
+#
+#  Dedicated Enumerators allow to loop by EventType, given
+#  specific PoolType coordinates.
+#
 class PersonalBestGridBuilder
 
   # Creates a new instance.
@@ -20,10 +18,11 @@ class PersonalBestGridBuilder
   # === Params
   # - record_collector: an instance of RecordCollector (assumed to have an already full RecordCollection)
   #
-  def initialize( personal_best_collector )
-    raise ArgumentError.new("the parameter must be a PersonalBestCollector instance") unless personal_best_collector.instance_of?( PersonalBestCollector )
-    @collector  = personal_best_collector
-    
+  def initialize(personal_best_collector)
+    raise ArgumentError, 'the parameter must be a PersonalBestCollector instance' unless personal_best_collector.instance_of?(PersonalBestCollector)
+
+    @collector = personal_best_collector
+
     # Defines record types handled by personal best grid
     @record_types = RecordType.for_swimmers
 
@@ -34,7 +33,6 @@ class PersonalBestGridBuilder
   #-- --------------------------------------------------------------------------
   #++
 
-  
   # Getter for the internal list.
   def collection
     @collector.collection
@@ -51,7 +49,6 @@ class PersonalBestGridBuilder
   end
   #-- -------------------------------------------------------------------------
   #++
-
 
   # Returns the Enumerator of the handled record types.
   #
@@ -73,9 +70,10 @@ class PersonalBestGridBuilder
   # Note that these are substantially different from the similar methods found
   # inside PersonalBestCollector: these return an actual Enumerator for all the allowed
   # model instances (not just unique string codes).
-  def event_types( pool_type_id )
+  def event_types(pool_type_id)
     PoolType.find(pool_type_id).event_types.each
   end
   #-- -------------------------------------------------------------------------
   #++
+
 end

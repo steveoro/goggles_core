@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 class CreateSwimmerSeasonScores < ActiveRecord::Migration[5.0]
+
   def change
     create_table :swimmer_season_scores do |t|
-      t.integer :lock_version, :default => 0
+      t.integer :lock_version, default: 0
 
       t.decimal :score, precision: 10, scale: 2
       t.references :badge, foreign_key: true
@@ -16,4 +19,5 @@ class CreateSwimmerSeasonScores < ActiveRecord::Migration[5.0]
     add_index :swimmer_season_scores, [:badge_id, :event_type_id], name: 'swimmer_season_scores_badge_event'
     add_index :swimmer_season_scores, [:badge_id, :score], name: 'swimmer_season_scores_badge_score'
   end
+
 end

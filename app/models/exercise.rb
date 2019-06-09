@@ -1,15 +1,15 @@
+# frozen_string_literal: true
+
 require 'drop_down_listable'
 
-
-=begin
-
-= Exercise model
-
-  - version:  4.00.317.20140616
-  - author:   Steve A., Leega
-
-=end
+#
+# = Exercise model
+#
+#   - version:  4.00.317.20140616
+#   - author:   Steve A., Leega
+#
 class Exercise < ApplicationRecord
+
   include DropDownListable
 
   has_many :exercise_rows
@@ -17,26 +17,25 @@ class Exercise < ApplicationRecord
   has_many :base_movements,      through: :exercise_rows
   has_many :training_mode_types, through: :exercise_rows
 
-  validates_length_of     :training_step_type_codes, maximum: 50, allow_nil: true
+  validates :training_step_type_codes, length: { maximum: 50, allow_nil: true }
 
-  validates_presence_of   :code, length: { within: 1..6 }, allow_nil: false
-  validates_uniqueness_of :code, message: :already_exists
+  validates :code, presence: { length: { within: 1..6 }, allow_nil: false }
+  validates :code, uniqueness: { message: :already_exists }
 
   # Custom scope to detect all Exercises that may be used during a specified training_step_code
-  scope :belongs_to_training_step_code, ->(training_step_code) {
-    all.find_all{ |row|
-      ( training_step_code.nil? ||
+  scope :belongs_to_training_step_code, lambda { |training_step_code|
+    all.find_all do |row|
+      (training_step_code.nil? ||
         row.training_step_type_codes.nil? ||
         (training_step_code.to_s == '') ||
-        ( row.training_step_type_codes.instance_of?(String) &&
-          row.training_step_type_codes.split(',').include?( training_step_code.to_s.upcase )
+        (row.training_step_type_codes.instance_of?(String) &&
+          row.training_step_type_codes.split(',').include?(training_step_code.to_s.upcase)
         )
       )
-    }
+    end
   }
   #-- -------------------------------------------------------------------------
   #++
-
 
   # Label symbol corresponding to either a column name or a model method to be used
   # mainly in generating DropDown option lists.
@@ -54,10 +53,10 @@ class Exercise < ApplicationRecord
   #
   def compute_total_distance
     if exercise_rows
-      exercise_rows.sort_by_part_order.inject(0){ |sum, row|
+      exercise_rows.sort_by_part_order.inject(0) do |sum, row|
         actual_row_distance = row.compute_displayable_distance(0).to_i
         sum + actual_row_distance
-      }
+      end
     else
       0
     end
@@ -68,9 +67,9 @@ class Exercise < ApplicationRecord
   #
   def compute_total_seconds
     if exercise_rows
-      exercise_rows.sort_by_part_order.inject(0){ |sum, row|
-        sum + row.compute_total_seconds()
-      }
+      exercise_rows.sort_by_part_order.inject(0) do |sum, row|
+        sum + row.compute_total_seconds
+      end
     else
       0
     end
@@ -83,7 +82,7 @@ class Exercise < ApplicationRecord
   #
   def is_arm_aux_allowed
     if base_movements
-      base_movements.any?{ |base_movement| base_movement.is_arm_aux_allowed }
+      base_movements.any?(&:is_arm_aux_allowed)
     else
       false
     end
@@ -94,7 +93,7 @@ class Exercise < ApplicationRecord
   #
   def is_kick_aux_allowed
     if base_movements
-      base_movements.any?{ |base_movement| base_movement.is_kick_aux_allowed }
+      base_movements.any?(&:is_kick_aux_allowed)
     else
       false
     end
@@ -105,7 +104,7 @@ class Exercise < ApplicationRecord
   #
   def is_body_aux_allowed
     if base_movements
-      base_movements.any?{ |base_movement| base_movement.is_body_aux_allowed }
+      base_movements.any?(&:is_body_aux_allowed)
     else
       false
     end
@@ -116,7 +115,7 @@ class Exercise < ApplicationRecord
   #
   def is_breath_aux_allowed
     if base_movements
-      base_movements.any?{ |base_movement| base_movement.is_breath_aux_allowed }
+      base_movements.any?(&:is_breath_aux_allowed)
     else
       false
     end
@@ -143,24 +142,23 @@ class Exercise < ApplicationRecord
   #       :is_breath_aux_allowed  => #is_breath_aux_allowed(),
   #     }</tt>.
   #
-  def drop_down_attrs( current_user = nil )
+  def drop_down_attrs(current_user = nil)
     {
-      label:                  get_full_name(
-                                0, :short,
-                                ( current_user ? current_user.get_preferred_swimmer_level_id() : 0 )
-                              ),
-      value:                  id,
-      tot_distance:           compute_total_distance(),
-      tot_secs:               compute_total_seconds(),
-      is_arm_aux_allowed:     is_arm_aux_allowed(),
-      is_kick_aux_allowed:    is_kick_aux_allowed(),
-      is_body_aux_allowed:    is_body_aux_allowed(),
-      is_breath_aux_allowed:  is_breath_aux_allowed()
+      label: get_full_name(
+        0, :short,
+        (current_user ? current_user.get_preferred_swimmer_level_id : 0)
+      ),
+      value: id,
+      tot_distance: compute_total_distance,
+      tot_secs: compute_total_seconds,
+      is_arm_aux_allowed: is_arm_aux_allowed,
+      is_kick_aux_allowed: is_kick_aux_allowed,
+      is_body_aux_allowed: is_body_aux_allowed,
+      is_breath_aux_allowed: is_breath_aux_allowed
     }
   end
   #-- -------------------------------------------------------------------------
   #++
-
 
   # Computes a full description for this data row
   #
@@ -170,14 +168,13 @@ class Exercise < ApplicationRecord
   # - swimmer_level_type_id: the id of the user's swimmer level type (or its preferred swimmer level type ID); NOT the code, NOT the level: the *ID*; it can be 0 if it must be ignored
   # - separator: string separator for joining each field
   #
-  def get_full_name( total_distance = 0, verbose_level = :full, swimmer_level_type_id = 0, separator = " + " )
-    exercise_rows.sort_by_part_order.collect{ |row|
-      row.get_full_name( total_distance, verbose_level.to_sym, swimmer_level_type_id )
-    }.join(separator)
+  def get_full_name(total_distance = 0, verbose_level = :full, swimmer_level_type_id = 0, separator = ' + ')
+    exercise_rows.sort_by_part_order.collect do |row|
+      row.get_full_name(total_distance, verbose_level.to_sym, swimmer_level_type_id)
+    end.join(separator)
   end
   #-- -------------------------------------------------------------------------
   #++
-
 
   # Returns a "natural" friendly description for exercises.
   # The "natural" description is obtanied computing
@@ -222,7 +219,7 @@ class Exercise < ApplicationRecord
   # SL (15 fast + 35 slow)                    instead of
   # 15 SL fast + 35 SL slow
   #
-  def get_friendly_description( total_distance = 0, swimmer_level_type_id = 0, separator = " + " )
+  def get_friendly_description(total_distance = 0, _swimmer_level_type_id = 0, separator = ' + ')
     natural_description = ''
     er = exercise_rows.includes([:base_movement, :training_mode_type, :movement_type]).sort_by_part_order
 
@@ -237,14 +234,12 @@ class Exercise < ApplicationRecord
       )
     else
       # Check if same movement in all rows
-      is_same_movement = ( base_movements.distinct.count == 1 )
+      is_same_movement = (base_movements.distinct.count == 1)
 
-      if is_same_movement
-        natural_description = er.first.base_movement_i18n_short + ' '
-      end
+      natural_description = er.first.base_movement_i18n_short + ' ' if is_same_movement
 
       # Check if same trainng mode in all rows
-      is_same_mode = ( training_mode_types.distinct.count == 1 )
+      is_same_mode = (training_mode_types.distinct.count == 1)
 
       # Check if same distance
       is_same_distance = (
@@ -253,28 +248,29 @@ class Exercise < ApplicationRecord
       )
 
       # If same movements or training mode open parenthesys
-      natural_description += '(' if is_same_movement or is_same_mode
+      natural_description += '(' if is_same_movement || is_same_mode
 
-      natural_description += er.collect{ |row|
+      natural_description += er.collect do |row|
         row.get_short_description(
           total_distance,
-          not(is_same_movement),
-          (not(is_same_mode) && row.base_movement.movement_type_code != 'T'),
-          not(is_same_distance)
+          !is_same_movement,
+          (!is_same_mode && row.base_movement.movement_type_code != 'T'),
+          !is_same_distance
         )
-      }.join(separator)
+      end.join(separator)
 
       # If same movements close parenthesys
-      natural_description += ')' if is_same_movement or is_same_mode
+      natural_description += ')' if is_same_movement || is_same_mode
 
       # If same mode add mode
       natural_description += ' ' + er.first.training_mode_type_i18n_alternate if is_same_mode
 
       # debug. Remove this
-      #natural_description += ' [' + code + ']'
+      # natural_description += ' [' + code + ']'
     end
     natural_description
   end
   #-- -------------------------------------------------------------------------
   #++
+
 end

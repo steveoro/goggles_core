@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Read about factories at https://github.com/thoughtbot/factory_bot
 
 FactoryBot.define do
@@ -18,7 +20,7 @@ FactoryBot.define do
     best_match_name           nil
     best_match_score          9.9
 
-    after(:create) do |created_instance, evaluator|
+    after(:create) do |created_instance, _evaluator|
       swimmer = create(:swimmer)
       created_instance.chosen_swimmer_id      = swimmer.id
       created_instance.searched_swimmer_name  = swimmer.complete_name

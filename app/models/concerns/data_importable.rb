@@ -1,16 +1,16 @@
+# frozen_string_literal: true
+
 require 'active_support'
 
-=begin
-
-= DataImportable
-
-  - version:  6.078
-  - author:   Steve A.
-
-  Concern that adds relation to a data_import_session plus some other shared
-  helper methods.
-
-=end
+#
+# = DataImportable
+#
+#   - version:  6.078
+#   - author:   Steve A.
+#
+#   Concern that adds relation to a data_import_session plus some other shared
+#   helper methods.
+#
 module DataImportable
   extend ActiveSupport::Concern
 
@@ -19,17 +19,16 @@ module DataImportable
     validates_associated  :data_import_session
   end
 
-
   # Computes a verbose or formal description for the row data "conflicting"
   # with the current import data row.
   def get_verbose_conflicting_row
-    if ( self.conflicting_id.to_i > 0 )
-      conflicting_row = self.class.find( conflicting_id )
+    if conflicting_id.to_i > 0
+      conflicting_row = self.class.find(conflicting_id)
       if conflicting_row
-        verbose_desc = ( conflicting_row.respond_to?(:get_verbose_name) ? conflicting_row.get_verbose_name : conflicting_row.inspect )
+        verbose_desc = (conflicting_row.respond_to?(:get_verbose_name) ? conflicting_row.get_verbose_name : conflicting_row.inspect)
         "(ID:#{conflicting_id}) #{verbose_desc}"
       else
-        "(ID:#{conflicting_id}) <#{ I18n.t('activerecord.errors.unable_to_retrieve_row_data') }>"
+        "(ID:#{conflicting_id}) <#{I18n.t('activerecord.errors.unable_to_retrieve_row_data')}>"
       end
     else
       ''

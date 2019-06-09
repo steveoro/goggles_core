@@ -1,45 +1,50 @@
+# frozen_string_literal: true
 
 # Adds support for roman numeral parsing and decoding
 #
-class Fixnum
-  ROMAN_NUMBERS = {
-    1000 => "M",
-     900 => "CM",
-     500 => "D",
-     400 => "CD",
-     100 => "C",
-      90 => "XC",
-      50 => "L",
-      40 => "XL",
-      10 => "X",
-        9 => "IX",
-        5 => "V",
-        4 => "IV",
-        1 => "I",
-  } unless defined? ROMAN_NUMBERS
+class Integer
+
+  unless defined? ROMAN_NUMBERS
+    ROMAN_NUMBERS = {
+      1000 => 'M',
+      900 => 'CM',
+      500 => 'D',
+      400 => 'CD',
+      100 => 'C',
+      90 => 'XC',
+      50 => 'L',
+      40 => 'XL',
+      10 => 'X',
+      9 => 'IX',
+      5 => 'V',
+      4 => 'IV',
+      1 => 'I'
+    }.freeze
+  end
   #-- -------------------------------------------------------------------------
   #++
 
   # Converts the value to a Roman numeral
   def to_roman
     n = self
-    roman = ""
+    roman = ''
     ROMAN_NUMBERS.each do |value, letter|
-      roman << letter*(n / value)
+      roman << letter * (n / value)
       n = n % value
     end
-    return roman
+    roman
   end
   #-- -------------------------------------------------------------------------
   #++
 
   # Parses a Roman numeral to Fixnum
-  def self.from_roman( roman )
+  def self.from_roman(roman)
     r = roman.upcase
     n = 0
-    ROMAN_NUMBERS.each { |num, sym| n += num while r.sub!(/^#{ sym }/, "") }
+    ROMAN_NUMBERS.each { |num, sym| n += num while r.sub!(/^#{ sym }/, '') }
     n
   end
   #-- -------------------------------------------------------------------------
   #++
+
 end

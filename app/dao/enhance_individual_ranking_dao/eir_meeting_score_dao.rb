@@ -1,27 +1,26 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
-=begin
-
-= EnhanceIndividualRankingDAO::EIRMeetingScoreDAO
-
-  - Goggles framework vers.:  4.00.857
-  - author: Leega
-
- DAO class containing the structure for enhance individual ranking rendering.
- Enhance individual ranking (EIR) is a method adopted by csi 2015-2016 season
- in which individual scores are calculated considering placement,
- performance value, personal enhancement and special bonuses.
- performance value are calculated in relation of best season type results
- Personal enhancement are referred to past seasons personal bests.
- Special bonuses are obtained with multiple medals placement in the same meeting
- or partecipation at particularly "hard" event types.
- For each swimmer involved in season the DAO provides a collection of meeting results
- (the championship takes)
-
-=end
+#
+# = EnhanceIndividualRankingDAO::EIRMeetingScoreDAO
+#
+#   - Goggles framework vers.:  4.00.857
+#   - author: Leega
+#
+#  DAO class containing the structure for enhance individual ranking rendering.
+#  Enhance individual ranking (EIR) is a method adopted by csi 2015-2016 season
+#  in which individual scores are calculated considering placement,
+#  performance value, personal enhancement and special bonuses.
+#  performance value are calculated in relation of best season type results
+#  Personal enhancement are referred to past seasons personal bests.
+#  Special bonuses are obtained with multiple medals placement in the same meeting
+#  or partecipation at particularly "hard" event types.
+#  For each swimmer involved in season the DAO provides a collection of meeting results
+#  (the championship takes)
+#
 class EnhanceIndividualRankingDAO
 
   class EIRMeetingScoreDAO
+
     # These must be initialized on creation:
     attr_reader :meeting
 
@@ -35,10 +34,8 @@ class EnhanceIndividualRankingDAO
 
     # Creates a new instance from a meeting_individualresult.
     #
-    def initialize( meeting, meeting_individual_results )
-      unless meeting && meeting.instance_of?( Meeting )
-        raise ArgumentError.new("Enhance individual ranking meeting score needs a meeting")
-      end
+    def initialize(meeting, meeting_individual_results)
+      raise ArgumentError, 'Enhance individual ranking meeting score needs a meeting' unless meeting&.instance_of?(Meeting)
 
       @meeting            = meeting
       @header_date        = meeting.header_date
@@ -53,12 +50,12 @@ class EnhanceIndividualRankingDAO
       rank_second    = 0
       rank_third     = 0
       meeting_individual_results.each do |meeting_individual_result|
-        @event_results << EIREventScoreDAO.new( meeting_individual_result )
+        @event_results << EIREventScoreDAO.new(meeting_individual_result)
 
         # Store each rank for rank bonus
-        rank_first  = rank_first + 1 if meeting_individual_result.rank == 1
-        rank_second = rank_second + 1 if meeting_individual_result.rank == 2
-        rank_third  = rank_third + 1 if meeting_individual_result.rank == 3
+        rank_first  += 1 if meeting_individual_result.rank == 1
+        rank_second += 1 if meeting_individual_result.rank == 2
+        rank_third  += 1 if meeting_individual_result.rank == 3
 
         # Find out event bonus
         # TODO store bonus information on DB
@@ -79,12 +76,12 @@ class EnhanceIndividualRankingDAO
         @medal_bonus_points = 1 if @medal_bonus_points < 1 && rank_third >= 2
 
         # Sort events by total points
-        @event_results.sort!{|p,n| n.get_total_points <=> p.get_total_points}
+        @event_results.sort! { |p, n| n.get_total_points <=> p.get_total_points }
 
         # Find out best event points
-        @event_points      = @event_results.first.event_points
+        @event_points = @event_results.first.event_points
         @performance_points = @event_results.first.performance_points
-        @enhance_points    = @event_results.first.enhance_points
+        @enhance_points = @event_results.first.enhance_points
       end
     end
     #-- -------------------------------------------------------------------------
@@ -103,6 +100,7 @@ class EnhanceIndividualRankingDAO
     end
     #-- -------------------------------------------------------------------------
     #++
+
   end
 
 end

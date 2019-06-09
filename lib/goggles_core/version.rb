@@ -1,12 +1,12 @@
-=begin
+# frozen_string_literal: true
 
-= Version module
-
-  - version:  6.003
-  - author:   Steve A.
-
-  Semantic Versioning implementation.
-=end
+#
+# = Version module
+#
+#   - version:  6.003
+#   - author:   Steve A.
+#
+#   Semantic Versioning implementation.
 module GogglesCore
   #--
   # [Steve, 20080414]
@@ -14,7 +14,7 @@ module GogglesCore
   #++
 
   # Actual Core versioning, used for Gem differentiation.
-  VERSION = "1.3.97"
+  VERSION = '1.4.00'
 
   module Version
     # Framework Core internal name.
@@ -26,19 +26,19 @@ module GogglesCore
     MAJOR   = '6'
 
     # Minor version.
-    MINOR   = '395'
+    MINOR   = '1400'
 
     # Current build version.
-    BUILD   = '20190526'
+    BUILD   = '20190609'
 
     # Full versioning for the current release (Framework + Core).
     FULL    = "#{MAJOR}.#{MINOR}.#{BUILD} (#{CORE} v. #{VERSION})"
 
     # Compact versioning label for the current release.
-    COMPACT = "#{MAJOR.gsub('.','')}#{MINOR}"
+    COMPACT = "#{MAJOR.gsub('.', '')}#{MINOR}"
 
     # Current internal DB structure version
     # (this is independent from migrations and framework release)
-    DB      = "1.28.00"
+    DB      = '1.28.00'
   end
 end
