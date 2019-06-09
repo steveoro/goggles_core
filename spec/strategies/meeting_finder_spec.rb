@@ -141,7 +141,7 @@ describe MeetingFinder, type: :strategy do
     let(:meeting_name) { 'RICCIONE' }
     let(:city_name)    { 'RICCIONE' }
     let(:pool_name)    { 'STADIO DEL NUOTO' }
-    let(:event_name)   { '200IM' }
+    let(:event_name)   { %w[100IM 200IM 200RA] }
     let(:team_name)    { 'TIBIDABO' }
     let(:swimmer_name) { 'MARCO LIGABUE' }
 
@@ -182,10 +182,10 @@ describe MeetingFinder, type: :strategy do
     end
 
     describe '#find_event_types' do
-      it 'returns more than 1 result if event given' do
+      it 'returns at least 1 result for the given event' do
         result_count = on_events.find_event_types.count
-        expect(result_count).to be > 0
-        expect(result_count).to be < EventType.count
+        expect(result_count).to be >= 1
+        expect(result_count).to be <= EventType.count
       end
 
       it 'returns an empty list if meeting given' do
