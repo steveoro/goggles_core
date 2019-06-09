@@ -2,6 +2,7 @@
 
 require 'rails_helper'
 
+# rubocop:disable Rails/DynamicFindBy
 describe MeetingIndividualResult, type: :model do
   it_behaves_like 'SwimmerRelatable'
   it_behaves_like 'TimingGettable'
@@ -83,7 +84,7 @@ describe MeetingIndividualResult, type: :model do
         expect(subject.get_event_by_pool_type_code).to include('-')
       end
       it 'returns a valid event by pool type code corresponding to an existent event by pool type' do
-        expect(EventsByPoolType.find_by(key: subject.get_event_by_pool_type_code)).to be_an_instance_of(EventsByPoolType)
+        expect(EventsByPoolType.find_by_key(subject.get_event_by_pool_type_code)).to be_an_instance_of(EventsByPoolType)
       end
     end
     #-- -----------------------------------------------------------------------
@@ -150,3 +151,4 @@ describe MeetingIndividualResult, type: :model do
   #-- -------------------------------------------------------------------------
   #++
 end
+# rubocop:enable Rails/DynamicFindBy

@@ -9,7 +9,7 @@ FactoryBot.define do
     meeting_event         { meeting.meeting_events.only_relays.min { rand - 0.5 } }
     user
 
-    is_doing_this         true
-    notes                 nil
+    is_doing_this         { true }
+    notes                 { nil }
   end
 end

@@ -203,7 +203,7 @@ namespace :ut do
     logger.info("\r\nSearch meetings without results for season #{season.get_full_name}")
     logger.info("\r\n<------------------------------------------------------------>\r\n")
     season.meetings.is_not_cancelled.has_not_results.sort_by_date.each do |meeting|
-      next unless !past || !meeting.meeting_date_to_iso || meeting.meeting_date_to_iso <= DateTime.zone.now.strftime('%Y%m%d')
+      next unless !past || !meeting.meeting_date_to_iso || meeting.meeting_date_to_iso <= Time.zone.now.strftime('%Y%m%d')
 
       meeting_found += 1
       pool_type = meeting.get_pool_type

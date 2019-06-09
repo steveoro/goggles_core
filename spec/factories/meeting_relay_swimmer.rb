@@ -17,7 +17,7 @@ FactoryBot.define do
     relay_order               { ((rand * 4) % 4).to_i }
 
     reaction_time             { ((rand * 59) % 59).to_i }  # Forced not to use 59
-    minutes                   0
+    minutes                   { 0 }
     seconds                   { ((rand * 59) % 59).to_i }  # Forced not to use 59
     hundreds                  { ((rand * 99) % 99).to_i }  # Forced not to use 99
 

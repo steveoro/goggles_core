@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+# rubocop:disable Style/FrozenStringLiteralComment
 
 require 'rails_helper'
 
@@ -18,3 +18,4 @@ describe DummySqlConvertableIncludee do
 
   it_behaves_like 'SqlConvertable [subject: includee]'
 end
+# rubocop:enable Style/FrozenStringLiteralComment

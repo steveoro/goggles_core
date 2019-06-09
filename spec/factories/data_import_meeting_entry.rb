@@ -6,21 +6,19 @@ require 'common/validation_error_tools'
 FactoryBot.define do
   factory :data_import_meeting_entry do
     data_import_session
-    conflicting_id            nil
+    conflicting_id            { nil }
     import_text               { FFaker::Lorem.paragraph[0..250] }
 
     sequence(:start_list_number)
 
-    minutes                   0
+    minutes                   { 0 }
     seconds                   { ((rand * 60) % 60).to_i }
     hundreds                  { ((rand * 100) % 100).to_i }
-
-    meeting_program_id        nil
-
-    data_import_swimmer_id    nil
-    data_import_team_id       nil
-    data_import_badge_id      nil
-    user_id                   1
+    meeting_program_id        { nil }
+    data_import_swimmer_id    { nil }
+    data_import_team_id       { nil }
+    data_import_badge_id      { nil }
+    user_id                   { 1 }
 
     badge do
       create(:badge, season: SeasonFactoryTools.get_season_with_full_categories)

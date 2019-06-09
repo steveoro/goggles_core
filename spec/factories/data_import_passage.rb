@@ -5,14 +5,14 @@
 FactoryBot.define do
   factory :data_import_passage do
     data_import_session
-    conflicting_id            nil
+    conflicting_id            { nil }
     import_text               { FFaker::Lorem.paragraph[0..250] }
 
     meeting_individual_result
     meeting_program           { meeting_individual_result.meeting_program }
 
     reaction_time             { rand.round(2) }
-    minutes                   0
+    minutes                   { 0 }
     seconds                   { ((rand * 59) % 59).to_i }  # Forced not to use 59
     hundreds                  { ((rand * 99) % 99).to_i }  # Forced not to use 99
 

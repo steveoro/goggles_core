@@ -33,20 +33,19 @@ group :development do
   gem 'guard-spring'
 
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
-  gem 'listen' # , '>= 3.0.5', '< 3.2'
-  gem 'web-console' # , '>= 3.3.0'
+  gem 'listen'
+  gem 'web-console'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-commands-cucumber'
   gem 'spring-commands-rspec'
-  gem 'spring-watcher-listen' # , '~> 2.0.0'
+  gem 'spring-watcher-listen'
 end
 
 group :development, :test do
   gem 'bullet'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
-  gem 'factory_bot_rails'
   gem 'ffaker'                  # Adds dummy names & fixture generator
   gem 'letter_opener'
   gem 'rspec'
@@ -56,18 +55,8 @@ group :development, :test do
   gem 'rubocop-rspec'
 end
 
-# group :development, :test do
-#   # Spring speeds up development by keeping your application running in the background.
-#   # Read more: https://github.com/rails/spring
-#   gem 'spring'
-#   gem 'spring-watcher-listen', '~> 2.0.0'
-#   gem 'spring-commands-rspec'
-#   gem 'guard-spring'
-#   gem 'bullet'
-# end
-
 group :test do
-  gem 'better_errors' # , '~> 1.1.0'
+  gem 'better_errors'
   gem 'binding_of_caller'
   gem 'codeclimate-test-reporter', require: nil # [Steve, 20140321] CI/Test coverage via local test run
   gem 'rails_best_practices'

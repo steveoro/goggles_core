@@ -3,6 +3,7 @@
 require 'rails_helper'
 require 'wrappers/timing'
 
+# rubocop:disable Rails/DynamicFindBy
 describe GoggleCupStandardFinder, type: :strategy, tag: :slow do
   context 'with requested parameters' do
     # Leega
@@ -119,7 +120,7 @@ describe GoggleCupStandardFinder, type: :strategy, tag: :slow do
       end
       it 'returns an hash containg events by pool types as keys' do
         @subject.find_swimmer_goggle_cup_standard(@active_swimmer).each_key do |event_key|
-          expect(EventsByPoolType.find_by(key: event_key)).to be_an_instance_of(EventsByPoolType)
+          expect(EventsByPoolType.find_by_key(event_key)).to be_an_instance_of(EventsByPoolType)
         end
       end
       it 'returns a timing instance for an event swam' do
@@ -134,7 +135,7 @@ describe GoggleCupStandardFinder, type: :strategy, tag: :slow do
       it 'returns the same goggle cup standard already presents for a stored goggle cup' do
         # Should use a stored goggle cup
         @subject.find_swimmer_goggle_cup_standard(@active_swimmer).each_pair do |found_key, found_standard|
-          event_by_pool_type = EventsByPoolType.find_by(key: found_key)
+          event_by_pool_type = EventsByPoolType.find_by_key(found_key)
           expect(found_standard).to eq(
             @goggle_cup.goggle_cup_standards
               .for_swimmer(@active_swimmer)
@@ -226,3 +227,4 @@ describe GoggleCupStandardFinder, type: :strategy, tag: :slow do
   #-- -------------------------------------------------------------------------
   #++
 end
+# rubocop:enable Rails/DynamicFindBy

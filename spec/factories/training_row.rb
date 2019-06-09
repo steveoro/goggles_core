@@ -15,7 +15,7 @@ FactoryBot.define do
 
     group_id                  { ((rand * 10) % 4).to_i + 1 }
     group_times               { ((rand * 10) % 5).to_i + 1 }
-    group_start_and_rest      0
+    group_start_and_rest      { 0 }
     group_pause               { (((rand * 10) % 5).to_i + 1) * 5 }
     sequence(:part_order)
     times                     { ((rand * 10) % 8).to_i + 1 }

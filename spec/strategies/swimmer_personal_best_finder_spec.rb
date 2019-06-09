@@ -3,6 +3,7 @@
 require 'rails_helper'
 require 'wrappers/timing'
 
+# rubocop:disable Rails/DynamicFindBy
 describe SwimmerPersonalBestFinder, type: :strategy do
   context 'without requested parameters' do
     it 'raises an exception for wrong swimmer parameter' do
@@ -302,7 +303,7 @@ describe SwimmerPersonalBestFinder, type: :strategy do
         fix_swimmer = Swimmer.find(23)
         fix_sbf     = SwimmerPersonalBestFinder.new(fix_swimmer)
         updater     = SwimmerPersonalBestUpdater.new(fix_swimmer)
-        fix_event_by_pool_type = EventsByPoolType.find_by(pool: '25', event_codes: '50FA')
+        fix_event_by_pool_type = EventsByPoolType.find_by_pool_and_event_codes('25', '50FA')
         updater.set_personal_best!(fix_event_by_pool_type)
         expect(
           fix_sbf.get_best_mir_for_event(fix_event_by_pool_type.event_type, fix_event_by_pool_type.pool_type)
@@ -324,7 +325,7 @@ describe SwimmerPersonalBestFinder, type: :strategy do
         fix_swimmer = Swimmer.find(23)
         fix_sbf     = SwimmerPersonalBestFinder.new(fix_swimmer)
         updater     = SwimmerPersonalBestUpdater.new(fix_swimmer)
-        fix_event_by_pool_type = EventsByPoolType.find_by(pool: '25', event_codes: '50FA')
+        fix_event_by_pool_type = EventsByPoolType.find_by_pool_and_event_codes('25', '50FA')
         updater.set_personal_best!(fix_event_by_pool_type)
         best_result = fix_sbf.get_best_mir_for_event(fix_event_by_pool_type.event_type, fix_event_by_pool_type.pool_type)
         expect(fix_sbf.is_personal_best?(best_result)).to eq(true)
@@ -332,14 +333,14 @@ describe SwimmerPersonalBestFinder, type: :strategy do
       it 'returns false if not personal best' do
         fix_swimmer = Swimmer.find(23)
         fix_sbf     = SwimmerPersonalBestFinder.new(fix_swimmer)
-        fix_event_by_pool_type = EventsByPoolType.find_by(pool: '25', event_codes: '50FA')
+        fix_event_by_pool_type = EventsByPoolType.find_by_pool_and_event_codes('25', '50FA')
         worst_result = fix_swimmer.meeting_individual_results.for_event_by_pool_type(fix_event_by_pool_type).sort_by_timing('DESC').first
         expect(fix_sbf.is_personal_best?(worst_result)).to eq(false)
       end
       it 'returns false if disqualified' do
         fix_swimmer = Swimmer.find(23)
         fix_sbf     = SwimmerPersonalBestFinder.new(fix_swimmer)
-        fix_event_by_pool_type = EventsByPoolType.find_by(pool: '25', event_codes: '100MI')
+        fix_event_by_pool_type = EventsByPoolType.find_by_pool_and_event_codes('25', '100MI')
         disqualified_result = fix_swimmer.meeting_individual_results.for_event_by_pool_type(fix_event_by_pool_type).is_disqualified.first
         expect(fix_sbf.is_personal_best?(disqualified_result)).to eq(false)
       end
@@ -437,3 +438,4 @@ describe SwimmerPersonalBestFinder, type: :strategy do
   #-- -------------------------------------------------------------------------
   #++
 end
+# rubocop:enable Rails/DynamicFindBy

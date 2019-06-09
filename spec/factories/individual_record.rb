@@ -13,7 +13,7 @@ FactoryBot.define do
     event_type_id       { meeting_individual_result.meeting_program.meeting_event.event_type_id }
     category_type_id    { meeting_individual_result.meeting_program.category_type_id }
     gender_type_id      { meeting_individual_result.meeting_program.gender_type_id }
-    record_type_id      7 # Assumes always federation record (from seeds)
+    record_type_id      { 7 } # Assumes always federation record (from seeds)
 
     minutes             { meeting_individual_result.minutes }
     seconds             { meeting_individual_result.seconds }

@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+# rubocop:disable Style/FrozenStringLiteralComment
 
 require 'rails_helper'
 require 'sql_converter'
@@ -64,3 +64,5 @@ describe SqlConverter, type: :strategy do
   #-- -------------------------------------------------------------------------
   #++
 end
+
+# rubocop:enable Style/FrozenStringLiteralComment

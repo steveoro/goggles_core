@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+# rubocop:disable Style/FrozenStringLiteralComment, Style/MutableConstant
 
 require 'sql_converter'
 
@@ -126,3 +126,4 @@ class UserContentLogger
   #++
 
 end
+# rubocop:enable Style/FrozenStringLiteralComment, Style/MutableConstant

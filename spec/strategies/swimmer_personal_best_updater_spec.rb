@@ -3,6 +3,7 @@
 require 'rails_helper'
 require 'wrappers/timing'
 
+# rubocop:disable Rails/DynamicFindBy
 describe SwimmerPersonalBestUpdater, type: :strategy do
   context 'without requested parameters' do
     it 'raises an exception for wrong swimmer parameter' do
@@ -44,14 +45,14 @@ describe SwimmerPersonalBestUpdater, type: :strategy do
       it 'clears personal best' do
         fix_swimmer = Swimmer.find(23)
         updater     = SwimmerPersonalBestUpdater.new(fix_swimmer)
-        fix_event_by_pool_type = EventsByPoolType.find_by(pool: '25', event_codes: '50FA')
+        fix_event_by_pool_type = EventsByPoolType.find_by_pool_and_event_codes('25', '50FA')
         updater.reset_personal_best!(fix_event_by_pool_type)
         expect(fix_swimmer.meeting_individual_results.for_event_by_pool_type(fix_event_by_pool_type).is_personal_best.count).to eq(0)
       end
       it 'clears personal best already set' do
         fix_swimmer = Swimmer.find(23)
         updater     = SwimmerPersonalBestUpdater.new(fix_swimmer)
-        fix_event_by_pool_type = EventsByPoolType.find_by(pool: '25', event_codes: '50FA')
+        fix_event_by_pool_type = EventsByPoolType.find_by_pool_and_event_codes('25', '50FA')
         updater.set_personal_best!(fix_event_by_pool_type)
         expect(fix_swimmer.meeting_individual_results.for_event_by_pool_type(fix_event_by_pool_type).is_personal_best.count).to be > 0
         updater.reset_personal_best!(fix_event_by_pool_type)
@@ -75,7 +76,7 @@ describe SwimmerPersonalBestUpdater, type: :strategy do
       it 'returns a timing instance if event already swam' do
         fix_swimmer = Swimmer.find(23)
         updater     = SwimmerPersonalBestUpdater.new(fix_swimmer)
-        fix_event_by_pool_type = EventsByPoolType.find_by(pool: '25', event_codes: '50FA')
+        fix_event_by_pool_type = EventsByPoolType.find_by_pool_and_event_codes('25', '50FA')
         expect(
           updater.set_personal_best!(fix_event_by_pool_type)
         ).to be_an_instance_of(MeetingIndividualResult)
@@ -83,7 +84,7 @@ describe SwimmerPersonalBestUpdater, type: :strategy do
       it 'sets personal best flag if event already swam' do
         fix_swimmer = Swimmer.find(23)
         updater     = SwimmerPersonalBestUpdater.new(fix_swimmer)
-        fix_event_by_pool_type = EventsByPoolType.find_by(pool: '25', event_codes: '50FA')
+        fix_event_by_pool_type = EventsByPoolType.find_by_pool_and_event_codes('25', '50FA')
         updater.reset_personal_best!(fix_event_by_pool_type)
         expect(
           fix_swimmer.meeting_individual_results.for_event_by_pool_type(fix_event_by_pool_type).is_personal_best.count
@@ -121,7 +122,7 @@ describe SwimmerPersonalBestUpdater, type: :strategy do
       it 'returns nil if event not already swam' do
         fix_swimmer = Swimmer.find(23)
         updater     = SwimmerPersonalBestUpdater.new(fix_swimmer)
-        fix_event_by_pool_type = EventsByPoolType.find_by(pool: '25', event_codes: '3000SL')
+        fix_event_by_pool_type = EventsByPoolType.find_by_pool_and_event_codes('25', '3000SL')
         expect(updater.set_personal_best!(fix_event_by_pool_type)).to be_nil
       end
       it 'returns a time swam if swam before or nil if not' do
@@ -167,3 +168,4 @@ describe SwimmerPersonalBestUpdater, type: :strategy do
   #-- -------------------------------------------------------------------------
   #++
 end
+# rubocop:enable Rails/DynamicFindBy

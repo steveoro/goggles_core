@@ -8,14 +8,14 @@ class DataImportMeetingSession < ApplicationRecord
 
   belongs_to :user # [Steve, 20120212] Do not validate associated user!
 
-  belongs_to :meeting_session, foreign_key: 'conflicting_id'
+  belongs_to :meeting_session, foreign_key: 'conflicting_id', optional: true
 
   validates :import_text, presence: true
 
-  belongs_to :data_import_meeting
-  belongs_to :meeting
-  belongs_to :swimming_pool
-  belongs_to :day_part_type
+  belongs_to :data_import_meeting, optional: true
+  belongs_to :meeting, optional: true
+  belongs_to :swimming_pool, optional: true
+  belongs_to :day_part_type, optional: true
   # [Steve, 20131028] Cannot enable validation on :swimming_pool, :day_part_type, since they can be null
   # [Steve, 20131114] Cannot enable validation on :meeting, :data_import_meeting, since they can be null (not both)
 

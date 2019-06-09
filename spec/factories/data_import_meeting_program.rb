@@ -7,9 +7,9 @@ FactoryBot.define do
   factory :data_import_meeting_program do
     data_import_session
     common_meeting_program_fields
-    conflicting_id            nil
-    import_text               { FFaker::Lorem.paragraph[0..250] }
-    data_import_meeting_session_id nil
+    conflicting_id  { nil }
+    import_text     { FFaker::Lorem.paragraph[0..250] }
+    data_import_meeting_session_id { nil }
     meeting_session
     event_type do
       EventsByPoolType.joins(:event_type)
@@ -27,8 +27,8 @@ FactoryBot.define do
     minutes                   { ((rand * 2) % 2).to_i }
     seconds                   { ((rand * 60) % 60).to_i }
     hundreds                  { ((rand * 100) % 100).to_i }
-    is_out_of_race            false
-    heat_type_id              HeatType::FINALS_ID
+    is_out_of_race            { false }
+    heat_type_id              { HeatType::FINALS_ID }
 
     # Make the circular reference between the session and the
     # season valid:

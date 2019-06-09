@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+# rubocop:disable Style/FrozenStringLiteralComment
 
 #
 # = SwimmerPersonalBestUpdater
@@ -124,3 +124,4 @@ class SwimmerPersonalBestUpdater
   #++
 
 end
+# rubocop:enable Style/FrozenStringLiteralComment

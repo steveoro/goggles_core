@@ -8,16 +8,16 @@ class DataImportSwimmer < ApplicationRecord
 
   belongs_to :user # [Steve, 20120212] Do not validate associated user!
 
-  belongs_to :swimmer, foreign_key: 'conflicting_id'
-  belongs_to :gender_type
+  belongs_to :swimmer, foreign_key: 'conflicting_id', optional: true
+  belongs_to :gender_type, optional: true
 
   validates :import_text, presence: true
 
   validates :complete_name, presence: true
-  validates   :complete_name, length: { within: 1..100, allow_nil: false }
+  validates :complete_name, length: { within: 1..100, allow_nil: false }
 
-  validates   :last_name, length: { maximum: 50 }
-  validates   :first_name, length: { maximum: 50 }
+  validates :last_name, length: { maximum: 50 }
+  validates :first_name, length: { maximum: 50 }
 
   validates :year_of_birth, presence: true
   validates :year_of_birth, length: { within: 2..4, allow_nil: false }

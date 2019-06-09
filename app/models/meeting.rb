@@ -8,6 +8,7 @@ require 'drop_down_listable'
 #   - version:  6.327
 #   - author:   Steve A., Leega
 #
+# rubocop:disable Rails/DynamicFindBy
 class Meeting < ApplicationRecord
 
   include DropDownListable
@@ -293,7 +294,7 @@ class Meeting < ApplicationRecord
     if pool_type
       event_types.distinct.each do |event_type|
         event_key = "#{event_type.code}-#{pool_type.code}"
-        events_by_pool_types << EventsByPoolType.find_by(key: event_key)
+        events_by_pool_types << EventsByPoolType.find_by_key(event_key)
       end
     end
     events_by_pool_types
@@ -326,3 +327,4 @@ class Meeting < ApplicationRecord
   # ----------------------------------------------------------------------------
 
 end
+# rubocop:enable Rails/DynamicFindBy

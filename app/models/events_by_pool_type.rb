@@ -8,6 +8,7 @@
 # @author   Steve A., Leega
 # @version  6.332
 #
+# rubocop:disable Rails/DynamicFindBy
 class EventsByPoolType < ApplicationRecord
 
   belongs_to :pool_type
@@ -65,7 +66,7 @@ class EventsByPoolType < ApplicationRecord
   #
   def self.find_by_key(key, separator = '-')
     codes = key.split(separator)
-    codes.size == 2 ? find_by(pool: codes[1], event_codes: codes[0]) : nil
+    codes.size == 2 ? find_by_pool_and_event_codes(codes[1], codes[0]) : nil
   end
   # ----------------------------------------------------------------------------
 
@@ -100,3 +101,4 @@ class EventsByPoolType < ApplicationRecord
   # ----------------------------------------------------------------------------
 
 end
+# rubocop:enable Rails/DynamicFindBy

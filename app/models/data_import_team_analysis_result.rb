@@ -5,8 +5,8 @@ class DataImportTeamAnalysisResult < ApplicationRecord
   belongs_to            :data_import_session
   validates_associated  :data_import_session
 
-  belongs_to :season, foreign_key: 'desired_season_id'
-  belongs_to :team,   foreign_key: 'chosen_team_id'
+  belongs_to :season, foreign_key: 'desired_season_id', optional: true
+  belongs_to :team,   foreign_key: 'chosen_team_id', optional: true
 
   #  attr_accessible :analysis_log_text, :sql_text, :searched_team_name,
   #                  :desired_season_id, :chosen_team_id,

@@ -22,7 +22,7 @@ FactoryBot.define do
     fake_phone_numbers
     e_mail                    { FFaker::Internet.email }
     nickname                  { FFaker::Internet.user_name }
-    associated_user_id        nil
+    associated_user_id        { nil }
 
     before(:create) do |built_instance|
       if built_instance.invalid?

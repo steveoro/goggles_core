@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+# rubocop:disable Style/FrozenStringLiteralComment
 
 require 'drop_down_listable'
 require 'date'
@@ -161,3 +161,4 @@ class CategoryType < ApplicationRecord
   # ----------------------------------------------------------------------------
 
 end
+# rubocop:enable Style/FrozenStringLiteralComment

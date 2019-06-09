@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+# rubocop:disable Style/FrozenStringLiteralComment
 
 #
 # = ConditionsGeneratorColumnStringRegexped
@@ -35,3 +35,5 @@ class ConditionsGeneratorColumnStringRegexped
 end
 #-- ---------------------------------------------------------------------------
 #++
+
+# rubocop:enable Style/FrozenStringLiteralComment

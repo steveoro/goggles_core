@@ -57,20 +57,5 @@ Gem::Specification.new do |s|
   s.add_dependency 'active_model_serializers' # , '~> 0.10.0'
   s.add_dependency 'activemodel-serializers-xml' # Required by Draper
 
-  # s.add_development_dependency "better_errors"
-  # s.add_development_dependency 'factory_bot_rails'
-  # s.add_development_dependency "ffaker"
-  # s.add_development_dependency "guard"
-  # s.add_development_dependency "guard-bundler"
-  # s.add_development_dependency "guard-cucumber"
-  # s.add_development_dependency "guard-rspec"
-  # s.add_development_dependency "guard-rubocop"
-  # s.add_development_dependency "guard-shell"
-  # s.add_development_dependency "guard-spring"
-  # s.add_development_dependency "rspec"
-  # s.add_development_dependency "rspec-rails"
-  # s.add_development_dependency "rubocop"
-  # s.add_development_dependency "rubocop-rails"
-  # s.add_development_dependency "rubocop-rspec"
-  # s.add_development_dependency "test-unit", "~> 3.0"
+  s.add_development_dependency 'factory_bot_rails'
 end

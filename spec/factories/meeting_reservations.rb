@@ -8,7 +8,7 @@ FactoryBot.define do
     badge                 { Badge.all.min { rand - 0.5 } }
     user
     notes                 { FFaker::Lorem.paragraph }
-    is_not_coming         false
-    has_confirmed         false
+    is_not_coming         { false }
+    has_confirmed         { false }
   end
 end

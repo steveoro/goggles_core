@@ -15,8 +15,8 @@ FactoryBot.define do
     season
     # group_name
     federation_code           { (rand * 100).to_i.to_s } # (This has nothing to do with season.federation_type.code)
-    is_a_relay                false
-    is_out_of_race            false
+    is_a_relay                { false }
+    is_out_of_race            { false }
 
     before(:create) do |built_instance|
       if built_instance.invalid?

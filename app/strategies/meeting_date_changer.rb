@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+# rubocop:disable Style/FrozenStringLiteralComment
 
 require 'wrappers/timing'
 
@@ -79,3 +79,4 @@ class MeetingDateChanger
   #++
 
 end
+# rubocop:enable Style/FrozenStringLiteralComment

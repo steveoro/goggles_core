@@ -14,6 +14,6 @@ FactoryBot.define do
     suggested_seconds     { ((rand * 60) % 60).to_i }
     suggested_hundreds    { ((rand * 100) % 100).to_i }
 
-    is_doing_this         true
+    is_doing_this         { true }
   end
 end

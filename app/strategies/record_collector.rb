@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+# rubocop:disable Style/FrozenStringLiteralComment
 
 #
 # = RecordCollector
@@ -445,3 +445,5 @@ class RecordCollector
   #++
 
 end
+
+# rubocop:enable Style/FrozenStringLiteralComment

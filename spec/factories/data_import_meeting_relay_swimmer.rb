@@ -6,7 +6,7 @@ require 'common/validation_error_tools'
 FactoryBot.define do
   factory :data_import_meeting_relay_swimmer do
     data_import_session
-    conflicting_id            nil
+    conflicting_id            { nil }
     import_text               { FFaker::Lorem.paragraph[0..250] }
 
     meeting_relay_result
@@ -18,7 +18,7 @@ FactoryBot.define do
                       .stroke_type
     end
 
-    minutes                   0
+    minutes                   { 0 }
     seconds                   { ((rand * 59) % 59).to_i }  # Forced not to use 59
     hundreds                  { ((rand * 99) % 99).to_i }  # Forced not to use 99
 

@@ -6,14 +6,14 @@ class DataImportTeam < ApplicationRecord
 
   include DataImportable
 
-  belongs_to :user                                  # [Steve, 20120212] Do not validate associated user!
+  belongs_to :user # [Steve, 20120212] Do not validate associated user!
 
-  belongs_to :team, foreign_key: 'conflicting_id'
+  belongs_to :team, foreign_key: 'conflicting_id', optional: true
 
   validates :import_text, presence: true
 
-  belongs_to :data_import_city
-  belongs_to :city                                  # City can be null especially in Teams added by data-import
+  belongs_to :data_import_city, optional: true
+  belongs_to :city, optional: true # City can be null especially in Teams added by data-import
 
   validates :name, presence: { length: { within: 1..60 }, allow_nil: false }
 

@@ -4,6 +4,7 @@ require 'rails_helper'
 require 'benchmark'
 require 'date'
 
+# rubocop:disable Rails/DynamicFindBy
 describe PersonalBestCollector, type: :strategy do
   # Use pre-loaded seeds:
   let(:swimmer) { Swimmer.find(23) } # Assumes swimmer Leega from seeds
@@ -97,7 +98,7 @@ describe PersonalBestCollector, type: :strategy do
     let(:random_mir)    { swimmer.meeting_individual_results.last(50).sample }
     let(:season)        { random_mir.season }
     let(:season_type)   { random_mir.season_type }
-    let(:linked_ebpt)   { EventsByPoolType.find_by(pool: random_mir.pool_type.code, event_codes: random_mir.event_type.code) }
+    let(:linked_ebpt)   { EventsByPoolType.find_by_pool_and_event_codes(random_mir.pool_type.code, random_mir.event_type.code) }
     subject { PersonalBestCollector.new(swimmer, season: season, season_type: season_type) }
 
     it 'returns the size of the internal collection' do
@@ -123,7 +124,7 @@ describe PersonalBestCollector, type: :strategy do
     let(:random_mir)    { swimmer.meeting_individual_results.last(50).sample }
     let(:season)        { random_mir.season }
     let(:season_type)   { random_mir.season_type }
-    let(:linked_ebpt)   { EventsByPoolType.find_by(pool: random_mir.pool_type.code, event_codes: random_mir.event_type.code) }
+    let(:linked_ebpt)   { EventsByPoolType.find_by_pool_and_event_codes(random_mir.pool_type.code, random_mir.event_type.code) }
     subject { PersonalBestCollector.new(swimmer, season: season, season_type: season_type) }
 
     it 'returns the size of the internal collection' do
@@ -149,7 +150,7 @@ describe PersonalBestCollector, type: :strategy do
     let(:random_mir)    { swimmer.meeting_individual_results.last(50).sample }
     let(:season)        { random_mir.season }
     let(:season_type)   { random_mir.season_type }
-    let(:linked_ebpt)   { EventsByPoolType.find_by(pool: random_mir.pool_type.code, event_codes: random_mir.event_type.code) }
+    let(:linked_ebpt)   { EventsByPoolType.find_by_pool_and_event_codes(random_mir.pool_type.code, random_mir.event_type.code) }
     subject { PersonalBestCollector.new(swimmer, season: season, season_type: season_type) }
 
     it 'returns the cleared collection instance' do
@@ -265,3 +266,4 @@ describe PersonalBestCollector, type: :strategy do
   #-- -------------------------------------------------------------------------
   #++
 end
+# rubocop:enable Rails/DynamicFindBy

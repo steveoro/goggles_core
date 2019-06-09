@@ -13,24 +13,24 @@ class DataImportMeetingRelayResult < ApplicationRecord
 
   belongs_to :user # [Steve, 20120212] Do not validate associated user!
 
-  belongs_to :meeting_relay_result, foreign_key: 'conflicting_id'
+  belongs_to :meeting_relay_result, foreign_key: 'conflicting_id', optional: true
 
   validates :import_text, presence: true
 
-  belongs_to :data_import_meeting_program
-  belongs_to :meeting_program
+  belongs_to :data_import_meeting_program, optional: true
+  belongs_to :meeting_program, optional: true
 
-  belongs_to :data_import_team
-  belongs_to :team
+  belongs_to :data_import_team, optional: true
+  belongs_to :team, optional: true
 
-  belongs_to :team_affiliation
-  belongs_to :disqualification_code_type
+  belongs_to :team_affiliation, optional: true
+  belongs_to :disqualification_code_type, optional: true
+
   belongs_to :entry_time_type
+  validates_associated :entry_time_type
 
   # This is used as an helper for the factory tests:
   has_one :meeting, through: :data_import_meeting_program
-
-  validates_associated :entry_time_type
 
   validates :relay_header, presence: true
   validates :relay_header, length: { within: 1..60, allow_nil: false }

@@ -10,6 +10,7 @@ require 'wrappers/timing'
 #
 #  Finder class for swimmer personal-best timings results
 #
+# rubocop:disable Rails/DynamicFindBy
 class SwimmerPersonalBestFinder
 
   attr_reader :swimmer
@@ -76,8 +77,9 @@ class SwimmerPersonalBestFinder
 
   # Find personal last best for given involved seasons, event type and pool type
   # useing events by pool type instead of independent pool type and event type
+  #
   def get_involved_season_last_best_for_key(involved_seasons, event_by_pool_type_key)
-    event_by_pool_type = EventsByPoolType.find_by(key: event_by_pool_type_key)
+    event_by_pool_type = EventsByPoolType.find_by_key(event_by_pool_type_key)
     event_by_pool_type ? get_involved_season_last_best_for_event(involved_seasons, event_by_pool_type.event_type, event_by_pool_type.pool_type) : nil
   end
   #-- --------------------------------------------------------------------------
@@ -345,3 +347,4 @@ class SwimmerPersonalBestFinder
   #++
 
 end
+# rubocop:enable Rails/DynamicFindBy

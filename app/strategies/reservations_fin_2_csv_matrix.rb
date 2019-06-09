@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+# rubocop:disable Style/FrozenStringLiteralComment
 
 require 'framework/console_logger'
 
@@ -230,3 +230,4 @@ class ReservationsFin2CsvMatrix
   #++
 
 end
+# rubocop:enable Style/FrozenStringLiteralComment

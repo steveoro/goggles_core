@@ -6,7 +6,7 @@ require 'ffaker'
 FactoryBot.define do
   factory :data_import_meeting do
     data_import_session
-    conflicting_id            nil
+    conflicting_id            { nil }
     import_text               { FFaker::Lorem.paragraph[0..200] }
 
     sequence(:code) { |_n| 'meeting#(n)' }

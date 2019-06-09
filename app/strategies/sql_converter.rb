@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+# rubocop:disable Style/FrozenStringLiteralComment
 
 #
 # = SqlConverter
@@ -143,3 +143,5 @@ module SqlConverter
     %w[lock_version tags_by_user_list tags_by_team_list]
   end
 end
+
+# rubocop:enable Style/FrozenStringLiteralComment

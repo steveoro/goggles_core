@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+# rubocop:disable Style/FrozenStringLiteralComment
 
 require 'wrappers/timing'
 
@@ -10,6 +10,7 @@ require 'wrappers/timing'
 # @author   Leega
 # @version  6.093
 #
+# rubocop:disable Rails/DynamicFindBy
 class GoggleCupStandardFinder
 
   include SqlConvertable
@@ -156,6 +157,7 @@ class GoggleCupStandardFinder
   # is_limited_to_season_types_defined == false
   # Otherwise consider only those who have results for meetings
   # in the season types to be considered according to Goggle cup definition
+  #
   def create_goggle_cup_standards_for_swimmer!(swimmer)
     # Clear data to avoid incorrect standards
     # Necessary beacuse a time swam during the Goggle cup year should became
@@ -165,7 +167,7 @@ class GoggleCupStandardFinder
 
     sql_diff_text_log << "-- Creating time standards for #{swimmer.get_full_name}\r\n"
     find_swimmer_goggle_cup_standard(swimmer).each_pair do |event_key, standard_time|
-      event_by_pool_type = EventsByPoolType.find_by(key: event_key)
+      event_by_pool_type = EventsByPoolType.find_by_key(event_key)
       goggle_cup_standard               = GoggleCupStandard.new
       goggle_cup_standard.goggle_cup_id = @goggle_cup.id
       goggle_cup_standard.swimmer_id    = swimmer.id
@@ -254,3 +256,4 @@ class GoggleCupStandardFinder
   #++
 
 end
+# rubocop:enable Rails/DynamicFindBy, Style/FrozenStringLiteralComment

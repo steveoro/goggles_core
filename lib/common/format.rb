@@ -102,7 +102,7 @@ module Format
     is_parsing_ok = false
     parsed_value = nil
     begin
-      parsed_value = DateTime.zone.parse(an_object.to_s.gsub(%r{/}, '-'))
+      parsed_value = Time.zone.parse(an_object.to_s.gsub(%r{/}, '-'))
       is_parsing_ok = parsed_value.is_a?(DateTime)
     rescue StandardError
     end
@@ -123,7 +123,7 @@ module Format
     is_parsing_ok = false
     parsed_value = nil
     begin
-      parsed_value = DateTime.zone.parse(an_object.to_s.gsub(%r{/}, '-'))
+      parsed_value = Time.zone.parse(an_object.to_s.gsub(%r{/}, '-'))
       is_parsing_ok = parsed_value.is_a?(DateTime)
     rescue StandardError
     end
@@ -217,11 +217,11 @@ module Format
       return datetime_value.strftime(str_format)
     else # If it's not a valid DateTime instance, try to parse it into one:
       begin
-        return DateTime.zone.parse(datetime_value.to_s.gsub(%r{/}, '-')).strftime(str_format)
+        return Time.zone.parse(datetime_value.to_s.gsub(%r{/}, '-')).strftime(str_format)
       rescue StandardError
         # DEBUG
         # $stderr.print "*[E]* Format.any_datetime('#{datetime_value}'): invalid DateTime.parse() parameter specified!\r\n#{$!}\r\n"
-        return DateTime.zone.now.strftime(str_format)
+        return Time.zone.now.strftime(str_format)
       end
     end
   end

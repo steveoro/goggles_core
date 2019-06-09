@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+# rubocop:disable Style/FrozenStringLiteralComment
 
 #
 # = SeasonPonderatedBestsDAO
@@ -321,3 +321,4 @@ class SeasonPonderatedBestsDAO
   end
 
 end
+# rubocop:enable Style/FrozenStringLiteralComment

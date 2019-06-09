@@ -7,7 +7,7 @@ require 'common/validation_error_tools'
 
 FactoryBot.define do
   trait :common_meeting_session_fields do
-    description               'FINALS'
+    description               { 'FINALS' }
     session_order             { ((rand * 100) % 4).to_i + 1 }
     meeting
     # The following column uses the pre-loaded seed records:

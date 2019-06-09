@@ -13,7 +13,7 @@ FactoryBot.define do
     team_points               { ((rand * 10) % 10).to_i + 1 }
     goggle_cup_points         { (rand * 1000).to_i }
     reaction_time             { rand.round(2) }
-    minutes                   0
+    minutes                   { 0 }
     seconds                   { ((rand * 60) % 60).to_i }
     hundreds                  { ((rand * 100) % 100).to_i }
     disqualification_code_type { rand == 1 ? DisqualificationCodeType.all.sample : nil }

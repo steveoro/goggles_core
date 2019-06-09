@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+# rubocop:disable Style/FrozenStringLiteralComment
 
 #
 # = RecordUpdater
@@ -257,3 +257,4 @@ class RecordUpdater
   #++
 
 end
+# rubocop:enable Style/FrozenStringLiteralComment

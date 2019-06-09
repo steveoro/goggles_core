@@ -6,6 +6,7 @@ require 'draper'
 require 'haml'
 require 'acts-as-taggable-on'
 require 'acts_as_votable'
+require 'factory_bot_rails'
 
 require 'extensions/roman_numeral'
 
@@ -33,8 +34,8 @@ module GogglesCore
 
     config.generators do |g|
       g.test_framework :rspec, fixture: false
-      g.factory_bot dir: 'spec/factories'
-      g.fixture_replacement :factory_bot, dir: 'spec/factories'
+      g.factory_bot dir: GogglesCore::Engine.root.join('spec', 'factories')
+      g.fixture_replacement :factory_bot
       g.assets false
       g.helper false
     end

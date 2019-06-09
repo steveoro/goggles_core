@@ -15,7 +15,7 @@ FactoryBot.define do
 
     sequence(:start_list_number)
 
-    minutes                   0
+    minutes                   { 0 }
     seconds                   { ((rand * 60) % 60).to_i }
     hundreds                  { ((rand * 100) % 100).to_i }
 

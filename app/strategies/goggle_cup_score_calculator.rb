@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+# rubocop:disable Style/FrozenStringLiteralComment
 
 require 'wrappers/timing'
 
@@ -176,3 +176,4 @@ class GoggleCupScoreCalculator
   #++
 
 end
+# rubocop:enable Style/FrozenStringLiteralComment

@@ -15,7 +15,8 @@ class DataImportSession < ApplicationRecord
   has_many :data_import_team_analysis_results
   has_many :data_import_swimmer_analysis_results
 
-  belongs_to :data_import_season
+  belongs_to :data_import_season, optional: true
+
   belongs_to :season
   validates_associated :season
 

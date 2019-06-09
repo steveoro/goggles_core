@@ -13,13 +13,13 @@ FactoryBot.define do
     calendar_date         { FFaker::Time.date }
     calendar_place        { City.where('LENGTH(name) > 3').sample.name }
     calendar_name         { "#{(rand * 10).to_i + 1}° Trofeo #{FFaker::Lorem.word.camelcase} di #{calendar_place}" }
-    manifest_link         nil
-    startlist_link        nil
-    results_link          nil
+    manifest_link         { nil }
+    startlist_link        { nil }
+    results_link          { nil }
 
-    fin_manifest_code     nil
-    fin_startlist_code    nil
-    fin_results_code      nil
+    fin_manifest_code     { nil }
+    fin_startlist_code    { nil }
+    fin_results_code      { nil }
     # Since we don't have the NameNormalizer strategy available here, we use an
     # approximation of it:
     goggles_meeting_code  { calendar_place.gsub(%r{[\s\-\_\'`\\/\:\.\,\;]}, '').downcase }

@@ -40,7 +40,7 @@ FactoryBot.define do
     end
 
     factory :invalid_training do
-      description nil
+      description { nil }
     end
   end
   #-- -------------------------------------------------------------------------

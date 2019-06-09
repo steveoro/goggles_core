@@ -11,18 +11,18 @@ class DataImportMeetingProgram < ApplicationRecord
 
   belongs_to :user                                  # [Steve, 20120212] Do not validate associated user!
 
-  belongs_to :meeting_program, foreign_key: 'conflicting_id'
+  belongs_to :meeting_program, foreign_key: 'conflicting_id', optional: true
 
   validates :import_text, presence: true
 
-  belongs_to :meeting_session
-  belongs_to :data_import_meeting_session
+  belongs_to :meeting_session, optional: true
+  belongs_to :data_import_meeting_session, optional: true
+  belongs_to :time_standard, optional: true
+
   belongs_to :category_type
   belongs_to :gender_type
   belongs_to :event_type
   belongs_to :heat_type
-  belongs_to :time_standard
-
   validates_associated :category_type
   validates_associated :gender_type
   validates_associated :event_type

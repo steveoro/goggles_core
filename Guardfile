@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-# A sample Guardfile
 # More info at https://github.com/guard/guard#readme
+# [Steve A., 20190609] WARNING: Spring on GogglesCore may yield a too big memory footprint,
+# making its usage with Guard more or less impossible. Until further notice, stick with Zeus.
 
 ## Uncomment and set this to only include directories you want to watch
 # directories %w(app lib config test spec features) \
@@ -19,16 +20,9 @@
 
 engine_name = 'goggles_core'
 
+# With Spring:
 # Start explicitly the Spring preloader & watch for files that may need Spring to refresh itself:
-guard :spring, bundler: true do
-  watch('Gemfile.lock')
-  watch(%r{^config/})
-  watch(%r{^spec/(support|factories)/})
-  watch(%r{^spec/factory.rb})
-end
-
-# OLD VERSION:
-# guard 'spring', bundler: true do
+# guard :spring, bundler: true do
 #   watch('Gemfile.lock')
 #   watch(%r{^config/})
 #   watch(%r{^spec/(support|factories)/})
@@ -36,11 +30,16 @@ end
 # end
 
 rspec_options = {
-  cmd: 'spring rspec',
+  # With Zeus:
+  cmd: 'zeus test',
+  # With Spring:
+  # cmd: 'spring rspec',
+
   # Exclude performance tests with fail-fast:
-  # cmd_additional_args: "--color -f progress --order rand --fail-fast -t ~type:performance",
-  cmd_additional_args: ' --color -f progress --order rand -t ~type:performance',
-  results_file: Dir.pwd + '/tmp/guard_rspec_results.txt', # This option must match the path in engine_plan.rb
+  cmd_additional_args: ' --color --fail-fast --profile 10 -f progress --order rand -t ~type:performance',
+
+  # (Zeus only) The following option must match the path in engine_plan.rb:
+  results_file: File.join(Dir.pwd, 'tmp', 'guard_rspec_results.txt'),
   all_after_pass: false,
   failed_mode: :focus
 }
@@ -94,9 +93,7 @@ guard :rspec, rspec_options do
   # watch(rails.layouts)       { |m| rspec.spec.call("features/#{m[1]}") }
 end
 
-# OLD VERSION:
-# group :rspec do
-#   guard :rspec, rspec_options do
+# OLD MATCHES VERSION:
 #     # Watch support and config files:
 #     watch(%r{^lib/(.+)\.rb$})                           { |m| "spec/lib/#{m[1]}_spec.rb" }
 #     watch('spec/spec_helper.rb')                        { "spec" }
@@ -132,10 +129,15 @@ end
 # end
 
 rubocop_options = {
-  cmd: 'spring rubocop',
+  # With Zeus:
+  cmd: 'rubocop',
+  # With Spring
+  # cmd: 'spring rubocop',
+
   # With fuubar, offenses and warnings tot.:
   # cli: "-R -E -P -f fu -f o -f w"
-  # With rails cops & autocorrect:
+  # [Steve, 20190609] (Do not turn on autocorrect when using Guard)
+  # With rails cops enabled:
   cli: '-D --require rubocop-rails'
 }
 

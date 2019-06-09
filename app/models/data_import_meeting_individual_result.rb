@@ -13,30 +13,30 @@ class DataImportMeetingIndividualResult < ApplicationRecord
 
   belongs_to :user # [Steve, 20120212] Do not validate associated user!
 
-  belongs_to :meeting_individual_result, foreign_key: 'conflicting_id'
+  belongs_to :meeting_individual_result, foreign_key: 'conflicting_id', optional: true
 
   validates :import_text, presence: true
 
-  belongs_to :data_import_meeting_program
-  belongs_to :meeting_program
+  belongs_to :data_import_meeting_program, optional: true
+  belongs_to :meeting_program, optional: true
   # These reference fields may be filled-in later (thus not validated upon creation):
-  belongs_to :data_import_swimmer
-  belongs_to :data_import_team
-  belongs_to :data_import_badge
+  belongs_to :data_import_swimmer,  optional: true
+  belongs_to :data_import_team,     optional: true
+  belongs_to :data_import_badge,    optional: true
 
-  belongs_to :swimmer
-  belongs_to :team
-  belongs_to :team_affiliation
-  belongs_to :badge
-  belongs_to :disqualification_code_type
+  belongs_to :swimmer,          optional: true
+  belongs_to :team,             optional: true
+  belongs_to :team_affiliation, optional: true
+  belongs_to :badge,            optional: true
+  belongs_to :disqualification_code_type, optional: true
 
   validates :athlete_name, presence: true
   validates :athlete_name, length: { within: 1..100, allow_nil: false }
   validates :team_name, presence: true
-  validates   :team_name, length: { within: 1..50, allow_nil: false }
+  validates :team_name, length: { within: 1..50, allow_nil: false }
 
-  validates   :athlete_badge_number, length: { maximum: 40 }
-  validates   :team_badge_number, length: { maximum: 40 }
+  validates :athlete_badge_number, length: { maximum: 40 }
+  validates :team_badge_number, length: { maximum: 40 }
 
   validates :year_of_birth, presence: true
   validates :year_of_birth, length: { within: 2..4, allow_nil: false }

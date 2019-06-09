@@ -8,12 +8,12 @@ class DataImportMeeting < ApplicationRecord
 
   belongs_to :user # [Steve, 20120212] Do not validate associated user!
 
-  belongs_to :meeting, foreign_key: 'conflicting_id'
+  belongs_to :meeting, foreign_key: 'conflicting_id', optional: true
 
   validates :import_text, presence: true
 
   belongs_to :season
-  belongs_to :data_import_season
+  belongs_to :data_import_season, optional: true
   belongs_to :edition_type
   belongs_to :timing_type
   validates_associated :season
@@ -22,16 +22,20 @@ class DataImportMeeting < ApplicationRecord
 
   belongs_to(:individual_score_computation_type,
              class_name: 'ScoreComputationType',
-             foreign_key: 'individual_score_computation_type_id')
+             foreign_key: 'individual_score_computation_type_id',
+             optional: true)
   belongs_to(:relay_score_computation_type,
              class_name: 'ScoreComputationType',
-             foreign_key: 'relay_score_computation_type_id')
+             foreign_key: 'relay_score_computation_type_id',
+             optional: true)
   belongs_to(:team_score_computation_type,
              class_name: 'ScoreComputationType',
-             foreign_key: 'team_score_computation_type_id')
+             foreign_key: 'team_score_computation_type_id',
+             optional: true)
   belongs_to(:meeting_score_computation_type,
              class_name: 'ScoreComputationType',
-             foreign_key: 'meeting_score_computation_type_id')
+             foreign_key: 'meeting_score_computation_type_id',
+             optional: true)
 
   has_one  :season_type, through: :season
 

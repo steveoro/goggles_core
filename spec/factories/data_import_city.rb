@@ -5,8 +5,8 @@ require 'ffaker'
 FactoryBot.define do
   factory :data_import_city do
     data_import_session
-    conflicting_id        nil
-    import_text           { FFaker::Lorem.paragraph[0..100] }
+    conflicting_id          { nil }
+    import_text             { FFaker::Lorem.paragraph[0..100] }
     name                    { FFaker::Address.city }
     zip                     { FFaker::AddressFR.postal_code }
     area                    { FFaker::AddressUS.state }

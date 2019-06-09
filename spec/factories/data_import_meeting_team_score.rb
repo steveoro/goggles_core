@@ -6,14 +6,14 @@ require 'ffaker'
 FactoryBot.define do
   factory :data_import_meeting_team_score do
     data_import_session
-    conflicting_id            nil
+    conflicting_id            { nil }
     import_text               { FFaker::Lorem.paragraph[0..250] }
     team_affiliation
     team                      { team_affiliation.team }
-    data_import_team_id       nil
+    data_import_team_id       { nil }
     season                    { team_affiliation.season }
     meeting                   { create(:meeting, season: season) }
-    data_import_meeting_id    nil
+    data_import_meeting_id    { nil }
     common_meeting_team_score_fields
 
     factory :data_import_meeting_team_score_with_relay_results do

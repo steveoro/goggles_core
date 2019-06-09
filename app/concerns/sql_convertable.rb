@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+# rubocop:disable Style/FrozenStringLiteralComment
 
 require 'active_support'
 require 'wrappers/timing'
@@ -43,7 +43,7 @@ module SqlConvertable
   def create_sql_diff_header(diff_header = nil)
     sql_diff_text_log << "--\r\n"
     sql_diff_text_log << "-- #{diff_header}\r\n" if diff_header
-    sql_diff_text_log << "-- #{DateTime.zone.now.strftime(format = '%d %B %Y %H:%M:%S')}\r\n"
+    sql_diff_text_log << "-- #{Time.zone.now.strftime(format = '%d %B %Y %H:%M:%S')}\r\n"
     sql_diff_text_log << "-- Begin script\r\n"
     sql_diff_text_log << "--\r\n"
     sql_diff_text_log << "\r\n"
@@ -94,3 +94,5 @@ module SqlConvertable
   #-- -------------------------------------------------------------------------
   #++
 end
+
+# rubocop:enable Style/FrozenStringLiteralComment

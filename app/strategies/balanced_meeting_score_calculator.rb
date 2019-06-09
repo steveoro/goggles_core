@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+# rubocop:disable Style/FrozenStringLiteralComment
 
 require 'wrappers/timing'
 
@@ -216,3 +216,4 @@ class BalancedMeetingScoreCalculator
   #++
 
 end
+# rubocop:enable Style/FrozenStringLiteralComment

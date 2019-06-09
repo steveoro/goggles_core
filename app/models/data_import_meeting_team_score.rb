@@ -8,26 +8,27 @@ class DataImportMeetingTeamScore < ApplicationRecord
 
   belongs_to :user # [Steve, 20120212] Do not validate associated user!
 
-  belongs_to :meeting_team_score, foreign_key: 'conflicting_id'
+  belongs_to :meeting_team_score, foreign_key: 'conflicting_id', optional: true
 
-  belongs_to :data_import_team
-  belongs_to :team
-  belongs_to :team_affiliation
-  belongs_to :data_import_meeting
-  belongs_to :meeting
+  belongs_to :data_import_team, optional: true
+  belongs_to :team, optional: true
+  belongs_to :team_affiliation, optional: true
+  belongs_to :data_import_meeting, optional: true
+  belongs_to :meeting, optional: true
+
   belongs_to :season
   validates_associated :season
 
-  validates     :rank, presence: true
-  validates     :sum_individual_points, presence: true
-  validates     :sum_relay_points, presence: true
-  validates     :sum_team_points, presence: true
-  validates     :meeting_individual_points, presence: true
-  validates     :meeting_relay_points, presence: true
-  validates     :meeting_team_points, presence: true
-  validates     :season_individual_points, presence: true
-  validates     :season_relay_points, presence: true
-  validates     :season_team_points, presence: true
+  validates :rank, presence: true
+  validates :sum_individual_points, presence: true
+  validates :sum_relay_points, presence: true
+  validates :sum_team_points, presence: true
+  validates :meeting_individual_points, presence: true
+  validates :meeting_relay_points, presence: true
+  validates :meeting_team_points, presence: true
+  validates :season_individual_points, presence: true
+  validates :season_relay_points, presence: true
+  validates :season_team_points, presence: true
   validates :rank, numericality: true
   validates :sum_individual_points, numericality: true
   validates :sum_relay_points, numericality: true

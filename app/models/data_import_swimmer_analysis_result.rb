@@ -5,9 +5,9 @@ class DataImportSwimmerAnalysisResult < ApplicationRecord
   belongs_to            :data_import_session
   validates_associated  :data_import_session
 
-  belongs_to :swimmer, foreign_key: 'chosen_swimmer_id'
-  belongs_to :gender_type, foreign_key: 'desired_gender_type_id'
-  belongs_to :category_type
+  belongs_to :swimmer, foreign_key: 'chosen_swimmer_id', optional: true
+  belongs_to :gender_type, foreign_key: 'desired_gender_type_id', optional: true
+  belongs_to :category_type, optional: true
 
   #  attr_accessible :analysis_log_text, :sql_text,
   #                  :searched_swimmer_name,

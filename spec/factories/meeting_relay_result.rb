@@ -8,9 +8,9 @@ require 'common/validation_error_tools'
 FactoryBot.define do
   trait :common_meeting_relay_result_fields do
     rank                      { ((rand * 100) % 25).to_i + 1 }
-    is_play_off               true
-    is_out_of_race            false
-    is_disqualified           false
+    is_play_off               { true }
+    is_out_of_race            { false }
+    is_disqualified           { false }
     standard_points           { (rand * 1000).to_i }
     meeting_points            { standard_points }
     minutes                   { ((rand * 4) % 4).to_i }
@@ -24,7 +24,7 @@ FactoryBot.define do
     entry_hundreds            { ((rand * 100) % 100).to_i }
     entry_time_type_id        { EntryTimeType::LAST_RACE_ID }
     # No disqualify:
-    disqualification_code_type nil # { DisqualificationCodeType.all.sort{ rand - 0.5 }[0] }
+    disqualification_code_type { nil } # { DisqualificationCodeType.all.sort{ rand - 0.5 }[0] }
     user
   end
   #-- -------------------------------------------------------------------------

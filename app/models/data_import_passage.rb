@@ -26,18 +26,18 @@ class DataImportPassage < ApplicationRecord
 
   validates :import_text, presence: true
 
-  belongs_to :data_import_meeting_program
-  belongs_to :data_import_meeting_individual_result
-  belongs_to :data_import_meeting_entry
-  belongs_to :data_import_swimmer
-  belongs_to :data_import_team
+  belongs_to :data_import_meeting_program, optional: true
+  belongs_to :data_import_meeting_individual_result, optional: true
+  belongs_to :data_import_meeting_entry, optional: true
+  belongs_to :data_import_swimmer, optional: true
+  belongs_to :data_import_team, optional: true
 
-  belongs_to :meeting_program
-  belongs_to :meeting_individual_result
-  belongs_to :meeting_entry
-  belongs_to :team
+  belongs_to :meeting_program, optional: true
+  belongs_to :meeting_individual_result, optional: true
+  belongs_to :meeting_entry, optional: true
+  belongs_to :team, optional: true
 
-  belongs_to :passage_type
+  belongs_to :passage_type, optional: true
   #-- --------------------------------------------------------------------------
 
 end

@@ -10,6 +10,7 @@ require 'wrappers/timing'
 # @author   Steve A., Leega
 # @version  6.334
 #
+# rubocop:disable Rails/DynamicFindBy
 class MeetingIndividualResult < ApplicationRecord
 
   include SwimmerRelatable
@@ -201,7 +202,7 @@ class MeetingIndividualResult < ApplicationRecord
 
   # Retrieves the event by pool type; returns nil in case of an invalid record
   def get_event_by_pool_type
-    EventsByPoolType.find_by(key: get_event_by_pool_type_code)
+    EventsByPoolType.find_by_key(get_event_by_pool_type_code)
   end
   # ----------------------------------------------------------------------------
 
@@ -275,3 +276,4 @@ class MeetingIndividualResult < ApplicationRecord
   end
 
 end
+# rubocop:enable Rails/DynamicFindBy

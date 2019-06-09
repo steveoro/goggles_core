@@ -8,21 +8,20 @@ class DataImportBadge < ApplicationRecord
 
   belongs_to :user # [Steve, 20120212] Do not validate associated user!
 
-  belongs_to :badge, foreign_key: 'conflicting_id'
+  belongs_to :badge, foreign_key: 'conflicting_id', optional: true
 
   validates :import_text, presence: true
 
-  belongs_to :data_import_season
-  belongs_to :data_import_swimmer
-  belongs_to :data_import_team
-  belongs_to :season
-  belongs_to :swimmer
-  belongs_to :team
-  belongs_to :team_affiliation
+  belongs_to :data_import_season,   optional: true
+  belongs_to :data_import_swimmer,  optional: true
+  belongs_to :data_import_team,     optional: true
+  belongs_to :season,               optional: true
+  belongs_to :swimmer,              optional: true
+  belongs_to :team,                 optional: true
+  belongs_to :team_affiliation,     optional: true
 
   belongs_to :category_type
   belongs_to :entry_time_type
-
   validates_associated :category_type
   validates_associated :entry_time_type
 

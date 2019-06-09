@@ -28,7 +28,7 @@ namespace :log do
     puts '*** Task: Log rotate ***'
     puts 'Saving backups of the current log files...'
     # Prepare & check configuration:
-    time_signature  = DateTime.zone.now.strftime('%Y%m%d.%H%M%S')
+    time_signature  = Time.zone.now.strftime('%Y%m%d.%H%M%S')
     max_backups     = ENV.include?('max_backup_kept') ? ENV['max_backup_kept'].to_i : MAX_BACKUP_KEPT
     backup_folder   = ENV.include?('output_dir') ? ENV['output_dir'] : LOG_BACKUP_DIR
 

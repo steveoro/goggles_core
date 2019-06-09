@@ -41,10 +41,10 @@ describe UserContentLogger, type: :strategy do
 
     describe '#log_filename' do
       it 'is a String' do
-        expect(subject.log_filename).to be_an_instance_of(String)
+        expect(subject.log_filename).to be_an_instance_of(Pathname)
       end
       it 'contains the model name specified in the constructor' do
-        expect(subject.log_filename).to include(table_name)
+        expect(subject.log_filename.to_s).to include(table_name)
       end
     end
 
@@ -75,7 +75,7 @@ describe UserContentLogger, type: :strategy do
     #++
 
     context 'when callback methods are activated,' do
-      subject       { UserContentLogger.new(table_name, email_on_create: true, email_on_destroy: true) }
+      subject { UserContentLogger.new(table_name, email_on_create: true, email_on_destroy: true) }
 
       before(:each) do
         ActionMailer::Base.delivery_method = :test

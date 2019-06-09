@@ -9,8 +9,8 @@ FactoryBot.define do
     city
     name                      { "#{city.name} Swimming Club ASD" }
     import_text               { name }
-    data_import_city          nil
-    badge_number              nil
+    data_import_city          { nil }
+    badge_number              { nil }
     user
   end
   #-- -------------------------------------------------------------------------

@@ -10,7 +10,7 @@ FactoryBot.define do
     description { "#{FFaker::Name.suffix} #{FFaker::Address.city} Fun Cup" }
     team
     season_year               { ((rand * 100) % 10).to_i + 2007 }
-    max_points                1000
+    max_points                { 1000 }
     max_performance           { ((rand * 100) % 5).to_i + 3 }
     end_date                  { Date.parse("#{season_year}0731") }
     user

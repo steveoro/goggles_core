@@ -18,6 +18,10 @@ require 'rspec/rails'
 require 'devise' # note: require 'devise' after require 'rspec/rails' (this allows to use devise test helpers)
 require 'factory_bot_rails'
 
+# Add factories from core engine into the dummy app:
+FactoryBot.definition_file_paths << "#{GogglesCore::Engine.root}/spec/factories"
+FactoryBot.reload
+
 # DatabaseCleaner (when used) require goes here:
 # require 'database_cleaner'
 
