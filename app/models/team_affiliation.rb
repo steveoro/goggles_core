@@ -17,7 +17,7 @@ class TeamAffiliation < ApplicationRecord
   validates_associated :season
 
   validates :name, presence: true
-  validates   :name, length: { within: 1..100, allow_nil: false }
+  validates :name, length: { within: 1..100, allow_nil: false }
 
   validates   :number, length: { maximum: 20 }
 

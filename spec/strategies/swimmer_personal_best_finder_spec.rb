@@ -18,9 +18,11 @@ describe SwimmerPersonalBestFinder, type: :strategy, tag: :finder do
     let(:csi_season_type) { SeasonType.find_by(code: 'MASCSI') }
     let(:csi_season)      { csi_season_type.seasons.is_ended.sample }
     let(:active_swimmer) do
-      Team.find(1).badges.for_season(csi_season).sample.swimmer
+      Swimmer.joins(:seasons, :teams)
+             .where('seasons.id': csi_season.id, 'teams.id': 1)
+             .sample
     end
-    let(:active_team) { active_swimmer.team }
+    let(:active_team) { Team.find(1) }
 
     subject { SwimmerPersonalBestFinder.new(active_swimmer) }
 
