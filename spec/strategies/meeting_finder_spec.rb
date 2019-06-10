@@ -5,7 +5,14 @@ require 'rails_helper'
 require 'meeting_finder'
 
 describe MeetingFinder, type: :strategy do
-  it_behaves_like('(the existance of a method)', [:search_ids, :deep_search_ids, :search, :search_in_header, :search_in_events, :search_in_swimming_pool, :search_in_teams, :search_in_swimmers, :find_event_types])
+  it_behaves_like(
+    '(the existance of a method)',
+    [
+      :search_ids, :deep_search_ids, :search, :search_in_header, :search_in_events,
+      :search_in_swimming_pool, :search_in_teams, :search_in_swimmers,
+      :find_event_types
+    ]
+  )
   #-- -------------------------------------------------------------------------
   #++
 
