@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+# rubocop:disable Style/FrozenStringLiteralComment
 
 require 'wrappers/timing'
 
@@ -347,4 +347,4 @@ class SwimmerPersonalBestFinder
   #++
 
 end
-# rubocop:enable Rails/DynamicFindBy
+# rubocop:enable Rails/DynamicFindBy, Style/FrozenStringLiteralComment

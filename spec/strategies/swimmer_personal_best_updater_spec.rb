@@ -18,8 +18,7 @@ describe SwimmerPersonalBestUpdater, type: :strategy, tag: :swimmer do
     let(:csi_season_type) { SeasonType.find_by(code: 'MASCSI') }
     let(:csi_season)      { csi_season_type.seasons.is_ended.sample }
     let(:subject_swimmer) do
-      (team = csi_season.teams.sample) while team.nil?
-      team.badges.for_season(csi_season).sample.swimmer
+      Team.find(1).badges.for_season(csi_season).sample.swimmer
     end
     let(:subject_team) { subject_swimmer.team }
 

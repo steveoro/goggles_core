@@ -18,8 +18,7 @@ describe SwimmerPersonalBestFinder, type: :strategy, tag: :finder do
     let(:csi_season_type) { SeasonType.find_by(code: 'MASCSI') }
     let(:csi_season)      { csi_season_type.seasons.is_ended.sample }
     let(:active_swimmer) do
-      (team = csi_season.teams.sample) while team.nil?
-      team.badges.for_season(csi_season).sample.swimmer
+      Team.find(1).badges.for_season(csi_season).sample.swimmer
     end
     let(:active_team) { active_swimmer.team }
 
@@ -38,19 +37,23 @@ describe SwimmerPersonalBestFinder, type: :strategy, tag: :finder do
     #++
 
     describe '#get_closed_seasons_involved_into, ' do
+      subject do
+        SwimmerPersonalBestFinder.new(active_swimmer).get_closed_seasons_involved_into
+      end
+
       it 'returns an array' do
-        expect(subject.get_closed_seasons_involved_into).to be_a_kind_of(ActiveRecord::Relation)
+        expect(subject).to be_a_kind_of(ActiveRecord::Relation)
       end
       it 'returns an array of seasons' do
-        expect(subject.get_closed_seasons_involved_into).to all(be_an_instance_of(Season))
+        expect(subject).to all(be_an_instance_of(Season))
       end
       it 'returns an array of ended seasons' do
-        subject.get_closed_seasons_involved_into.each do |season|
+        subject.each do |season|
           expect(season.is_season_ended_at).to be true
         end
       end
       it 'returns an array of sorted seasons' do
-        seasons = subject.get_closed_seasons_involved_into
+        seasons = subject
         elem = 1
         while elem < seasons.size
           expect(seasons[elem].begin_date).to be <= seasons[elem - 1].begin_date
@@ -58,22 +61,34 @@ describe SwimmerPersonalBestFinder, type: :strategy, tag: :finder do
         end
       end
       it 'returns an array of seasons of given season type' do
-        subject.get_closed_seasons_involved_into(csi_season_type).each do |season|
+        SwimmerPersonalBestFinder.new(active_swimmer)
+                                 .get_closed_seasons_involved_into(csi_season_type)
+                                 .each do |season|
           expect(season.season_type.code).to eq(csi_season_type.code)
         end
       end
       it 'returns an array of seasons same season type if given' do
-        expect(subject.get_closed_seasons_involved_into(csi_season_type).map { |s| s.season_type.code }.uniq.count).to eq(1)
+        expect(
+          SwimmerPersonalBestFinder.new(active_swimmer)
+                                   .get_closed_seasons_involved_into(csi_season_type)
+                                   .map { |s| s.season_type.code }
+                                   .uniq.count
+        ).to eq(1)
       end
       it 'returns an array of seasons of different season types if any' do
         fix_swimmer = Swimmer.find(23)
         fix_sbf     = SwimmerPersonalBestFinder.new(fix_swimmer)
-        expect(fix_sbf.get_closed_seasons_involved_into.map { |s| s.season_type.code }.uniq.count).to be > 1
+        expect(
+          fix_sbf.get_closed_seasons_involved_into
+                 .map { |s| s.season_type.code }
+                 .uniq.count
+        ).to be > 1
       end
       it 'returns an array of seasons ended befaore a certain date if given' do
         ended_before = '01-01-2015'.to_date
-        seasons = subject.get_closed_seasons_involved_into(nil, ended_before)
-        seasons.each do |season|
+        SwimmerPersonalBestFinder.new(active_swimmer)
+                                 .get_closed_seasons_involved_into(nil, ended_before)
+                                 .each do |season|
           expect(season.end_date).to be < ended_before
         end
       end
@@ -81,21 +96,29 @@ describe SwimmerPersonalBestFinder, type: :strategy, tag: :finder do
         ended_before = '01-01-2015'.to_date
         fix_swimmer = Swimmer.find(23)
         fix_sbf     = SwimmerPersonalBestFinder.new(fix_swimmer)
-        expect(fix_sbf.get_closed_seasons_involved_into(nil, ended_before).count).to be < fix_sbf.get_closed_seasons_involved_into.count
+        expect(
+          fix_sbf.get_closed_seasons_involved_into(nil, ended_before).count
+        ).to be < fix_sbf.get_closed_seasons_involved_into.count
       end
     end
     #-- -----------------------------------------------------------------------
     #++
 
     describe '#get_current_seasons_involved_into, ' do
+      subject do
+        fix_swimmer = Swimmer.find(23)
+        fix_sbf     = SwimmerPersonalBestFinder.new(fix_swimmer)
+        fix_sbf.get_current_seasons_involved_into
+      end
+
       it 'returns an array' do
-        expect(subject.get_current_seasons_involved_into).to be_a_kind_of(ActiveRecord::Relation)
+        expect(subject).to be_a_kind_of(ActiveRecord::Relation)
       end
       it 'returns an array of seasons' do
-        expect(subject.get_current_seasons_involved_into).to all(be_an_instance_of(Season))
+        expect(subject).to all(be_an_instance_of(Season))
       end
       it 'returns an array of not ended seasons' do
-        subject.get_current_seasons_involved_into.each do |season|
+        subject.each do |season|
           expect(season.is_season_ended_at).to be false
         end
       end
@@ -104,14 +127,19 @@ describe SwimmerPersonalBestFinder, type: :strategy, tag: :finder do
     #++
 
     describe '#get_contemporary_seasons_involved_into, ' do
+      subject do
+        SwimmerPersonalBestFinder.new(active_swimmer)
+                                 .get_contemporary_seasons_involved_into(csi_season)
+      end
+
       it 'returns an array' do
-        expect(subject.get_contemporary_seasons_involved_into(csi_season)).to be_a_kind_of(ActiveRecord::Relation)
+        expect(subject).to be_a_kind_of(ActiveRecord::Relation)
       end
       it 'returns an array of seasons' do
-        expect(subject.get_contemporary_seasons_involved_into(csi_season)).to all(be_an_instance_of(Season))
+        expect(subject).to all(be_an_instance_of(Season))
       end
       it 'returns an array of seasons conteporary of given one' do
-        subject.get_contemporary_seasons_involved_into(csi_season).each do |season|
+        subject.each do |season|
           expect(season.begin_date).to be <= csi_season.end_date
           expect(season.end_date).to be >= csi_season.begin_date
         end
@@ -126,21 +154,39 @@ describe SwimmerPersonalBestFinder, type: :strategy, tag: :finder do
         fix_sbf     = SwimmerPersonalBestFinder.new(fix_swimmer)
         fix_event   = EventType.find_by(code: '50FA')
         fix_pool    = PoolType.find_by(code: '25')
-        expect(fix_sbf.get_involved_season_last_best_for_event(fix_sbf.get_closed_seasons_involved_into, fix_event, fix_pool)).to be_an_instance_of(Timing)
+        expect(
+          fix_sbf.get_involved_season_last_best_for_event(
+            fix_sbf.get_closed_seasons_involved_into,
+            fix_event,
+            fix_pool
+          )
+        ).to be_an_instance_of(Timing)
       end
       it 'returns nil if event not already swam' do
         fix_swimmer = Swimmer.find(23)
         fix_sbf     = SwimmerPersonalBestFinder.new(fix_swimmer)
         fix_event   = EventType.find_by(code: '100MI')
         fix_pool    = PoolType.find_by(code: '50')
-        expect(fix_sbf.get_involved_season_last_best_for_event(fix_sbf.get_closed_seasons_involved_into, fix_event, fix_pool)).to be_nil
+        expect(
+          fix_sbf.get_involved_season_last_best_for_event(
+            fix_sbf.get_closed_seasons_involved_into,
+            fix_event,
+            fix_pool
+          )
+        ).to be_nil
       end
       it 'returns nil if event not already swam in the correct season type' do
         fix_swimmer = Swimmer.find(23)
         fix_sbf     = SwimmerPersonalBestFinder.new(fix_swimmer)
         fix_event   = EventType.find_by(code: '200FA')
         fix_pool    = PoolType.find_by(code: '25')
-        expect(fix_sbf.get_involved_season_last_best_for_event(fix_sbf.get_closed_seasons_involved_into(csi_season_type), fix_event, fix_pool)).to be_nil
+        expect(
+          fix_sbf.get_involved_season_last_best_for_event(
+            fix_sbf.get_closed_seasons_involved_into(csi_season_type),
+            fix_event,
+            fix_pool
+          )
+        ).to be_nil
       end
       it 'returns a time swam in the past season if any' do
         fix_swimmer = Swimmer.find(23)
@@ -148,8 +194,23 @@ describe SwimmerPersonalBestFinder, type: :strategy, tag: :finder do
         fix_event   = EventType.find_by(code: '200MI')
         fix_pool    = PoolType.find_by(code: '25')
         fix_seasons = csi_season_type.seasons.is_ended_before(Date.new(2015, 11, 15)).sort_season_by_begin_date('DESC')
-        expect(fix_swimmer.meeting_individual_results.is_not_disqualified.for_season(fix_seasons.first).for_pool_type(fix_pool).for_event_type(fix_event).count).to be > 0
-        expect(fix_sbf.get_involved_season_last_best_for_event(fix_seasons, fix_event, fix_pool)).to eq(fix_swimmer.meeting_individual_results.is_not_disqualified.for_season(fix_seasons.first).for_pool_type(fix_pool).for_event_type(fix_event).sort_by_timing('ASC').first.get_timing_instance)
+        expect(
+          fix_swimmer.meeting_individual_results.is_not_disqualified
+                     .for_season(fix_seasons.first)
+                     .for_pool_type(fix_pool)
+                     .for_event_type(fix_event)
+                     .count
+        ).to be > 0
+        expect(
+          fix_sbf.get_involved_season_last_best_for_event(fix_seasons, fix_event, fix_pool)
+        ).to eq(
+          fix_swimmer.meeting_individual_results.is_not_disqualified
+                     .for_season(fix_seasons.first)
+                     .for_pool_type(fix_pool)
+                     .for_event_type(fix_event)
+                     .sort_by_timing('ASC').first
+                     .get_timing_instance
+        )
       end
       it 'returns a time swam in an older season if not swimmed in the past one' do
         fix_swimmer = Swimmer.find(23)
@@ -157,15 +218,36 @@ describe SwimmerPersonalBestFinder, type: :strategy, tag: :finder do
         fix_event   = EventType.find_by(code: '400MI')
         fix_pool    = PoolType.find_by(code: '50')
         fix_seasons = csi_season_type.seasons.is_ended_before(Date.new(2015, 11, 15)).sort_season_by_begin_date('DESC')
-        expect(fix_swimmer.meeting_individual_results.is_not_disqualified.for_season(fix_seasons.first).for_pool_type(fix_pool).for_event_type(fix_event).count).to eq(0)
-        expect(fix_sbf.get_involved_season_last_best_for_event(fix_seasons, fix_event, fix_pool)).to be_an_instance_of(Timing)
+        expect(
+          fix_swimmer.meeting_individual_results.is_not_disqualified
+                     .for_season(fix_seasons.first)
+                     .for_pool_type(fix_pool)
+                     .for_event_type(fix_event)
+                     .count
+        ).to eq(0)
+        expect(
+          fix_sbf.get_involved_season_last_best_for_event(fix_seasons, fix_event, fix_pool)
+        ).to be_an_instance_of(Timing)
       end
       it 'returns a time swam if swam before or nil if not' do
-        event = EventsByPoolType.not_relays.sample
+        event   = EventsByPoolType.not_relays.sample
+        fix_sbf = SwimmerPersonalBestFinder.new(active_swimmer)
         if active_swimmer.meeting_individual_results.is_not_disqualified.for_closed_seasons.for_pool_type(event.pool_type).for_event_type(event.event_type).count > 0
-          expect(subject.get_involved_season_last_best_for_event(subject.get_closed_seasons_involved_into, event.event_type, event.pool_type)).to be_an_instance_of(Timing)
+          expect(
+            fix_sbf.get_involved_season_last_best_for_event(
+              fix_sbf.get_closed_seasons_involved_into,
+              event.event_type,
+              event.pool_type
+            )
+          ).to be_an_instance_of(Timing)
         else
-          expect(subject.get_involved_season_last_best_for_event(subject.get_closed_seasons_involved_into, event.event_type, event.pool_type)).to be nil
+          expect(
+            fix_sbf.get_involved_season_last_best_for_event(
+              fix_sbf.get_closed_seasons_involved_into,
+              event.event_type,
+              event.pool_type
+            )
+          ).to be nil
         end
       end
     end
@@ -178,21 +260,27 @@ describe SwimmerPersonalBestFinder, type: :strategy, tag: :finder do
         fix_sbf     = SwimmerPersonalBestFinder.new(fix_swimmer)
         fix_event   = EventType.find_by(code: '50FA')
         fix_pool    = PoolType.find_by(code: '25')
-        expect(fix_sbf.get_involved_season_best_for_event(fix_sbf.get_contemporary_seasons_involved_into(Season.find(141)), fix_event, fix_pool)).to be_an_instance_of(Timing)
+        expect(
+          fix_sbf.get_involved_season_best_for_event(fix_sbf.get_contemporary_seasons_involved_into(Season.find(141)), fix_event, fix_pool)
+        ).to be_an_instance_of(Timing)
       end
       it 'returns nil if event not already swam' do
         fix_swimmer = Swimmer.find(23)
         fix_sbf     = SwimmerPersonalBestFinder.new(fix_swimmer)
         fix_event   = EventType.find_by(code: '100MI')
         fix_pool    = PoolType.find_by(code: '50')
-        expect(fix_sbf.get_involved_season_best_for_event(fix_sbf.get_contemporary_seasons_involved_into(Season.find(141)), fix_event, fix_pool)).to be_nil
+        expect(
+          fix_sbf.get_involved_season_best_for_event(fix_sbf.get_contemporary_seasons_involved_into(Season.find(141)), fix_event, fix_pool)
+        ).to be_nil
       end
       it 'returns nil if event not already swam in the seasons' do
         fix_swimmer = Swimmer.find(23)
         fix_sbf     = SwimmerPersonalBestFinder.new(fix_swimmer)
         fix_event   = EventType.find_by(code: '200FA')
         fix_pool    = PoolType.find_by(code: '25')
-        expect(fix_sbf.get_involved_season_best_for_event(fix_sbf.get_closed_seasons_involved_into(csi_season_type), fix_event, fix_pool)).to be_nil
+        expect(
+          fix_sbf.get_involved_season_best_for_event(fix_sbf.get_closed_seasons_involved_into(csi_season_type), fix_event, fix_pool)
+        ).to be_nil
       end
 
       context 'for a swimmer WITHOUT results,' do
@@ -233,11 +321,19 @@ describe SwimmerPersonalBestFinder, type: :strategy, tag: :finder do
 
     describe '#get_involved_season_last_best_for_key,' do
       it 'returns a time swam if swam before or nil if not' do
-        event = EventsByPoolType.not_relays.sample
-        if active_swimmer.meeting_individual_results.is_not_disqualified.for_closed_seasons.for_pool_type(event.pool_type).for_event_type(event.event_type).count > 0
-          expect(subject.get_involved_season_last_best_for_key(subject.get_closed_seasons_involved_into, event.get_key)).to be_an_instance_of(Timing)
+        event   = EventsByPoolType.not_relays.sample
+        fix_sbf = SwimmerPersonalBestFinder.new(active_swimmer)
+        if active_swimmer.meeting_individual_results.is_not_disqualified
+                         .for_closed_seasons.for_pool_type(event.pool_type)
+                         .for_event_type(event.event_type)
+                         .count > 0
+          expect(
+            fix_sbf.get_involved_season_last_best_for_key(fix_sbf.get_closed_seasons_involved_into, event.get_key)
+          ).to be_an_instance_of(Timing)
         else
-          expect(subject.get_involved_season_last_best_for_key(subject.get_closed_seasons_involved_into, event.get_key)).to be nil
+          expect(
+            fix_sbf.get_involved_season_last_best_for_key(fix_sbf.get_closed_seasons_involved_into, event.get_key)
+          ).to be nil
         end
       end
     end
@@ -250,21 +346,34 @@ describe SwimmerPersonalBestFinder, type: :strategy, tag: :finder do
         fix_sbf     = SwimmerPersonalBestFinder.new(fix_swimmer)
         fix_event   = EventType.find_by(code: '50FA')
         fix_pool    = PoolType.find_by(code: '25')
-        expect(fix_sbf.get_season_type_best_for_event(csi_season_type, fix_event, fix_pool)).to be_an_instance_of(Timing)
+        expect(
+          fix_sbf.get_season_type_best_for_event(csi_season_type, fix_event, fix_pool)
+        ).to be_an_instance_of(Timing)
       end
       it 'returns nil if event not already swam' do
         fix_swimmer = Swimmer.find(23)
         fix_sbf     = SwimmerPersonalBestFinder.new(fix_swimmer)
         fix_event   = EventType.find_by(code: '100MI')
         fix_pool    = PoolType.find_by(code: '50')
-        expect(fix_sbf.get_season_type_best_for_event(csi_season_type, fix_event, fix_pool)).to be_nil
+        expect(
+          fix_sbf.get_season_type_best_for_event(csi_season_type, fix_event, fix_pool)
+        ).to be_nil
       end
       it 'returns a time swam if swam before or nil if not' do
-        event = EventsByPoolType.not_relays.sample
-        if active_swimmer.meeting_individual_results.is_not_disqualified.for_season_type(csi_season_type).for_pool_type(event.pool_type).for_event_type(event.event_type).count > 0
-          expect(subject.get_season_type_best_for_event(csi_season_type, event.event_type, event.pool_type)).to be_an_instance_of(Timing)
+        event   = EventsByPoolType.not_relays.sample
+        fix_sbf = SwimmerPersonalBestFinder.new(active_swimmer)
+        if active_swimmer.meeting_individual_results.is_not_disqualified
+                         .for_season_type(csi_season_type)
+                         .for_pool_type(event.pool_type)
+                         .for_event_type(event.event_type)
+                         .count > 0
+          expect(
+            fix_sbf.get_season_type_best_for_event(csi_season_type, event.event_type, event.pool_type)
+          ).to be_an_instance_of(Timing)
         else
-          expect(subject.get_season_type_best_for_event(csi_season_type, event.event_type, event.pool_type)).to be nil
+          expect(
+            fix_sbf.get_season_type_best_for_event(csi_season_type, event.event_type, event.pool_type)
+          ).to be nil
         end
       end
     end
@@ -287,11 +396,15 @@ describe SwimmerPersonalBestFinder, type: :strategy, tag: :finder do
         expect(fix_sbf.get_best_for_event(fix_event, fix_pool)).to be_nil
       end
       it 'returns a time swam if swam before or nil if not' do
-        event = EventsByPoolType.not_relays.sample
-        if active_swimmer.meeting_individual_results.is_not_disqualified.for_pool_type(event.pool_type).for_event_type(event.event_type).count > 0
-          expect(subject.get_best_for_event(event.event_type, event.pool_type)).to be_an_instance_of(Timing)
+        event   = EventsByPoolType.not_relays.sample
+        fix_sbf = SwimmerPersonalBestFinder.new(active_swimmer)
+        if active_swimmer.meeting_individual_results.is_not_disqualified
+                         .for_pool_type(event.pool_type)
+                         .for_event_type(event.event_type)
+                         .count > 0
+          expect(fix_sbf.get_best_for_event(event.event_type, event.pool_type)).to be_an_instance_of(Timing)
         else
-          expect(subject.get_best_for_event(event.event_type, event.pool_type)).to be nil
+          expect(fix_sbf.get_best_for_event(event.event_type, event.pool_type)).to be nil
         end
       end
     end
@@ -318,8 +431,9 @@ describe SwimmerPersonalBestFinder, type: :strategy, tag: :finder do
     # and has been disqualified at least one time in 100MI (huncle dog)
     describe '#is_personal_best?,' do
       it 'returns a boolean' do
-        result = active_swimmer.meeting_individual_results.sample
-        expect(subject.is_personal_best?(result)).to eq(true).or(eq(false))
+        result  = active_swimmer.meeting_individual_results.sample
+        fix_sbf = SwimmerPersonalBestFinder.new(active_swimmer)
+        expect(fix_sbf.is_personal_best?(result)).to eq(true).or(eq(false))
       end
       it 'returns true if personal best' do
         fix_swimmer = Swimmer.find(23)
@@ -368,10 +482,19 @@ describe SwimmerPersonalBestFinder, type: :strategy, tag: :finder do
       it 'returns a time swam if swam before or nil if not' do
         event = EventsByPoolType.not_relays.sample
         meeting = csi_season.meetings.sample
-        if active_swimmer.meeting_individual_results.is_not_disqualified.for_meeting_editions(meeting).for_pool_type(event.pool_type).for_event_type(event.event_type).count > 0
-          expect(subject.get_best_timing_for_meeting(meeting, event.event_type, event.pool_type)).to be_an_instance_of(Timing)
+        fix_sbf = SwimmerPersonalBestFinder.new(active_swimmer)
+        if active_swimmer.meeting_individual_results.is_not_disqualified
+                         .for_meeting_editions(meeting)
+                         .for_pool_type(event.pool_type)
+                         .for_event_type(event.event_type)
+                         .count > 0
+          expect(
+            fix_sbf.get_best_timing_for_meeting(meeting, event.event_type, event.pool_type)
+          ).to be_an_instance_of(Timing)
         else
-          expect(subject.get_best_timing_for_meeting(meeting, event.event_type, event.pool_type)).to be nil
+          expect(
+            fix_sbf.get_best_timing_for_meeting(meeting, event.event_type, event.pool_type)
+          ).to be nil
         end
       end
     end
