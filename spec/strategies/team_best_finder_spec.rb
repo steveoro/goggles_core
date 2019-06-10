@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'wrappers/timing'
 
-describe TeamBestFinder, type: :strategy do
+describe TeamBestFinder, type: :strategy, tag: :finder do
   let(:fix_team)        { Team.find(1) }
   let(:fix_tbf)         { TeamBestFinder.new(fix_team) }
   let(:result_num)      { (rand * 10).to_i + 5 }

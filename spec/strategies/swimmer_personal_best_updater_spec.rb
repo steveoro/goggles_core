@@ -1,10 +1,10 @@
-# frozen_string_literal: true
+# rubocop:disable Style/FrozenStringLiteralComment
 
 require 'rails_helper'
 require 'wrappers/timing'
 
 # rubocop:disable Rails/DynamicFindBy
-describe SwimmerPersonalBestUpdater, type: :strategy do
+describe SwimmerPersonalBestUpdater, type: :strategy, tag: :swimmer do
   context 'without requested parameters' do
     it 'raises an exception for wrong swimmer parameter' do
       expect { SwimmerPersonalBestUpdater.new }.to raise_error(ArgumentError)
@@ -168,4 +168,4 @@ describe SwimmerPersonalBestUpdater, type: :strategy do
   #-- -------------------------------------------------------------------------
   #++
 end
-# rubocop:enable Rails/DynamicFindBy
+# rubocop:enable Rails/DynamicFindBy, Style/FrozenStringLiteralComment

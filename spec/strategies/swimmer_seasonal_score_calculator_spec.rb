@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'wrappers/timing'
 
-describe SwimmerSeasonalScoreCalculator, type: :strategy do
+describe SwimmerSeasonalScoreCalculator, type: :strategy, tag: :swimmer do
   context 'with requested parameters' do
     let(:fin_season_type) { SeasonType.find_by(code: 'MASFIN') }
     let(:fin_season)      { Season.find(142) }

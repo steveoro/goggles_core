@@ -1,8 +1,8 @@
-# frozen_string_literal: true
+# rubocop:disable Style/FrozenStringLiteralComment
 
 require 'rails_helper'
 
-describe MeetingDateChanger, type: :strategy do
+describe MeetingDateChanger, type: :strategy, tag: :meeting do
   let(:meeting)         { create(:meeting_with_sessions) }
   let(:days_to_move_on) { ((rand * 5) * 7).to_i }
   let(:confirm)         { (rand >= 0.5) }
@@ -121,3 +121,4 @@ describe MeetingDateChanger, type: :strategy do
   #-- -------------------------------------------------------------------------
   #++
 end
+# rubocop:enable Style/FrozenStringLiteralComment

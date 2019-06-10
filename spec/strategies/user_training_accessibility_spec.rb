@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe UserTrainingAccessibility, type: :strategy do
+describe UserTrainingAccessibility, type: :strategy, tag: :user do
   before :each do
     @user = create(:user)
     @non_shared_fixture = create(:user_training)

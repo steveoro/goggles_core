@@ -4,7 +4,7 @@ require 'rails_helper'
 require 'fileutils'
 require 'reservations_fin_2_csv_matrix'
 
-describe ReservationsFin2CsvMatrix, type: :strategy do
+describe ReservationsFin2CsvMatrix, type: :strategy, tag: :reservation do
   let(:meeting_not_fin) do
     Meeting.includes(:season_type).joins(:season_type)
            .where(['season_types.code != ?', 'MASFIN'])

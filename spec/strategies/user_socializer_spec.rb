@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe UserSocializer, type: :strategy do
+describe UserSocializer, type: :strategy, tag: :user do
   before :each do
     @user = create(:user)
     @swimming_buddy = create(:user)

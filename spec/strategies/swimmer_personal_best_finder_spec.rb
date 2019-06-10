@@ -4,7 +4,7 @@ require 'rails_helper'
 require 'wrappers/timing'
 
 # rubocop:disable Rails/DynamicFindBy
-describe SwimmerPersonalBestFinder, type: :strategy do
+describe SwimmerPersonalBestFinder, type: :strategy, tag: :finder do
   context 'without requested parameters' do
     it 'raises an exception for wrong swimmer parameter' do
       expect { SwimmerPersonalBestFinder.new }.to raise_error(ArgumentError)

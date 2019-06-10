@@ -1,10 +1,10 @@
-# frozen_string_literal: true
+# rubocop:disable Style/FrozenStringLiteralComment
 
 require 'rails_helper'
 require 'ffaker'
 require 'user_content_logger'
 
-describe UserContentLogger, type: :strategy do
+describe UserContentLogger, type: :strategy, tag: :user do
   let(:table_name)  { 'swimming_pool_reviews' }
   let(:user)        { create(:user) }
   let(:record)      { create(:swimming_pool_review, user: user) }
@@ -153,3 +153,4 @@ describe UserContentLogger, type: :strategy do
   #-- -------------------------------------------------------------------------
   #++
 end
+# rubocop:enable Style/FrozenStringLiteralComment

@@ -13,7 +13,7 @@ shared_examples_for '(an action allowed only to different users)' do |method_nam
 end
 # =============================================================================
 
-describe SwimmerUserStrategy, type: :strategy do
+describe SwimmerUserStrategy, type: :strategy, tag: :user do
   before :each do
     @user = create(:user)
     @user2 = create(:user)

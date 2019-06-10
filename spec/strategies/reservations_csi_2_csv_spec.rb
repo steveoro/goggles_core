@@ -4,7 +4,7 @@ require 'rails_helper'
 require 'fileutils'
 require 'reservations_csi_2_csv'
 
-describe ReservationsCsi2Csv, type: :strategy do
+describe ReservationsCsi2Csv, type: :strategy, tag: :reservation do
   let(:meeting_not_csi) do
     Meeting.includes(:season_type).joins(:season_type)
            .where(['season_types.code != ?', 'MASCSI'])

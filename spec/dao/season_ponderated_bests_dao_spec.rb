@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+# rubocop:disable Style/FrozenStringLiteralComment
 
 require 'rails_helper'
 
@@ -248,3 +248,4 @@ describe SeasonPonderatedBestsDAO, type: :model do
   #-- -------------------------------------------------------------------------
   #++
 end
+# rubocop:enable Style/FrozenStringLiteralComment

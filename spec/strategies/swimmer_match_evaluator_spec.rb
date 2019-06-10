@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe SwimmerMatchEvaluator, type: :model do
+describe SwimmerMatchEvaluator, type: :strategy, tag: :swimmer do
   let(:swimmer)         { create(:swimmer) }
   let(:older_swimmer)   { create(:swimmer, year_of_birth: swimmer.year_of_birth - (rand * 4).to_i, gender_type: swimmer.gender_type) }
   let(:younger_swimmer) { create(:swimmer, year_of_birth: swimmer.year_of_birth + (rand * 4).to_i, gender_type: swimmer.gender_type) }

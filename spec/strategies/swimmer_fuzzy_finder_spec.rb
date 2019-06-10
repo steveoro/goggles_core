@@ -4,7 +4,7 @@ require 'rails_helper'
 
 require 'meeting_finder'
 
-describe SwimmerFuzzyFinder, type: :strategy do
+describe SwimmerFuzzyFinder, type: :strategy, tag: :finder do
   context 'when no search term is supplied,' do
     describe 'self.call' do
       it 'raises an error' do

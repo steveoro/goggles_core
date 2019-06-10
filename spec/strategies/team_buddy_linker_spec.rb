@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-
 require 'team_buddy_linker'
 
 describe TeamBuddyLinker, type: :strategy do

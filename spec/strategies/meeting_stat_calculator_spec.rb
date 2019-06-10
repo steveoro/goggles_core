@@ -31,7 +31,7 @@ shared_examples_for '(existance of meeting stats relation of meeting individual 
 end
 # =============================================================================
 
-describe MeetingStatCalculator, type: :model do
+describe MeetingStatCalculator, type: :strategy, tag: :meeting do
   # Pre-loaded seeded last CSI season and some acquired FIN
   before(:all) do
     @seeded_meets = [12_101, 12_104, 12_105, 13_101, 13_102, 13_103, 13_104, 13_105, 13_106, 15_216, 14_216, 14_101, 14_105]

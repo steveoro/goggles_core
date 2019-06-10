@@ -64,5 +64,4 @@ describe SqlConverter, type: :strategy do
   #-- -------------------------------------------------------------------------
   #++
 end
-
 # rubocop:enable Style/FrozenStringLiteralComment

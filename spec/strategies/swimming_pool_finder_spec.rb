@@ -4,7 +4,7 @@ require 'rails_helper'
 
 require 'swimming_pool_finder'
 
-describe SwimmingPoolFinder, type: :strategy do
+describe SwimmingPoolFinder, type: :strategy, tag: :finder do
   it_behaves_like('(the existance of a method)', [:search_ids, :search])
   #-- -------------------------------------------------------------------------
   #++

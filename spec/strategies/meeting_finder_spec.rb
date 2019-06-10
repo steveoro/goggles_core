@@ -4,7 +4,7 @@ require 'rails_helper'
 
 require 'meeting_finder'
 
-describe MeetingFinder, type: :strategy do
+describe MeetingFinder, type: :strategy, tag: :finder do
   it_behaves_like(
     '(the existance of a method)',
     [

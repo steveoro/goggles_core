@@ -4,7 +4,7 @@ require 'rails_helper'
 
 require 'meeting_finder'
 
-describe SwimmerFinder, type: :strategy do
+describe SwimmerFinder, type: :strategy, tag: :finder do
   it_behaves_like('(the existance of a method)', [:search_ids, :search])
   #-- -------------------------------------------------------------------------
   #++
