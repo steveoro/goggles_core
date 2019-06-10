@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+# rubocop:disable Style/FrozenStringLiteralComment
 
 require 'rails_helper'
 require 'wrappers/timing'
@@ -489,3 +489,4 @@ describe TeamBestFinder, type: :strategy, tag: :finder do
   #-- -------------------------------------------------------------------------
   #++
 end
+# rubocop:enable Style/FrozenStringLiteralComment

@@ -1,7 +1,6 @@
-# frozen_string_literal: true
+# rubocop:disable Style/FrozenStringLiteralComment
 
 require 'rails_helper'
-
 require 'meeting_finder'
 
 describe MeetingFinder, type: :strategy, tag: :finder do
@@ -291,3 +290,4 @@ describe MeetingFinder, type: :strategy, tag: :finder do
     end
   end
 end
+# rubocop:enable Style/FrozenStringLiteralComment

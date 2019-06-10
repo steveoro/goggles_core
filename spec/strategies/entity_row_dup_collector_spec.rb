@@ -1,7 +1,6 @@
-# frozen_string_literal: true
+# rubocop:disable Style/FrozenStringLiteralComment
 
 require 'rails_helper'
-
 require 'entity_row_dup_collector'
 
 describe EntityRowDupCollector, type: :strategy do
@@ -76,3 +75,4 @@ describe EntityRowDupCollector, type: :strategy do
   #-- -------------------------------------------------------------------------
   #++
 end
+# rubocop:enable Style/FrozenStringLiteralComment

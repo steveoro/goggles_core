@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+# rubocop:disable Style/FrozenStringLiteralComment
 
 require 'rails_helper'
 require 'fuzzy_string_matcher'
@@ -183,3 +183,4 @@ describe FuzzyStringMatcher, type: :strategy do
   #-- -------------------------------------------------------------------------
   #++
 end
+# rubocop:enable Style/FrozenStringLiteralComment

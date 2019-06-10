@@ -1,7 +1,6 @@
-# frozen_string_literal: true
+# rubocop:disable Style/FrozenStringLiteralComment
 
 require 'rails_helper'
-
 require 'meeting_finder'
 
 describe SwimmerFinder, type: :strategy, tag: :finder do
@@ -137,3 +136,4 @@ describe SwimmerFinder, type: :strategy, tag: :finder do
   #-- -------------------------------------------------------------------------
   #++
 end
+# rubocop:enable Style/FrozenStringLiteralComment

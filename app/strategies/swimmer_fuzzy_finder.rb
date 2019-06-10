@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+# rubocop:disable Style/FrozenStringLiteralComment
 
 require 'conditions_generator_column_string_regexped' # Used to generate simple_search query condition
 
@@ -168,3 +168,4 @@ class SwimmerFuzzyFinder
   #++
 
 end
+# rubocop:enable Style/FrozenStringLiteralComment

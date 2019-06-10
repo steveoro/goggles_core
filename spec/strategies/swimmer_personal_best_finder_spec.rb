@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+# rubocop:disable Style/FrozenStringLiteralComment
 
 require 'rails_helper'
 require 'wrappers/timing'
@@ -438,4 +438,4 @@ describe SwimmerPersonalBestFinder, type: :strategy, tag: :finder do
   #-- -------------------------------------------------------------------------
   #++
 end
-# rubocop:enable Rails/DynamicFindBy
+# rubocop:enable Rails/DynamicFindBy, Style/FrozenStringLiteralComment

@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+# rubocop:disable Style/FrozenStringLiteralComment
 
 require 'rails_helper'
 require 'fileutils'
@@ -217,3 +217,4 @@ describe ReservationsFin2CsvMatrix, type: :strategy, tag: :reservation do
     #++
   end
 end
+# rubocop:enable Style/FrozenStringLiteralComment
