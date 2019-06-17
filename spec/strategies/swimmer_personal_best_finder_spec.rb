@@ -16,13 +16,24 @@ describe SwimmerPersonalBestFinder, type: :strategy, tag: :finder do
 
   context 'with requested parameters' do
     let(:csi_season_type) { SeasonType.find_by(code: 'MASCSI') }
-    let(:csi_season)      { csi_season_type.seasons.is_ended.sample }
-    let(:active_swimmer) do
-      Swimmer.joins(:seasons, :teams)
-             .where('seasons.id': csi_season.id, 'teams.id': 1)
-             .sample
+    let(:csi_season) do
+      # Search a completed CSI-Master season that has at least 3 meetigs in it:
+      csi_season_type.seasons.is_ended
+                     .reject { |s| s.meetings.count < 3 }
+                     .sample
     end
-    let(:active_team) { Team.find(1) }
+    let(:active_badge) do
+      badge = Badge.joins(:team, :swimmer, :team_affiliation, :season)
+                   .includes(:team, :swimmer, :team_affiliation, :season)
+                   .where(season_id: csi_season.id)
+                   .sample
+      expect(badge).to be_a(Badge)
+      expect(badge.swimmer).to be_a(Swimmer)
+      expect(badge.team).to be_a(Team)
+      badge
+    end
+    let(:active_swimmer) { active_badge.swimmer }
+    let(:active_team)    { active_badge.team }
 
     subject { SwimmerPersonalBestFinder.new(active_swimmer) }
 

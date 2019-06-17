@@ -15,14 +15,26 @@ describe SwimmerPersonalBestUpdater, type: :strategy, tag: :swimmer do
   #++
 
   context 'with requested parameters' do
-    let(:csi_season_type) { SeasonType.find_by(code: 'MASCSI') }
-    let(:csi_season)      { csi_season_type.seasons.is_ended.sample }
-    let(:subject_swimmer) do
-      Swimmer.joins(:seasons, :teams)
-             .where('seasons.id': csi_season.id, 'teams.id': 1)
-             .sample
+    let(:csi_season_id) do
+      # Search a completed CSI-Master season that has at least 3 meetigs in it:
+      SeasonType.find_by(code: 'MASCSI').seasons.is_ended
+                .reject { |s| s.meetings.count < 3 }
+                .pluck(:id).sample
     end
-    let(:subject_team) { Team.find(1) }
+    let(:active_badge) do
+      # DEBUG
+      # puts "\r\n- csi_season_id: #{csi_season_id}"
+      badge = Badge.joins(:team, :swimmer, :team_affiliation, :season)
+                   .includes(:team, :swimmer, :team_affiliation, :season)
+                   .where(season_id: csi_season_id)
+                   .sample
+      expect(badge).to be_a(Badge)
+      expect(badge.swimmer).to be_a(Swimmer)
+      expect(badge.team).to be_a(Team)
+      badge
+    end
+    let(:subject_swimmer) { active_badge.swimmer }
+    let(:subject_team)    { active_badge.team }
 
     subject { SwimmerPersonalBestUpdater.new(subject_swimmer) }
 
@@ -95,25 +107,30 @@ describe SwimmerPersonalBestUpdater, type: :strategy, tag: :swimmer do
           fix_swimmer.meeting_individual_results.for_event_by_pool_type(fix_event_by_pool_type).is_personal_best.count
         ).to be > 0
       end
-      # FIXME: RANDOM FAILURE HERE:
-      xit 'sets a time corresponding to the best swam (if swam)' do
-        event = EventsByPoolType.not_relays.only_for_meetings
-                                .sample
+      it 'sets a time corresponding to the best swam (if swam)' do
+        fix_swimmer = Swimmer.find(23)
+        updater     = SwimmerPersonalBestUpdater.new(fix_swimmer)
+        event       = EventsByPoolType.find_by_pool_and_event_codes('25', '50FA')
         # DEBUG
-        puts "\r\n- subject swimmer: #{subject_swimmer.inspect}"
-        puts "=>  event chosen: #{event.i18n_short} => #{event.inspect}"
-        if subject_swimmer.meeting_individual_results.for_event_by_pool_type(event).is_not_disqualified.count > 0
-          expect(subject.set_personal_best!(event)).to eq(
-            SwimmerPersonalBestFinder.new(subject_swimmer)
-              .get_best_for_event(event.event_type, event.pool_type)
+        # puts "\r\n- subject swimmer: #{fix_swimmer.inspect}"
+        # puts "=>  event chosen: #{event.i18n_short} => #{event.inspect}"
+        timing_instance = updater.set_personal_best!(event).get_timing_instance
+        # puts "=>  timing: #{timing_instance}"
+        if fix_swimmer.meeting_individual_results.for_event_by_pool_type(event).is_not_disqualified.count > 0
+          expect(timing_instance).to eq(
+            SwimmerPersonalBestFinder.new(fix_swimmer)
+                                     .get_best_for_event(event.event_type, event.pool_type)
           )
-          expect(subject.set_personal_best!(event)).to eq(
-            subject_swimmer.meeting_individual_results.for_event_by_pool_type(event).is_not_disqualified.sort_by_timing(:asc).first.get_timing_instance
+          expect(timing_instance).to eq(
+            fix_swimmer.meeting_individual_results
+                       .for_event_by_pool_type(event).is_not_disqualified
+                       .sort_by_timing(:asc).first
+                       .get_timing_instance
           )
         else
-          expect(subject.set_personal_best!(event)).to eq(
-            SwimmerPersonalBestFinder.new(subject_swimmer)
-              .get_best_for_event(event.event_type, event.pool_type)
+          expect(timing_instance).to eq(
+            SwimmerPersonalBestFinder.new(fix_swimmer)
+                                     .get_best_for_event(event.event_type, event.pool_type)
           )
         end
       end
