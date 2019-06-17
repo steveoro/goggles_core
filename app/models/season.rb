@@ -6,14 +6,13 @@ require 'drop_down_listable'
 #
 # = Season
 #
-#   - version:  6.402
+#   - version:  6.404
 #   - author:   Steve A., Leega
 #
 class Season < ApplicationRecord
 
   include DropDownListable
 
-  belongs_to :user # (do not validate this)
   belongs_to :season_type
   belongs_to :edition_type
   belongs_to :timing_type
