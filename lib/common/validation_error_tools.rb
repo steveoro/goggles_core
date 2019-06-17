@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+# rubocop:disable Style/FrozenStringLiteralComment
 
 require 'singleton'
 
@@ -58,3 +58,4 @@ class ValidationErrorTools
   #++
 
 end
+# rubocop:enable Style/FrozenStringLiteralComment
