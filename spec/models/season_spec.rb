@@ -5,7 +5,6 @@ require 'date'
 
 describe Season, type: :model do
   it_behaves_like 'DropDownListable'
-  it_behaves_like 'UserRelatable'
 
   describe '[a non-valid instance]' do
     it 'is not a valid season without description' do
