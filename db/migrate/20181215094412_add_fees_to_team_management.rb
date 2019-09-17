@@ -4,16 +4,22 @@ class AddFeesToTeamManagement < ActiveRecord::Migration[5.1]
 
   def change
     # Meeting fees for team manager costs calculation
-    add_column(:meetings, :meeting_fee, :decimal, precision: 10, scale: 2)
-    add_column(:meetings, :event_fee, :decimal, precision: 10, scale: 2)
-    add_column(:meetings, :relay_fee, :decimal, precision: 10, scale: 2)
+    change_table :meetings, bulk: true do |t|
+      t.column(:meeting_fee, :decimal, precision: 10, scale: 2)
+      t.column(:event_fee, :decimal, precision: 10, scale: 2)
+      t.column(:relay_fee, :decimal, precision: 10, scale: 2)
+    end
 
     # Season fees for team manager costs calculation
-    add_column(:seasons, :badge_fee, :decimal, precision: 10, scale: 2)
+    change_table :seasons, bulk: true do |t|
+      t.column(:badge_fee, :decimal, precision: 10, scale: 2)
+    end
 
     # Badge payments setup for team manager costs calculation
-    add_column(:badges, :has_to_pay_fees, :boolean, default: false, null: false)
-    add_column(:badges, :has_to_pay_badge, :boolean, default: false, null: false)
+    change_table :badges, bulk: true do |t|
+      t.column(:has_to_pay_fees, :boolean, default: false, null: false)
+      t.column(:has_to_pay_badge, :boolean, default: false, null: false)
+    end
 
     # To store payments by badge so we can check with respective meetings and season fees
     create_table :badge_payments do |t|

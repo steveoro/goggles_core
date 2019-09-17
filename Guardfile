@@ -20,24 +20,28 @@
 
 engine_name = 'goggles_core'
 
+# Watch files that imply a bundle update:
+guard :bundler do
+  watch('Gemfile')
+  watch("#{engine_name}.gemspec")
+end
+
 # With Spring:
 # Start explicitly the Spring preloader & watch for files that may need Spring to refresh itself:
-# guard :spring, bundler: true do
-#   watch('Gemfile.lock')
-#   watch(%r{^config/})
-#   watch(%r{^spec/(support|factories)/})
-#   watch(%r{^spec/factory.rb})
-# end
+guard :spring, bundler: true do
+  watch('Gemfile.lock')
+  watch(%r{^config/})
+  watch(%r{^spec/(support|factories)/})
+  watch(%r{^spec/factory.rb})
+end
 
 rspec_options = {
   # With Zeus:
-  cmd: 'zeus test',
+  # cmd: 'zeus test',
   # With Spring:
-  # cmd: 'spring rspec',
-
-  # Exclude performance tests with fail-fast:
-  cmd_additional_args: ' --color --fail-fast --profile 10 -f progress --order rand -t ~type:performance',
-
+  cmd: 'spring rspec',
+  # Exclude performance tests; to make it fail-fast, add option "--fail-fast":
+  cmd_additional_args: ' --color --profile 10 -f progress --order rand -t ~type:performance',
   # (Zeus only) The following option must match the path in engine_plan.rb:
   results_file: File.join(Dir.pwd, 'tmp', 'guard_rspec_results.txt'),
   all_after_pass: false,

@@ -14,10 +14,10 @@ class CreateSwimmerSeasonScores < ActiveRecord::Migration[5.0]
       t.references :user, foreign_key: true
 
       t.timestamps
-    end
 
-    add_index :swimmer_season_scores, [:badge_id, :event_type_id], name: 'swimmer_season_scores_badge_event'
-    add_index :swimmer_season_scores, [:badge_id, :score], name: 'swimmer_season_scores_badge_score'
+      t.index :swimmer_season_scores, [:badge_id, :event_type_id], name: 'swimmer_season_scores_badge_event'
+      t.index :swimmer_season_scores, [:badge_id, :score], name: 'swimmer_season_scores_badge_score'
+    end
   end
 
 end

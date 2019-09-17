@@ -11,9 +11,10 @@ class CreateAreaTypes < ActiveRecord::Migration[5.0]
       t.references :region_type, foreign_key: true
 
       t.timestamps
+
+      t.index :area_types, :code
+      t.index :area_types, [:region_type_id, :code], name: 'index_area_types_region_code'
     end
-    add_index :area_types, :code
-    add_index :area_types, [:region_type_id, :code], name: 'index_area_types_region_code'
   end
 
 end

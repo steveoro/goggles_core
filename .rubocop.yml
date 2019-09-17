@@ -1,6 +1,10 @@
 require: rubocop-rails
 inherit_from: .rubocop_todo.yml
 
+AllCops:
+  Exclude:
+    - 'spec/dummy/db/schema.rb'
+
 # The behavior of RuboCop can be controlled via the .rubocop.yml
 # configuration file. It makes it possible to enable/disable
 # certain cops (checks) and to alter their behavior if they accept
@@ -34,10 +38,16 @@ Layout/EmptyLinesAroundClassBody:
     - 'spec/**/*'
     - 'test/**/*'
 
+Layout/SpaceAroundOperators:
+    Enabled: false
+
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: space, no_space
 Layout/SpaceInsideParens:
+  Enabled: false
+
+Layout/SpaceInsideStringInterpolation:
   Enabled: false
 
 # Offense count: 1
