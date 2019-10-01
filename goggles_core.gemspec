@@ -35,6 +35,7 @@ Gem::Specification.new do |s|
   # - simple_token_authentication, https://github.com/gonzalo-bulnes/simple_token_authentication/issues/67
   # - devise-token_authenticatable, https://github.com/baschtl/devise-token_authenticatable
   # - devise_token_auth, https://github.com/lynndylanhurley/devise_token_auth
+  s.add_dependency 'responders', '~> 2.4'
 
   s.add_dependency 'execjs'
   s.add_dependency 'haml-rails', '~> 2'
