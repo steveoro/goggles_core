@@ -1,0 +1,135 @@
+{
+   "results" : [
+      {
+         "address_components" : [
+            {
+               "long_name" : "493",
+               "short_name" : "493",
+               "types" : [ "street_number" ]
+            },
+            {
+               "long_name" : "Via Cornelia",
+               "short_name" : "Via Cornelia",
+               "types" : [ "route" ]
+            },
+            {
+               "long_name" : "Roma",
+               "short_name" : "Roma",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "Roma",
+               "short_name" : "Roma",
+               "types" : [ "administrative_area_level_3", "political" ]
+            },
+            {
+               "long_name" : "Città Metropolitana di Roma",
+               "short_name" : "RM",
+               "types" : [ "administrative_area_level_2", "political" ]
+            },
+            {
+               "long_name" : "Lazio",
+               "short_name" : "Lazio",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "Italy",
+               "short_name" : "IT",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "00166",
+               "short_name" : "00166",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "Via Cornelia, 493, 00166 Roma, Italy",
+         "geometry" : {
+            "location" : {
+               "lat" : 41.8901822,
+               "lng" : 12.3837457
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 41.8915311802915,
+                  "lng" : 12.3850946802915
+               },
+               "southwest" : {
+                  "lat" : 41.8888332197085,
+                  "lng" : 12.3823967197085
+               }
+            }
+         },
+         "place_id" : "ChIJy1yFXXBfLxMRWpRqfSyhc5g",
+         "types" : [
+            "beauty_salon",
+            "establishment",
+            "gym",
+            "health",
+            "point_of_interest",
+            "spa"
+         ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "Via Cornelia",
+               "short_name" : "Via Cornelia",
+               "types" : [ "route" ]
+            },
+            {
+               "long_name" : "Roma",
+               "short_name" : "Roma",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "Roma",
+               "short_name" : "Roma",
+               "types" : [ "administrative_area_level_3", "political" ]
+            },
+            {
+               "long_name" : "Città Metropolitana di Roma",
+               "short_name" : "RM",
+               "types" : [ "administrative_area_level_2", "political" ]
+            },
+            {
+               "long_name" : "Lazio",
+               "short_name" : "Lazio",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "Italy",
+               "short_name" : "IT",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "00166",
+               "short_name" : "00166",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "Via Cornelia, 00166 Roma, Italy",
+         "geometry" : {
+            "location" : {
+               "lat" : 41.9007269,
+               "lng" : 12.3899259
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 41.9020758802915,
+                  "lng" : 12.3912748802915
+               },
+               "southwest" : {
+                  "lat" : 41.8993779197085,
+                  "lng" : 12.3885769197085
+               }
+            }
+         },
+         "place_id" : "ChIJKeEv-gpfLxMRcCYoUDB6PUU",
+         "types" : [ "establishment", "gym", "health", "point_of_interest" ]
+      }
+   ],
+   "status" : "OK"
+}

@@ -775,7 +775,9 @@ describe MeetingStatCalculator, type: :strategy, tag: :meeting do
     it 'returns stats data for each team considered' do
       subject.calculate_teams.each do |team_stat|
         # Try to find out a fucking random failure, that, of corse, will no more happen, huncle dog!
-        puts "#{subject.meeting.id} #{subject.meeting.get_full_name} - #{team_stat.team.get_full_name}" if (team_stat.get_results_count + team_stat.get_entries_count + team_stat.get_disqualifieds_count + team_stat.relay_results) == 0
+        if (team_stat.get_results_count + team_stat.get_entries_count + team_stat.get_disqualifieds_count + team_stat.relay_results) == 0
+          puts "#{subject.meeting.id} #{subject.meeting.get_full_name} - #{team_stat.team.get_full_name}"
+        end
         expect(team_stat.get_results_count + team_stat.get_entries_count + team_stat.get_disqualifieds_count + team_stat.relay_results).to be > 0
         expect(team_stat.get_swimmers_count + team_stat.get_ent_swimmers_count).to be > 0
       end

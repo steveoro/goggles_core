@@ -1,0 +1,69 @@
+{
+   "results" : [
+      {
+         "address_components" : [
+            {
+               "long_name" : "2/D",
+               "short_name" : "2/D",
+               "types" : [ "street_number" ]
+            },
+            {
+               "long_name" : "Via Melato",
+               "short_name" : "Via Melato",
+               "types" : [ "route" ]
+            },
+            {
+               "long_name" : "Reggio Emilia",
+               "short_name" : "Reggio Emilia",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "Reggio nell'Emilia",
+               "short_name" : "Reggio nell'Emilia",
+               "types" : [ "administrative_area_level_3", "political" ]
+            },
+            {
+               "long_name" : "Provincia di Reggio Emilia",
+               "short_name" : "RE",
+               "types" : [ "administrative_area_level_2", "political" ]
+            },
+            {
+               "long_name" : "Emilia-Romagna",
+               "short_name" : "Emilia-Romagna",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "Italy",
+               "short_name" : "IT",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "42122",
+               "short_name" : "42122",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "Via Melato, 2/D, 42122 Reggio Emilia RE, Italy",
+         "geometry" : {
+            "location" : {
+               "lat" : 44.6895684,
+               "lng" : 10.6455183
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 44.6909173802915,
+                  "lng" : 10.6468672802915
+               },
+               "southwest" : {
+                  "lat" : 44.6882194197085,
+                  "lng" : 10.6441693197085
+               }
+            }
+         },
+         "place_id" : "ChIJN-jaZqodgEcRn6dRSouzYbI",
+         "types" : [ "establishment", "point_of_interest", "stadium" ]
+      }
+   ],
+   "status" : "OK"
+}
