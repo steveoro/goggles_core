@@ -25,6 +25,7 @@ require 'uri'
 #      fin_calendar_row.place_import_text = result_hash.to_json
 #      fin_calendar_row.save!
 #
+# rubocop:disable Lint/UriEscapeUnescape
 class GeocodingParser
 
   # Fields returned by API JSON response:
@@ -62,7 +63,7 @@ class GeocodingParser
   # @param request_url, link to the API endpoint to be called
   #
   def self.get_raw_web_response( request_url )
-    uri = URI.encode_www_form(request_url) # was: URI( URI.escape(request_url) )
+    uri = URI( URI.escape(request_url) )
     res = Net::HTTP.get_response( uri )
     ( !res.is_a?( Net::HTTPSuccess ) ? nil : res )
   end
@@ -78,7 +79,7 @@ class GeocodingParser
   # @param request_url, link to the API endpoint to be called
   #
   def self.post_raw_web_request( request_url )
-    uri = URI.encode_www_form(request_url) # was: URI( URI.escape(request_url) )
+    uri = URI( URI.escape(request_url) )
     req = Net::HTTP::Post.new( uri )
     res = Net::HTTP.start( uri.host, uri.port, use_ssl: (uri.scheme == 'https') ) do |http|
       http.request( req )
@@ -228,3 +229,4 @@ class GeocodingParser
   #++
 
 end
+# rubocop:enable Lint/UriEscapeUnescape

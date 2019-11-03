@@ -1050,7 +1050,7 @@ describe FinCalendarTextParser, type: :strategy do
           if FinCalendarTextParser.contains_a_date?( fixture_row.program_import_text ) ||
              FinCalendarTextParser.contains_a_time?( fixture_row.program_import_text )
             expect { parser.parse! }
-              .to change(parser.session_daos.count)
+              .to change(parser.session_daos, :count)
           end
         end
 
