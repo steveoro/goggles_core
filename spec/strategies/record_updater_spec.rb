@@ -153,7 +153,10 @@ describe RecordUpdater, type: :strategy do
     end
     let(:fixture_better_list) do
       list = IndividualRecord.where(is_team_record: false).limit(1000).all.sample(5)
-      list.map { |row| row.seconds -= 1; row }
+      list.map do |row|
+        row.seconds -= 1
+        row
+      end
     end
 
     context 'when scanning an empty list (with no new record or record updates),' do
@@ -287,7 +290,10 @@ describe RecordUpdater, type: :strategy do
     end
     let(:fixture_better_list) do
       list = IndividualRecord.where(is_team_record: true).limit(1000).all.sample(5)
-      list.map { |row| row.seconds -= 1; row }
+      list.map do |row|
+        row.seconds -= 1
+        row
+      end
     end
 
     context 'when scanning an empty list (with no new record or record updates),' do

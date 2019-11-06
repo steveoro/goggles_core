@@ -142,7 +142,7 @@ rubocop_options = {
   # cli: "-R -E -P -f fu -f o -f w"
   # [Steve, 20190609] (Do not turn on autocorrect when using Guard)
   # With rails cops enabled:
-  cli: '-D --require rubocop-rails'
+  cli: '-f fu -D --require rubocop-rails'
 }
 
 # Watch Ruby files for changes and run RuboCop:

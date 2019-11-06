@@ -65,7 +65,9 @@ class IndividualRecord < ApplicationRecord
   # returning self.
   #
   def from_individual_result(individual_result, record_type)
-    raise ArgumentError, 'The result specified is not a valid instance of MeetingIndividualResult!' unless individual_result.instance_of?(MeetingIndividualResult)
+    unless individual_result.instance_of?(MeetingIndividualResult)
+      raise ArgumentError, 'The result specified is not a valid instance of MeetingIndividualResult!'
+    end
     raise ArgumentError, 'The record type specified is not a valid instance of RecordType!' unless record_type.instance_of?(RecordType)
 
     self.meeting_individual_result_id = individual_result.id

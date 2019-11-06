@@ -1,4 +1,4 @@
-# encoding: utf-8
+# frozen_string_literal: true
 require 'common/format'
 
 =begin
@@ -22,25 +22,24 @@ class NameNormalizer
   #
   def self.get_meeting_code( meeting_title, city_name )
     if meeting_title.to_s =~ /dist(anze|\.)?\s+spec(iali|\.)?/i
-      region = self.get_normalized_name( meeting_title.to_s.split(/speciali\s+/i).last )
-      "spec#{ region }"
+      region = get_normalized_name( meeting_title.to_s.split(/speciali\s+/i).last )
+      "spec#{region}"
     elsif meeting_title.to_s =~ /regional.\s+/i
-      region = self.get_normalized_name( meeting_title.to_s.split(/regional.\s+/i).last )
-      "reg#{ region }"
+      region = get_normalized_name( meeting_title.to_s.split(/regional.\s+/i).last )
+      "reg#{region}"
     else
-      norm_city = self.get_normalized_name( city_name )
-      norm_title = self.get_normalized_name( meeting_title )
+      norm_city = get_normalized_name( city_name )
+      norm_title = get_normalized_name( meeting_title )
       # Detect the special case in which we avoid the repetition of the name:
       if norm_city == norm_title
         norm_city
       else
-        "#{ norm_city }#{ norm_title }"
+        "#{norm_city}#{norm_title}"
       end
     end
   end
   #-- --------------------------------------------------------------------------
   #++
-
 
   # Returns the swimming pool nick name given the parameters.
   # Returns "np" as default normalized pool name if the name is not given (the token
@@ -56,25 +55,23 @@ class NameNormalizer
     # (If the pool_name_tokens responds to :count, we can safely assume it will
     # respond to :join)
     pool_name_normalized = if pool_name_tokens && pool_name_tokens.respond_to?(:count) && (pool_name_tokens.count > 0)
-      self.get_normalized_name( pool_name_tokens.join )
+      get_normalized_name( pool_name_tokens.join )
     else
-      "comunale"
+      'comunale'
     end
     if city.instance_of?( City ) && city.name.present? && pool_type.instance_of?( PoolType )
-      result = self.get_normalized_name( city.name ) + pool_name_normalized + pool_type.code
+      result = get_normalized_name( city.name ) + pool_name_normalized + pool_type.code
       # Make sure we won't generate nick_names longer than 40 chars:
       if result.length > 40
         result[-40..-1]
       else
         result
       end
-    else
-      nil
+    # else: nil
     end
   end
   #-- -------------------------------------------------------------------------
   #++
-
 
   # Returns a normalized text by converting any UTF-8/special characters into
   # plain ASCII vowels and removing any individual punctuation characters.
@@ -112,7 +109,7 @@ class NameNormalizer
   # "Extended" version of self.get_normalized_string() that removes also spaces.
   #
   def self.get_normalized_name( name )
-    self.get_normalized_string( name ).to_s.gsub(/\W/iu, '')
+    get_normalized_string( name ).to_s.gsub(/\W/iu, '')
   end
   #-- --------------------------------------------------------------------------
   #++

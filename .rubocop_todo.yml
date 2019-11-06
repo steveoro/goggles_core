@@ -125,6 +125,7 @@ Metrics/AbcSize:
     - 'config/**/*'
     - 'spec/**/*'
     - 'test/**/*'
+    - 'app/strategies/fin_calendar_meeting_builder.rb'
 
 # Offense count: 5
 # Configuration parameters: CountComments, ExcludedMethods.
@@ -170,11 +171,8 @@ Metrics/LineLength:
 # Configuration parameters: CountComments, ExcludedMethods.
 Metrics/MethodLength:
   Max: 82
-
-# Offense count: 1
-# Configuration parameters: CountComments.
-Metrics/ModuleLength:
-  Max: 120
+  Exclude:
+    - 'app/strategies/fin_calendar_meeting_builder.rb'
 
 # Offense count: 9
 # Configuration parameters: CountKeywordArgs.
@@ -184,6 +182,8 @@ Metrics/ParameterLists:
 # Offense count: 36
 Metrics/PerceivedComplexity:
   Max: 30
+  Exclude:
+    - 'app/strategies/fin_calendar_meeting_builder.rb'
 
 # Offense count: 383
 Naming/AccessorMethodName:
