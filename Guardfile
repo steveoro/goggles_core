@@ -134,9 +134,9 @@ end
 
 rubocop_options = {
   # With Zeus:
-  cmd: 'rubocop',
+  # cmd: 'rubocop',
   # With Spring
-  # cmd: 'spring rubocop',
+  cmd: 'spring rubocop',
 
   # With fuubar, offenses and warnings tot.:
   # cli: "-R -E -P -f fu -f o -f w"
@@ -147,7 +147,7 @@ rubocop_options = {
 
 # Watch Ruby files for changes and run RuboCop:
 # [See https://github.com/yujinakayama/guard-rubocop for all options]
-guard :rubocop, rubocop_options do
-  watch(/.+\.rb$/)
-  watch(%r{(?:.+/)?\.rubocop(?:_todo)?\.yml$}) { |m| File.dirname(m[0]) }
-end
+#guard :rubocop, rubocop_options do
+#  watch(/.+\.rb$/)
+#  watch(%r{(?:.+/)?\.rubocop(?:_todo)?\.yml$}) { |m| File.dirname(m[0]) }
+#end
