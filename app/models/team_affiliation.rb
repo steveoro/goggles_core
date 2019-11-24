@@ -52,6 +52,11 @@ class TeamAffiliation < ApplicationRecord
   def get_verbose_name
     "(#{number}) #{name}"
   end
+
+  # Gets the uppercased name without non significant characters
+  def get_true_name
+    name.gsub(/[\s,\.\-\_]/, '').upcase
+  end
   #-- -------------------------------------------------------------------------
   #++
 
