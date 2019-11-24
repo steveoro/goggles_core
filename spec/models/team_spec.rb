@@ -79,6 +79,14 @@ describe Team, type: :model do
                         :has_goggle_cup_at?
                       ])
     end
+
+
+    describe 'get_true_name' do
+      it 'returns a string without non significant chars' do
+        t = create(:team, editable_name: 'Name SPaCED,.-wo_SEPARATORS')
+        expect( t.get_true_name ).to eq( 'NAMESPACEDWOSEPARATORS' )
+      end
+    end
     #-- -----------------------------------------------------------------------
     #++
 

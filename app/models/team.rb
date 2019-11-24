@@ -75,6 +75,11 @@ class Team < ApplicationRecord
   def get_full_name_with_id
     "#{editable_name} (#{id})"
   end
+
+  # Gets the uppercased name without non significant characters
+  def get_true_name( non_significants = /[\s',\.\-\_]/ )
+    editable_name.gsub(non_significants, '').upcase
+  end
   #-- -------------------------------------------------------------------------
   #++
 

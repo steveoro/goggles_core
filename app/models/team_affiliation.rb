@@ -54,8 +54,8 @@ class TeamAffiliation < ApplicationRecord
   end
 
   # Gets the uppercased name without non significant characters
-  def get_true_name
-    name.gsub(/[\s,\.\-\_]/, '').upcase
+  def get_true_name( non_significants = /[\s',\.\-\_]/ )
+    name.gsub(non_significants, '').upcase
   end
   #-- -------------------------------------------------------------------------
   #++
