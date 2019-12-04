@@ -195,7 +195,7 @@ namespace :ut do
 
     # Creates a csv file
     titles = %w[id date meeting code import_data_file effective_date days_to_move]
-    csv_file = File.open(LOG_DIR + '/' + 'season_' + season_id + '_meets_without_results.csv', 'w')
+    csv_file = File.open("#{LOG_DIR}/season_#{season_id}_meets_without_results.csv", 'w')
     csv_file.puts titles.join(';')
 
     # Search meetings
