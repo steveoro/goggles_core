@@ -23,6 +23,13 @@ describe TeamAffiliation, type: :model do
     context '[general methods]' do
       it_behaves_like('(the existance of a method returning non-empty strings)', [:get_full_name, :get_verbose_name])
     end
+
+    describe 'get_true_name' do
+      it 'returns a string without non significant chars' do
+        ta = create(:team_affiliation, name: 'Name SPaCED,.-wo_SEPARATORS')
+        expect( ta.get_true_name ).to eq( 'NAMESPACEDWOSEPARATORS' )
+      end
+    end
   end
   #-- -------------------------------------------------------------------------
   #++

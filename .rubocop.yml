@@ -2,8 +2,11 @@ require: rubocop-rails
 inherit_from: .rubocop_todo.yml
 
 AllCops:
+  TargetRubyVersion: 2.3
   Exclude:
     - 'spec/dummy/db/schema.rb'
+    - 'app/strategies/fin_calendar_*'
+    - 'app/strategies/name_normalizer.rb'
 
 # The behavior of RuboCop can be controlled via the .rubocop.yml
 # configuration file. It makes it possible to enable/disable
@@ -50,6 +53,18 @@ Layout/SpaceInsideParens:
 Layout/SpaceInsideStringInterpolation:
   Enabled: false
 
+# Configuration parameters: CountComments.
+Metrics/ModuleLength:
+  Max: 120
+  Exclude:
+    - 'lib/common/format.rb'
+
+Naming/VariableNumber:
+  Enabled: false
+
+Style/AsciiComments:
+  Enabled: false
+
 # Offense count: 1
 # Cop supports --auto-correct.
 # Configuration parameters: AutoCorrect, EnforcedStyle.
@@ -67,12 +82,29 @@ Style/Documentation:
     - 'app/models/application_record.rb'
     - 'config/application.rb'
 
+Style/DoubleNegation:
+  Exclude:
+    - 'app/strategies/fin_calendar_meeting_builder.rb'
+    - 'app/strategies/user_training_story_accessibility.rb'
+    - 'app/strategies/user_training_accessibility.rb'
+    - 'app/strategies/training_accessibility.rb'
+    - 'app/strategies/swimmer_user_strategy.rb'
+
 # Cop supports --auto-correct.
 Style/ExpandPathArguments:
   Exclude:
     - 'bin/rails'
     - 'bin/rake'
     - 'spec/rails_helper.rb'
+
+Style/FormatStringToken:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Exclude:
+    - 'app/strategies/begin_time_calculator.rb'
+    - 'app/strategies/geocoding_parser.rb'
+    - 'spec/strategies/begin_time_calculator_spec.rb'
 
 Style/MixinUsage:
   Exclude:
@@ -88,6 +120,10 @@ Style/MutableConstant:
 Style/RedundantBegin:
   Exclude:
     - 'bin/yarn'
+
+Style/Semicolon:
+  Exclude:
+    - 'spec/strategies/fin_calendar_swimming_pool_builder_spec.rb'
 
 # Cop supports --auto-correct.
 Style/StderrPuts:

@@ -10,7 +10,6 @@ require 'date'
 #
 #   Generic format utilities collection.
 #
-# rubocop:disable Metrics/LineLength
 module Format
   # Converts a +Float+ value to a +String+ representing an +Integer+ percentage.
   # (Ex.: 0.2 => " 20 %")
@@ -40,8 +39,9 @@ module Format
   TIME_STRING_SEARCH_REGEXP = /(^|\s+)\d+[\:\.]\d{1,2}([\:\.]\d{1,2})?(\s+|$)/.freeze unless defined? TIME_STRING_SEARCH_REGEXP
 
   # RegExp used to search for DateTime-like values in formatted strings.
-  DATETIME_STRING_SEARCH_REGEXP = %r{(^|\s+)(\d{1,4}(\-|/|\.)\d{1,2}(\-|/|\.)\d{1,4})\,?\s*\d+[\:\.]\d{1,2}([\:\.]\d{1,2})?(\s+|$)}.freeze unless defined? DATETIME_STRING_SEARCH_REGEXP
-  # rubocop:enable Metrics/LineLength
+  unless defined? DATETIME_STRING_SEARCH_REGEXP
+    DATETIME_STRING_SEARCH_REGEXP = %r{(^|\s+)(\d{1,4}(\-|/|\.)\d{1,2}(\-|/|\.)\d{1,4})\,?\s*\d+[\:\.]\d{1,2}([\:\.]\d{1,2})?(\s+|$)}.freeze
+  end
 
   # Checks if an object can be converted to a valid Integer instance.
   # Returns false otherwise.

@@ -97,6 +97,16 @@ shared_examples_for '(the existance of a method returning a non-empty Hash)' do 
   end
 end
 
+shared_examples_for '(the existance of a method returning an hash)' do |method_name_array|
+  it_behaves_like '(the existance of a method)', method_name_array
+  method_name_array.each do |method_name|
+    it "##{method_name} returns an hash" do
+      result = subject.send(method_name.to_sym)
+      expect(result).to be_an_instance_of(Hash)
+    end
+  end
+end
+
 shared_examples_for '(the existance of a method returning a boolean value)' do |method_name_array|
   it_behaves_like '(the existance of a method)', method_name_array
   method_name_array.each do |method_name|

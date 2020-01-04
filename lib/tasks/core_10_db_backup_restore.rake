@@ -135,7 +135,7 @@ namespace :db do
     #  version can result more compressed due to the replicated strings, and it is
     #  indeed much more readable and editable...)
     cmd = "mysqldump --host=#{db_host} -u #{db_user} --password=\"#{db_pwd}\" -l --triggers " \
-          '-routines -i --skip-extended-insert --no-autocommit --single-transaction ' \
+          '--routines -i --skip-extended-insert --no-autocommit --single-transaction ' \
           "#{db_name} #{zip_pipe} > #{file_name}"
     sh cmd
     puts "\r\nRecovery dump created.\r\n\r\n"

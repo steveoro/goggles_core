@@ -1,0 +1,59 @@
+{
+   "results" : [
+      {
+         "address_components" : [
+            {
+               "long_name" : "Via Pontina Vecchia",
+               "short_name" : "Via Pontina Vecchia",
+               "types" : [ "route" ]
+            },
+            {
+               "long_name" : "Pomezia",
+               "short_name" : "Pomezia",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "Pomezia",
+               "short_name" : "Pomezia",
+               "types" : [ "administrative_area_level_3", "political" ]
+            },
+            {
+               "long_name" : "Città Metropolitana di Roma",
+               "short_name" : "RM",
+               "types" : [ "administrative_area_level_2", "political" ]
+            },
+            {
+               "long_name" : "Italy",
+               "short_name" : "IT",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "00071",
+               "short_name" : "00071",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "km30, Via Pontina Vecchia, 00071 Pomezia RM, Italy",
+         "geometry" : {
+            "location" : {
+               "lat" : 41.674459,
+               "lng" : 12.508192
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 41.6758079802915,
+                  "lng" : 12.5095409802915
+               },
+               "southwest" : {
+                  "lat" : 41.6731100197085,
+                  "lng" : 12.5068430197085
+               }
+            }
+         },
+         "place_id" : "ChIJbVvcB0ySJRMR80H4srQcIBc",
+         "types" : [ "establishment", "point_of_interest" ]
+      }
+   ],
+   "status" : "OK"
+}

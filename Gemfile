@@ -46,7 +46,7 @@ group :development, :test do
   gem 'bullet'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
-  gem 'ffaker'                  # Adds dummy names & fixture generator
+  gem 'ffaker', '~> 2.11'
   gem 'letter_opener'
   gem 'rspec'
   gem 'rspec-rails'

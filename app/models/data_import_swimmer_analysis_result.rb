@@ -62,7 +62,9 @@ class DataImportSwimmerAnalysisResult < ApplicationRecord
     self.sql_text = "\r\n"
     if can_insert_swimmer
       sql_text << "-- *** WARNING! 'desired_year_of_birth' is not correctly set! ***\r\n" unless desired_year_of_birth.to_i > 1900
-      sql_text << "-- *** WARNING! 'desired_gender_type_id' is not correctly set! ***\r\n" unless desired_gender_type_id.to_i == 1 || desired_gender_type_id.to_i == 2
+      unless desired_gender_type_id.to_i == 1 || desired_gender_type_id.to_i == 2
+        sql_text << "-- *** WARNING! 'desired_gender_type_id' is not correctly set! ***\r\n"
+      end
       # FIXME: [Steve, 20170213] We should only create secondary entities during phases < 3!
       #      self.sql_text << "INSERT INTO swimmers (complete_name,year_of_birth,gender_type_id,user_id,created_at,updated_at) VALUES\r\n" <<
       #                       "    (#{ con.quote( self.searched_swimmer_name ) }," <<

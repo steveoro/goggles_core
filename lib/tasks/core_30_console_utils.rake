@@ -172,6 +172,11 @@ namespace :ut do
     db_pwd          = rails_config.database_configuration[Rails.env]['password']
     log_dir         = ENV.include?('log_dir') ? ENV['log_dir'] : LOG_DIR
 
+    logger = ConsoleLogger.new
+    logger.info( "Requiring Rails environment to allow usage of any Model..." )
+    require Rails.root.join('config', 'environment')
+    require 'rails/all'
+
     # Verify parameters
     unless season_id && Season.exists?(id: season_id)
       puts "\r\n"
@@ -185,17 +190,12 @@ namespace :ut do
     puts "DB user:          #{db_user}"
     puts "log_dir:          #{log_dir}"
     puts "\r\n"
-    logger = ConsoleLogger.new
-
-    puts 'Requiring Rails environment to allow usage of any Model...'
-    require 'rails/all'
-    require Rails.root.join('config', 'environment')
 
     season = Season.find(season_id)
 
     # Creates a csv file
     titles = %w[id date meeting code import_data_file effective_date days_to_move]
-    csv_file = File.open(LOG_DIR + '/' + 'season_' + season_id + '_meets_without_results.csv', 'w')
+    csv_file = File.open("#{LOG_DIR}/season_#{season_id}_meets_without_results.csv", 'w')
     csv_file.puts titles.join(';')
 
     # Search meetings
