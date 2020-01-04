@@ -344,19 +344,28 @@ namespace :ut do
       exit
     end
 
-    pool_type = meeting.get_pool_type
-    logger.info("\r\n#{meeting.id} - #{meeting.get_meeting_date} #{meeting.get_full_name} (#{meeting.code})")
+    ms = MeetingSchedule.new( meeting )
+    ms.retrieve_schedule_data
+    msdao = MeetingScheduleDAODecorator.new( ms.set_meeting_schedule_dao )
+    #msdao = ms.set_meeting_schedule_dao.decorate
+    logger.info("\r\n#{msdao.get_meeting_header}")
 
-    meeting.meeting_sessions.each do |meeting_session|
+    # Cycle meeting sessions
+    msdao.get_session_keys.each do |session_key|
+      # Session info
+      mss = MeetingScheduleDAODecorator.new( msdao.get_session( session_key ))
       logger.info(
-        "- #{meeting_session.session_order}. #{meeting_session.get_scheduled_date} " \
-        "(#{meeting_session.swimming_pool.get_verbose_name}): #{meeting_session.get_warm_up_time}/" \
-        "#{meeting_session.get_begin_time} -> #{meeting_session.id}\r\n"
+        "- #{mss.session_order}. #{mss.date_to_s(mss.scheduled_date)} " \
+        "#{mss.get_pool_header}: " \
+        "#{mss.warm_up_time}/#{mss.begin_time} -> #{mss.session_id}\r\n"
       )
-      meeting_session.meeting_events.each do |meeting_event|
+      # Cycle session events
+      mss.get_event_keys.each do |event_key|
+        # Event info
+        #msse = MeetingScheduleDAODecorator.new( mss.get_event( event_key ))
+        msse = mss.get_event( event_key )
         logger.info(
-          "  - #{meeting_event.event_order}. #{meeting_event.event_type.code} -> " \
-          "#{meeting_event.id}\r\n"
+          "  - #{msse.event_order}. #{msse.event_code} -> #{msse.event_id}\r\n"
         )
       end
     end
